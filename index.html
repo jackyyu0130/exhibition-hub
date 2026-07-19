@@ -16,6 +16,7 @@
     --teal: #285C56;
     --line: #DCD5C4;
     --gold: #A9822F;
+    --sidebar-w: 240px;
   }
 
   *{ box-sizing: border-box; }
@@ -30,9 +31,8 @@
 
   a{ color: inherit; }
 
-  /* ---------- 頁首 ---------- */
   header{
-    padding: 4.5rem 1.5rem 3rem;
+    padding: 4rem 1.5rem 2.75rem;
     text-align:center;
     border-bottom: 1px solid var(--line);
     position: relative;
@@ -70,7 +70,7 @@
     color: var(--ink-soft);
     font-size: 1rem;
     max-width: 34rem;
-    margin: 0 auto 1.75rem;
+    margin: 0 auto 1.5rem;
     line-height: 1.7;
   }
 
@@ -85,54 +85,130 @@
     color: var(--stamp);
   }
 
-  /* ---------- 控制列 ---------- */
-  .controls{
-    max-width: 860px;
-    margin: -1.6rem auto 0;
+  .search-bar{
+    max-width: 1120px;
+    margin: -1.4rem auto 0;
     padding: 0 1.5rem;
     position: relative;
-    z-index: 2;
+    z-index: 3;
+    display:flex;
+    justify-content:center;
   }
 
-  .controls-inner{
+  .search-bar-inner{
     background: var(--paper-raised);
     border: 1px solid var(--line);
     border-radius: 4px;
-    padding: 1.1rem 1.3rem;
+    padding: .9rem 1.1rem;
     display:flex;
-    flex-wrap: wrap;
-    gap: .8rem;
+    align-items:center;
+    gap: .7rem;
     box-shadow: 0 8px 24px rgba(28,26,23,.06);
+    width: 100%;
+    max-width: 640px;
   }
 
   input[type="text"], select{
     font-family: "Noto Sans TC", sans-serif;
     font-size: .95rem;
-    padding: .6rem .8rem;
+    padding: .5rem .7rem;
     border: 1px solid var(--line);
     border-radius: 3px;
     background: var(--paper);
     color: var(--ink);
   }
 
-  input[type="text"]{ flex: 1 1 220px; }
-  select{ flex: 0 1 160px; }
+  #searchInput{ flex:1; border:none; background:transparent; padding: .3rem; }
+  #searchInput:focus{ outline:none; }
 
-  .toggle{
-    display:flex;
-    align-items:center;
-    gap: .5rem;
-    font-size: .9rem;
-    color: var(--ink-soft);
-    flex: 0 0 auto;
+  #filterToggle{
+    display:none;
+    font-family: "JetBrains Mono", monospace;
+    font-size: .8rem;
+    letter-spacing: .05em;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 3px;
+    padding: .55rem .9rem;
+    cursor:pointer;
     white-space: nowrap;
   }
 
-  /* ---------- 列表 ---------- */
-  main{
-    max-width: 860px;
+  .layout{
+    max-width: 1120px;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem 5rem;
+    padding: 2.25rem 1.5rem 5rem;
+    display:grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    gap: 2rem;
+    align-items:start;
+  }
+
+  aside.sidebar{
+    position: sticky;
+    top: 1.25rem;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.3rem 1.2rem;
+  }
+
+  .filter-group{ margin-bottom: 1.6rem; }
+  .filter-group:last-child{ margin-bottom: 0; }
+
+  .filter-title{
+    font-family: "JetBrains Mono", monospace;
+    font-size: .72rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: .7rem;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+  }
+
+  .filter-title button{
+    font-family: inherit;
+    font-size: .68rem;
+    background: none;
+    border: none;
+    color: var(--teal);
+    cursor:pointer;
+    text-decoration: underline;
+    padding:0;
+  }
+
+  .filter-option{
+    display:flex;
+    align-items:center;
+    gap: .5rem;
+    font-size: .87rem;
+    padding: .32rem 0;
+    cursor:pointer;
+    color: var(--ink);
+  }
+
+  .filter-option input{
+    accent-color: var(--stamp);
+    width: 15px; height: 15px;
+    flex-shrink:0;
+  }
+
+  .filter-option .count{
+    margin-left:auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: .72rem;
+    color: var(--ink-soft);
+  }
+
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    gap: .5rem;
+    font-size: .87rem;
+    color: var(--ink-soft);
   }
 
   .entry{
@@ -144,6 +220,15 @@
     border-radius: 4px;
     margin-bottom: 1.1rem;
     overflow: hidden;
+    text-decoration:none;
+    color: inherit;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+
+  a.entry:hover, a.entry:focus-visible{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(28,26,23,.09);
+    border-color: var(--stamp);
   }
 
   .stub{
@@ -178,9 +263,9 @@
   .perforation::before{ top:-7px; }
   .perforation::after{ bottom:-7px; }
 
-  .content{
-    padding: 1.2rem 1.4rem;
-  }
+  .content{ padding: 1.2rem 1.4rem; }
+
+  .tag-row{ display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom: .55rem; }
 
   .tag{
     display:inline-block;
@@ -192,8 +277,9 @@
     border-radius: 2px;
     padding: .1rem .45rem;
     transform: rotate(-1deg);
-    margin-bottom: .55rem;
   }
+
+  .tag.region{ color: var(--teal); border-color: var(--teal); transform: rotate(1deg); }
 
   .entry h3{
     font-family: "Noto Serif TC", serif;
@@ -214,16 +300,12 @@
     font-size: .88rem;
     line-height: 1.7;
     color: var(--ink-soft);
-    margin: 0;
+    margin: 0 0 .3rem;
   }
 
-  .entry a.more{
-    display:inline-block;
-    margin-top: .6rem;
-    font-size: .82rem;
+  .more-hint{
+    font-size: .78rem;
     color: var(--teal);
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 
   .empty{
@@ -232,6 +314,7 @@
     color: var(--ink-soft);
     font-family: "Noto Serif TC", serif;
     font-size: 1.1rem;
+    grid-column: 1 / -1;
   }
 
   footer{
@@ -242,15 +325,57 @@
     font-family: "JetBrains Mono", monospace;
   }
 
+  :focus-visible{ outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  @media (max-width: 860px){
+    .layout{ grid-template-columns: 1fr; }
+
+    #filterToggle{ display:inline-block; }
+
+    aside.sidebar{
+      position: fixed;
+      top:0; right:0; bottom:0;
+      width: min(84vw, 320px);
+      border-radius: 0;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform .22s ease;
+      z-index: 20;
+      box-shadow: -12px 0 30px rgba(0,0,0,.15);
+    }
+
+    aside.sidebar.open{ transform: translateX(0); }
+
+    .sidebar-overlay{
+      display:none;
+      position: fixed; inset:0;
+      background: rgba(28,26,23,.35);
+      z-index: 15;
+    }
+
+    .sidebar-overlay.open{ display:block; }
+
+    .sidebar-close{
+      display:block;
+      margin-bottom: 1rem;
+      background:none;
+      border:1px solid var(--line);
+      border-radius:3px;
+      padding:.4rem .7rem;
+      font-family:"JetBrains Mono", monospace;
+      font-size:.75rem;
+      cursor:pointer;
+    }
+  }
+
+  @media (min-width: 861px){
+    .sidebar-close, .sidebar-overlay{ display:none; }
+  }
+
   @media (max-width: 520px){
     .entry{ grid-template-columns: 78px 1px 1fr; }
     .stub{ padding: 1rem .3rem; }
     .stub .day{ font-size: 1.3rem; }
-  }
-
-  :focus-visible{
-    outline: 2px solid var(--teal);
-    outline-offset: 2px;
   }
 </style>
 </head>
@@ -259,46 +384,93 @@
 <header>
   <div class="eyebrow">TAIWAN EXHIBITION LOG · 自動蒐集整合</div>
   <h1>台灣展覽誌</h1>
-  <p class="subtitle">彙整文化部開放資料,每日自動更新全台展覽與藝文活動,不用再一個個粉專滑過去。</p>
+  <p class="subtitle">彙整文化部開放資料與各大展演場館資訊，每日自動更新全台展覽與藝文活動。</p>
   <p class="stat-line" id="statLine">載入中…</p>
 </header>
 
-<div class="controls">
-  <div class="controls-inner">
+<div class="search-bar">
+  <div class="search-bar-inner">
     <input type="text" id="searchInput" placeholder="搜尋展覽名稱、地點、主辦單位…">
-    <select id="categorySelect">
-      <option value="">全部類別</option>
-    </select>
-    <label class="toggle">
-      <input type="checkbox" id="ongoingOnly">
-      只看目前展出中
-    </label>
+    <button id="filterToggle" type="button">篩選 ▾</button>
   </div>
 </div>
 
-<main id="list">
-  <div class="empty">載入資料中…</div>
-</main>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" id="sidebarClose" type="button">✕ 關閉篩選</button>
+
+    <div class="filter-group">
+      <div class="filter-title">
+        <span>地區</span>
+        <button type="button" data-clear="region">清除</button>
+      </div>
+      <div id="regionOptions"></div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-title">
+        <span>類別</span>
+        <button type="button" data-clear="category">清除</button>
+      </div>
+      <div id="categoryOptions"></div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-title"><span>顯示</span></div>
+      <label class="toggle-row">
+        <input type="checkbox" id="ongoingOnly">
+        只看目前展出中
+      </label>
+    </div>
+  </aside>
+
+  <main id="list">
+    <div class="empty">載入資料中…</div>
+  </main>
+</div>
 
 <footer>
-  資料來源：文化部文化資料開放服務網（cloud.culture.tw）· 每日自動更新
+  資料來源：文化部文化資料開放服務網（cloud.culture.tw）、華山1914文化創意產業園區 · 每日自動更新
 </footer>
 
 <script>
-const state = { events: [], updatedAt: null };
+const state = {
+  events: [],
+  updatedAt: null,
+  selectedRegions: new Set(),
+  selectedCategories: new Set(),
+};
+
+const REGION_GROUPS = [
+  ['台北市','臺北市'], ['新北市'], ['基隆市'], ['桃園市'],
+  ['新竹市'], ['新竹縣'], ['苗栗縣'], ['台中市','臺中市'],
+  ['彰化縣'], ['南投縣'], ['雲林縣'], ['嘉義市'], ['嘉義縣'],
+  ['台南市','臺南市'], ['高雄市'], ['屏東縣'], ['宜蘭縣'],
+  ['花蓮縣'], ['台東縣','臺東縣'], ['澎湖縣'], ['金門縣'], ['連江縣'],
+];
+
+function detectRegion(ev){
+  const text = `${ev.locationName || ''} ${ev.location || ''}`;
+  for(const group of REGION_GROUPS){
+    if(group.some(kw => text.includes(kw))) return group[0];
+  }
+  return '其他地區';
+}
 
 async function loadData(){
   try{
     const res = await fetch('data/exhibitions.json', { cache: 'no-store' });
     const data = await res.json();
-    state.events = data.events || [];
+    state.events = (data.events || []).map(ev => ({ ...ev, region: detectRegion(ev) }));
     state.updatedAt = data.updatedAt;
-    populateCategories();
+    buildFilterOptions();
     render();
     updateStatLine();
   }catch(err){
     document.getElementById('list').innerHTML =
-      '<div class="empty">資料載入失敗,請確認 data/exhibitions.json 是否存在。</div>';
+      '<div class="empty">資料載入失敗，請確認 data/exhibitions.json 是否存在。</div>';
     console.error(err);
   }
 }
@@ -310,15 +482,54 @@ function updateStatLine(){
   el.innerHTML = `目前收錄 <b>${state.events.length}</b> 檔活動 · 最後更新：${timeStr}`;
 }
 
-function populateCategories(){
-  const select = document.getElementById('categorySelect');
-  const cats = Array.from(new Set(state.events.map(e => e.category).filter(Boolean))).sort();
-  cats.forEach(cat => {
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    select.appendChild(opt);
+function countBy(key){
+  const counts = {};
+  state.events.forEach(ev => {
+    const v = ev[key];
+    if(!v) return;
+    counts[v] = (counts[v] || 0) + 1;
   });
+  return counts;
+}
+
+function buildFilterOptions(){
+  const regionCounts = countBy('region');
+  const categoryCounts = countBy('category');
+
+  const regionEl = document.getElementById('regionOptions');
+  regionEl.innerHTML = Object.keys(regionCounts).sort((a,b)=>regionCounts[b]-regionCounts[a]).map(region => `
+    <label class="filter-option">
+      <input type="checkbox" data-type="region" value="${escapeAttr(region)}">
+      ${escapeHtml(region)}
+      <span class="count">${regionCounts[region]}</span>
+    </label>
+  `).join('');
+
+  const categoryEl = document.getElementById('categoryOptions');
+  categoryEl.innerHTML = Object.keys(categoryCounts).sort((a,b)=>categoryCounts[b]-categoryCounts[a]).map(cat => `
+    <label class="filter-option">
+      <input type="checkbox" data-type="category" value="${escapeAttr(cat)}">
+      ${escapeHtml(cat)}
+      <span class="count">${categoryCounts[cat]}</span>
+    </label>
+  `).join('');
+
+  document.querySelectorAll('input[data-type="region"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      toggleSetValue(state.selectedRegions, cb.value, cb.checked);
+      render();
+    });
+  });
+  document.querySelectorAll('input[data-type="category"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      toggleSetValue(state.selectedCategories, cb.value, cb.checked);
+      render();
+    });
+  });
+}
+
+function toggleSetValue(set, value, on){
+  if(on) set.add(value); else set.delete(value);
 }
 
 function parseDate(str){
@@ -354,11 +565,11 @@ function stubMarkup(ev){
 
 function render(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const cat = document.getElementById('categorySelect').value;
   const ongoingOnly = document.getElementById('ongoingOnly').checked;
 
   let filtered = state.events.filter(ev => {
-    if(cat && ev.category !== cat) return false;
+    if(state.selectedRegions.size && !state.selectedRegions.has(ev.region)) return false;
+    if(state.selectedCategories.size && !state.selectedCategories.has(ev.category)) return false;
     if(ongoingOnly && !isOngoing(ev)) return false;
     if(q){
       const haystack = `${ev.title} ${ev.locationName} ${ev.location} ${ev.unit}`.toLowerCase();
@@ -369,38 +580,64 @@ function render(){
 
   const list = document.getElementById('list');
   if(filtered.length === 0){
-    list.innerHTML = '<div class="empty">沒有符合條件的活動,換個關鍵字看看？</div>';
+    list.innerHTML = '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(ev => `
-    <article class="entry">
+  list.innerHTML = filtered.map(ev => {
+    const tag = ev.sourceUrl ? 'a' : 'div';
+    const href = ev.sourceUrl ? `href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener"` : '';
+    return `
+    <${tag} class="entry" ${href}>
       <div class="stub">${stubMarkup(ev)}</div>
       <div class="perforation"></div>
       <div class="content">
-        <span class="tag">${escapeHtml(ev.category || '活動')}</span>
+        <div class="tag-row">
+          <span class="tag">${escapeHtml(ev.category || '活動')}</span>
+          <span class="tag region">${escapeHtml(ev.region || '其他地區')}</span>
+        </div>
         <h3>${escapeHtml(ev.title)}</h3>
         <div class="meta">
           ${escapeHtml(ev.locationName || ev.location || '地點未提供')}
           ${ev.unit ? `<span class="sep">·</span>${escapeHtml(ev.unit)}` : ''}
         </div>
         ${ev.description ? `<p class="desc">${escapeHtml(ev.description)}</p>` : ''}
-        ${ev.sourceUrl ? `<a class="more" href="${ev.sourceUrl}" target="_blank" rel="noopener">前往活動頁面 →</a>` : ''}
+        ${ev.sourceUrl ? `<span class="more-hint">點擊查看官方活動頁面 →</span>` : ''}
       </div>
-    </article>
-  `).join('');
+    </${tag}>
+  `;
+  }).join('');
 }
 
 function escapeHtml(str){
   if(!str) return '';
-  return str.replace(/[&<>"']/g, s => ({
+  return String(str).replace(/[&<>"']/g, s => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[s]));
 }
 
+function escapeAttr(str){ return escapeHtml(str); }
+
 document.getElementById('searchInput').addEventListener('input', render);
-document.getElementById('categorySelect').addEventListener('change', render);
 document.getElementById('ongoingOnly').addEventListener('change', render);
+
+document.querySelectorAll('button[data-clear]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.clear;
+    const set = type === 'region' ? state.selectedRegions : state.selectedCategories;
+    set.clear();
+    document.querySelectorAll(`input[data-type="${type}"]`).forEach(cb => cb.checked = false);
+    render();
+  });
+});
+
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+function openSidebar(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
+function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+document.getElementById('filterToggle').addEventListener('click', openSidebar);
+document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
 
 loadData();
 </script>
