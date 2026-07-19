@@ -124,30 +124,46 @@ def fetch_huashan(max_pages: int = 6):
     return events
 
 
+def safe_str(value) -> str:
+    """把官方 API 回傳的欄位安全轉成文字。
+
+    文化部的資料品質不是每筆都很乾淨：同一個欄位（例如 showUnit）在有些筆資料是
+    一段文字，但在某些筆資料卻是一個列表（list），甚至是數字或 None。
+    直接呼叫 .strip() 遇到非字串型態就會整支程式炸掉，所以統一用這個函式處理。
+    """
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return " / ".join(safe_str(v) for v in value if v).strip()
+    if isinstance(value, dict):
+        return ""
+    return str(value).strip()
+
+
 def normalize(item: dict) -> dict:
     """把官方欄位(有些欄位名稱本身就有錯字,如 titile)整理成乾淨的格式"""
     show_info = item.get("showInfo") or []
-    first_show = show_info[0] if isinstance(show_info, list) and show_info else {}
+    first_show = show_info[0] if isinstance(show_info, list) and show_info and isinstance(show_info[0], dict) else {}
 
-    title = (item.get("title") or item.get("titile") or "").strip()
-    description = (item.get("descriptionFilterHtml") or "").strip()
+    title = safe_str(item.get("title") or item.get("titile"))
+    description = safe_str(item.get("descriptionFilterHtml"))
     if len(description) > 200:
         description = description[:200] + "…"
 
     return {
         "title": title,
-        "category": (item.get("category") or "其他").strip(),
-        "unit": (item.get("showUnit") or item.get("masterUnit") or "").strip(),
+        "category": safe_str(item.get("category")) or "其他",
+        "unit": safe_str(item.get("showUnit")) or safe_str(item.get("masterUnit")),
         "description": description,
-        "image": (item.get("imageURL") or "").strip(),
-        "startDate": (item.get("startDate") or "").strip(),
-        "endDate": (item.get("endDate") or "").strip(),
-        "location": (item.get("location") or "").strip(),
-        "locationName": (item.get("locationName") or first_show.get("locationName", "")).strip(),
-        "sourceUrl": (item.get("sourceWebPromote") or "").strip(),
-        "sourceName": (item.get("sourceWebName") or "").strip() or "文化部開放資料",
-        "latitude": item.get("latitude") or "",
-        "longitude": item.get("longitude") or "",
+        "image": safe_str(item.get("imageURL")),
+        "startDate": safe_str(item.get("startDate")),
+        "endDate": safe_str(item.get("endDate")),
+        "location": safe_str(item.get("location")),
+        "locationName": safe_str(item.get("locationName")) or safe_str(first_show.get("locationName")),
+        "sourceUrl": safe_str(item.get("sourceWebPromote")),
+        "sourceName": safe_str(item.get("sourceWebName")) or "文化部開放資料",
+        "latitude": safe_str(item.get("latitude")),
+        "longitude": safe_str(item.get("longitude")),
     }
 
 
