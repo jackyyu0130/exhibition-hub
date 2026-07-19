@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣展覽誌｜全台藝文活動每日自動更新</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6F3EC;
+    --paper-raised: #FFFFFF;
+    --ink: #1C1A17;
+    --ink-soft: #5B564C;
+    --stamp: #A5342E;
+    --teal: #285C56;
+    --line: #DCD5C4;
+    --gold: #A9822F;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Noto Sans TC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- 頁首 ---------- */
+  header{
+    padding: 4.5rem 1.5rem 3rem;
+    text-align:center;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  header::before{
+    content: "";
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg, var(--stamp) 0 18px, transparent 18px 30px
+    );
+    opacity: .55;
+  }
+
+  .eyebrow{
+    font-family: "JetBrains Mono", monospace;
+    font-size: .75rem;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--stamp);
+    margin-bottom: 1rem;
+  }
+
+  h1{
+    font-family: "Noto Serif TC", serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    margin: 0 0 .75rem;
+    letter-spacing: .02em;
+  }
+
+  .subtitle{
+    color: var(--ink-soft);
+    font-size: 1rem;
+    max-width: 34rem;
+    margin: 0 auto 1.75rem;
+    line-height: 1.7;
+  }
+
+  .stat-line{
+    font-family: "JetBrains Mono", monospace;
+    font-size: .95rem;
+    color: var(--teal);
+  }
+
+  .stat-line b{
+    font-size: 1.3rem;
+    color: var(--stamp);
+  }
+
+  /* ---------- 控制列 ---------- */
+  .controls{
+    max-width: 860px;
+    margin: -1.6rem auto 0;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .controls-inner{
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.1rem 1.3rem;
+    display:flex;
+    flex-wrap: wrap;
+    gap: .8rem;
+    box-shadow: 0 8px 24px rgba(28,26,23,.06);
+  }
+
+  input[type="text"], select{
+    font-family: "Noto Sans TC", sans-serif;
+    font-size: .95rem;
+    padding: .6rem .8rem;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  input[type="text"]{ flex: 1 1 220px; }
+  select{ flex: 0 1 160px; }
+
+  .toggle{
+    display:flex;
+    align-items:center;
+    gap: .5rem;
+    font-size: .9rem;
+    color: var(--ink-soft);
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  /* ---------- 列表 ---------- */
+  main{
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  .entry{
+    display:grid;
+    grid-template-columns: 108px 1px 1fr;
+    gap: 0;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 1.1rem;
+    overflow: hidden;
+  }
+
+  .stub{
+    font-family: "JetBrains Mono", monospace;
+    padding: 1.2rem .6rem;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap: .35rem;
+  }
+
+  .stub .month{ font-size: .7rem; letter-spacing:.1em; color: var(--ink-soft); }
+  .stub .day{ font-size: 1.6rem; font-weight: 700; line-height:1; }
+  .stub .to{ font-size: .68rem; color: var(--ink-soft); margin-top:.2rem; }
+
+  .perforation{
+    position: relative;
+    background: repeating-linear-gradient(
+      var(--line), var(--line) 6px, transparent 6px 12px
+    );
+    width: 1px;
+  }
+  .perforation::before, .perforation::after{
+    content:"";
+    position:absolute;
+    left:50%; transform:translateX(-50%);
+    width:14px; height:14px;
+    background: var(--paper);
+    border-radius:50%;
+  }
+  .perforation::before{ top:-7px; }
+  .perforation::after{ bottom:-7px; }
+
+  .content{
+    padding: 1.2rem 1.4rem;
+  }
+
+  .tag{
+    display:inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: .68rem;
+    letter-spacing: .1em;
+    color: var(--stamp);
+    border: 1px solid var(--stamp);
+    border-radius: 2px;
+    padding: .1rem .45rem;
+    transform: rotate(-1deg);
+    margin-bottom: .55rem;
+  }
+
+  .entry h3{
+    font-family: "Noto Serif TC", serif;
+    font-size: 1.2rem;
+    margin: 0 0 .4rem;
+    line-height: 1.4;
+  }
+
+  .meta{
+    font-size: .82rem;
+    color: var(--ink-soft);
+    margin-bottom: .5rem;
+  }
+
+  .meta .sep{ margin: 0 .4rem; opacity:.5; }
+
+  .desc{
+    font-size: .88rem;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .entry a.more{
+    display:inline-block;
+    margin-top: .6rem;
+    font-size: .82rem;
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .empty{
+    text-align:center;
+    padding: 4rem 1rem;
+    color: var(--ink-soft);
+    font-family: "Noto Serif TC", serif;
+    font-size: 1.1rem;
+  }
+
+  footer{
+    text-align:center;
+    padding: 2rem 1.5rem 3rem;
+    font-size: .78rem;
+    color: var(--ink-soft);
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  @media (max-width: 520px){
+    .entry{ grid-template-columns: 78px 1px 1fr; }
+    .stub{ padding: 1rem .3rem; }
+    .stub .day{ font-size: 1.3rem; }
+  }
+
+  :focus-visible{
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">TAIWAN EXHIBITION LOG · 自動蒐集整合</div>
+  <h1>台灣展覽誌</h1>
+  <p class="subtitle">彙整文化部開放資料,每日自動更新全台展覽與藝文活動,不用再一個個粉專滑過去。</p>
+  <p class="stat-line" id="statLine">載入中…</p>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <input type="text" id="searchInput" placeholder="搜尋展覽名稱、地點、主辦單位…">
+    <select id="categorySelect">
+      <option value="">全部類別</option>
+    </select>
+    <label class="toggle">
+      <input type="checkbox" id="ongoingOnly">
+      只看目前展出中
+    </label>
+  </div>
+</div>
+
+<main id="list">
+  <div class="empty">載入資料中…</div>
+</main>
+
+<footer>
+  資料來源：文化部文化資料開放服務網（cloud.culture.tw）· 每日自動更新
+</footer>
+
+<script>
+const state = { events: [], updatedAt: null };
+
+async function loadData(){
+  try{
+    const res = await fetch('data/exhibitions.json', { cache: 'no-store' });
+    const data = await res.json();
+    state.events = data.events || [];
+    state.updatedAt = data.updatedAt;
+    populateCategories();
+    render();
+    updateStatLine();
+  }catch(err){
+    document.getElementById('list').innerHTML =
+      '<div class="empty">資料載入失敗,請確認 data/exhibitions.json 是否存在。</div>';
+    console.error(err);
+  }
+}
+
+function updateStatLine(){
+  const el = document.getElementById('statLine');
+  const time = state.updatedAt ? new Date(state.updatedAt) : null;
+  const timeStr = time ? time.toLocaleString('zh-TW', { hour12:false }) : '尚未更新';
+  el.innerHTML = `目前收錄 <b>${state.events.length}</b> 檔活動 · 最後更新：${timeStr}`;
+}
+
+function populateCategories(){
+  const select = document.getElementById('categorySelect');
+  const cats = Array.from(new Set(state.events.map(e => e.category).filter(Boolean))).sort();
+  cats.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
+}
+
+function parseDate(str){
+  if(!str) return null;
+  const parts = str.split(/[\/\-]/).map(Number);
+  if(parts.length < 3) return null;
+  return new Date(parts[0], parts[1]-1, parts[2]);
+}
+
+function isOngoing(ev){
+  const now = new Date();
+  const start = parseDate(ev.startDate);
+  const end = parseDate(ev.endDate);
+  if(start && start > now) return false;
+  if(end && end < now) return false;
+  return true;
+}
+
+function stubMarkup(ev){
+  const start = parseDate(ev.startDate);
+  if(!start){
+    return `<div class="month">TBD</div><div class="day">－</div>`;
+  }
+  const month = String(start.getMonth()+1).padStart(2,'0');
+  const day = String(start.getDate()).padStart(2,'0');
+  const hasEnd = ev.endDate && ev.endDate !== ev.startDate;
+  return `
+    <div class="month">${month} 月</div>
+    <div class="day">${day}</div>
+    ${hasEnd ? `<div class="to">→ ${ev.endDate}</div>` : ''}
+  `;
+}
+
+function render(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const cat = document.getElementById('categorySelect').value;
+  const ongoingOnly = document.getElementById('ongoingOnly').checked;
+
+  let filtered = state.events.filter(ev => {
+    if(cat && ev.category !== cat) return false;
+    if(ongoingOnly && !isOngoing(ev)) return false;
+    if(q){
+      const haystack = `${ev.title} ${ev.locationName} ${ev.location} ${ev.unit}`.toLowerCase();
+      if(!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const list = document.getElementById('list');
+  if(filtered.length === 0){
+    list.innerHTML = '<div class="empty">沒有符合條件的活動,換個關鍵字看看？</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(ev => `
+    <article class="entry">
+      <div class="stub">${stubMarkup(ev)}</div>
+      <div class="perforation"></div>
+      <div class="content">
+        <span class="tag">${escapeHtml(ev.category || '活動')}</span>
+        <h3>${escapeHtml(ev.title)}</h3>
+        <div class="meta">
+          ${escapeHtml(ev.locationName || ev.location || '地點未提供')}
+          ${ev.unit ? `<span class="sep">·</span>${escapeHtml(ev.unit)}` : ''}
+        </div>
+        ${ev.description ? `<p class="desc">${escapeHtml(ev.description)}</p>` : ''}
+        ${ev.sourceUrl ? `<a class="more" href="${ev.sourceUrl}" target="_blank" rel="noopener">前往活動頁面 →</a>` : ''}
+      </div>
+    </article>
+  `).join('');
+}
+
+function escapeHtml(str){
+  if(!str) return '';
+  return str.replace(/[&<>"']/g, s => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[s]));
+}
+
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('categorySelect').addEventListener('change', render);
+document.getElementById('ongoingOnly').addEventListener('change', render);
+
+loadData();
+</script>
+
+</body>
+</html>

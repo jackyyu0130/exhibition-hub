@@ -1,0 +1,51 @@
+{
+  "updatedAt": "2026-07-19T09:00:00+08:00",
+  "count": 3,
+  "events": [
+    {
+      "title": "（範例）當代雕塑展：轉身之間",
+      "category": "美術",
+      "unit": "双方藝廊",
+      "description": "這是範例資料。實際內容會在你設定好 GitHub Actions 自動排程後,由文化部開放資料每日更新覆蓋。",
+      "image": "",
+      "startDate": "2026/07/01",
+      "endDate": "2026/08/30",
+      "location": "彰化縣彰化市中山路二段",
+      "locationName": "彰化縣立美術館",
+      "sourceUrl": "",
+      "sourceName": "範例資料",
+      "latitude": "",
+      "longitude": ""
+    },
+    {
+      "title": "（範例）日本當代藝術展：當繁花盛開",
+      "category": "美術",
+      "unit": "十六位日本藝術家聯展",
+      "description": "這是範例資料,協助你在正式串接資料前先確認網站版面與互動效果。",
+      "image": "",
+      "startDate": "2026/06/15",
+      "endDate": "2026/09/15",
+      "location": "台北市",
+      "locationName": "台北市立美術館",
+      "sourceUrl": "",
+      "sourceName": "範例資料",
+      "latitude": "",
+      "longitude": ""
+    },
+    {
+      "title": "（範例）銅樂重奏音樂會",
+      "category": "音樂",
+      "unit": "銅樂重奏團",
+      "description": "這是範例資料,展示非展覽類活動也會一併顯示在同一個列表中。",
+      "image": "",
+      "startDate": "2026/07/25",
+      "endDate": "2026/07/25",
+      "location": "台中市",
+      "locationName": "台中國家歌劇院",
+      "sourceUrl": "",
+      "sourceName": "範例資料",
+      "latitude": "",
+      "longitude": ""
+    }
+  ]
+}
