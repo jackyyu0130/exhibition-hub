@@ -12,6 +12,7 @@ import json
 import re
 import urllib.request
 from datetime import datetime, timezone, timedelta
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
@@ -31,7 +32,15 @@ TAIPEI_TZ = timezone(timedelta(hours=8))
 # ---------------------------------------------------------------------------
 
 CATEGORY_RULES = [
-    ("動漫", re.compile(r"動漫|動畫|漫畫|公仔|coser|cosplay|角色扮演|二次元|模型|figure", re.IGNORECASE)),
+    ("動漫", re.compile(
+        r"動漫|動畫|漫畫|公仔|coser|cosplay|角色扮演|二次元|模型|figure|快閃店|POP.?UP|"
+        r"史努比|SNOOPY|Chiikawa|吉伊卡哇|Sanrio|三麗鷗|Hello ?Kitty|凱蒂貓|"
+        r"寶可夢|Pokemon|航海王|One Piece|鬼滅之刃|進擊的巨人|鏈鋸人|SPY.{0,3}FAMILY|間諜家家酒|"
+        r"迪士尼|Disney|皮克斯|Pixar|哆啦A夢|多啦A夢|蠟筆小新|櫻桃小丸子|吉卜力|Ghibli|龍貓|"
+        r"鋼彈|Gundam|咒術迴戰|火影忍者|Naruto|七龍珠|Dragon ?Ball|美少女戰士|Sailor ?Moon|"
+        r"憤怒鳥|Angry ?Birds|迷你兵團|Minions|樂高|LEGO",
+        re.IGNORECASE,
+    )),
     ("音樂", re.compile(r"音樂|演唱|演奏|樂團|交響|爵士|歌唱")),
     ("美術", re.compile(r"美術|畫展|畫作|藝術(?!家)|雕塑|策展|插畫|水彩|油畫|版畫|書法")),
     ("表演", re.compile(r"戲劇|劇場|歌劇|舞台劇|表演藝術|展演活動|音樂劇|馬戲")),
@@ -40,16 +49,20 @@ CATEGORY_RULES = [
     ("設計", re.compile(r"設計|建築展|工藝|時尚")),
     ("講座", re.compile(r"講座|論壇|工作坊|研習|沙龍|課程")),
     ("市集", re.compile(r"市集|園遊會|展售|品牌活動")),
+    ("商展", re.compile(
+        r"博覽會|國際.{0,8}展|工業展|科技展|產業展|自動化|半導體|物流展|五金展|金屬.{0,4}展|"
+        r"電路板|建材展|智慧能源|茶業|咖啡展|酒展|旅展|醫療科技展|照顧博覽會|塑橡膠|雷射展|"
+        r"機器人展|冷鏈|模具展|技能競賽|連鎖加盟|紡織展"
+    )),
 ]
 
 
-def classify_category(raw_category: str, title: str, description: str) -> str:
-    """回傳固定分類集合裡的其中一個，不再使用來源網站原始的類別文字。"""
+def classify_category(raw_category: str, title: str, description: str) -> list:
+    """回傳這個活動符合的所有分類（可能不只一個），完全不使用來源網站原始的類別文字。
+    如果都比對不到，回傳 ["其他"]。"""
     text = f"{raw_category or ''} {title or ''} {description or ''}"
-    for label, pattern in CATEGORY_RULES:
-        if pattern.search(text):
-            return label
-    return "其他"
+    matches = [label for label, pattern in CATEGORY_RULES if pattern.search(text)]
+    return matches if matches else ["其他"]
 
 
 def fetch_raw_events():
@@ -88,8 +101,24 @@ def parse_huashan_dates(date_str: str):
     return start, end
 
 
+FREE_PATTERN = re.compile(r"免費入場|免費參觀|免費参觀|免費參加|免費體驗|免費入館|免費入場")
+PRICE_PATTERN = re.compile(r"(?:票價|全票|門票)[:：｜\s]*NT\$?\s?(\d[\d,]{1,6})")
+
+
+def extract_price_info(text: str) -> str:
+    """從頁面文字裡找「免費」或明確標示的票價字樣，找不到就回傳空字串（誠實標示未提供）。"""
+    if not text:
+        return ""
+    if FREE_PATTERN.search(text):
+        return "免費"
+    match = PRICE_PATTERN.search(text)
+    if match:
+        return f"NT$ {match.group(1)}"
+    return ""
+
+
 def fetch_huashan_detail(url: str) -> dict:
-    """進入單一活動的詳情頁，抓取官方提供的 og:image 主視覺圖與簡介文字。
+    """進入單一活動的詳情頁，抓取官方提供的 og:image 主視覺圖、簡介文字與票價資訊。
     每個活動頁面都有這組資料（用來給 Facebook/LINE 分享用的），比起在列表頁
     用位置去猜縮圖準確可靠得多。"""
     try:
@@ -97,7 +126,7 @@ def fetch_huashan_detail(url: str) -> dict:
         resp.raise_for_status()
     except Exception as exc:  # noqa: BLE001
         print(f"[華山] 讀取詳情頁失敗，略過圖片：{url}：{exc}")
-        return {"image": "", "description": ""}
+        return {"image": "", "description": "", "price": ""}
 
     soup = BeautifulSoup(resp.text, "html.parser")
     og_image = soup.find("meta", attrs={"property": "og:image"})
@@ -106,7 +135,8 @@ def fetch_huashan_detail(url: str) -> dict:
     description = safe_str(og_desc.get("content")) if og_desc else ""
     if len(description) > 200:
         description = description[:200] + "…"
-    return {"image": image, "description": description}
+    price = extract_price_info(soup.get_text(" ", strip=True))
+    return {"image": image, "description": description, "price": price}
 
 
 def fetch_huashan(max_pages: int = 6):
@@ -153,13 +183,16 @@ def fetch_huashan(max_pages: int = 6):
 
             full_url = href if href.startswith("http") else f"https://www.huashan1914.com{href}"
             detail = fetch_huashan_detail(full_url)
+            categories = classify_category(category, title, "")
 
             events.append({
                 "title": title,
-                "category": classify_category(category, title, ""),
+                "categories": categories,
+                "category": categories[0],
                 "unit": "",
                 "description": detail["description"],
                 "image": detail["image"],
+                "price": detail.get("price", ""),
                 "startDate": start_date,
                 "endDate": end_date,
                 "location": "台北市中正區八德路一段1號",
@@ -215,12 +248,17 @@ def normalize(item: dict) -> dict:
     if len(description) > 200:
         description = description[:200] + "…"
 
+    categories = classify_category(safe_str(item.get("category")), title, description)
+    price = extract_price_info(description)
+
     return {
         "title": title,
-        "category": classify_category(safe_str(item.get("category")), title, description),
+        "categories": categories,
+        "category": categories[0],
         "unit": safe_str(item.get("showUnit")) or safe_str(item.get("masterUnit")),
         "description": description,
         "image": valid_image_url(safe_str(item.get("imageURL"))),
+        "price": price,
         "startDate": safe_str(item.get("startDate")),
         "endDate": safe_str(item.get("endDate")),
         "location": safe_str(item.get("location")),
@@ -264,6 +302,7 @@ MAJOR_VENUE_ALIASES = {
     "桃園市立美術館": ["桃園市立美術館"],
     "新竹市美術館": ["新竹市美術館"],
     "新竹生活美學館": ["新竹生活美學館"],
+    "南港展覽館": ["南港展覽館", "TaiNEX"],
     # 中部
     "國立臺灣美術館": ["國立臺灣美術館", "國立台灣美術館"],
     "台中國家歌劇院": ["台中國家歌劇院", "臺中國家歌劇院"],
@@ -291,6 +330,7 @@ MAJOR_VENUE_REGIONS = {
     "新北市美術館": "新北市", "雲門劇場": "新北市",
     "桃園展演中心": "桃園市", "桃園市立美術館": "桃園市",
     "新竹市美術館": "新竹市", "新竹生活美學館": "新竹市",
+    "南港展覽館": "台北市",
     "國立臺灣美術館": "台中市", "台中國家歌劇院": "台中市",
     "彰化縣立美術館": "彰化縣",
     "國立臺灣工藝研究發展中心": "南投縣",
@@ -345,26 +385,128 @@ def is_still_relevant(event: dict, now: datetime) -> bool:
     return True  # 格式看不懂就先保留,不隨便丟資料
 
 
-def fetch_og_image(url: str) -> str:
-    """進到活動自己的官方頁面，抓取該頁面設定的 og:image 當作展覽封面圖。
-    這是網頁分享到 FB/LINE 時會用到的官方主視覺圖，比起資料庫裡的 imageURL
-    欄位（常常是空的）可靠很多。"""
+def fetch_detail_extras(url: str) -> dict:
+    """進到活動自己的官方頁面，抓取該頁面設定的 og:image 當作展覽封面圖，
+    順便也嘗試從頁面文字裡找票價資訊。這是網頁分享到 FB/LINE 時會用到的
+    官方主視覺圖，比起資料庫裡的 imageURL 欄位（常常是空的）可靠很多。"""
     try:
         resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
         resp.raise_for_status()
     except Exception as exc:  # noqa: BLE001
         print(f"[圖片] 讀取官方頁面失敗，略過：{url}：{exc}")
-        return ""
+        return {"image": "", "price": ""}
+
+    image = ""
+    price = ""
     try:
         soup = BeautifulSoup(resp.text, "html.parser")
-        og_image = soup.find("meta", attrs={"property": "og:image"}) or soup.find(
-            "meta", attrs={"name": "og:image"}
+        image_tag = (
+            soup.find("meta", attrs={"property": "og:image"})
+            or soup.find("meta", attrs={"name": "og:image"})
+            or soup.find("meta", attrs={"name": "twitter:image"})
+            or soup.find("meta", attrs={"property": "twitter:image"})
         )
-        if og_image and og_image.get("content"):
-            return valid_image_url(safe_str(og_image.get("content")))
+        if image_tag and image_tag.get("content"):
+            content = safe_str(image_tag.get("content"))
+            if content and not content.startswith("http"):
+                content = urljoin(url, content)
+            image = valid_image_url(content)
+
+        if not image:
+            # 有些頁面沒設定 og:image，退而求其次找頁面裡看起來像展覽主視覺的 <img>
+            img_tag = soup.find("img", src=re.compile(r"(exhibition|event|thumb|banner)", re.IGNORECASE))
+            if img_tag and img_tag.get("src"):
+                src = safe_str(img_tag["src"])
+                if src and not src.startswith("http"):
+                    src = urljoin(url, src)
+                image = valid_image_url(src)
+
+        price = extract_price_info(soup.get_text(" ", strip=True))
     except Exception as exc:  # noqa: BLE001
         print(f"[圖片] 解析官方頁面失敗，略過：{url}：{exc}")
-    return ""
+
+    return {"image": image, "price": price}
+
+
+# ---------------------------------------------------------------------------
+# 額外場館來源：南港展覽館（TaiNEX 1館／2館）
+# 官網「展會活動」頁面有清楚的活動列表格式，每個活動都有自己的詳情頁。
+# ---------------------------------------------------------------------------
+
+TAINEX_LIST_URL = "https://www.tainex.com.tw/event"
+TAINEX_DATE_RANGE_PATTERN = re.compile(
+    r"(\d{4})\s+(\d{2})/(\d{2})\(([^)]*)\)-(\d{2})/(\d{2})\(([^)]*)\)"
+)
+TAINEX_DATE_SINGLE_PATTERN = re.compile(r"(\d{4})\s+(\d{2})/(\d{2})\(([^)]*)\)")
+TAINEX_HALL_PATTERN = re.compile(r"((?:\d館)+)$")
+
+
+def fetch_tainex(max_events: int = 40):
+    """抓取南港展覽館的展會活動列表"""
+    events = []
+    try:
+        resp = requests.get(TAINEX_LIST_URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+        resp.raise_for_status()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[南港展覽館] 讀取列表頁失敗：{exc}")
+        return events
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    links = [a for a in soup.find_all("a", href=True) if re.search(r"/event/\d+$", a["href"])]
+
+    seen = set()
+    for a in links[:max_events]:
+        href = a["href"]
+        if href in seen:
+            continue
+        seen.add(href)
+
+        text = " ".join(a.get_text(" ", strip=True).split())
+        range_match = TAINEX_DATE_RANGE_PATTERN.search(text)
+        single_match = None if range_match else TAINEX_DATE_SINGLE_PATTERN.search(text)
+
+        if range_match:
+            year, sm, sd, _, em, ed, _ = range_match.groups()
+            start_date, end_date = f"{year}/{sm}/{sd}", f"{year}/{em}/{ed}"
+            before, after = text[: range_match.start()], text[range_match.end():]
+        elif single_match:
+            year, m, d, _ = single_match.groups()
+            start_date = end_date = f"{year}/{m}/{d}"
+            before, after = text[: single_match.start()], text[single_match.end():]
+        else:
+            continue
+
+        hall_match = TAINEX_HALL_PATTERN.search(before.strip())
+        title = (before.strip()[: hall_match.start()] if hall_match else before.strip()).strip()
+        if not title:
+            continue
+
+        loc_match = re.search(r"地點：(.*)$", after)
+        location_detail = loc_match.group(1).strip() if loc_match else ""
+
+        full_url = href if href.startswith("http") else f"https://www.tainex.com.tw{href}"
+        extras = fetch_detail_extras(full_url)
+        categories = classify_category("", title, "")
+
+        events.append({
+            "title": title,
+            "categories": categories,
+            "category": categories[0],
+            "unit": "",
+            "description": "",
+            "image": extras["image"],
+            "price": extras["price"],
+            "startDate": start_date,
+            "endDate": end_date,
+            "location": location_detail or "台北市南港區經貿二路",
+            "locationName": "南港展覽館",
+            "sourceUrl": full_url,
+            "sourceName": "南港展覽館",
+            "latitude": "25.0553",
+            "longitude": "121.6172",
+        })
+
+    return events
 
 
 def main():
@@ -382,6 +524,14 @@ def main():
     except Exception as exc:  # noqa: BLE001
         print(f"[華山] 整體抓取失敗，僅使用文化部資料：{exc}")
 
+    try:
+        tainex_events = fetch_tainex()
+        tainex_events = [e for e in tainex_events if is_still_relevant(e, now)]
+        print(f"[南港展覽館] 抓到 {len(tainex_events)} 筆活動")
+        events.extend(tainex_events)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[南港展覽館] 整體抓取失敗，略過：{exc}")
+
     before_count = len(events)
     events = [e for e in events if is_major_venue(e) and not is_small_scale_activity(e["title"])]
     print(f"套用大型展場白名單：{before_count} 筆 → {len(events)} 筆")
@@ -390,12 +540,20 @@ def main():
     for event in events:
         event["locationName"] = canonical_venue_name(event["locationName"])
 
-    # 沒有圖片的活動，嘗試進到活動自己的官方頁面抓官方宣傳圖
+    # 沒有圖片的活動，嘗試進到活動自己的官方頁面抓官方宣傳圖與票價資訊
     missing_image_count = sum(1 for e in events if not e.get("image"))
-    print(f"補抓官方宣傳圖：{missing_image_count} 筆活動目前沒有圖片")
+    print(f"補抓官方宣傳圖／票價：{missing_image_count} 筆活動目前沒有圖片")
     for event in events:
-        if not event.get("image") and event.get("sourceUrl"):
-            event["image"] = fetch_og_image(event["sourceUrl"])
+        if not event.get("sourceUrl"):
+            continue
+        needs_image = not event.get("image")
+        needs_price = not event.get("price")
+        if needs_image or needs_price:
+            extras = fetch_detail_extras(event["sourceUrl"])
+            if needs_image and extras["image"]:
+                event["image"] = extras["image"]
+            if needs_price and extras["price"]:
+                event["price"] = extras["price"]
 
     events.sort(key=lambda e: e.get("startDate") or "", reverse=True)
 
