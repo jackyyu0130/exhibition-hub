@@ -145,14 +145,47 @@
   .locate-btn.active{ background: var(--brand); }
 
   /* 進行中／未來舉辦 狀態切換 */
-  .status-toggle{ display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center; }
+  .status-toggle{ display:flex; gap:.5rem; flex-wrap:wrap; }
   .status-btn{
     border:1px solid var(--line); background:#fff; color:var(--ink-soft);
     padding:.5rem 1.1rem; border-radius:999px; font-size:.85rem;
   }
   .status-btn.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
 
-  .hero .status-toggle{ margin-top: 1.4rem; }
+  .filter-toolbar{
+    max-width: 640px; margin: 1.4rem auto 0;
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 1rem; flex-wrap:wrap;
+  }
+  .calendar-picker{
+    display:flex; align-items:center; gap:.5rem;
+    color: var(--ink-soft);
+  }
+  .calendar-picker input[type="date"]{
+    font-family:inherit; font-size:.85rem; padding:.45rem .6rem;
+    border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink);
+  }
+  .calendar-picker button{
+    font-size:.78rem; color:var(--brand); background:none; border:none;
+    text-decoration:underline; padding:0; white-space:nowrap;
+  }
+
+  .price-filter{
+    max-width: 640px; margin: 1rem auto 0;
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding: .9rem 1.1rem; display:flex; align-items:center; gap:.7rem;
+    flex-wrap:wrap; font-size:.85rem; color: var(--ink-soft);
+  }
+  .price-filter-label{ font-weight:600; color:var(--ink); flex-shrink:0; }
+  .price-filter input[type="number"]{
+    width: 92px; padding:.4rem .55rem; border:1px solid var(--line);
+    border-radius:6px; font-family:inherit; font-size:.85rem;
+  }
+  .price-filter .sep{ color:var(--ink-soft); }
+  .price-filter .checkbox-label{
+    display:flex; align-items:center; gap:.4rem; margin-left:auto; white-space:nowrap;
+  }
+  .price-filter .checkbox-label input{ accent-color: var(--brand); width:15px; height:15px; }
 
   /* ---------- 分類圖示列 ---------- */
   .cat-row{
@@ -250,7 +283,12 @@
   .card-badge.new{ background: var(--new); }
 
   .card-body{ padding: .9rem 1rem 1.05rem; }
-  .card-cat{ font-size:.72rem; color:var(--brand); font-weight:600; margin-bottom:.3rem; }
+  .card-cat-row{ display:flex; flex-wrap:wrap; gap:.3rem; margin-bottom:.4rem; }
+  .card-cat{
+    font-size:.68rem; color:var(--brand); font-weight:600;
+    background: rgba(79,70,229,.08); padding:.1rem .5rem; border-radius:999px;
+  }
+  .card-price{ font-size:.78rem; color:var(--ink-soft); margin-top:.4rem; font-weight:500; }
   .card-title{
     font-size: .98rem; font-weight:700; line-height:1.4; margin:0 0 .45rem;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
@@ -347,10 +385,28 @@
     </button>
   </div>
 
-  <div class="status-toggle" id="statusToggle">
-    <button class="status-btn active" data-status="all" type="button">全部</button>
-    <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
-    <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
+  <div class="filter-toolbar">
+    <div class="calendar-picker">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <input type="date" id="datePicker">
+      <button type="button" id="clearDateBtn">清除日期</button>
+    </div>
+    <div class="status-toggle" id="statusToggle">
+      <button class="status-btn active" data-status="all" type="button">全部</button>
+      <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
+      <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
+    </div>
+  </div>
+
+  <div class="price-filter">
+    <span class="price-filter-label">費用範圍</span>
+    <input type="number" id="priceMin" placeholder="最低金額" min="0">
+    <span class="sep">–</span>
+    <input type="number" id="priceMax" placeholder="最高金額" min="0">
+    <label class="checkbox-label">
+      <input type="checkbox" id="includeUnpriced" checked>
+      包含未標示票價的活動
+    </label>
   </div>
 
   <div class="cat-row" id="catRow"></div>
@@ -406,6 +462,10 @@ const state = {
   selectedVenues: new Set(),
   userLoc: null,
   statusFilter: 'all',
+  selectedDate: null,
+  priceMin: null,
+  priceMax: null,
+  includeUnpriced: true,
   detailCategory: null,
   viewMode: 'home', // 'home' | 'detail' | 'nearby'
   lastPool: [],
@@ -446,12 +506,12 @@ const MACRO_ORDER = ['北部','中部','南部','東部・離島','其他'];
 function macroOf(region){ return REGION_MACRO_MAP[region] || '其他'; }
 
 // 首頁分類區塊的顯示順序
-const CATEGORY_ORDER = ['音樂','美術','動漫','表演','舞蹈','攝影','設計','講座','市集','其他'];
+const CATEGORY_ORDER = ['音樂','美術','動漫','表演','舞蹈','攝影','設計','講座','市集','商展','其他'];
 
 const CATEGORY_ICON_MAP = {
   '音樂': 'music', '美術': 'palette', '動漫': 'anime', '表演': 'masks',
   '舞蹈': 'dance', '攝影': 'camera', '設計': 'design', '講座': 'mic',
-  '市集': 'bag', '其他': 'ticket',
+  '市集': 'bag', '商展': 'briefcase', '其他': 'ticket',
 };
 
 const ICONS = {
@@ -465,6 +525,7 @@ const ICONS = {
   anime: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l1.6 4.9L18.5 8l-4.1 3 1.5 4.9-4-2.9-4 2.9 1.5-4.9L5.5 8l4.9-1.1z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>',
   dance: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6M12 8l-5-2M12 8l5-2M12 13l-4 7M12 13l4 7"/></svg>',
   design: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  briefcase: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>',
 };
 
 const PLACEHOLDER_GRADIENTS = {
@@ -477,6 +538,7 @@ const PLACEHOLDER_GRADIENTS = {
   anime:   'linear-gradient(135deg,#FDE68A,#F59E0B)',
   dance:   'linear-gradient(135deg,#5EEAD4,#0D9488)',
   design:  'linear-gradient(135deg,#C4B5FD,#7C3AED)',
+  briefcase: 'linear-gradient(135deg,#64748B,#334155)',
   ticket:  'linear-gradient(135deg,#94A3B8,#475569)',
 };
 
@@ -581,8 +643,22 @@ function countBy(list, key){
   return counts;
 }
 
+// 給像 categories 這種「一筆資料可能對應多個值」的陣列欄位使用
+function countByArrayField(list, key){
+  const counts = {};
+  list.forEach(ev => {
+    const values = ev[key];
+    if(!Array.isArray(values)) return;
+    values.forEach(v => {
+      if(!v) return;
+      counts[v] = (counts[v] || 0) + 1;
+    });
+  });
+  return counts;
+}
+
 function buildCategoryRow(){
-  const counts = countBy(state.events, 'category');
+  const counts = countByArrayField(state.events, 'categories');
   const cats = sortByCategoryOrder(Object.keys(counts));
   const row = document.getElementById('catRow');
   row.innerHTML = cats.map(cat => `
@@ -601,7 +677,7 @@ function buildCategoryRow(){
 }
 
 function buildCategoryPanel(){
-  const counts = countBy(state.events, 'category');
+  const counts = countByArrayField(state.events, 'categories');
   const cats = sortByCategoryOrder(Object.keys(counts));
   const el = document.getElementById('categoryOptions');
   el.innerHTML = cats.map(cat => `
@@ -801,6 +877,14 @@ function dateRangeText(ev){
 }
 
 // ---------- 篩選 ----------
+function parsePriceValue(priceStr){
+  if(!priceStr) return null;
+  if(priceStr.includes('免費')) return 0;
+  const match = priceStr.match(/(\d[\d,]*)/);
+  if(match) return parseInt(match[1].replace(/,/g, ''), 10);
+  return null;
+}
+
 function getFilteredPool(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   let pool = state.events.filter(ev => {
@@ -809,6 +893,27 @@ function getFilteredPool(){
     if(state.selectedVenues.size && !state.selectedVenues.has(ev.locationName || ev.location)) return false;
     if(state.statusFilter === 'ongoing' && !isOngoing(ev)) return false;
     if(state.statusFilter === 'upcoming' && !isUpcoming(ev)) return false;
+
+    if(state.selectedDate){
+      const picked = parseDate(state.selectedDate.replace(/-/g, '/'));
+      const start = parseDate(ev.startDate);
+      const end = parseDate(ev.endDate);
+      if(picked){
+        if(start && picked < start) return false;
+        if(end && picked > end) return false;
+      }
+    }
+
+    if(state.priceMin != null || state.priceMax != null){
+      const priceVal = parsePriceValue(ev.price);
+      if(priceVal == null){
+        if(!state.includeUnpriced) return false;
+      }else{
+        if(state.priceMin != null && priceVal < state.priceMin) return false;
+        if(state.priceMax != null && priceVal > state.priceMax) return false;
+      }
+    }
+
     if(q){
       const haystack = `${ev.title} ${ev.locationName} ${ev.location} ${ev.unit}`.toLowerCase();
       if(!haystack.includes(q)) return false;
@@ -826,6 +931,7 @@ function cardMarkup(ev, { showDistance } = {}){
   const tag = ev.sourceUrl ? 'a' : 'div';
   const href = ev.sourceUrl ? `href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener"` : '';
   const gradient = PLACEHOLDER_GRADIENTS[iconKey];
+  const categories = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '活動'];
   // 圖片一律先放 icon 佔位圖在底層，真的圖片載入成功才蓋在上面；
   // 如果圖片網址失效載入失敗，onerror 會把圖片移除，讓底下的佔位圖自然顯示出來
   const media = `
@@ -840,12 +946,15 @@ function cardMarkup(ev, { showDistance } = {}){
         ${badge ? `<span class="card-badge ${badge.cls}">${badge.label}</span>` : ''}
       </div>
       <div class="card-body">
-        <div class="card-cat">${escapeHtml(ev.category || '活動')}</div>
+        <div class="card-cat-row">
+          ${categories.map(c => `<span class="card-cat">${escapeHtml(c)}</span>`).join('')}
+        </div>
         <h3 class="card-title">${escapeHtml(ev.title)}</h3>
         <div class="card-meta">
           <span class="loc">${escapeHtml(ev.locationName || ev.location || '地點未提供')}</span>
           <span>${escapeHtml(dateRangeText(ev))}</span>
         </div>
+        <div class="card-price">${ev.price ? escapeHtml(ev.price) : '票價未提供'}</div>
         ${showDistance && ev._distance != null ? `<div class="card-dist">距離約 ${ev._distance.toFixed(1)} 公里</div>` : ''}
       </div>
     </${tag}>
@@ -866,7 +975,10 @@ function buildShowMoreUrl(category){
 function renderHomepage(pool){
   const wrap = document.getElementById('homepageRows');
   const byCategory = {};
-  pool.forEach(ev => { (byCategory[ev.category] = byCategory[ev.category] || []).push(ev); });
+  pool.forEach(ev => {
+    const cats = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '其他'];
+    cats.forEach(cat => { (byCategory[cat] = byCategory[cat] || []).push(ev); });
+  });
 
   let cats = sortByCategoryOrder(Object.keys(byCategory));
   if(state.selectedCategories.size){
@@ -918,7 +1030,7 @@ function cssId(str){
 
 function renderDetail(pool){
   const category = state.detailCategory;
-  const items = pool.filter(ev => ev.category === category);
+  const items = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(category) : ev.category === category);
   document.getElementById('detailTitle').textContent = category;
   document.getElementById('detailHint').textContent = `共 ${items.length} 檔`;
   const grid = document.getElementById('detailGrid');
@@ -940,7 +1052,7 @@ function render(){
 
   if(mode === 'detail'){
     renderDetail(pool);
-    const mapPool = pool.filter(ev => ev.category === state.detailCategory);
+    const mapPool = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(state.detailCategory) : ev.category === state.detailCategory);
     renderMapView(mapPool);
   }else if(mode === 'nearby'){
     renderNearbyPage(pool);
@@ -1089,6 +1201,28 @@ function escapeAttr(str){ return escapeHtml(str); }
 
 // ---------- 事件綁定 ----------
 document.getElementById('searchInput').addEventListener('input', render);
+
+document.getElementById('datePicker').addEventListener('change', (e) => {
+  state.selectedDate = e.target.value || null;
+  render();
+});
+document.getElementById('clearDateBtn').addEventListener('click', () => {
+  document.getElementById('datePicker').value = '';
+  state.selectedDate = null;
+  render();
+});
+document.getElementById('priceMin').addEventListener('input', (e) => {
+  state.priceMin = e.target.value === '' ? null : Number(e.target.value);
+  render();
+});
+document.getElementById('priceMax').addEventListener('input', (e) => {
+  state.priceMax = e.target.value === '' ? null : Number(e.target.value);
+  render();
+});
+document.getElementById('includeUnpriced').addEventListener('change', (e) => {
+  state.includeUnpriced = e.target.checked;
+  render();
+});
 
 document.querySelectorAll('.status-btn').forEach(btn => {
   btn.addEventListener('click', () => {
