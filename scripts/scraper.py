@@ -454,14 +454,29 @@ def fetch_tainex(max_events: int = 40):
     soup = BeautifulSoup(resp.text, "html.parser")
     links = [a for a in soup.find_all("a", href=True) if re.search(r"/event/\d+$", a["href"])]
 
-    seen = set()
-    for a in links[:max_events]:
+    # 同一個活動在頁面上可能有不只一個連結（例如完整卡片 + 館別小標籤），
+    # 用 href 分組後，每組挑「有比對到日期格式、且文字最長」的那個，
+    # 避免不小心抓到像「1館」這種殘缺的短文字當標題。
+    texts_by_href = {}
+    order = []
+    for a in links:
         href = a["href"]
-        if href in seen:
-            continue
-        seen.add(href)
-
         text = " ".join(a.get_text(" ", strip=True).split())
+        if not text:
+            continue
+        if href not in texts_by_href:
+            texts_by_href[href] = []
+            order.append(href)
+        texts_by_href[href].append(text)
+
+    for href in order[:max_events]:
+        candidates = texts_by_href[href]
+        dated = [
+            t for t in candidates
+            if TAINEX_DATE_RANGE_PATTERN.search(t) or TAINEX_DATE_SINGLE_PATTERN.search(t)
+        ]
+        text = max(dated, key=len) if dated else max(candidates, key=len)
+
         range_match = TAINEX_DATE_RANGE_PATTERN.search(text)
         single_match = None if range_match else TAINEX_DATE_SINGLE_PATTERN.search(text)
 
@@ -478,7 +493,9 @@ def fetch_tainex(max_events: int = 40):
 
         hall_match = TAINEX_HALL_PATTERN.search(before.strip())
         title = (before.strip()[: hall_match.start()] if hall_match else before.strip()).strip()
-        if not title:
+        # 保險起見：萬一挑到的文字整段就只是館別代碼（沒有真正的標題），直接跳過這筆，
+        # 不要讓「1館」「2館」這種殘缺文字被當成展覽名稱收錄進去。
+        if not title or re.fullmatch(r"(?:\d館)+", title):
             continue
 
         loc_match = re.search(r"地點：(.*)$", after)
@@ -533,7 +550,13 @@ def main():
         print(f"[南港展覽館] 整體抓取失敗，略過：{exc}")
 
     before_count = len(events)
-    events = [e for e in events if is_major_venue(e) and not is_small_scale_activity(e["title"])]
+    events = [
+        e for e in events
+        if is_major_venue(e)
+        and not is_small_scale_activity(e["title"])
+        and len(e["title"].strip()) >= 2
+        and not re.fullmatch(r"(?:\d+館|\d+F|\d+樓)+", e["title"].strip())
+    ]
     print(f"套用大型展場白名單：{before_count} 筆 → {len(events)} 筆")
 
     # 場館名稱統一收斂（西4館、西5-1館 -> 統一顯示成正式場館名稱）
