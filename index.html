@@ -100,85 +100,71 @@
   .dropdown-group-body{ display:none; padding-bottom:.3rem; }
   .dropdown-group-body.open{ display:block; }
 
-  /* ---------- Hero ---------- */
+  /* ---------- 導覽列搜尋框 ---------- */
+  .nav-search{
+    display:flex; align-items:center; gap:.5rem;
+    background: var(--bg); border:1px solid var(--line); border-radius:999px;
+    padding:.4rem .9rem; width: 240px; flex-shrink:0;
+  }
+  .nav-search svg{ flex-shrink:0; color: var(--ink-soft); }
+  .nav-search input{
+    flex:1; min-width:0; border:none; outline:none; background:transparent;
+    font-family:inherit; font-size:.82rem; color: var(--ink);
+  }
+  @media (max-width: 900px){ .nav-search{ display:none; } }
+
+  /* ---------- Hero：全版輪播圖 ---------- */
   .hero{
-    position:relative;
-    padding: 3.2rem 1.5rem 2.6rem;
+    position:relative; width:100%;
+    height: min(70vh, 520px); min-height: 340px;
     overflow:hidden;
-    background:
-      radial-gradient(60% 90% at 15% -10%, rgba(139,92,246,.22), transparent),
-      radial-gradient(50% 80% at 90% 10%, rgba(79,70,229,.18), transparent),
-      linear-gradient(180deg, #EEF0FF 0%, var(--bg) 85%);
   }
-
-  .hero-inner{
-    max-width: 1180px; margin: 0 auto;
-    display:grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items:center;
-  }
-  @media (max-width: 900px){
-    .hero-inner{ grid-template-columns: 1fr; }
-  }
-
-  .hero-carousel{
-    position:relative; aspect-ratio: 4 / 3; border-radius: 20px; overflow:hidden;
-    box-shadow: 0 24px 50px rgba(30,20,70,.14);
-  }
+  .hero-slides{ position:absolute; inset:0; }
   .hero-slide{
-    position:absolute; inset:0; opacity:0; transition: opacity 1s ease;
-    display:flex; align-items:flex-end; padding:1.5rem;
+    position:absolute; inset:0; opacity:0; transition: opacity 1.2s ease;
     background-size:cover; background-position:center;
   }
   .hero-slide.active{ opacity:1; }
-  .hero-slide::after{
-    content:""; position:absolute; inset:0;
-    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.45) 100%);
+  .hero::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background: linear-gradient(180deg, rgba(20,15,40,.15) 0%, rgba(15,10,30,.25) 55%, rgba(10,8,20,.65) 100%);
   }
-  .hero-slide .slide-label{
-    position:relative; z-index:1; color:#fff;
-    font-family:"Noto Serif TC", serif; font-weight:700; font-size:1.25rem;
-    text-shadow: 0 2px 10px rgba(0,0,0,.35);
+  .hero-overlay{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding: 2.6rem 2.6rem 2.8rem; max-width: 720px;
+  }
+  .hero-overlay h1{
+    font-family:"Noto Serif TC", serif;
+    font-weight:900; color:#fff;
+    font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+    line-height:1.35; margin: 0 0 .6rem;
+    text-shadow: 0 3px 14px rgba(0,0,0,.35);
+  }
+  .hero-overlay p.tagline{
+    color: rgba(255,255,255,.9); font-size:1rem; margin:0 0 1.2rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
   }
   .hero-dots{
-    position:absolute; bottom:.9rem; right:1.1rem; z-index:2;
+    position:absolute; bottom:1rem; right:1.3rem; z-index:2;
     display:flex; gap:.4rem;
   }
   .hero-dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5); }
   .hero-dot.active{ background:#fff; }
 
-  .hero-content{ text-align:left; }
-
-  .hero h1{
-    font-family:"Noto Serif TC", serif;
-    font-weight:900;
-    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
-    line-height:1.35;
-    margin: 0 0 .7rem;
-    position:relative;
-  }
-  .hero p.tagline{
-    color:var(--ink-soft); font-size:1rem; margin:0 0 1.6rem; position:relative;
-  }
-
-  .search-bar{
-    position:relative;
-    background:#fff; border:1px solid var(--line); border-radius: 999px;
-    padding: .5rem .5rem .5rem 1.2rem;
-    display:flex; align-items:center; gap:.5rem;
-    box-shadow: 0 14px 34px rgba(30,20,70,.08);
-  }
-  .search-bar svg{ flex-shrink:0; color: var(--ink-soft); }
-  #searchInput{
-    flex:1; border:none; outline:none; font-size:.95rem; font-family:inherit;
-    background:transparent; padding:.5rem 0; color:var(--ink);
-  }
   .locate-btn{
-    display:flex; align-items:center; gap:.4rem;
-    background: var(--ink); color:#fff; border:none;
-    border-radius:999px; padding:.6rem 1.1rem; font-size:.85rem; font-weight:500;
+    display:inline-flex; align-items:center; gap:.4rem;
+    background: rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
+    backdrop-filter: blur(4px);
+    color:#fff; border-radius:999px; padding:.6rem 1.1rem; font-size:.85rem; font-weight:500;
     white-space:nowrap;
   }
-  .locate-btn:hover{ background: var(--brand); }
-  .locate-btn.active{ background: var(--brand); }
+  .locate-btn:hover{ background: var(--brand); border-color: var(--brand); }
+  .locate-btn.active{ background: var(--brand); border-color: var(--brand); }
+
+  /* ---------- 篩選區（Hero 下方獨立容器）---------- */
+  .filters-section{
+    max-width: 1180px; margin: 2rem auto 0; padding: 0 1.5rem;
+  }
 
   /* 進行中／未來舉辦 狀態切換 */
   .status-toggle{ display:flex; gap:.5rem; flex-wrap:wrap; }
@@ -189,7 +175,6 @@
   .status-btn.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
 
   .filter-toolbar{
-    margin: 1.4rem 0 0;
     display:flex; align-items:center; justify-content:space-between;
     gap: 1rem; flex-wrap:wrap;
   }
@@ -225,7 +210,7 @@
 
   /* ---------- 分類圖示列 ---------- */
   .cat-row{
-    max-width: 1180px; margin: 2rem auto 0; padding: 0 1.5rem;
+    margin: 2rem 0 0;
     display:flex; gap: 1.6rem; flex-wrap:wrap; justify-content:center;
     position:relative;
   }
@@ -427,54 +412,53 @@
       <a href="?view=nearby">附近展覽</a>
     </nav>
     <div class="nav-spacer"></div>
+    <div class="nav-search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
+    </div>
     <span class="nav-count" id="navCount">載入中…</span>
   </div>
 </header>
 
 <section class="hero" id="top">
-  <div class="hero-inner">
-    <div class="hero-carousel" id="heroCarousel"></div>
+  <div class="hero-slides" id="heroCarousel"></div>
+  <div class="hero-overlay">
+    <h1>探索全台精彩展覽<br>發現城市的文化與創意</h1>
+    <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
+    <button class="locate-btn" id="locateBtn" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      使用目前位置
+    </button>
+  </div>
+</section>
 
-    <div class="hero-content">
-      <h1>探索全台精彩展覽<br>發現城市的文化與創意</h1>
-      <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
-      <div class="search-bar">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
-        <button class="locate-btn" id="locateBtn" type="button">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-          目前位置
-        </button>
-      </div>
-
-      <div class="filter-toolbar">
-        <div class="calendar-picker">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <input type="date" id="datePicker">
-          <button type="button" id="clearDateBtn">清除日期</button>
-        </div>
-        <div class="status-toggle" id="statusToggle">
-          <button class="status-btn active" data-status="all" type="button">全部</button>
-          <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
-          <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
-        </div>
-      </div>
-
-      <div class="price-filter">
-        <span class="price-filter-label">費用範圍</span>
-        <input type="number" id="priceMin" placeholder="最低金額" min="0">
-        <span class="sep">–</span>
-        <input type="number" id="priceMax" placeholder="最高金額" min="0">
-        <label class="checkbox-label">
-          <input type="checkbox" id="includeUnpriced" checked>
-          包含未標示票價的活動
-        </label>
-      </div>
+<div class="filters-section">
+  <div class="filter-toolbar">
+    <div class="calendar-picker">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <input type="date" id="datePicker">
+      <button type="button" id="clearDateBtn">清除日期</button>
+    </div>
+    <div class="status-toggle" id="statusToggle">
+      <button class="status-btn active" data-status="all" type="button">全部</button>
+      <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
+      <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
     </div>
   </div>
 
+  <div class="price-filter">
+    <span class="price-filter-label">費用範圍</span>
+    <input type="number" id="priceMin" placeholder="最低金額" min="0">
+    <span class="sep">–</span>
+    <input type="number" id="priceMax" placeholder="最高金額" min="0">
+    <label class="checkbox-label">
+      <input type="checkbox" id="includeUnpriced" checked>
+      包含未標示票價的活動
+    </label>
+  </div>
+
   <div class="cat-row" id="catRow"></div>
-</section>
+</div>
 
 <main>
   <div id="homepageRows"></div>
@@ -692,6 +676,7 @@ async function loadData(){
     buildRegionPanel();
     buildVenuePanel();
     syncStatusButtons();
+    initHeroCarousel();
     render();
     updateNavCount();
   }catch(err){
@@ -946,12 +931,12 @@ function dateRangeText(ev){
 }
 
 // ---------- 篩選 ----------
-function parsePriceValue(priceStr){
+function parsePriceRange(priceStr){
   if(!priceStr) return null;
-  if(priceStr.includes('免費')) return 0;
-  const match = priceStr.match(/(\d[\d,]*)/);
-  if(match) return parseInt(match[1].replace(/,/g, ''), 10);
-  return null;
+  if(priceStr.includes('免費')) return { min: 0, max: 0 };
+  const nums = (priceStr.match(/\d[\d,]*/g) || []).map(s => parseInt(s.replace(/,/g, ''), 10));
+  if(nums.length === 0) return null;
+  return { min: Math.min(...nums), max: Math.max(...nums) };
 }
 
 function getFilteredPool(){
@@ -974,12 +959,13 @@ function getFilteredPool(){
     }
 
     if(state.priceMin != null || state.priceMax != null){
-      const priceVal = parsePriceValue(ev.price);
-      if(priceVal == null){
+      const range = parsePriceRange(ev.price);
+      if(range == null){
         if(!state.includeUnpriced) return false;
       }else{
-        if(state.priceMin != null && priceVal < state.priceMin) return false;
-        if(state.priceMax != null && priceVal > state.priceMax) return false;
+        // 篩選區間跟這檔活動的票價區間只要有重疊，就算符合
+        if(state.priceMin != null && range.max < state.priceMin) return false;
+        if(state.priceMax != null && range.min > state.priceMax) return false;
       }
     }
 
@@ -1387,45 +1373,46 @@ document.querySelector('[data-clear="venue"]').addEventListener('click', () => {
 });
 
 // ---------- 首頁輪播圖 ----------
-// 目前先用隨機順序輪播幾張示意色塊，之後有指定好的展覽宣傳圖，
-// 只要幫對應的 slide 補上 image: '圖片網址'，就會自動改用真實照片。
-const HERO_SLIDES = [
-  { label: '美術館裡的光影詩篇', gradientKey: 'palette', image: '' },
-  { label: '走進動漫的異想世界', gradientKey: 'anime', image: '' },
-  { label: '劇場裡的一期一會', gradientKey: 'masks', image: '' },
-  { label: '市集裡的手作溫度', gradientKey: 'bag', image: '' },
-  { label: '設計展裡的未來想像', gradientKey: 'design', image: '' },
-];
+// 從目前載入的展覽資料裡，隨機挑選最多 5 檔「有官方圖片」的展覽當輪播圖，
+// 之後如果想固定指定某幾檔，只要改成自己組一份固定清單塞進 pickHeroSlides() 回傳值即可。
+function pickHeroSlides(){
+  const withImage = state.events.filter(ev => ev.image);
+  if(withImage.length === 0) return [];
+
+  const shuffled = withImage.slice();
+  for(let i = shuffled.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, 5);
+}
 
 function initHeroCarousel(){
   const el = document.getElementById('heroCarousel');
   if(!el) return;
 
-  const order = HERO_SLIDES.map((_, i) => i);
-  for(let i = order.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
+  const slideEvents = pickHeroSlides();
+
+  if(slideEvents.length === 0){
+    // 目前資料裡沒有任何展覽附圖時的備援畫面，避免整個輪播區塊空白
+    el.innerHTML = `<div class="hero-slide active" style="background:${PLACEHOLDER_GRADIENTS.ticket}"></div>`;
+    return;
   }
 
-  const slidesHtml = order.map((idx, i) => {
-    const s = HERO_SLIDES[idx];
-    const style = s.image
-      ? `background-image:url('${s.image}')`
-      : `background:${PLACEHOLDER_GRADIENTS[s.gradientKey] || PLACEHOLDER_GRADIENTS.ticket}`;
-    return `<div class="hero-slide ${i === 0 ? 'active' : ''}" style="${style}">
-      <div class="slide-label">${escapeHtml(s.label)}</div>
-    </div>`;
-  }).join('');
-
-  const dotsHtml = `<div class="hero-dots">${order.map((_, i) => `<span class="hero-dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div>`;
+  const slidesHtml = slideEvents.map((ev, i) => `
+    <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image:url('${escapeAttr(ev.image)}')"></div>
+  `).join('');
+  const dotsHtml = slideEvents.length > 1
+    ? `<div class="hero-dots">${slideEvents.map((_, i) => `<span class="hero-dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div>`
+    : '';
 
   el.innerHTML = slidesHtml + dotsHtml;
+
+  if(slideEvents.length <= 1) return;
 
   let current = 0;
   const slides = el.querySelectorAll('.hero-slide');
   const dots = el.querySelectorAll('.hero-dot');
-  if(slides.length <= 1) return;
-
   setInterval(() => {
     slides[current].classList.remove('active');
     dots[current].classList.remove('active');
@@ -1435,7 +1422,6 @@ function initHeroCarousel(){
   }, 4000);
 }
 
-initHeroCarousel();
 loadData();
 </script>
 
