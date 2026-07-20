@@ -87,12 +87,18 @@
   .dropdown-panel .opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
   .dropdown-clear{ font-size:.75rem; color:var(--brand); background:none; border:none; margin-bottom:.5rem; padding:0; }
   .dropdown-panel-wide{ width: 300px; max-height: 420px; }
-  .dropdown-group-title{
-    font-size:.7rem; font-weight:700; color:var(--brand);
+  .dropdown-group-toggle{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    background:none; border:none; text-align:left;
+    font-size:.78rem; font-weight:700; color:var(--brand);
     text-transform:uppercase; letter-spacing:.06em;
-    margin: .9rem 0 .35rem; padding-top:.5rem; border-top:1px solid var(--line);
+    margin: .5rem 0 0; padding:.5rem 0; border-top:1px solid var(--line);
   }
-  .dropdown-group-title:first-child{ margin-top:0; padding-top:0; border-top:none; }
+  .dropdown-group:first-child .dropdown-group-toggle{ border-top:none; margin-top:0; }
+  .dropdown-group-toggle .arrow{ transition: transform .15s ease; font-size:.7rem; }
+  .dropdown-group-toggle.open .arrow{ transform: rotate(90deg); }
+  .dropdown-group-body{ display:none; padding-bottom:.3rem; }
+  .dropdown-group-body.open{ display:block; }
 
   /* ---------- Hero ---------- */
   .hero{
@@ -610,15 +616,23 @@ function buildRegionPanel(){
 
   el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
     const regions = sortByRegionOrder(byMacro[macro]);
+    const selectedCount = regions.filter(r => state.selectedRegions.has(r)).length;
     return `
-      <div class="dropdown-group-title">${escapeHtml(macro)}</div>
-      ${regions.map(region => `
-        <label class="opt">
-          <input type="checkbox" data-region="${escapeAttr(region)}">
-          ${escapeHtml(region)}
-          <span class="c">${counts[region]}</span>
-        </label>
-      `).join('')}
+      <div class="dropdown-group">
+        <button type="button" class="dropdown-group-toggle" data-group="region-${cssId(macro)}">
+          <span>${escapeHtml(macro)}${selectedCount ? `（已選 ${selectedCount}）` : ''}</span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="dropdown-group-body" data-group-body="region-${cssId(macro)}">
+          ${regions.map(region => `
+            <label class="opt">
+              <input type="checkbox" data-region="${escapeAttr(region)}">
+              ${escapeHtml(region)}
+              <span class="c">${counts[region]}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
     `;
   }).join('');
 
@@ -629,6 +643,7 @@ function buildRegionPanel(){
       render();
     });
   });
+  bindGroupToggles(el);
 }
 
 function buildVenuePanel(){
@@ -650,15 +665,23 @@ function buildVenuePanel(){
   const el = document.getElementById('venueOptions');
   el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
     const venues = byMacro[macro].sort((a,b) => counts[b] - counts[a]);
+    const selectedCount = venues.filter(v => state.selectedVenues.has(v)).length;
     return `
-      <div class="dropdown-group-title">${escapeHtml(macro)}</div>
-      ${venues.map(venue => `
-        <label class="opt">
-          <input type="checkbox" data-venue="${escapeAttr(venue)}">
-          ${escapeHtml(venue)}
-          <span class="c">${counts[venue]}</span>
-        </label>
-      `).join('')}
+      <div class="dropdown-group">
+        <button type="button" class="dropdown-group-toggle" data-group="venue-${cssId(macro)}">
+          <span>${escapeHtml(macro)}${selectedCount ? `（已選 ${selectedCount}）` : ''}</span>
+          <span class="arrow">▸</span>
+        </button>
+        <div class="dropdown-group-body" data-group-body="venue-${cssId(macro)}">
+          ${venues.map(venue => `
+            <label class="opt">
+              <input type="checkbox" data-venue="${escapeAttr(venue)}">
+              ${escapeHtml(venue)}
+              <span class="c">${counts[venue]}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
     `;
   }).join('');
 
@@ -667,6 +690,17 @@ function buildVenuePanel(){
       const v = cb.dataset.venue;
       if(cb.checked) state.selectedVenues.add(v); else state.selectedVenues.delete(v);
       render();
+    });
+  });
+  bindGroupToggles(el);
+}
+
+function bindGroupToggles(container){
+  container.querySelectorAll('.dropdown-group-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const body = container.querySelector(`[data-group-body="${btn.dataset.group}"]`);
+      const isOpen = body.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
     });
   });
 }
@@ -736,6 +770,7 @@ function dateRangeText(ev){
 function getFilteredPool(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   let pool = state.events.filter(ev => {
+    if(!ev.sourceUrl) return false;
     if(state.selectedRegions.size && !state.selectedRegions.has(ev.region)) return false;
     if(state.selectedVenues.size && !state.selectedVenues.has(ev.locationName || ev.location)) return false;
     if(state.statusFilter === 'ongoing' && !isOngoing(ev)) return false;
