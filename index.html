@@ -116,7 +116,7 @@
   /* ---------- Hero：全版輪播圖 ---------- */
   .hero{
     position:relative; width:100%;
-    height: min(70vh, 520px); min-height: 340px;
+    height: min(88vh, 690px); min-height: 460px;
     overflow:hidden;
   }
   .hero-slides{ position:absolute; inset:0; }
@@ -142,6 +142,11 @@
   }
   .hero-overlay p.tagline{
     color: rgba(255,255,255,.9); font-size:1rem; margin:0 0 1.2rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .hero-overlay .hero-date{
+    color: rgba(255,255,255,.85); font-size:.85rem; margin:0;
+    font-family:"Noto Sans TC", sans-serif; letter-spacing:.02em;
     text-shadow: 0 2px 8px rgba(0,0,0,.3);
   }
   .hero-dots{
@@ -423,12 +428,9 @@
 <section class="hero" id="top">
   <div class="hero-slides" id="heroCarousel"></div>
   <div class="hero-overlay">
-    <h1>探索全台精彩展覽<br>發現城市的文化與創意</h1>
-    <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
-    <button class="locate-btn" id="locateBtn" type="button">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-      使用目前位置
-    </button>
+    <h1 id="heroTitle">探索全台精彩展覽</h1>
+    <p class="tagline" id="heroSubtitle" style="display:none;"></p>
+    <p class="hero-date" id="heroDate"></p>
   </div>
 </section>
 
@@ -444,17 +446,6 @@
       <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
       <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
     </div>
-  </div>
-
-  <div class="price-filter">
-    <span class="price-filter-label">費用範圍</span>
-    <input type="number" id="priceMin" placeholder="最低金額" min="0">
-    <span class="sep">–</span>
-    <input type="number" id="priceMax" placeholder="最高金額" min="0">
-    <label class="checkbox-label">
-      <input type="checkbox" id="includeUnpriced" checked>
-      包含未標示票價的活動
-    </label>
   </div>
 
   <div class="cat-row" id="catRow"></div>
@@ -528,9 +519,6 @@ const state = {
   userLoc: null,
   statusFilter: 'all',
   selectedDate: null,
-  priceMin: null,
-  priceMax: null,
-  includeUnpriced: true,
   detailCategory: null,
   detailVenueFilter: null,
   viewMode: 'home', // 'home' | 'detail' | 'nearby'
@@ -958,17 +946,6 @@ function getFilteredPool(){
       }
     }
 
-    if(state.priceMin != null || state.priceMax != null){
-      const range = parsePriceRange(ev.price);
-      if(range == null){
-        if(!state.includeUnpriced) return false;
-      }else{
-        // 篩選區間跟這檔活動的票價區間只要有重疊，就算符合
-        if(state.priceMin != null && range.max < state.priceMin) return false;
-        if(state.priceMax != null && range.min > state.priceMax) return false;
-      }
-    }
-
     if(q){
       const haystack = `${ev.title} ${ev.locationName} ${ev.location} ${ev.unit}`.toLowerCase();
       if(!haystack.includes(q)) return false;
@@ -1295,18 +1272,6 @@ document.getElementById('clearDateBtn').addEventListener('click', () => {
   state.selectedDate = null;
   render();
 });
-document.getElementById('priceMin').addEventListener('input', (e) => {
-  state.priceMin = e.target.value === '' ? null : Number(e.target.value);
-  render();
-});
-document.getElementById('priceMax').addEventListener('input', (e) => {
-  state.priceMax = e.target.value === '' ? null : Number(e.target.value);
-  render();
-});
-document.getElementById('includeUnpriced').addEventListener('change', (e) => {
-  state.includeUnpriced = e.target.checked;
-  render();
-});
 
 document.querySelectorAll('.status-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1336,7 +1301,6 @@ function requestUserLocation(btn){
   );
 }
 
-document.getElementById('locateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
 document.getElementById('nearbyLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
 document.getElementById('nearbyPreviewLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
 
@@ -1387,6 +1351,26 @@ function pickHeroSlides(){
   return shuffled.slice(0, 5);
 }
 
+function updateHeroText(ev){
+  const titleEl = document.getElementById('heroTitle');
+  const subEl = document.getElementById('heroSubtitle');
+  const dateEl = document.getElementById('heroDate');
+  if(!ev){
+    titleEl.textContent = '探索全台精彩展覽';
+    subEl.style.display = 'none';
+    dateEl.textContent = '';
+    return;
+  }
+  titleEl.textContent = ev.title;
+  if(ev.unit){
+    subEl.textContent = ev.unit;
+    subEl.style.display = 'block';
+  }else{
+    subEl.style.display = 'none';
+  }
+  dateEl.textContent = dateRangeText(ev);
+}
+
 function initHeroCarousel(){
   const el = document.getElementById('heroCarousel');
   if(!el) return;
@@ -1396,6 +1380,7 @@ function initHeroCarousel(){
   if(slideEvents.length === 0){
     // 目前資料裡沒有任何展覽附圖時的備援畫面，避免整個輪播區塊空白
     el.innerHTML = `<div class="hero-slide active" style="background:${PLACEHOLDER_GRADIENTS.ticket}"></div>`;
+    updateHeroText(null);
     return;
   }
 
@@ -1407,6 +1392,7 @@ function initHeroCarousel(){
     : '';
 
   el.innerHTML = slidesHtml + dotsHtml;
+  updateHeroText(slideEvents[0]);
 
   if(slideEvents.length <= 1) return;
 
@@ -1419,6 +1405,7 @@ function initHeroCarousel(){
     current = (current + 1) % slides.length;
     slides[current].classList.add('active');
     dots[current].classList.add('active');
+    updateHeroText(slideEvents[current]);
   }, 4000);
 }
 
