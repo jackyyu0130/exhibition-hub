@@ -88,6 +88,27 @@ def parse_huashan_dates(date_str: str):
     return start, end
 
 
+def fetch_huashan_detail(url: str) -> dict:
+    """進入單一活動的詳情頁，抓取官方提供的 og:image 主視覺圖與簡介文字。
+    每個活動頁面都有這組資料（用來給 Facebook/LINE 分享用的），比起在列表頁
+    用位置去猜縮圖準確可靠得多。"""
+    try:
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        resp.raise_for_status()
+    except Exception as exc:  # noqa: BLE001
+        print(f"[華山] 讀取詳情頁失敗，略過圖片：{url}：{exc}")
+        return {"image": "", "description": ""}
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    og_image = soup.find("meta", attrs={"property": "og:image"})
+    og_desc = soup.find("meta", attrs={"property": "og:description"})
+    image = valid_image_url(safe_str(og_image.get("content")) if og_image else "")
+    description = safe_str(og_desc.get("content")) if og_desc else ""
+    if len(description) > 200:
+        description = description[:200] + "…"
+    return {"image": image, "description": description}
+
+
 def fetch_huashan(max_pages: int = 6):
     """抓取華山1914「找活動」頁面，回傳整理後的活動清單"""
     events = []
@@ -130,33 +151,20 @@ def fetch_huashan(max_pages: int = 6):
             if not title:
                 continue
 
-            # 嘗試抓取這個活動連結附近的縮圖（如果官網有放的話）
-            image_url = ""
-            try:
-                img_tag = a.find("img")
-                if img_tag is None and a.parent is not None:
-                    img_tag = a.parent.find("img")
-                if img_tag and img_tag.get("src"):
-                    src = img_tag["src"].strip()
-                    if src.startswith("http"):
-                        image_url = src
-                    elif src.startswith("/"):
-                        image_url = f"https://www.huashan1914.com{src}"
-            except Exception:  # noqa: BLE001 - 抓不到圖片就算了，不影響其他資料
-                image_url = ""
-            image_url = valid_image_url(image_url)
+            full_url = href if href.startswith("http") else f"https://www.huashan1914.com{href}"
+            detail = fetch_huashan_detail(full_url)
 
             events.append({
                 "title": title,
                 "category": classify_category(category, title, ""),
                 "unit": "",
-                "description": "",
-                "image": image_url,
+                "description": detail["description"],
+                "image": detail["image"],
                 "startDate": start_date,
                 "endDate": end_date,
                 "location": "台北市中正區八德路一段1號",
                 "locationName": "華山1914文化創意產業園區",
-                "sourceUrl": href if href.startswith("http") else f"https://www.huashan1914.com{href}",
+                "sourceUrl": full_url,
                 "sourceName": "華山1914文化創意產業園區",
                 "latitude": "25.0444",
                 "longitude": "121.5294",
@@ -251,6 +259,18 @@ MAJOR_VENUES = [
 ]
 
 
+SMALL_SCALE_KEYWORDS = re.compile(
+    r"歌謠班|太極班|土風舞|外丹功|讀書會|社區大學|樂齡學堂|樂齡班|才藝班|研習班|"
+    r"媽媽教室|松年大學|社區關懷據點|長青(俱樂部|學苑|班)|銀髮.{0,3}班|"
+    r"里民|社區發展協會|區公所|巡迴.{0,3}講座|親職教育|生命教育宣導"
+)
+
+
+def is_small_scale_activity(title: str) -> bool:
+    """排除社區課程、才藝班、里民活動這類非展覽性質的小型固定班隊活動。"""
+    return bool(SMALL_SCALE_KEYWORDS.search(title or ""))
+
+
 def is_major_venue(event: dict) -> bool:
     """只留下大型展場的活動，且必須要有官方連結才收錄。"""
     if not event.get("sourceUrl"):
@@ -289,7 +309,7 @@ def main():
         print(f"[華山] 整體抓取失敗，僅使用文化部資料：{exc}")
 
     before_count = len(events)
-    events = [e for e in events if is_major_venue(e)]
+    events = [e for e in events if is_major_venue(e) and not is_small_scale_activity(e["title"])]
     print(f"套用大型展場白名單：{before_count} 筆 → {len(events)} 筆")
 
     events.sort(key=lambda e: e.get("startDate") or "", reverse=True)
