@@ -101,8 +101,13 @@ def parse_huashan_dates(date_str: str):
     return start, end
 
 
-FREE_PATTERN = re.compile(r"免費入場|免費參觀|免費参觀|免費參加|免費體驗|免費入館|免費入場")
-PRICE_PATTERN = re.compile(r"(?:票價|全票|門票)[:：｜\s]*NT\$?\s?(\d[\d,]{1,6})")
+FREE_PATTERN = re.compile(
+    r"免費入場|免費參觀|免費参觀|免費參加|免費體驗|免費入館|免費開放|自由入場|開放參觀|不收費|免費入園"
+)
+PRICE_PATTERN = re.compile(
+    r"(?:票價|全票|門票|定價|單人票|平日票|假日票|早鳥票|優惠票|學生票|參觀費|入場費|套票)"
+    r"[:：｜\s]*(?:NT\$|TWD\$?|NT|\$)?\s?(\d[\d,]{1,6})\s?元?"
+)
 
 
 def extract_price_info(text: str) -> str:
