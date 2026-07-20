@@ -24,6 +24,34 @@ OUTPUT_PATH = "data/exhibitions.json"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 
 
+# ---------------------------------------------------------------------------
+# 分類重整：把來源網站雜亂的類別欄位（有時是數字代碼、有時語意很籠統）
+# 統一改成依「展覽/活動性質」分類，關鍵字比對優先看類別欄位，
+# 比對不到才退而求其次看標題與描述文字。
+# ---------------------------------------------------------------------------
+
+CATEGORY_RULES = [
+    ("動漫", re.compile(r"動漫|動畫|漫畫|公仔|coser|cosplay|角色扮演|二次元|模型|figure", re.IGNORECASE)),
+    ("音樂", re.compile(r"音樂|演唱|演奏|樂團|交響|爵士|歌唱")),
+    ("畫展/美術", re.compile(r"美術|畫展|畫作|藝術(?!家)|雕塑|策展|插畫|水彩|油畫|版畫|書法")),
+    ("戲劇/表演", re.compile(r"戲劇|劇場|歌劇|舞台劇|表演藝術|展演活動|音樂劇|馬戲")),
+    ("舞蹈", re.compile(r"舞蹈|舞團|芭蕾|現代舞")),
+    ("攝影", re.compile(r"攝影|影像展")),
+    ("設計", re.compile(r"設計|建築展|工藝|時尚")),
+    ("講座/工作坊", re.compile(r"講座|論壇|工作坊|研習|沙龍|課程")),
+    ("市集", re.compile(r"市集|園遊會|展售|品牌活動")),
+]
+
+
+def classify_category(raw_category: str, title: str, description: str) -> str:
+    """回傳固定分類集合裡的其中一個，不再使用來源網站原始的類別文字。"""
+    text = f"{raw_category or ''} {title or ''} {description or ''}"
+    for label, pattern in CATEGORY_RULES:
+        if pattern.search(text):
+            return label
+    return "其他"
+
+
 def fetch_raw_events():
     """向文化部開放資料 API 要資料"""
     req = urllib.request.Request(API_URL, headers={"User-Agent": "Mozilla/5.0"})
@@ -102,12 +130,27 @@ def fetch_huashan(max_pages: int = 6):
             if not title:
                 continue
 
+            # 嘗試抓取這個活動連結附近的縮圖（如果官網有放的話）
+            image_url = ""
+            try:
+                img_tag = a.find("img")
+                if img_tag is None and a.parent is not None:
+                    img_tag = a.parent.find("img")
+                if img_tag and img_tag.get("src"):
+                    src = img_tag["src"].strip()
+                    if src.startswith("http"):
+                        image_url = src
+                    elif src.startswith("/"):
+                        image_url = f"https://www.huashan1914.com{src}"
+            except Exception:  # noqa: BLE001 - 抓不到圖片就算了，不影響其他資料
+                image_url = ""
+
             events.append({
                 "title": title,
-                "category": category or "展演活動",
+                "category": classify_category(category, title, ""),
                 "unit": "",
                 "description": "",
-                "image": "",
+                "image": image_url,
                 "startDate": start_date,
                 "endDate": end_date,
                 "location": "台北市中正區八德路一段1號",
@@ -152,7 +195,7 @@ def normalize(item: dict) -> dict:
 
     return {
         "title": title,
-        "category": safe_str(item.get("category")) or "其他",
+        "category": classify_category(safe_str(item.get("category")), title, description),
         "unit": safe_str(item.get("showUnit")) or safe_str(item.get("masterUnit")),
         "description": description,
         "image": safe_str(item.get("imageURL")),
