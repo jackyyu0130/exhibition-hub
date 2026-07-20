@@ -6,6 +6,8 @@
 <title>台灣展覽誌｜全台藝文活動每日自動更新</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root{
     --brand: #4F46E5;
@@ -160,10 +162,29 @@
   main{ max-width:1180px; margin:0 auto; padding: 2.8rem 1.5rem 5rem; }
   .section{ margin-bottom: 3.2rem; }
   .section-head{
-    display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1.2rem;
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem;
   }
   .section-head h2{ font-size:1.3rem; margin:0; }
   .section-head .hint{ font-size:.85rem; color:var(--ink-soft); }
+
+  .view-toggle{
+    display:flex; background:#fff; border:1px solid var(--line);
+    border-radius: 999px; padding: .2rem;
+  }
+  .view-btn{
+    border:none; background:none; font-size:.82rem; color:var(--ink-soft);
+    padding:.4rem .95rem; border-radius:999px;
+  }
+  .view-btn.active{ background: var(--brand); color:#fff; }
+
+  #mapContainer{
+    height: 560px; border-radius: var(--radius);
+    border:1px solid var(--line); overflow:hidden;
+  }
+  .map-popup{ font-family:"Noto Sans TC", sans-serif; }
+  .map-popup h4{ margin:0 0 .3rem; font-size:.95rem; }
+  .map-popup p{ margin:0 0 .3rem; font-size:.8rem; color:var(--ink-soft); }
+  .map-popup a{ font-size:.8rem; color:var(--brand); font-weight:600; }
 
   .grid{
     display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem;
@@ -268,11 +289,18 @@
   <section class="section" id="allEvents">
     <div class="section-head">
       <h2>全部展覽</h2>
-      <span class="hint" id="resultHint"></span>
+      <div style="display:flex; align-items:center; gap:.9rem;">
+        <span class="hint" id="resultHint"></span>
+        <div class="view-toggle" id="viewToggle">
+          <button type="button" class="view-btn active" data-view="list">列表</button>
+          <button type="button" class="view-btn" data-view="map">地圖</button>
+        </div>
+      </div>
     </div>
     <div class="grid" id="eventGrid">
       <div class="empty">載入資料中…</div>
     </div>
+    <div id="mapContainer" style="display:none;"></div>
   </section>
 
   <section class="section" id="nearby" style="display:none;">
@@ -295,6 +323,9 @@ const state = {
   selectedRegions: new Set(),
   selectedCategories: new Set(),
   userLoc: null,
+  view: 'list',
+  map: null,
+  markerLayer: null,
 };
 
 const REGION_GROUPS = [
@@ -305,14 +336,19 @@ const REGION_GROUPS = [
   ['花蓮縣'], ['台東縣','臺東縣'], ['澎湖縣'], ['金門縣'], ['連江縣'],
 ];
 
-const CATEGORY_ICON_RULES = [
-  { test: /美術|藝術|雕塑|畫|策展/, key: 'palette' },
-  { test: /音樂|演唱|演奏/, key: 'music' },
-  { test: /戲劇|舞蹈|表演|展演/, key: 'masks' },
-  { test: /攝影/, key: 'camera' },
-  { test: /講座|論壇|研習|課程/, key: 'mic' },
-  { test: /市集|工作坊|品牌/, key: 'bag' },
-];
+// 對應後端 scraper.py 分類邏輯輸出的固定分類集合
+const CATEGORY_ICON_MAP = {
+  '音樂': 'music',
+  '畫展/美術': 'palette',
+  '動漫': 'anime',
+  '戲劇/表演': 'masks',
+  '舞蹈': 'dance',
+  '攝影': 'camera',
+  '設計': 'design',
+  '講座/工作坊': 'mic',
+  '市集': 'bag',
+  '其他': 'ticket',
+};
 
 const ICONS = {
   palette: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 1 0 0 20c1.5 0 2-1 2-2s-.5-1.5-.5-2 1-1.5 2-1.5H17a4 4 0 0 0 4-4c0-5.5-4.5-10-9-10Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
@@ -322,11 +358,13 @@ const ICONS = {
   mic: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M9 22h6"/></svg>',
   bag: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l1 12H5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
   ticket: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>',
+  anime: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l1.6 4.9L18.5 8l-4.1 3 1.5 4.9-4-2.9-4 2.9 1.5-4.9L5.5 8l4.9-1.1z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>',
+  dance: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6M12 8l-5-2M12 8l5-2M12 13l-4 7M12 13l4 7"/></svg>',
+  design: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
 };
 
 function iconKeyFor(category){
-  const rule = CATEGORY_ICON_RULES.find(r => r.test.test(category || ''));
-  return rule ? rule.key : 'ticket';
+  return CATEGORY_ICON_MAP[category] || 'ticket';
 }
 
 // 依類別給不同色系的卡片佔位圖(沒有真實照片時使用)
@@ -337,6 +375,9 @@ const PLACEHOLDER_GRADIENTS = {
   camera:  'linear-gradient(135deg,#34D399,#0EA5E9)',
   mic:     'linear-gradient(135deg,#A78BFA,#6366F1)',
   bag:     'linear-gradient(135deg,#FBBF24,#F97316)',
+  anime:   'linear-gradient(135deg,#FDE68A,#F59E0B)',
+  dance:   'linear-gradient(135deg,#5EEAD4,#0D9488)',
+  design:  'linear-gradient(135deg,#C4B5FD,#7C3AED)',
   ticket:  'linear-gradient(135deg,#94A3B8,#475569)',
 };
 
@@ -501,6 +542,7 @@ function render(){
   });
 
   document.getElementById('resultHint').textContent = `共 ${filtered.length} 檔`;
+  state.lastFiltered = filtered;
 
   const grid = document.getElementById('eventGrid');
   if(filtered.length === 0){
@@ -510,6 +552,48 @@ function render(){
   }
 
   renderNearby();
+  renderMap(filtered);
+}
+
+// ---------- 地圖檢視 ----------
+function initMapIfNeeded(){
+  if(state.map) return;
+  state.map = L.map('mapContainer').setView([23.7, 121.0], 7);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap 貢獻者',
+    maxZoom: 18,
+  }).addTo(state.map);
+  state.markerLayer = L.layerGroup().addTo(state.map);
+}
+
+function renderMap(filtered){
+  if(state.view !== 'map') return;
+  initMapIfNeeded();
+  state.markerLayer.clearLayers();
+
+  const withCoords = filtered.filter(ev => !isNaN(parseFloat(ev.latitude)) && !isNaN(parseFloat(ev.longitude)));
+
+  withCoords.forEach(ev => {
+    const lat = parseFloat(ev.latitude);
+    const lng = parseFloat(ev.longitude);
+    const marker = L.marker([lat, lng]);
+    const linkHtml = ev.sourceUrl
+      ? `<a href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener">前往官方頁面 →</a>`
+      : '';
+    marker.bindPopup(`
+      <div class="map-popup">
+        <h4>${escapeHtml(ev.title)}</h4>
+        <p>${escapeHtml(ev.locationName || ev.location || '')}<br>${escapeHtml(dateRangeText(ev))}</p>
+        ${linkHtml}
+      </div>
+    `);
+    state.markerLayer.addLayer(marker);
+  });
+
+  if(withCoords.length > 0){
+    const bounds = L.latLngBounds(withCoords.map(ev => [parseFloat(ev.latitude), parseFloat(ev.longitude)]));
+    state.map.fitBounds(bounds, { padding: [30,30], maxZoom: 13 });
+  }
 }
 
 // ---------- 附近展覽（地理位置）----------
@@ -555,6 +639,26 @@ function escapeHtml(str){
 function escapeAttr(str){ return escapeHtml(str); }
 
 document.getElementById('searchInput').addEventListener('input', render);
+
+document.querySelectorAll('.view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.view = btn.dataset.view;
+    const grid = document.getElementById('eventGrid');
+    const mapEl = document.getElementById('mapContainer');
+    if(state.view === 'map'){
+      grid.style.display = 'none';
+      mapEl.style.display = 'block';
+      initMapIfNeeded();
+      renderMap(state.lastFiltered || []);
+      setTimeout(() => state.map && state.map.invalidateSize(), 50);
+    }else{
+      grid.style.display = 'grid';
+      mapEl.style.display = 'none';
+    }
+  });
+});
 
 document.getElementById('locateBtn').addEventListener('click', () => {
   const btn = document.getElementById('locateBtn');
