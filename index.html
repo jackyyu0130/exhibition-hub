@@ -5,431 +5,284 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>台灣展覽誌｜全台藝文活動每日自動更新</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #F6F3EC;
-    --paper-raised: #FFFFFF;
-    --ink: #1C1A17;
-    --ink-soft: #5B564C;
-    --stamp: #A5342E;
-    --teal: #285C56;
-    --line: #DCD5C4;
-    --gold: #A9822F;
-    --sidebar-w: 240px;
+    --brand: #4F46E5;
+    --brand-dark: #3730A3;
+    --ink: #1A1A2E;
+    --ink-soft: #6B7280;
+    --bg: #F7F8FB;
+    --card: #FFFFFF;
+    --line: #E7E7F0;
+    --hot: #F43F5E;
+    --closing: #F59E0B;
+    --new: #6366F1;
+    --radius: 14px;
   }
 
-  *{ box-sizing: border-box; }
-
+  *{ box-sizing:border-box; }
   body{
     margin:0;
-    background: var(--paper);
+    background: var(--bg);
     color: var(--ink);
     font-family: "Noto Sans TC", sans-serif;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing:antialiased;
   }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; }
 
-  a{ color: inherit; }
-
-  header{
-    padding: 4rem 1.5rem 2.75rem;
-    text-align:center;
+  /* ---------- 導覽列 ---------- */
+  .nav{
+    position: sticky; top:0; z-index: 40;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
-    position: relative;
+  }
+  .nav-inner{
+    max-width: 1180px; margin:0 auto;
+    padding: .9rem 1.5rem;
+    display:flex; align-items:center; gap: 1.8rem;
+  }
+  .brand{ display:flex; align-items:center; gap:.55rem; font-weight:700; font-size:1.05rem; flex-shrink:0; }
+  .brand-mark{
+    width:32px; height:32px; border-radius:9px;
+    background: linear-gradient(135deg, var(--brand), #8B5CF6);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:1.05rem; transform: rotate(-6deg);
+  }
+  .brand-sub{ display:block; font-size:.68rem; font-weight:400; color:var(--ink-soft); margin-top:1px; }
+
+  .nav-links{ display:flex; align-items:center; gap:1.4rem; font-size:.92rem; color:var(--ink-soft); position:relative; }
+  .nav-links a, .nav-links button.nav-item{
+    background:none; border:none; padding:.4rem 0; color:var(--ink-soft); font-size:.92rem;
+  }
+  .nav-links a:hover, .nav-links button.nav-item:hover{ color:var(--ink); }
+  .nav-links .active{ color: var(--brand); font-weight:600; }
+
+  .nav-spacer{ flex:1; }
+  .nav-count{
+    font-size:.8rem; color:var(--ink-soft);
+    background: var(--bg); border:1px solid var(--line);
+    padding:.35rem .75rem; border-radius:999px;
+    white-space:nowrap;
   }
 
-  header::before{
-    content: "";
-    position:absolute;
-    top:0; left:0; right:0;
-    height: 6px;
-    background: repeating-linear-gradient(
-      90deg, var(--stamp) 0 18px, transparent 18px 30px
-    );
-    opacity: .55;
+  /* 下拉篩選面板 */
+  .dropdown-wrap{ position:relative; }
+  .dropdown-panel{
+    position:absolute; top: calc(100% + 10px); left:0;
+    background:#fff; border:1px solid var(--line); border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(20,20,40,.12);
+    padding: .9rem; width: 240px;
+    display:none; max-height: 340px; overflow-y:auto; z-index: 50;
   }
-
-  .eyebrow{
-    font-family: "JetBrains Mono", monospace;
-    font-size: .75rem;
-    letter-spacing: .25em;
-    text-transform: uppercase;
-    color: var(--stamp);
-    margin-bottom: 1rem;
+  .dropdown-panel.open{ display:block; }
+  .dropdown-panel .opt{
+    display:flex; align-items:center; gap:.55rem;
+    font-size:.87rem; padding:.32rem 0; color:var(--ink);
   }
+  .dropdown-panel .opt input{ accent-color:var(--brand); width:15px; height:15px; }
+  .dropdown-panel .opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
+  .dropdown-clear{ font-size:.75rem; color:var(--brand); background:none; border:none; margin-bottom:.5rem; padding:0; }
 
-  h1{
-    font-family: "Noto Serif TC", serif;
-    font-weight: 900;
-    font-size: clamp(2.2rem, 6vw, 3.6rem);
-    margin: 0 0 .75rem;
-    letter-spacing: .02em;
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    padding: 4.2rem 1.5rem 3.2rem;
+    text-align:center;
+    overflow:hidden;
+    background:
+      radial-gradient(60% 90% at 15% -10%, rgba(139,92,246,.22), transparent),
+      radial-gradient(50% 80% at 90% 10%, rgba(79,70,229,.18), transparent),
+      linear-gradient(180deg, #EEF0FF 0%, var(--bg) 85%);
   }
-
-  .subtitle{
-    color: var(--ink-soft);
-    font-size: 1rem;
-    max-width: 34rem;
-    margin: 0 auto 1.5rem;
-    line-height: 1.7;
+  .hero-blob{
+    position:absolute; border-radius:50%;
+    filter: blur(2px);
+    opacity:.5;
   }
-
-  .stat-line{
-    font-family: "JetBrains Mono", monospace;
-    font-size: .95rem;
-    color: var(--teal);
+  .hero h1{
+    font-family:"Noto Serif TC", serif;
+    font-weight:900;
+    font-size: clamp(1.9rem, 4.4vw, 2.7rem);
+    line-height:1.35;
+    margin: 0 0 .7rem;
+    position:relative;
   }
-
-  .stat-line b{
-    font-size: 1.3rem;
-    color: var(--stamp);
+  .hero p.tagline{
+    color:var(--ink-soft); font-size:1rem; margin:0 0 2rem; position:relative;
   }
 
   .search-bar{
-    max-width: 1120px;
-    margin: -1.4rem auto 0;
-    padding: 0 1.5rem;
-    position: relative;
-    z-index: 3;
-    display:flex;
-    justify-content:center;
+    max-width: 640px; margin:0 auto; position:relative;
+    background:#fff; border:1px solid var(--line); border-radius: 999px;
+    padding: .5rem .5rem .5rem 1.2rem;
+    display:flex; align-items:center; gap:.5rem;
+    box-shadow: 0 14px 34px rgba(30,20,70,.08);
   }
-
-  .search-bar-inner{
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: .9rem 1.1rem;
-    display:flex;
-    align-items:center;
-    gap: .7rem;
-    box-shadow: 0 8px 24px rgba(28,26,23,.06);
-    width: 100%;
-    max-width: 640px;
+  .search-bar svg{ flex-shrink:0; color: var(--ink-soft); }
+  #searchInput{
+    flex:1; border:none; outline:none; font-size:.95rem; font-family:inherit;
+    background:transparent; padding:.5rem 0; color:var(--ink);
   }
-
-  input[type="text"], select{
-    font-family: "Noto Sans TC", sans-serif;
-    font-size: .95rem;
-    padding: .5rem .7rem;
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    background: var(--paper);
-    color: var(--ink);
+  .locate-btn{
+    display:flex; align-items:center; gap:.4rem;
+    background: var(--ink); color:#fff; border:none;
+    border-radius:999px; padding:.6rem 1.1rem; font-size:.85rem; font-weight:500;
+    white-space:nowrap;
   }
+  .locate-btn:hover{ background: var(--brand); }
+  .locate-btn.active{ background: var(--brand); }
 
-  #searchInput{ flex:1; border:none; background:transparent; padding: .3rem; }
-  #searchInput:focus{ outline:none; }
-
-  #filterToggle{
-    display:none;
-    font-family: "JetBrains Mono", monospace;
-    font-size: .8rem;
-    letter-spacing: .05em;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    border-radius: 3px;
-    padding: .55rem .9rem;
-    cursor:pointer;
-    white-space: nowrap;
+  /* ---------- 分類圖示列 ---------- */
+  .cat-row{
+    max-width: 1180px; margin: 2.4rem auto 0; padding: 0 1.5rem;
+    display:flex; gap: 1.6rem; flex-wrap:wrap; justify-content:center;
+    position:relative;
   }
-
-  .layout{
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 2.25rem 1.5rem 5rem;
-    display:grid;
-    grid-template-columns: var(--sidebar-w) 1fr;
-    gap: 2rem;
-    align-items:start;
+  .cat-chip{
+    display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    background:none; border:none; color: var(--ink-soft); width: 76px;
   }
-
-  aside.sidebar{
-    position: sticky;
-    top: 1.25rem;
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 1.3rem 1.2rem;
+  .cat-chip .icon-circle{
+    width:56px; height:56px; border-radius:50%;
+    background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--ink); transition: all .15s ease;
   }
+  .cat-chip span.label{ font-size:.78rem; }
+  .cat-chip:hover .icon-circle{ border-color: var(--brand); color:var(--brand); }
+  .cat-chip.active .icon-circle{ background: var(--brand); border-color:var(--brand); color:#fff; }
+  .cat-chip.active span.label{ color:var(--brand); font-weight:600; }
 
-  .filter-group{ margin-bottom: 1.6rem; }
-  .filter-group:last-child{ margin-bottom: 0; }
-
-  .filter-title{
-    font-family: "JetBrains Mono", monospace;
-    font-size: .72rem;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: .7rem;
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
+  /* ---------- 主內容 ---------- */
+  main{ max-width:1180px; margin:0 auto; padding: 2.8rem 1.5rem 5rem; }
+  .section{ margin-bottom: 3.2rem; }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1.2rem;
   }
+  .section-head h2{ font-size:1.3rem; margin:0; }
+  .section-head .hint{ font-size:.85rem; color:var(--ink-soft); }
 
-  .filter-title button{
-    font-family: inherit;
-    font-size: .68rem;
-    background: none;
-    border: none;
-    color: var(--teal);
-    cursor:pointer;
-    text-decoration: underline;
-    padding:0;
+  .grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem;
   }
+  @media (max-width: 1020px){ .grid{ grid-template-columns: repeat(3,1fr); } }
+  @media (max-width: 760px){ .grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 480px){ .grid{ grid-template-columns: 1fr; } }
 
-  .filter-option{
-    display:flex;
-    align-items:center;
-    gap: .5rem;
-    font-size: .87rem;
-    padding: .32rem 0;
-    cursor:pointer;
-    color: var(--ink);
+  .card{
+    background: var(--card); border:1px solid var(--line); border-radius: var(--radius);
+    overflow:hidden; display:block; transition: transform .15s ease, box-shadow .15s ease;
   }
+  a.card:hover{ transform: translateY(-3px); box-shadow: 0 16px 34px rgba(20,20,50,.1); }
 
-  .filter-option input{
-    accent-color: var(--stamp);
-    width: 15px; height: 15px;
-    flex-shrink:0;
+  .card-media{
+    aspect-ratio: 4 / 3; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; color:#fff;
   }
-
-  .filter-option .count{
-    margin-left:auto;
-    font-family: "JetBrains Mono", monospace;
-    font-size: .72rem;
-    color: var(--ink-soft);
+  .card-media img{ width:100%; height:100%; object-fit:cover; }
+  .card-media .icon-wrap{ opacity:.9; }
+  .card-badge{
+    position:absolute; top:.6rem; left:.6rem;
+    font-size:.68rem; font-weight:700; color:#fff;
+    padding:.22rem .6rem; border-radius:999px;
+    backdrop-filter: blur(2px);
   }
+  .card-badge.closing{ background: var(--closing); }
+  .card-badge.new{ background: var(--new); }
 
-  .toggle-row{
-    display:flex;
-    align-items:center;
-    gap: .5rem;
-    font-size: .87rem;
-    color: var(--ink-soft);
+  .card-body{ padding: .9rem 1rem 1.05rem; }
+  .card-cat{ font-size:.72rem; color:var(--brand); font-weight:600; margin-bottom:.3rem; }
+  .card-title{
+    font-size: .98rem; font-weight:700; line-height:1.4; margin:0 0 .45rem;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    min-height: 2.7em;
   }
-
-  .entry{
-    display:grid;
-    grid-template-columns: 108px 1px 1fr;
-    gap: 0;
-    background: var(--paper-raised);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    margin-bottom: 1.1rem;
-    overflow: hidden;
-    text-decoration:none;
-    color: inherit;
-    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  }
-
-  a.entry:hover, a.entry:focus-visible{
-    transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(28,26,23,.09);
-    border-color: var(--stamp);
-  }
-
-  .stub{
-    font-family: "JetBrains Mono", monospace;
-    padding: 1.2rem .6rem;
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap: .35rem;
-  }
-
-  .stub .month{ font-size: .7rem; letter-spacing:.1em; color: var(--ink-soft); }
-  .stub .day{ font-size: 1.6rem; font-weight: 700; line-height:1; }
-  .stub .to{ font-size: .68rem; color: var(--ink-soft); margin-top:.2rem; }
-
-  .perforation{
-    position: relative;
-    background: repeating-linear-gradient(
-      var(--line), var(--line) 6px, transparent 6px 12px
-    );
-    width: 1px;
-  }
-  .perforation::before, .perforation::after{
-    content:"";
-    position:absolute;
-    left:50%; transform:translateX(-50%);
-    width:14px; height:14px;
-    background: var(--paper);
-    border-radius:50%;
-  }
-  .perforation::before{ top:-7px; }
-  .perforation::after{ bottom:-7px; }
-
-  .content{ padding: 1.2rem 1.4rem; }
-
-  .tag-row{ display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom: .55rem; }
-
-  .tag{
-    display:inline-block;
-    font-family: "JetBrains Mono", monospace;
-    font-size: .68rem;
-    letter-spacing: .1em;
-    color: var(--stamp);
-    border: 1px solid var(--stamp);
-    border-radius: 2px;
-    padding: .1rem .45rem;
-    transform: rotate(-1deg);
-  }
-
-  .tag.region{ color: var(--teal); border-color: var(--teal); transform: rotate(1deg); }
-
-  .entry h3{
-    font-family: "Noto Serif TC", serif;
-    font-size: 1.2rem;
-    margin: 0 0 .4rem;
-    line-height: 1.4;
-  }
-
-  .meta{
-    font-size: .82rem;
-    color: var(--ink-soft);
-    margin-bottom: .5rem;
-  }
-
-  .meta .sep{ margin: 0 .4rem; opacity:.5; }
-
-  .desc{
-    font-size: .88rem;
-    line-height: 1.7;
-    color: var(--ink-soft);
-    margin: 0 0 .3rem;
-  }
-
-  .more-hint{
-    font-size: .78rem;
-    color: var(--teal);
-  }
+  .card-meta{ font-size:.8rem; color:var(--ink-soft); line-height:1.6; }
+  .card-meta .loc{ display:block; }
+  .card-dist{ font-size:.78rem; color:var(--brand); font-weight:600; margin-top:.35rem; }
 
   .empty{
-    text-align:center;
-    padding: 4rem 1rem;
-    color: var(--ink-soft);
-    font-family: "Noto Serif TC", serif;
-    font-size: 1.1rem;
-    grid-column: 1 / -1;
+    grid-column: 1 / -1; text-align:center; padding: 4rem 1rem;
+    color: var(--ink-soft); font-family:"Noto Serif TC", serif; font-size:1.05rem;
   }
+
+  .scroll-row{
+    display:flex; gap: 1.1rem; overflow-x:auto; padding-bottom: .6rem;
+    scroll-snap-type: x proximity;
+  }
+  .scroll-row .card{ flex: 0 0 220px; scroll-snap-align:start; }
 
   footer{
-    text-align:center;
-    padding: 2rem 1.5rem 3rem;
-    font-size: .78rem;
-    color: var(--ink-soft);
-    font-family: "JetBrains Mono", monospace;
+    text-align:center; padding: 2.2rem 1.5rem 3rem;
+    font-size:.8rem; color:var(--ink-soft);
+    border-top:1px solid var(--line);
   }
 
-  :focus-visible{ outline: 2px solid var(--teal); outline-offset: 2px; }
-
-  @media (max-width: 860px){
-    .layout{ grid-template-columns: 1fr; }
-
-    #filterToggle{ display:inline-block; }
-
-    aside.sidebar{
-      position: fixed;
-      top:0; right:0; bottom:0;
-      width: min(84vw, 320px);
-      border-radius: 0;
-      overflow-y: auto;
-      transform: translateX(100%);
-      transition: transform .22s ease;
-      z-index: 20;
-      box-shadow: -12px 0 30px rgba(0,0,0,.15);
-    }
-
-    aside.sidebar.open{ transform: translateX(0); }
-
-    .sidebar-overlay{
-      display:none;
-      position: fixed; inset:0;
-      background: rgba(28,26,23,.35);
-      z-index: 15;
-    }
-
-    .sidebar-overlay.open{ display:block; }
-
-    .sidebar-close{
-      display:block;
-      margin-bottom: 1rem;
-      background:none;
-      border:1px solid var(--line);
-      border-radius:3px;
-      padding:.4rem .7rem;
-      font-family:"JetBrains Mono", monospace;
-      font-size:.75rem;
-      cursor:pointer;
-    }
-  }
-
-  @media (min-width: 861px){
-    .sidebar-close, .sidebar-overlay{ display:none; }
-  }
-
-  @media (max-width: 520px){
-    .entry{ grid-template-columns: 78px 1px 1fr; }
-    .stub{ padding: 1rem .3rem; }
-    .stub .day{ font-size: 1.3rem; }
-  }
+  :focus-visible{ outline:2px solid var(--brand); outline-offset:2px; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="eyebrow">TAIWAN EXHIBITION LOG · 自動蒐集整合</div>
-  <h1>台灣展覽誌</h1>
-  <p class="subtitle">彙整文化部開放資料與各大展演場館資訊，每日自動更新全台展覽與藝文活動。</p>
-  <p class="stat-line" id="statLine">載入中…</p>
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="brand-mark">展</span>
+      <span>台灣展覽誌<span class="brand-sub">全台藝文活動平台</span></span>
+    </div>
+    <nav class="nav-links">
+      <a href="#top">首頁</a>
+      <a href="#allEvents">全部展覽</a>
+      <div class="dropdown-wrap">
+        <button class="nav-item" id="regionNavBtn">地區 ▾</button>
+        <div class="dropdown-panel" id="regionPanel">
+          <button class="dropdown-clear" data-clear="region">清除已選地區</button>
+          <div id="regionOptions"></div>
+        </div>
+      </div>
+      <a href="#nearby" id="nearbyNavLink">附近展覽</a>
+    </nav>
+    <div class="nav-spacer"></div>
+    <span class="nav-count" id="navCount">載入中…</span>
+  </div>
 </header>
 
-<div class="search-bar">
-  <div class="search-bar-inner">
-    <input type="text" id="searchInput" placeholder="搜尋展覽名稱、地點、主辦單位…">
-    <button id="filterToggle" type="button">篩選 ▾</button>
+<section class="hero" id="top">
+  <h1>探索全台精彩展覽<br>發現城市的文化與創意</h1>
+  <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
+  <div class="search-bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
+    <button class="locate-btn" id="locateBtn" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      目前位置
+    </button>
   </div>
-</div>
 
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="cat-row" id="catRow"></div>
+</section>
 
-<div class="layout">
-  <aside class="sidebar" id="sidebar">
-    <button class="sidebar-close" id="sidebarClose" type="button">✕ 關閉篩選</button>
-
-    <div class="filter-group">
-      <div class="filter-title">
-        <span>地區</span>
-        <button type="button" data-clear="region">清除</button>
-      </div>
-      <div id="regionOptions"></div>
+<main>
+  <section class="section" id="allEvents">
+    <div class="section-head">
+      <h2>全部展覽</h2>
+      <span class="hint" id="resultHint"></span>
     </div>
-
-    <div class="filter-group">
-      <div class="filter-title">
-        <span>類別</span>
-        <button type="button" data-clear="category">清除</button>
-      </div>
-      <div id="categoryOptions"></div>
+    <div class="grid" id="eventGrid">
+      <div class="empty">載入資料中…</div>
     </div>
+  </section>
 
-    <div class="filter-group">
-      <div class="filter-title"><span>顯示</span></div>
-      <label class="toggle-row">
-        <input type="checkbox" id="ongoingOnly">
-        只看目前展出中
-      </label>
+  <section class="section" id="nearby" style="display:none;">
+    <div class="section-head">
+      <h2>附近展覽</h2>
+      <span class="hint">依你目前位置，由近到遠排序</span>
     </div>
-  </aside>
-
-  <main id="list">
-    <div class="empty">載入資料中…</div>
-  </main>
-</div>
+    <div class="scroll-row" id="nearbyRow"></div>
+  </section>
+</main>
 
 <footer>
   資料來源：文化部文化資料開放服務網（cloud.culture.tw）、華山1914文化創意產業園區 · 每日自動更新
@@ -441,6 +294,7 @@ const state = {
   updatedAt: null,
   selectedRegions: new Set(),
   selectedCategories: new Set(),
+  userLoc: null,
 };
 
 const REGION_GROUPS = [
@@ -450,6 +304,41 @@ const REGION_GROUPS = [
   ['台南市','臺南市'], ['高雄市'], ['屏東縣'], ['宜蘭縣'],
   ['花蓮縣'], ['台東縣','臺東縣'], ['澎湖縣'], ['金門縣'], ['連江縣'],
 ];
+
+const CATEGORY_ICON_RULES = [
+  { test: /美術|藝術|雕塑|畫|策展/, key: 'palette' },
+  { test: /音樂|演唱|演奏/, key: 'music' },
+  { test: /戲劇|舞蹈|表演|展演/, key: 'masks' },
+  { test: /攝影/, key: 'camera' },
+  { test: /講座|論壇|研習|課程/, key: 'mic' },
+  { test: /市集|工作坊|品牌/, key: 'bag' },
+];
+
+const ICONS = {
+  palette: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 1 0 0 20c1.5 0 2-1 2-2s-.5-1.5-.5-2 1-1.5 2-1.5H17a4 4 0 0 0 4-4c0-5.5-4.5-10-9-10Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
+  music: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+  masks: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 3a2 2 0 0 1 2 2c0 7-2.5 8-2.5 12a2.5 2.5 0 0 1-5 0"/><path d="M7 3a2 2 0 0 0-2 2c0 7 2.5 8 2.5 12a2.5 2.5 0 0 0 5 0"/></svg>',
+  camera: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+  mic: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M9 22h6"/></svg>',
+  bag: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l1 12H5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+  ticket: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>',
+};
+
+function iconKeyFor(category){
+  const rule = CATEGORY_ICON_RULES.find(r => r.test.test(category || ''));
+  return rule ? rule.key : 'ticket';
+}
+
+// 依類別給不同色系的卡片佔位圖(沒有真實照片時使用)
+const PLACEHOLDER_GRADIENTS = {
+  palette: 'linear-gradient(135deg,#F472B6,#8B5CF6)',
+  music:   'linear-gradient(135deg,#60A5FA,#6366F1)',
+  masks:   'linear-gradient(135deg,#FB923C,#F43F5E)',
+  camera:  'linear-gradient(135deg,#34D399,#0EA5E9)',
+  mic:     'linear-gradient(135deg,#A78BFA,#6366F1)',
+  bag:     'linear-gradient(135deg,#FBBF24,#F97316)',
+  ticket:  'linear-gradient(135deg,#94A3B8,#475569)',
+};
 
 function detectRegion(ev){
   const text = `${ev.locationName || ''} ${ev.location || ''}`;
@@ -465,21 +354,19 @@ async function loadData(){
     const data = await res.json();
     state.events = (data.events || []).map(ev => ({ ...ev, region: detectRegion(ev) }));
     state.updatedAt = data.updatedAt;
-    buildFilterOptions();
+    buildCategoryRow();
+    buildRegionPanel();
     render();
-    updateStatLine();
+    updateNavCount();
   }catch(err){
-    document.getElementById('list').innerHTML =
+    document.getElementById('eventGrid').innerHTML =
       '<div class="empty">資料載入失敗，請確認 data/exhibitions.json 是否存在。</div>';
     console.error(err);
   }
 }
 
-function updateStatLine(){
-  const el = document.getElementById('statLine');
-  const time = state.updatedAt ? new Date(state.updatedAt) : null;
-  const timeStr = time ? time.toLocaleString('zh-TW', { hour12:false }) : '尚未更新';
-  el.innerHTML = `目前收錄 <b>${state.events.length}</b> 檔活動 · 最後更新：${timeStr}`;
+function updateNavCount(){
+  document.getElementById('navCount').textContent = `收錄 ${state.events.length} 檔活動`;
 }
 
 function countBy(key){
@@ -492,44 +379,48 @@ function countBy(key){
   return counts;
 }
 
-function buildFilterOptions(){
-  const regionCounts = countBy('region');
-  const categoryCounts = countBy('category');
-
-  const regionEl = document.getElementById('regionOptions');
-  regionEl.innerHTML = Object.keys(regionCounts).sort((a,b)=>regionCounts[b]-regionCounts[a]).map(region => `
-    <label class="filter-option">
-      <input type="checkbox" data-type="region" value="${escapeAttr(region)}">
-      ${escapeHtml(region)}
-      <span class="count">${regionCounts[region]}</span>
-    </label>
+function buildCategoryRow(){
+  const counts = countBy('category');
+  const topCats = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).slice(0, 8);
+  const row = document.getElementById('catRow');
+  row.innerHTML = topCats.map(cat => `
+    <button class="cat-chip" data-cat="${escapeAttr(cat)}">
+      <span class="icon-circle">${ICONS[iconKeyFor(cat)]}</span>
+      <span class="label">${escapeHtml(cat)}</span>
+    </button>
   `).join('');
-
-  const categoryEl = document.getElementById('categoryOptions');
-  categoryEl.innerHTML = Object.keys(categoryCounts).sort((a,b)=>categoryCounts[b]-categoryCounts[a]).map(cat => `
-    <label class="filter-option">
-      <input type="checkbox" data-type="category" value="${escapeAttr(cat)}">
-      ${escapeHtml(cat)}
-      <span class="count">${categoryCounts[cat]}</span>
-    </label>
-  `).join('');
-
-  document.querySelectorAll('input[data-type="region"]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      toggleSetValue(state.selectedRegions, cb.value, cb.checked);
-      render();
-    });
-  });
-  document.querySelectorAll('input[data-type="category"]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      toggleSetValue(state.selectedCategories, cb.value, cb.checked);
+  row.querySelectorAll('.cat-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      if(state.selectedCategories.has(cat)){
+        state.selectedCategories.delete(cat);
+        btn.classList.remove('active');
+      }else{
+        state.selectedCategories.add(cat);
+        btn.classList.add('active');
+      }
       render();
     });
   });
 }
 
-function toggleSetValue(set, value, on){
-  if(on) set.add(value); else set.delete(value);
+function buildRegionPanel(){
+  const counts = countBy('region');
+  const el = document.getElementById('regionOptions');
+  el.innerHTML = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).map(region => `
+    <label class="opt">
+      <input type="checkbox" data-region="${escapeAttr(region)}">
+      ${escapeHtml(region)}
+      <span class="c">${counts[region]}</span>
+    </label>
+  `).join('');
+  el.querySelectorAll('input[data-region]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const r = cb.dataset.region;
+      if(cb.checked) state.selectedRegions.add(r); else state.selectedRegions.delete(r);
+      render();
+    });
+  });
 }
 
 function parseDate(str){
@@ -548,29 +439,60 @@ function isOngoing(ev){
   return true;
 }
 
-function stubMarkup(ev){
+function computeBadge(ev){
+  const now = new Date();
+  const end = parseDate(ev.endDate);
   const start = parseDate(ev.startDate);
-  if(!start){
-    return `<div class="month">TBD</div><div class="day">－</div>`;
+  if(end){
+    const daysLeft = (end - now) / 86400000;
+    if(daysLeft >= 0 && daysLeft <= 7) return { label:'即將截止', cls:'closing' };
   }
-  const month = String(start.getMonth()+1).padStart(2,'0');
-  const day = String(start.getDate()).padStart(2,'0');
-  const hasEnd = ev.endDate && ev.endDate !== ev.startDate;
+  if(start){
+    const daysSinceStart = (now - start) / 86400000;
+    if(daysSinceStart >= 0 && daysSinceStart <= 10) return { label:'新開展', cls:'new' };
+  }
+  return null;
+}
+
+function dateRangeText(ev){
+  if(ev.startDate && ev.endDate && ev.startDate !== ev.endDate) return `${ev.startDate} – ${ev.endDate}`;
+  return ev.startDate || ev.endDate || '日期未提供';
+}
+
+function cardMarkup(ev, { showDistance } = {}){
+  const iconKey = iconKeyFor(ev.category);
+  const badge = computeBadge(ev);
+  const tag = ev.sourceUrl ? 'a' : 'div';
+  const href = ev.sourceUrl ? `href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener"` : '';
+  const media = ev.image
+    ? `<img src="${escapeAttr(ev.image)}" alt="" loading="lazy">`
+    : `<div class="icon-wrap">${ICONS[iconKey]}</div>`;
+
   return `
-    <div class="month">${month} 月</div>
-    <div class="day">${day}</div>
-    ${hasEnd ? `<div class="to">→ ${ev.endDate}</div>` : ''}
+    <${tag} class="card" ${href}>
+      <div class="card-media" style="background:${ev.image ? 'none' : PLACEHOLDER_GRADIENTS[iconKey]}">
+        ${media}
+        ${badge ? `<span class="card-badge ${badge.cls}">${badge.label}</span>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${escapeHtml(ev.category || '活動')}</div>
+        <h3 class="card-title">${escapeHtml(ev.title)}</h3>
+        <div class="card-meta">
+          <span class="loc">${escapeHtml(ev.locationName || ev.location || '地點未提供')}</span>
+          <span>${escapeHtml(dateRangeText(ev))}</span>
+        </div>
+        ${showDistance && ev._distance != null ? `<div class="card-dist">距離約 ${ev._distance.toFixed(1)} 公里</div>` : ''}
+      </div>
+    </${tag}>
   `;
 }
 
 function render(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const ongoingOnly = document.getElementById('ongoingOnly').checked;
 
   let filtered = state.events.filter(ev => {
     if(state.selectedRegions.size && !state.selectedRegions.has(ev.region)) return false;
     if(state.selectedCategories.size && !state.selectedCategories.has(ev.category)) return false;
-    if(ongoingOnly && !isOngoing(ev)) return false;
     if(q){
       const haystack = `${ev.title} ${ev.locationName} ${ev.location} ${ev.unit}`.toLowerCase();
       if(!haystack.includes(q)) return false;
@@ -578,35 +500,50 @@ function render(){
     return true;
   });
 
-  const list = document.getElementById('list');
+  document.getElementById('resultHint').textContent = `共 ${filtered.length} 檔`;
+
+  const grid = document.getElementById('eventGrid');
   if(filtered.length === 0){
-    list.innerHTML = '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
-    return;
+    grid.innerHTML = '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
+  }else{
+    grid.innerHTML = filtered.map(ev => cardMarkup(ev)).join('');
   }
 
-  list.innerHTML = filtered.map(ev => {
-    const tag = ev.sourceUrl ? 'a' : 'div';
-    const href = ev.sourceUrl ? `href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener"` : '';
-    return `
-    <${tag} class="entry" ${href}>
-      <div class="stub">${stubMarkup(ev)}</div>
-      <div class="perforation"></div>
-      <div class="content">
-        <div class="tag-row">
-          <span class="tag">${escapeHtml(ev.category || '活動')}</span>
-          <span class="tag region">${escapeHtml(ev.region || '其他地區')}</span>
-        </div>
-        <h3>${escapeHtml(ev.title)}</h3>
-        <div class="meta">
-          ${escapeHtml(ev.locationName || ev.location || '地點未提供')}
-          ${ev.unit ? `<span class="sep">·</span>${escapeHtml(ev.unit)}` : ''}
-        </div>
-        ${ev.description ? `<p class="desc">${escapeHtml(ev.description)}</p>` : ''}
-        ${ev.sourceUrl ? `<span class="more-hint">點擊查看官方活動頁面 →</span>` : ''}
-      </div>
-    </${tag}>
-  `;
-  }).join('');
+  renderNearby();
+}
+
+// ---------- 附近展覽（地理位置）----------
+function haversine(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function renderNearby(){
+  const section = document.getElementById('nearby');
+  if(!state.userLoc){ section.style.display = 'none'; return; }
+
+  const withCoords = state.events
+    .map(ev => {
+      const lat = parseFloat(ev.latitude);
+      const lng = parseFloat(ev.longitude);
+      if(isNaN(lat) || isNaN(lng)) return null;
+      return { ...ev, _distance: haversine(state.userLoc.lat, state.userLoc.lng, lat, lng) };
+    })
+    .filter(Boolean)
+    .sort((a,b) => a._distance - b._distance)
+    .slice(0, 10);
+
+  const row = document.getElementById('nearbyRow');
+  if(withCoords.length === 0){
+    section.style.display = 'block';
+    row.innerHTML = '<div class="empty">目前沒有活動提供座標資訊，暫時無法計算距離。</div>';
+    return;
+  }
+  section.style.display = 'block';
+  row.innerHTML = withCoords.map(ev => cardMarkup(ev, { showDistance: true })).join('');
 }
 
 function escapeHtml(str){
@@ -615,29 +552,48 @@ function escapeHtml(str){
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[s]));
 }
-
 function escapeAttr(str){ return escapeHtml(str); }
 
 document.getElementById('searchInput').addEventListener('input', render);
-document.getElementById('ongoingOnly').addEventListener('change', render);
 
-document.querySelectorAll('button[data-clear]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const type = btn.dataset.clear;
-    const set = type === 'region' ? state.selectedRegions : state.selectedCategories;
-    set.clear();
-    document.querySelectorAll(`input[data-type="${type}"]`).forEach(cb => cb.checked = false);
-    render();
-  });
+document.getElementById('locateBtn').addEventListener('click', () => {
+  const btn = document.getElementById('locateBtn');
+  if(!navigator.geolocation){
+    alert('你的瀏覽器不支援定位功能');
+    return;
+  }
+  btn.textContent = '定位中…';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> 已定位';
+      btn.classList.add('active');
+      renderNearby();
+      document.getElementById('nearby').scrollIntoView({ behavior:'smooth', block:'start' });
+    },
+    () => {
+      btn.textContent = '定位失敗，重試';
+    }
+  );
 });
 
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebarOverlay');
-function openSidebar(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
-function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
-document.getElementById('filterToggle').addEventListener('click', openSidebar);
-document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
-overlay.addEventListener('click', closeSidebar);
+// 地區下拉選單開關
+const regionNavBtn = document.getElementById('regionNavBtn');
+const regionPanel = document.getElementById('regionPanel');
+regionNavBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  regionPanel.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if(!regionPanel.contains(e.target) && e.target !== regionNavBtn){
+    regionPanel.classList.remove('open');
+  }
+});
+document.querySelector('[data-clear="region"]').addEventListener('click', () => {
+  state.selectedRegions.clear();
+  regionPanel.querySelectorAll('input').forEach(cb => cb.checked = false);
+  render();
+});
 
 loadData();
 </script>
