@@ -249,6 +249,28 @@
 
   .back-link{ display:inline-block; margin-bottom:1.2rem; font-size:.85rem; color:var(--brand); font-weight:600; }
 
+  .detail-layout{
+    display:grid; grid-template-columns: 220px 1fr; gap: 2rem; align-items:start;
+  }
+  @media (max-width: 760px){ .detail-layout{ grid-template-columns: 1fr; } }
+
+  .detail-sidebar{
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding: 1.1rem 1.2rem; position: sticky; top: 1.25rem;
+  }
+  .filter-title-static{
+    font-size:.72rem; font-weight:700; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:.7rem;
+  }
+  .venue-opt{
+    display:flex; align-items:center; width:100%; text-align:left;
+    background:none; border:none; padding:.42rem 0; font-size:.85rem;
+    color: var(--ink-soft); cursor:pointer;
+  }
+  .venue-opt:hover{ color: var(--ink); }
+  .venue-opt.active{ color: var(--brand); font-weight:700; }
+  .venue-opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
+
   .section-head{
     display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem;
   }
@@ -417,11 +439,19 @@
 
   <div id="detailView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
-    <div class="section-head">
-      <h2 id="detailTitle"></h2>
-      <span class="hint" id="detailHint"></span>
+    <div class="detail-layout">
+      <aside class="detail-sidebar">
+        <div class="filter-title-static">地點</div>
+        <div id="detailVenueOptions"></div>
+      </aside>
+      <div class="detail-main">
+        <div class="section-head">
+          <h2 id="detailTitle"></h2>
+          <span class="hint" id="detailHint"></span>
+        </div>
+        <div class="grid" id="detailGrid"></div>
+      </div>
     </div>
-    <div class="grid" id="detailGrid"></div>
   </div>
 
   <div id="nearbyPageView" style="display:none;">
@@ -467,6 +497,7 @@ const state = {
   priceMax: null,
   includeUnpriced: true,
   detailCategory: null,
+  detailVenueFilter: null,
   viewMode: 'home', // 'home' | 'detail' | 'nearby'
   lastPool: [],
   map: null,
@@ -662,18 +693,11 @@ function buildCategoryRow(){
   const cats = sortByCategoryOrder(Object.keys(counts));
   const row = document.getElementById('catRow');
   row.innerHTML = cats.map(cat => `
-    <button class="cat-chip" data-cat="${escapeAttr(cat)}">
+    <a class="cat-chip ${state.detailCategory === cat ? 'active' : ''}" href="${buildShowMoreUrl(cat)}">
       <span class="icon-circle">${ICONS[iconKeyFor(cat)]}</span>
       <span class="label">${escapeHtml(cat)}</span>
-    </button>
+    </a>
   `).join('');
-  row.querySelectorAll('.cat-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.dataset.cat;
-      toggleCategory(cat);
-    });
-  });
-  syncCategoryChips();
 }
 
 function buildCategoryPanel(){
@@ -698,16 +722,10 @@ function buildCategoryPanel(){
 function toggleCategory(cat, forceState){
   const on = forceState !== undefined ? forceState : !state.selectedCategories.has(cat);
   if(on) state.selectedCategories.add(cat); else state.selectedCategories.delete(cat);
-  syncCategoryChips();
   syncCategoryPanelChecks();
   render();
 }
 
-function syncCategoryChips(){
-  document.querySelectorAll('.cat-chip').forEach(btn => {
-    btn.classList.toggle('active', state.selectedCategories.has(btn.dataset.cat));
-  });
-}
 function syncCategoryPanelChecks(){
   document.querySelectorAll('input[data-category]').forEach(cb => {
     cb.checked = state.selectedCategories.has(cb.dataset.category);
@@ -1031,12 +1049,47 @@ function cssId(str){
 function renderDetail(pool){
   const category = state.detailCategory;
   const items = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(category) : ev.category === category);
+
+  renderDetailVenueSidebar(items);
+
+  const filteredItems = state.detailVenueFilter
+    ? items.filter(ev => (ev.locationName || ev.location) === state.detailVenueFilter)
+    : items;
+
   document.getElementById('detailTitle').textContent = category;
-  document.getElementById('detailHint').textContent = `共 ${items.length} 檔`;
+  document.getElementById('detailHint').textContent = `共 ${filteredItems.length} 檔`;
   const grid = document.getElementById('detailGrid');
-  grid.innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">目前這個分類沒有符合條件的活動。</div>';
+  grid.innerHTML = filteredItems.length
+    ? filteredItems.map(ev => cardMarkup(ev)).join('')
+    : '<div class="empty">目前這個分類、地點組合沒有符合條件的活動。</div>';
+}
+
+function renderDetailVenueSidebar(items){
+  const counts = {};
+  items.forEach(ev => {
+    const v = ev.locationName || ev.location;
+    if(!v) return;
+    counts[v] = (counts[v] || 0) + 1;
+  });
+  const venues = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
+
+  const el = document.getElementById('detailVenueOptions');
+  el.innerHTML = `
+    <button class="venue-opt ${!state.detailVenueFilter ? 'active' : ''}" data-venue="">
+      全部地點<span class="c">${items.length}</span>
+    </button>
+    ${venues.map(v => `
+      <button class="venue-opt ${state.detailVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
+        ${escapeHtml(v)}<span class="c">${counts[v]}</span>
+      </button>
+    `).join('')}
+  `;
+  el.querySelectorAll('.venue-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.detailVenueFilter = btn.dataset.venue || null;
+      render();
+    });
+  });
 }
 
 // ---------- 主渲染流程 ----------
@@ -1052,7 +1105,10 @@ function render(){
 
   if(mode === 'detail'){
     renderDetail(pool);
-    const mapPool = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(state.detailCategory) : ev.category === state.detailCategory);
+    let mapPool = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(state.detailCategory) : ev.category === state.detailCategory);
+    if(state.detailVenueFilter){
+      mapPool = mapPool.filter(ev => (ev.locationName || ev.location) === state.detailVenueFilter);
+    }
     renderMapView(mapPool);
   }else if(mode === 'nearby'){
     renderNearbyPage(pool);
@@ -1278,7 +1334,6 @@ document.querySelector('[data-clear="region"]').addEventListener('click', () => 
 });
 document.querySelector('[data-clear="category"]').addEventListener('click', () => {
   state.selectedCategories.clear();
-  syncCategoryChips();
   syncCategoryPanelChecks();
   render();
 });
