@@ -328,7 +328,7 @@
           <div id="venueOptions"></div>
         </div>
       </div>
-      <a href="#nearby">附近展覽</a>
+      <a href="?view=nearby">附近展覽</a>
     </nav>
     <div class="nav-spacer"></div>
     <span class="nav-count" id="navCount">載入中…</span>
@@ -368,20 +368,28 @@
     <div class="grid" id="detailGrid"></div>
   </div>
 
+  <div id="nearbyPageView" style="display:none;">
+    <a class="back-link" href="./">← 回首頁</a>
+    <div class="section-head">
+      <h2>附近展覽</h2>
+      <span class="hint" id="nearbyPageHint"></span>
+    </div>
+    <div id="nearbyPagePrompt" style="display:none;">
+      <button class="locate-btn" id="nearbyLocateBtn" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        使用目前位置
+      </button>
+    </div>
+    <div id="nearbyMapContainer" style="height:480px; margin-bottom:1.5rem;"></div>
+    <div class="grid" id="nearbyPageGrid"></div>
+  </div>
+
   <section class="section" id="mapSection" style="margin-top:2.6rem;">
     <div class="section-head">
       <h2>地圖檢視</h2>
       <span class="hint">依目前的篩選條件顯示地點</span>
     </div>
     <div id="mapContainer"></div>
-  </section>
-
-  <section class="section" id="nearby" style="display:none; margin-top:2.6rem;">
-    <div class="section-head">
-      <h2>附近展覽</h2>
-      <span class="hint">依你目前位置，由近到遠排序</span>
-    </div>
-    <div class="scroll-row" id="nearbyRow"></div>
   </section>
 </main>
 
@@ -399,9 +407,12 @@ const state = {
   userLoc: null,
   statusFilter: 'all',
   detailCategory: null,
+  viewMode: 'home', // 'home' | 'detail' | 'nearby'
   lastPool: [],
   map: null,
   markers: [],
+  nearbyMap: null,
+  nearbyMarkerLayer: null,
 };
 
 // 縣市顯示順序：北到南，接著中部，再來東部與離島
@@ -471,7 +482,28 @@ const PLACEHOLDER_GRADIENTS = {
 
 function iconKeyFor(category){ return CATEGORY_ICON_MAP[category] || 'ticket'; }
 
+// 場館 -> 縣市的精準對照（跟 scraper.py 的 MAJOR_VENUE_REGIONS 保持一致）
+// 直接用場館名稱判斷地區，比地址關鍵字比對準確很多
+const VENUE_REGION_MAP = {
+  '台北市立美術館':'台北市', '國立故宮博物院':'台北市', '國立歷史博物館':'台北市',
+  '國立臺灣博物館':'台北市', '台北當代藝術館':'台北市', '華山1914文化創意產業園區':'台北市',
+  '松山文創園區':'台北市', '空總臺灣當代文化實驗場':'台北市', '國父紀念館':'台北市',
+  '中正紀念堂':'台北市', '國家兩廳院':'台北市', '台北流行音樂中心':'台北市',
+  '三創生活園區':'台北市', '台北世界貿易中心':'台北市', '順益台灣原住民博物館':'台北市',
+  '新北市美術館':'新北市', '雲門劇場':'新北市',
+  '桃園展演中心':'桃園市', '桃園市立美術館':'桃園市',
+  '新竹市美術館':'新竹市', '新竹生活美學館':'新竹市',
+  '國立臺灣美術館':'台中市', '台中國家歌劇院':'台中市',
+  '彰化縣立美術館':'彰化縣',
+  '國立臺灣工藝研究發展中心':'南投縣',
+  '高雄市立美術館':'高雄市', '衛武營國家藝術文化中心':'高雄市',
+  '駁二藝術特區':'高雄市', '高雄市電影館':'高雄市',
+  '台南市美術館':'台南市', '國立臺灣歷史博物館':'台南市', '台南文化中心':'台南市',
+  '屏東美術館':'屏東縣', '屏東演藝廳':'屏東縣',
+};
+
 function detectRegion(ev){
+  if(VENUE_REGION_MAP[ev.locationName]) return VENUE_REGION_MAP[ev.locationName];
   const text = `${ev.locationName || ''} ${ev.location || ''}`;
   for(const group of REGION_GROUPS){
     if(group.some(kw => text.includes(kw))) return group[0];
@@ -493,12 +525,14 @@ function sortByCategoryOrder(cats){
   });
 }
 
-// ---------- 讀取網址參數（從「顯示更多展覽」連結進來時使用）----------
+// ---------- 讀取網址參數（從「顯示更多展覽」「附近展覽」連結進來時使用）----------
 function readUrlParams(){
   const params = new URLSearchParams(location.search);
   const category = params.get('category');
   const status = params.get('status');
-  if(category) state.detailCategory = category;
+  const view = params.get('view');
+  if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
+  if(view === 'nearby') state.viewMode = 'nearby';
   if(status && ['all','ongoing','upcoming'].includes(status)) state.statusFilter = status;
 }
 
@@ -898,22 +932,25 @@ function render(){
   const pool = getFilteredPool();
   state.lastPool = pool;
 
-  const isDetail = Boolean(state.detailCategory);
-  document.getElementById('homepageRows').style.display = isDetail ? 'none' : 'block';
-  document.getElementById('detailView').style.display = isDetail ? 'block' : 'none';
+  const mode = state.viewMode;
+  document.getElementById('homepageRows').style.display = mode === 'home' ? 'block' : 'none';
+  document.getElementById('detailView').style.display = mode === 'detail' ? 'block' : 'none';
+  document.getElementById('nearbyPageView').style.display = mode === 'nearby' ? 'block' : 'none';
+  document.getElementById('mapSection').style.display = mode === 'nearby' ? 'none' : 'block';
 
-  if(isDetail){
+  if(mode === 'detail'){
     renderDetail(pool);
+    const mapPool = pool.filter(ev => ev.category === state.detailCategory);
+    renderMapView(mapPool);
+  }else if(mode === 'nearby'){
+    renderNearbyPage(pool);
   }else{
     renderHomepage(pool);
+    renderMapView(pool);
   }
-
-  renderNearby();
-  const mapPool = isDetail ? pool.filter(ev => ev.category === state.detailCategory) : pool;
-  renderMapView(mapPool);
 }
 
-// ---------- 附近展覽（地理位置）----------
+// ---------- 附近展覽（獨立頁面）----------
 function haversine(lat1, lon1, lat2, lon2){
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -922,11 +959,22 @@ function haversine(lat1, lon1, lat2, lon2){
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-function renderNearby(){
-  const section = document.getElementById('nearby');
-  if(!state.userLoc){ section.style.display = 'none'; return; }
+function renderNearbyPage(pool){
+  const hint = document.getElementById('nearbyPageHint');
+  const prompt = document.getElementById('nearbyPagePrompt');
+  const grid = document.getElementById('nearbyPageGrid');
+  const mapEl = document.getElementById('nearbyMapContainer');
 
-  const withCoords = state.events
+  if(!state.userLoc){
+    hint.textContent = '請允許定位，才能依距離排序附近的展覽';
+    prompt.style.display = 'block';
+    grid.innerHTML = '';
+    mapEl.innerHTML = '';
+    return;
+  }
+  prompt.style.display = 'none';
+
+  const withCoords = pool
     .map(ev => {
       const lat = parseFloat(ev.latitude);
       const lng = parseFloat(ev.longitude);
@@ -934,14 +982,61 @@ function renderNearby(){
       return { ...ev, _distance: haversine(state.userLoc.lat, state.userLoc.lng, lat, lng) };
     })
     .filter(Boolean)
-    .sort((a,b) => a._distance - b._distance)
-    .slice(0, 10);
+    .sort((a,b) => a._distance - b._distance);
 
-  const row = document.getElementById('nearbyRow');
-  section.style.display = 'block';
-  row.innerHTML = withCoords.length
+  hint.textContent = `共 ${withCoords.length} 檔，依距離由近到遠排序`;
+
+  grid.innerHTML = withCoords.length
     ? withCoords.map(ev => cardMarkup(ev, { showDistance: true })).join('')
     : '<div class="empty">目前沒有活動提供座標資訊，暫時無法計算距離。</div>';
+
+  renderNearbyMap(withCoords);
+}
+
+function initNearbyMapIfNeeded(){
+  if(state.nearbyMap) return;
+  state.nearbyMap = L.map('nearbyMapContainer').setView([23.7, 121.0], 7);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap 貢獻者',
+    maxZoom: 18,
+  }).addTo(state.nearbyMap);
+  state.nearbyMarkerLayer = L.layerGroup().addTo(state.nearbyMap);
+}
+
+function renderNearbyMap(items){
+  initNearbyMapIfNeeded();
+  state.nearbyMarkerLayer.clearLayers();
+
+  if(state.userLoc){
+    const userMarker = L.circleMarker([state.userLoc.lat, state.userLoc.lng], {
+      radius: 8, color: '#4F46E5', fillColor: '#4F46E5', fillOpacity: 1,
+    }).bindPopup('你目前的位置');
+    state.nearbyMarkerLayer.addLayer(userMarker);
+  }
+
+  items.forEach(ev => {
+    const lat = parseFloat(ev.latitude);
+    const lng = parseFloat(ev.longitude);
+    const marker = L.marker([lat, lng]);
+    const linkHtml = ev.sourceUrl
+      ? `<a href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener">前往官方頁面 →</a>`
+      : '';
+    marker.bindPopup(`
+      <div class="map-popup">
+        <h4>${escapeHtml(ev.title)}</h4>
+        <p>${escapeHtml(ev.locationName || ev.location || '')}<br>距離約 ${ev._distance.toFixed(1)} 公里</p>
+        ${linkHtml}
+      </div>
+    `);
+    state.nearbyMarkerLayer.addLayer(marker);
+  });
+
+  const points = items.map(ev => [parseFloat(ev.latitude), parseFloat(ev.longitude)]);
+  if(state.userLoc) points.push([state.userLoc.lat, state.userLoc.lng]);
+  if(points.length > 0){
+    state.nearbyMap.fitBounds(L.latLngBounds(points), { padding:[30,30], maxZoom: 13 });
+  }
+  setTimeout(() => state.nearbyMap && state.nearbyMap.invalidateSize(), 60);
 }
 
 // ---------- 地圖檢視（OpenStreetMap / Leaflet，免金鑰）----------
@@ -1003,24 +1098,28 @@ document.querySelectorAll('.status-btn').forEach(btn => {
   });
 });
 
-document.getElementById('locateBtn').addEventListener('click', () => {
-  const btn = document.getElementById('locateBtn');
+function requestUserLocation(btn){
   if(!navigator.geolocation){
     alert('你的瀏覽器不支援定位功能');
     return;
   }
+  const originalHtml = btn.innerHTML;
   btn.textContent = '定位中…';
   navigator.geolocation.getCurrentPosition(
     pos => {
       state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> 已定位';
-      btn.classList.add('active');
-      renderNearby();
-      document.getElementById('nearby').scrollIntoView({ behavior:'smooth', block:'start' });
+      document.querySelectorAll('.locate-btn').forEach(b => {
+        b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> 已定位';
+        b.classList.add('active');
+      });
+      render();
     },
-    () => { btn.textContent = '定位失敗，重試'; }
+    () => { btn.innerHTML = originalHtml; btn.textContent = '定位失敗，重試'; }
   );
-});
+}
+
+document.getElementById('locateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
+document.getElementById('nearbyLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
 
 function setupDropdown(navBtnId, panelId){
   const navBtn = document.getElementById(navBtnId);
