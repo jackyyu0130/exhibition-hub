@@ -116,7 +116,7 @@
   /* ---------- Hero：全版輪播圖 ---------- */
   .hero{
     position:relative; width:100%;
-    height: min(88vh, 690px); min-height: 460px;
+    height: min(96vh, 920px); min-height: 610px;
     overflow:hidden;
   }
   .hero-slides{ position:absolute; inset:0; }
@@ -131,7 +131,7 @@
   }
   .hero-overlay{
     position:absolute; left:0; right:0; bottom:0; z-index:2;
-    padding: 2.6rem 2.6rem 2.8rem; max-width: 720px;
+    padding: 2.6rem 2.6rem 2.8rem; max-width: min(90%, 900px);
   }
   .hero-overlay h1{
     font-family:"Noto Serif TC", serif;
@@ -139,6 +139,7 @@
     font-size: clamp(1.7rem, 3.6vw, 2.5rem);
     line-height:1.35; margin: 0 0 .6rem;
     text-shadow: 0 3px 14px rgba(0,0,0,.35);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .hero-overlay p.tagline{
     color: rgba(255,255,255,.9); font-size:1rem; margin:0 0 1.2rem;
@@ -158,8 +159,7 @@
 
   .locate-btn{
     display:inline-flex; align-items:center; gap:.4rem;
-    background: rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.4);
-    backdrop-filter: blur(4px);
+    background: var(--ink); border:1px solid var(--ink);
     color:#fff; border-radius:999px; padding:.6rem 1.1rem; font-size:.85rem; font-weight:500;
     white-space:nowrap;
   }
@@ -337,6 +337,8 @@
     background: rgba(79,70,229,.08); padding:.1rem .5rem; border-radius:999px;
   }
   .card-price{ font-size:.78rem; color:var(--ink-soft); margin-top:.4rem; font-weight:500; }
+  .card-price.is-free{ color:#0D9488; font-weight:700; }
+  .card-price.is-unknown{ color:#B8B4AC; font-weight:400; }
   .card-title{
     font-size: .98rem; font-weight:700; line-height:1.4; margin:0 0 .45rem;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
@@ -429,7 +431,6 @@
   <div class="hero-slides" id="heroCarousel"></div>
   <div class="hero-overlay">
     <h1 id="heroTitle">探索全台精彩展覽</h1>
-    <p class="tagline" id="heroSubtitle" style="display:none;"></p>
     <p class="hero-date" id="heroDate"></p>
   </div>
 </section>
@@ -986,7 +987,7 @@ function cardMarkup(ev, { showDistance } = {}){
           <span class="loc">${escapeHtml(ev.locationName || ev.location || '地點未提供')}</span>
           <span>${escapeHtml(dateRangeText(ev))}</span>
         </div>
-        <div class="card-price">${ev.price ? escapeHtml(ev.price) : '票價未提供'}</div>
+        <div class="card-price ${ev.price === '免費' ? 'is-free' : ''} ${!ev.price ? 'is-unknown' : ''}">${ev.price ? escapeHtml(ev.price) : '票價未提供'}</div>
         ${showDistance && ev._distance != null ? `<div class="card-dist">距離約 ${ev._distance.toFixed(1)} 公里</div>` : ''}
       </div>
     </${tag}>
@@ -1353,21 +1354,13 @@ function pickHeroSlides(){
 
 function updateHeroText(ev){
   const titleEl = document.getElementById('heroTitle');
-  const subEl = document.getElementById('heroSubtitle');
   const dateEl = document.getElementById('heroDate');
   if(!ev){
     titleEl.textContent = '探索全台精彩展覽';
-    subEl.style.display = 'none';
     dateEl.textContent = '';
     return;
   }
   titleEl.textContent = ev.title;
-  if(ev.unit){
-    subEl.textContent = ev.unit;
-    subEl.style.display = 'block';
-  }else{
-    subEl.style.display = 'none';
-  }
   dateEl.textContent = dateRangeText(ev);
 }
 
