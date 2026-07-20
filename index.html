@@ -86,6 +86,13 @@
   .dropdown-panel .opt input{ accent-color:var(--brand); width:15px; height:15px; }
   .dropdown-panel .opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
   .dropdown-clear{ font-size:.75rem; color:var(--brand); background:none; border:none; margin-bottom:.5rem; padding:0; }
+  .dropdown-panel-wide{ width: 300px; max-height: 420px; }
+  .dropdown-group-title{
+    font-size:.7rem; font-weight:700; color:var(--brand);
+    text-transform:uppercase; letter-spacing:.06em;
+    margin: .9rem 0 .35rem; padding-top:.5rem; border-top:1px solid var(--line);
+  }
+  .dropdown-group-title:first-child{ margin-top:0; padding-top:0; border-top:none; }
 
   /* ---------- Hero ---------- */
   .hero{
@@ -308,6 +315,13 @@
           <div id="regionOptions"></div>
         </div>
       </div>
+      <div class="dropdown-wrap">
+        <button class="nav-item" id="venueNavBtn">地點 ▾</button>
+        <div class="dropdown-panel dropdown-panel-wide" id="venuePanel">
+          <button class="dropdown-clear" data-clear="venue">清除已選地點</button>
+          <div id="venueOptions"></div>
+        </div>
+      </div>
       <a href="#nearby">附近展覽</a>
     </nav>
     <div class="nav-spacer"></div>
@@ -375,6 +389,7 @@ const state = {
   updatedAt: null,
   selectedRegions: new Set(),
   selectedCategories: new Set(),
+  selectedVenues: new Set(),
   userLoc: null,
   statusFilter: 'all',
   detailCategory: null,
@@ -383,12 +398,12 @@ const state = {
   markers: [],
 };
 
-// 地區顯示順序：北到南，接著中部，再來東部與離島
+// 縣市顯示順序：北到南，接著中部，再來東部與離島
 const REGION_ORDER = [
   '台北市','新北市','基隆市','桃園市','新竹市','新竹縣',
-  '台南市','高雄市','屏東縣',
-  '台中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣',
-  '苗栗縣','宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣',
+  '苗栗縣','台中市','彰化縣','南投縣','雲林縣',
+  '嘉義市','嘉義縣','台南市','高雄市','屏東縣',
+  '宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣',
   '其他地區',
 ];
 
@@ -399,6 +414,19 @@ const REGION_GROUPS = [
   ['台南市','臺南市'], ['高雄市'], ['屏東縣'], ['宜蘭縣'],
   ['花蓮縣'], ['台東縣','臺東縣'], ['澎湖縣'], ['金門縣'], ['連江縣'],
 ];
+
+// 縣市 -> 北中南東部/離島 分區
+const REGION_MACRO_MAP = {
+  '台北市':'北部', '新北市':'北部', '基隆市':'北部', '桃園市':'北部', '新竹市':'北部', '新竹縣':'北部',
+  '苗栗縣':'中部', '台中市':'中部', '彰化縣':'中部', '南投縣':'中部', '雲林縣':'中部',
+  '嘉義市':'南部', '嘉義縣':'南部', '台南市':'南部', '高雄市':'南部', '屏東縣':'南部',
+  '宜蘭縣':'東部・離島', '花蓮縣':'東部・離島', '台東縣':'東部・離島',
+  '澎湖縣':'東部・離島', '金門縣':'東部・離島', '連江縣':'東部・離島',
+  '其他地區':'其他',
+};
+const MACRO_ORDER = ['北部','中部','南部','東部・離島','其他'];
+
+function macroOf(region){ return REGION_MACRO_MAP[region] || '其他'; }
 
 // 首頁分類區塊的顯示順序
 const CATEGORY_ORDER = ['音樂','美術','動漫','表演','舞蹈','攝影','設計','講座','市集','其他'];
@@ -478,6 +506,7 @@ async function loadData(){
     buildCategoryRow();
     buildCategoryPanel();
     buildRegionPanel();
+    buildVenuePanel();
     syncStatusButtons();
     render();
     updateNavCount();
@@ -488,8 +517,18 @@ async function loadData(){
   }
 }
 
+function formatUpdatedAt(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return '';
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 function updateNavCount(){
-  document.getElementById('navCount').textContent = `收錄 ${state.events.length} 檔活動`;
+  const dateText = formatUpdatedAt(state.updatedAt);
+  document.getElementById('navCount').textContent =
+    `收錄 ${state.events.length} 檔活動${dateText ? ` · 最後更新 ${dateText}` : ''}`;
 }
 
 function countBy(list, key){
@@ -561,19 +600,72 @@ function syncCategoryPanelChecks(){
 
 function buildRegionPanel(){
   const counts = countBy(state.events, 'region');
-  const regions = sortByRegionOrder(Object.keys(counts));
   const el = document.getElementById('regionOptions');
-  el.innerHTML = regions.map(region => `
-    <label class="opt">
-      <input type="checkbox" data-region="${escapeAttr(region)}">
-      ${escapeHtml(region)}
-      <span class="c">${counts[region]}</span>
-    </label>
-  `).join('');
+
+  const byMacro = {};
+  Object.keys(counts).forEach(region => {
+    const macro = macroOf(region);
+    (byMacro[macro] = byMacro[macro] || []).push(region);
+  });
+
+  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
+    const regions = sortByRegionOrder(byMacro[macro]);
+    return `
+      <div class="dropdown-group-title">${escapeHtml(macro)}</div>
+      ${regions.map(region => `
+        <label class="opt">
+          <input type="checkbox" data-region="${escapeAttr(region)}">
+          ${escapeHtml(region)}
+          <span class="c">${counts[region]}</span>
+        </label>
+      `).join('')}
+    `;
+  }).join('');
+
   el.querySelectorAll('input[data-region]').forEach(cb => {
     cb.addEventListener('change', () => {
       const r = cb.dataset.region;
       if(cb.checked) state.selectedRegions.add(r); else state.selectedRegions.delete(r);
+      render();
+    });
+  });
+}
+
+function buildVenuePanel(){
+  const counts = {};
+  const macroByVenue = {};
+  state.events.forEach(ev => {
+    const venue = ev.locationName || ev.location;
+    if(!venue) return;
+    counts[venue] = (counts[venue] || 0) + 1;
+    macroByVenue[venue] = macroOf(ev.region);
+  });
+
+  const byMacro = {};
+  Object.keys(counts).forEach(venue => {
+    const macro = macroByVenue[venue];
+    (byMacro[macro] = byMacro[macro] || []).push(venue);
+  });
+
+  const el = document.getElementById('venueOptions');
+  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
+    const venues = byMacro[macro].sort((a,b) => counts[b] - counts[a]);
+    return `
+      <div class="dropdown-group-title">${escapeHtml(macro)}</div>
+      ${venues.map(venue => `
+        <label class="opt">
+          <input type="checkbox" data-venue="${escapeAttr(venue)}">
+          ${escapeHtml(venue)}
+          <span class="c">${counts[venue]}</span>
+        </label>
+      `).join('')}
+    `;
+  }).join('');
+
+  el.querySelectorAll('input[data-venue]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const v = cb.dataset.venue;
+      if(cb.checked) state.selectedVenues.add(v); else state.selectedVenues.delete(v);
       render();
     });
   });
@@ -645,6 +737,7 @@ function getFilteredPool(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   let pool = state.events.filter(ev => {
     if(state.selectedRegions.size && !state.selectedRegions.has(ev.region)) return false;
+    if(state.selectedVenues.size && !state.selectedVenues.has(ev.locationName || ev.location)) return false;
     if(state.statusFilter === 'ongoing' && !isOngoing(ev)) return false;
     if(state.statusFilter === 'upcoming' && !isUpcoming(ev)) return false;
     if(q){
@@ -908,6 +1001,7 @@ function setupDropdown(navBtnId, panelId){
 }
 setupDropdown('regionNavBtn', 'regionPanel');
 setupDropdown('categoryNavBtn', 'categoryPanel');
+setupDropdown('venueNavBtn', 'venuePanel');
 
 document.querySelector('[data-clear="region"]').addEventListener('click', () => {
   state.selectedRegions.clear();
@@ -918,6 +1012,11 @@ document.querySelector('[data-clear="category"]').addEventListener('click', () =
   state.selectedCategories.clear();
   syncCategoryChips();
   syncCategoryPanelChecks();
+  render();
+});
+document.querySelector('[data-clear="venue"]').addEventListener('click', () => {
+  state.selectedVenues.clear();
+  document.querySelectorAll('input[data-venue]').forEach(cb => cb.checked = false);
   render();
 });
 
