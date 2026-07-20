@@ -165,20 +165,6 @@
   /* ---------- 主內容 ---------- */
   main{ max-width:1180px; margin:0 auto; padding: 2.4rem 1.5rem 5rem; }
 
-  .browse-toolbar{
-    display:flex; justify-content:flex-end; align-items:center;
-    margin-bottom: 1.6rem; gap:1rem;
-  }
-  .view-toggle{
-    display:flex; background:#fff; border:1px solid var(--line);
-    border-radius: 999px; padding: .2rem;
-  }
-  .view-btn{
-    border:none; background:none; font-size:.82rem; color:var(--ink-soft);
-    padding:.4rem .95rem; border-radius:999px;
-  }
-  .view-btn.active{ background: var(--brand); color:#fff; }
-
   /* 分類卡片列（首頁）*/
   .cat-section{ margin-bottom: 2.6rem; }
   .cat-section-head{
@@ -240,7 +226,8 @@
     aspect-ratio: 4 / 3; position:relative; overflow:hidden;
     display:flex; align-items:center; justify-content:center; color:#fff;
   }
-  .card-media img{ width:100%; height:100%; object-fit:cover; }
+  .card-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .card-media .icon-wrap{ position:relative; z-index:0; }
   .card-badge{
     position:absolute; top:.6rem; left:.6rem;
     font-size:.68rem; font-weight:700; color:#fff;
@@ -273,7 +260,7 @@
   .scroll-row .card{ flex: 0 0 220px; scroll-snap-align:start; }
 
   #mapContainer{
-    height: 560px; border-radius: var(--radius);
+    height: 380px; border-radius: var(--radius);
     border:1px solid var(--line); overflow:hidden;
     background:#fff;
   }
@@ -342,21 +329,14 @@
 
   <div class="status-toggle" id="statusToggle">
     <button class="status-btn active" data-status="all" type="button">全部</button>
-    <button class="status-btn" data-status="ongoing" type="button">目前進行中</button>
-    <button class="status-btn" data-status="upcoming" type="button">未來舉辦</button>
+    <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
+    <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
   </div>
 
   <div class="cat-row" id="catRow"></div>
 </section>
 
 <main>
-  <div class="browse-toolbar">
-    <div class="view-toggle" id="viewToggle">
-      <button type="button" class="view-btn active" data-view="list">列表</button>
-      <button type="button" class="view-btn" data-view="map">地圖</button>
-    </div>
-  </div>
-
   <div id="homepageRows"></div>
 
   <div id="detailView" style="display:none;">
@@ -368,7 +348,13 @@
     <div class="grid" id="detailGrid"></div>
   </div>
 
-  <div id="mapContainer" style="display:none;"></div>
+  <section class="section" id="mapSection" style="margin-top:2.6rem;">
+    <div class="section-head">
+      <h2>地圖檢視</h2>
+      <span class="hint">依目前的篩選條件顯示地點</span>
+    </div>
+    <div id="mapContainer"></div>
+  </section>
 
   <section class="section" id="nearby" style="display:none; margin-top:2.6rem;">
     <div class="section-head">
@@ -390,7 +376,6 @@ const state = {
   selectedRegions: new Set(),
   selectedCategories: new Set(),
   userLoc: null,
-  view: 'list',
   statusFilter: 'all',
   detailCategory: null,
   lastPool: [],
@@ -416,11 +401,11 @@ const REGION_GROUPS = [
 ];
 
 // 首頁分類區塊的顯示順序
-const CATEGORY_ORDER = ['音樂','畫展/美術','動漫','戲劇/表演','舞蹈','攝影','設計','講座/工作坊','市集','其他'];
+const CATEGORY_ORDER = ['音樂','美術','動漫','表演','舞蹈','攝影','設計','講座','市集','其他'];
 
 const CATEGORY_ICON_MAP = {
-  '音樂': 'music', '畫展/美術': 'palette', '動漫': 'anime', '戲劇/表演': 'masks',
-  '舞蹈': 'dance', '攝影': 'camera', '設計': 'design', '講座/工作坊': 'mic',
+  '音樂': 'music', '美術': 'palette', '動漫': 'anime', '表演': 'masks',
+  '舞蹈': 'dance', '攝影': 'camera', '設計': 'design', '講座': 'mic',
   '市集': 'bag', '其他': 'ticket',
 };
 
@@ -678,13 +663,17 @@ function cardMarkup(ev, { showDistance } = {}){
   const badge = computeBadge(ev);
   const tag = ev.sourceUrl ? 'a' : 'div';
   const href = ev.sourceUrl ? `href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener"` : '';
-  const media = ev.image
-    ? `<img src="${escapeAttr(ev.image)}" alt="" loading="lazy">`
-    : `<div class="icon-wrap">${ICONS[iconKey]}</div>`;
+  const gradient = PLACEHOLDER_GRADIENTS[iconKey];
+  // 圖片一律先放 icon 佔位圖在底層，真的圖片載入成功才蓋在上面；
+  // 如果圖片網址失效載入失敗，onerror 會把圖片移除，讓底下的佔位圖自然顯示出來
+  const media = `
+    <div class="icon-wrap">${ICONS[iconKey]}</div>
+    ${ev.image ? `<img src="${escapeAttr(ev.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+  `;
 
   return `
     <${tag} class="card" ${href}>
-      <div class="card-media" style="background:${ev.image ? 'none' : PLACEHOLDER_GRADIENTS[iconKey]}">
+      <div class="card-media" style="background:${gradient}">
         ${media}
         ${badge ? `<span class="card-badge ${badge.cls}">${badge.label}</span>` : ''}
       </div>
@@ -792,7 +781,8 @@ function render(){
   }
 
   renderNearby();
-  renderMapView(pool);
+  const mapPool = isDetail ? pool.filter(ev => ev.category === state.detailCategory) : pool;
+  renderMapView(mapPool);
 }
 
 // ---------- 附近展覽（地理位置）----------
@@ -838,7 +828,6 @@ function initMapIfNeeded(){
 }
 
 function renderMapView(pool){
-  if(state.view !== 'map') return;
   initMapIfNeeded();
   state.markerLayer.clearLayers();
 
@@ -885,25 +874,6 @@ document.querySelectorAll('.status-btn').forEach(btn => {
     render();
   });
 });
-
-document.querySelectorAll('.view-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.view = btn.dataset.view;
-    const isDetail = Boolean(state.detailCategory);
-    const listEl = isDetail ? document.getElementById('detailView') : document.getElementById('homepageRows');
-    const mapEl = document.getElementById('mapContainer');
-    if(state.view === 'map'){
-      listEl.style.display = 'none';
-      mapEl.style.display = 'block';
-      renderMapView(state.lastPool);
-      setTimeout(() => { if(state.map) state.map.invalidateSize(); }, 60);
-    }else{
-      listEl.style.display = 'block';
-      mapEl.style.display = 'none';
-    }
-  });
 });
 
 document.getElementById('locateBtn').addEventListener('click', () => {
