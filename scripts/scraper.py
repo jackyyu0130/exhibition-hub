@@ -105,21 +105,42 @@ FREE_PATTERN = re.compile(
     r"免費入場|免費參觀|免費参觀|免費參加|免費體驗|免費入館|免費開放|自由入場|開放參觀|不收費|免費入園"
 )
 PRICE_PATTERN = re.compile(
-    r"(?:票價|全票|門票|定價|單人票|平日票|假日票|早鳥票|優惠票|學生票|參觀費|入場費|套票)"
+    r"(?:票價|全票|門票|定價|單人票|平日票|假日票|早鳥票|優惠票|學生票|參觀費|入場費|套票|"
+    r"優待票|敬老票|團體票|兒童票|愛心票|軍警票)"
     r"[:：｜\s]*(?:NT\$|TWD\$?|NT|\$)?\s?(\d[\d,]{1,6})\s?元?"
 )
 
 
+CHAIN_PRICE_PATTERN = re.compile(
+    r"^(?:[,，、/]\s*(?:NT\$|TWD\$?|NT|\$)?\s?\d[\d,]{0,6}\s?元?)*"
+)
+
+
 def extract_price_info(text: str) -> str:
-    """從頁面文字裡找「免費」或明確標示的票價字樣，找不到就回傳空字串（誠實標示未提供）。"""
+    """從頁面文字裡找「免費」或明確標示的票價字樣，找不到就回傳空字串（誠實標示未提供）。
+    如果同一個活動有多種票價（全票/優待票/學生票…，或用頓號、斜線接續列出的多個金額），
+    顯示成「NT$ 最低 - NT$ 最高」的範圍。"""
     if not text:
         return ""
     if FREE_PATTERN.search(text):
         return "免費"
-    match = PRICE_PATTERN.search(text)
-    if match:
-        return f"NT$ {match.group(1)}"
-    return ""
+
+    values = set()
+    for m in PRICE_PATTERN.finditer(text):
+        values.add(int(m.group(1).replace(",", "")))
+        # 同一句話裡如果用頓號/斜線/逗號接著列出其他金額（沒有各自重複票種名稱），
+        # 例如「定價：NT$300、NT$500、NT$800」，也一併抓進來
+        chain_match = CHAIN_PRICE_PATTERN.match(text[m.end():])
+        if chain_match:
+            for num in re.findall(r"\d[\d,]{0,6}", chain_match.group(0)):
+                values.add(int(num.replace(",", "")))
+
+    if not values:
+        return ""
+    values = sorted(values)
+    if len(values) == 1:
+        return f"NT$ {values[0]}"
+    return f"NT$ {values[0]} - NT$ {values[-1]}"
 
 
 def fetch_huashan_detail(url: str) -> dict:
@@ -419,9 +440,23 @@ def fetch_detail_extras(url: str) -> dict:
 
         if not image:
             # 有些頁面沒設定 og:image，退而求其次找頁面裡看起來像展覽主視覺的 <img>
-            img_tag = soup.find("img", src=re.compile(r"(exhibition|event|thumb|banner)", re.IGNORECASE))
-            if img_tag and img_tag.get("src"):
-                src = safe_str(img_tag["src"])
+            # (含現代網站常用的延遲載入 data-src 屬性)
+            keyword_pattern = re.compile(r"(exhibition|event|thumb|banner|cover|main|visual|kv)", re.IGNORECASE)
+            img_tag = soup.find("img", src=keyword_pattern)
+            src_attr = "src"
+            if not img_tag:
+                img_tag = soup.find("img", attrs={"data-src": keyword_pattern})
+                src_attr = "data-src"
+            if not img_tag:
+                # 真的找不到有關鍵字的圖，就退而求其次抓頁面第一張看起來夠大的圖
+                for candidate in soup.find_all("img"):
+                    src_val = candidate.get("src") or candidate.get("data-src")
+                    if src_val and not re.search(r"(logo|icon|menu|nav|banner-close)", src_val, re.IGNORECASE):
+                        img_tag = candidate
+                        src_attr = "src" if candidate.get("src") else "data-src"
+                        break
+            if img_tag and img_tag.get(src_attr):
+                src = safe_str(img_tag[src_attr])
                 if src and not src.startswith("http"):
                     src = urljoin(url, src)
                 image = valid_image_url(src)
