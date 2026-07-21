@@ -113,59 +113,26 @@
   }
   @media (max-width: 900px){ .nav-search{ display:none; } }
 
-  /* ---------- Hero：全版輪播圖 ---------- */
-  .hero{
-    position:relative; width:100%;
-    height: min(96vh, 920px); min-height: 610px;
-    overflow:hidden;
+  /* ---------- Hero：標題 + 精選展覽卡片輪播 ---------- */
+  .hero-compact{
+    max-width: 1180px; margin: 0 auto; padding: 2.6rem 1.5rem 0;
   }
-  .hero-slides{ position:absolute; inset:0; }
-  .hero-slide{
-    position:absolute; inset:0; opacity:0; transition: opacity 1.2s ease;
-    overflow:hidden;
+  .hero-compact-inner{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap: 1.5rem; flex-wrap:wrap; margin-bottom: 1.8rem;
   }
-  .hero-slide.active{ opacity:1; }
-  .hero-slide-bg{
-    position:absolute; inset:-20px;
-    background-size:cover; background-position:center;
-    filter: blur(30px) brightness(.65) saturate(1.1);
-    transform: scale(1.15);
+  .hero-compact h1{
+    font-family:"Noto Serif TC", serif; font-weight:900;
+    font-size: clamp(1.6rem, 3.2vw, 2.2rem); margin: 0 0 .4rem;
   }
-  .hero-slide-fg{
-    position:absolute; inset:0;
-    background-size:contain; background-position:center; background-repeat:no-repeat;
+  .hero-compact p.tagline{ color: var(--ink-soft); font-size:.95rem; margin:0; }
+
+  .random-pick-btn{
+    display:inline-flex; align-items:center; gap:.5rem; flex-shrink:0;
+    background: var(--card); border:1px solid var(--line); color: var(--ink);
+    padding:.65rem 1.2rem; border-radius:999px; font-size:.85rem; font-weight:600;
   }
-  .hero::after{
-    content:""; position:absolute; inset:0; z-index:1;
-    background: linear-gradient(180deg, rgba(20,15,40,.1) 0%, rgba(15,10,30,.2) 55%, rgba(10,8,20,.6) 100%);
-  }
-  .hero-overlay{
-    position:absolute; left:0; right:0; bottom:0; z-index:2;
-    padding: 2.6rem 2.6rem 2.8rem; max-width: min(90%, 900px);
-  }
-  .hero-overlay h1{
-    font-family:"Noto Serif TC", serif;
-    font-weight:900; color:#fff;
-    font-size: clamp(1.7rem, 3.6vw, 2.5rem);
-    line-height:1.35; margin: 0 0 .6rem;
-    text-shadow: 0 3px 14px rgba(0,0,0,.35);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .hero-overlay p.tagline{
-    color: rgba(255,255,255,.9); font-size:1rem; margin:0 0 1.2rem;
-    text-shadow: 0 2px 8px rgba(0,0,0,.3);
-  }
-  .hero-overlay .hero-date{
-    color: rgba(255,255,255,.85); font-size:.85rem; margin:0;
-    font-family:"Noto Sans TC", sans-serif; letter-spacing:.02em;
-    text-shadow: 0 2px 8px rgba(0,0,0,.3);
-  }
-  .hero-dots{
-    position:absolute; bottom:1rem; right:1.3rem; z-index:2;
-    display:flex; gap:.4rem;
-  }
-  .hero-dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5); }
-  .hero-dot.active{ background:#fff; }
+  .random-pick-btn:hover{ border-color: var(--brand); color: var(--brand); }
 
   .locate-btn{
     display:inline-flex; align-items:center; gap:.4rem;
@@ -260,12 +227,19 @@
     display:flex; align-items:center; justify-content:center; color:var(--brand); flex-shrink:0;
   }
   .cat-section-head .icon-sm svg{ width:16px; height:16px; }
-  .row-controls{ display:flex; gap:.4rem; }
+  .row-controls{ display:flex; align-items:center; gap:.6rem; }
   .row-nav{
     width:32px; height:32px; border-radius:50%; border:1px solid var(--line);
     background:#fff; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
   }
   .row-nav:hover{ border-color:var(--brand); color:var(--brand); }
+
+  .row-sort{ display:flex; background:#fff; border:1px solid var(--line); border-radius:999px; padding:.15rem; }
+  .row-sort-btn{
+    border:none; background:none; font-size:.72rem; color:var(--ink-soft);
+    padding:.3rem .65rem; border-radius:999px; white-space:nowrap;
+  }
+  .row-sort-btn.active{ background: var(--brand); color:#fff; }
 
   .carousel{
     display:grid; grid-auto-flow:column; grid-auto-columns: calc((100% - 3*1.3rem)/4);
@@ -396,6 +370,15 @@
   .card-badge.closing{ background: var(--closing); }
   .card-badge.new{ background: var(--new); }
 
+  .fav-btn{
+    position:absolute; top:.55rem; right:.55rem; z-index:3;
+    width:30px; height:30px; border-radius:50%; border:none;
+    background: rgba(255,255,255,.85); color: var(--ink-soft);
+    font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center;
+  }
+  .fav-btn.active{ color: var(--hot); background:#fff; }
+  .fav-btn:hover{ color: var(--hot); }
+
   .card-body{ padding: .9rem 1rem 1.05rem; }
   .card-cat-row{ display:flex; flex-wrap:wrap; gap:.3rem; margin-bottom:.4rem; }
   .card-cat{
@@ -483,6 +466,7 @@
         </div>
       </div>
       <a href="?view=nearby">附近展覽</a>
+      <a href="?view=favorites">我的收藏</a>
     </nav>
     <div class="nav-spacer"></div>
     <div class="nav-search">
@@ -493,12 +477,26 @@
   </div>
 </header>
 
-<section class="hero" id="top">
-  <div class="hero-slides" id="heroCarousel"></div>
-  <div class="hero-overlay">
-    <h1 id="heroTitle">探索全台精彩展覽</h1>
-    <p class="hero-date" id="heroDate"></p>
+<section class="hero-compact" id="top">
+  <div class="hero-compact-inner">
+    <div>
+      <h1>探索全台精彩展覽</h1>
+      <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
+    </div>
+    <button class="random-pick-btn" id="randomPickBtn" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg>
+      隨機推薦一檔
+    </button>
   </div>
+
+  <div class="cat-section-head">
+    <h2><span class="icon-sm">✦</span>精選展覽</h2>
+    <div class="row-controls">
+      <button class="row-nav prev" id="featuredPrev" aria-label="向左">‹</button>
+      <button class="row-nav next" id="featuredNext" aria-label="向右">›</button>
+    </div>
+  </div>
+  <div class="carousel" id="featuredCarousel"></div>
 </section>
 
 <div class="filters-section">
@@ -565,18 +563,23 @@
         <div class="event-meta-list">
           <div class="meta-row"><span class="meta-label">日期</span><span id="eventDate"></span></div>
           <div class="meta-row"><span class="meta-label">地點</span><span id="eventVenue"></span></div>
+          <div class="meta-row"><span class="meta-label">地址</span><span id="eventAddress"></span></div>
+          <div class="meta-row" id="eventTransitRow" style="display:none;"><span class="meta-label">交通</span><span id="eventTransit"></span></div>
           <div class="meta-row"><span class="meta-label">票價</span><span id="eventPrice"></span></div>
         </div>
         <p class="event-description" id="eventDescription"></p>
         <a class="detail-external-btn" id="eventExternalLink" target="_blank" rel="noopener">詳細資訊 →</a>
       </div>
     </div>
+  </div>
 
-    <div class="section-head" style="margin-top:2.4rem;">
-      <h2>地點</h2>
-      <span class="hint" id="eventMapHint"></span>
+  <div id="favoritesView" style="display:none;">
+    <a class="back-link" href="./">← 回首頁</a>
+    <div class="section-head">
+      <h2>我的收藏</h2>
+      <span class="hint" id="favoritesHint"></span>
     </div>
-    <div id="eventMapContainer" style="height:360px;"></div>
+    <div class="grid" id="favoritesGrid"></div>
   </div>
 
   <section class="section" id="nearbyPreviewSection" style="margin-top:2.6rem;">
@@ -613,6 +616,7 @@ const state = {
   selectedDate: null,
   detailCategory: null,
   detailVenueFilter: null,
+  rowSort: {},
   viewMode: 'home', // 'home' | 'detail' | 'nearby' | 'event'
   eventDetailUrl: null,
   lastPool: [],
@@ -743,6 +747,7 @@ function readUrlParams(){
   const eventUrl = params.get('event');
   if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
   if(view === 'nearby') state.viewMode = 'nearby';
+  if(view === 'favorites') state.viewMode = 'favorites';
   if(eventUrl){ state.eventDetailUrl = eventUrl; state.viewMode = 'event'; }
   if(status && ['all','ongoing','upcoming'].includes(status)) state.statusFilter = status;
 }
@@ -759,7 +764,7 @@ async function loadData(){
     buildRegionPanel();
     buildVenuePanel();
     syncStatusButtons();
-    initHeroCarousel();
+    renderFeaturedCarousel();
     render();
     updateNavCount();
   }catch(err){
@@ -1052,6 +1057,39 @@ function getFilteredPool(){
 }
 
 // ---------- 卡片 ----------
+// ---------- 收藏功能（存在瀏覽器本機，不需要登入）----------
+const FAVORITES_KEY = 'exhibitionHubFavorites';
+
+function getFavorites(){
+  try{
+    const raw = localStorage.getItem(FAVORITES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+function isFavorite(url){
+  return getFavorites().includes(url);
+}
+
+function toggleFavorite(url){
+  let favs = getFavorites();
+  if(favs.includes(url)) favs = favs.filter(u => u !== url);
+  else favs.push(url);
+  try{ localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); }catch(e){ /* 儲存失敗就算了，不影響瀏覽 */ }
+}
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.fav-btn');
+  if(!btn) return;
+  e.preventDefault();
+  e.stopPropagation();
+  toggleFavorite(btn.dataset.fav);
+  btn.classList.toggle('active');
+  if(state.viewMode === 'favorites') render();
+});
+
 function cardMarkup(ev, { showDistance } = {}){
   const iconKey = iconKeyFor(ev.category);
   const badge = computeBadge(ev);
@@ -1071,6 +1109,7 @@ function cardMarkup(ev, { showDistance } = {}){
       <div class="card-media" style="background:${gradient}">
         ${media}
         ${badge ? `<span class="card-badge ${badge.cls}">${badge.label}</span>` : ''}
+        ${ev.sourceUrl ? `<button class="fav-btn ${isFavorite(ev.sourceUrl) ? 'active' : ''}" data-fav="${escapeAttr(ev.sourceUrl)}" aria-label="收藏">♥</button>` : ''}
       </div>
       <div class="card-body">
         <div class="card-cat-row">
@@ -1099,6 +1138,29 @@ function buildShowMoreUrl(category){
   return `?${params.toString()}`;
 }
 
+function sortRowItems(items, mode){
+  const arr = items.slice();
+  if(mode === 'newest'){
+    arr.sort((a, b) => (parseDate(b.startDate)?.getTime() ?? 0) - (parseDate(a.startDate)?.getTime() ?? 0));
+  }else if(mode === 'ending'){
+    arr.sort((a, b) => (parseDate(a.endDate)?.getTime() ?? Infinity) - (parseDate(b.endDate)?.getTime() ?? Infinity));
+  }else{
+    arr.sort(compareEvents);
+  }
+  return arr;
+}
+
+function rowSortControlHtml(rowKey){
+  const mode = state.rowSort[rowKey] || 'default';
+  return `
+    <div class="row-sort" data-row-sort-key="${escapeAttr(rowKey)}">
+      <button class="row-sort-btn ${mode === 'default' ? 'active' : ''}" data-sort="default">推薦</button>
+      <button class="row-sort-btn ${mode === 'newest' ? 'active' : ''}" data-sort="newest">最新</button>
+      <button class="row-sort-btn ${mode === 'ending' ? 'active' : ''}" data-sort="ending">即將結束</button>
+    </div>
+  `;
+}
+
 function renderHomepage(pool){
   const wrap = document.getElementById('homepageRows');
   const byCategory = {};
@@ -1117,8 +1179,26 @@ function renderHomepage(pool){
     return;
   }
 
-  wrap.innerHTML = cats.map(cat => {
-    const items = byCategory[cat];
+  // 置頂精選列：即將結束、新開展的活動，讓使用者一眼看到有時效性的展覽
+  const urgentItems = sortRowItems(pool.filter(ev => computeBadge(ev)), 'ending').slice(0, ROW_MAX_ITEMS);
+  const urgentSectionHtml = urgentItems.length ? `
+    <section class="cat-section">
+      <div class="cat-section-head">
+        <h2><span class="icon-sm">🔥</span>即將結束＆新開展<span class="hint">（${urgentItems.length} 檔）</span></h2>
+        <div class="row-controls">
+          <button class="row-nav prev" data-row="__urgent__" aria-label="向左">‹</button>
+          <button class="row-nav next" data-row="__urgent__" aria-label="向右">›</button>
+        </div>
+      </div>
+      <div class="carousel" id="row-__urgent__">
+        ${urgentItems.map(ev => cardMarkup(ev)).join('')}
+      </div>
+    </section>
+  ` : '';
+
+  const categorySectionsHtml = cats.map(cat => {
+    const sortMode = state.rowSort[cat] || 'default';
+    const items = sortRowItems(byCategory[cat], sortMode);
     const shown = items.slice(0, ROW_MAX_ITEMS);
     const hasMore = items.length > ROW_MAX_ITEMS;
     return `
@@ -1126,6 +1206,7 @@ function renderHomepage(pool){
         <div class="cat-section-head">
           <h2><span class="icon-sm">${ICONS[iconKeyFor(cat)]}</span>${escapeHtml(cat)}<span class="hint">（${items.length} 檔）</span></h2>
           <div class="row-controls">
+            ${rowSortControlHtml(cat)}
             <button class="row-nav prev" data-row="${escapeAttr(cat)}" aria-label="向左">‹</button>
             <button class="row-nav next" data-row="${escapeAttr(cat)}" aria-label="向右">›</button>
           </div>
@@ -1141,12 +1222,22 @@ function renderHomepage(pool){
     `;
   }).join('');
 
+  wrap.innerHTML = urgentSectionHtml + categorySectionsHtml;
+
   wrap.querySelectorAll('.row-nav').forEach(btn => {
     btn.addEventListener('click', () => {
       const el = document.getElementById(`row-${cssId(btn.dataset.row)}`);
       if(!el) return;
       const dir = btn.classList.contains('next') ? 1 : -1;
       el.scrollBy({ left: dir * el.clientWidth, behavior: 'smooth' });
+    });
+  });
+
+  wrap.querySelectorAll('.row-sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rowKey = btn.closest('.row-sort').dataset.rowSortKey;
+      state.rowSort[rowKey] = btn.dataset.sort;
+      render();
     });
   });
 }
@@ -1158,6 +1249,16 @@ function cssId(str){
 // ---------- 站內展覽詳情頁 ----------
 function findEventByUrl(url){
   return state.events.find(ev => ev.sourceUrl === url);
+}
+
+function renderFavorites(){
+  const favs = getFavorites();
+  const items = state.events.filter(ev => favs.includes(ev.sourceUrl));
+  document.getElementById('favoritesHint').textContent = `共 ${items.length} 檔`;
+  const grid = document.getElementById('favoritesGrid');
+  grid.innerHTML = items.length
+    ? items.map(ev => cardMarkup(ev)).join('')
+    : '<div class="empty">還沒有收藏的展覽，點卡片右上角的愛心圖示即可收藏。</div>';
 }
 
 function renderEventDetail(){
@@ -1205,6 +1306,16 @@ function renderEventDetail(){
   document.getElementById('eventTitle').textContent = ev.title;
   document.getElementById('eventDate').textContent = dateRangeText(ev);
   document.getElementById('eventVenue').textContent = ev.locationName || ev.location || '地點未提供';
+  document.getElementById('eventAddress').textContent = ev.location || '地址未提供';
+
+  const transitRow = document.getElementById('eventTransitRow');
+  if(ev.transitInfo){
+    document.getElementById('eventTransit').textContent = ev.transitInfo + '（僅供參考，實際請以現場指標為準）';
+    transitRow.style.display = 'flex';
+  }else{
+    transitRow.style.display = 'none';
+  }
+
   const priceEl = document.getElementById('eventPrice');
   priceEl.textContent = ev.price || '票價未提供';
   priceEl.className = ev.price === '免費' ? 'is-free' : (!ev.price ? 'is-unknown' : '');
@@ -1218,37 +1329,6 @@ function renderEventDetail(){
   }else{
     linkEl.style.display = 'none';
   }
-
-  renderEventMap(ev);
-}
-
-function initEventMapIfNeeded(){
-  if(state.eventMap) return;
-  state.eventMap = L.map('eventMapContainer', { scrollWheelZoom: false }).setView([23.7, 121.0], 7);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap 貢獻者 &copy; CARTO',
-    maxZoom: 19,
-    subdomains: 'abcd',
-  }).addTo(state.eventMap);
-  state.eventMarkerLayer = L.layerGroup().addTo(state.eventMap);
-}
-
-function renderEventMap(ev){
-  const hint = document.getElementById('eventMapHint');
-  const lat = parseFloat(ev.latitude);
-  const lng = parseFloat(ev.longitude);
-  if(isNaN(lat) || isNaN(lng)){
-    hint.textContent = '這檔活動目前沒有提供座標資訊';
-    document.getElementById('eventMapContainer').innerHTML = '';
-    state.eventMap = null;
-    return;
-  }
-  hint.textContent = ev.locationName || ev.location || '';
-  initEventMapIfNeeded();
-  state.eventMarkerLayer.clearLayers();
-  L.marker([lat, lng]).addTo(state.eventMarkerLayer).bindPopup(escapeHtml(ev.title));
-  state.eventMap.setView([lat, lng], 15);
-  setTimeout(() => state.eventMap && state.eventMap.invalidateSize(), 60);
 }
 
 function renderDetail(pool){
@@ -1307,7 +1387,8 @@ function render(){
   document.getElementById('detailView').style.display = mode === 'detail' ? 'block' : 'none';
   document.getElementById('nearbyPageView').style.display = mode === 'nearby' ? 'block' : 'none';
   document.getElementById('eventDetailView').style.display = mode === 'event' ? 'block' : 'none';
-  document.getElementById('nearbyPreviewSection').style.display = (mode === 'nearby' || mode === 'event') ? 'none' : 'block';
+  document.getElementById('favoritesView').style.display = mode === 'favorites' ? 'block' : 'none';
+  document.getElementById('nearbyPreviewSection').style.display = (mode === 'nearby' || mode === 'event' || mode === 'favorites') ? 'none' : 'block';
 
   if(mode === 'detail'){
     renderDetail(pool);
@@ -1320,6 +1401,8 @@ function render(){
     renderNearbyPage(pool);
   }else if(mode === 'event'){
     renderEventDetail();
+  }else if(mode === 'favorites'){
+    renderFavorites();
   }else{
     renderHomepage(pool);
     renderNearbyPreview(pool);
@@ -1531,74 +1614,47 @@ document.querySelector('[data-clear="venue"]').addEventListener('click', () => {
   render();
 });
 
-// ---------- 首頁輪播圖 ----------
-// 從目前載入的展覽資料裡，隨機挑選最多 5 檔「有官方圖片」的展覽當輪播圖，
-// 之後如果想固定指定某幾檔，只要改成自己組一份固定清單塞進 pickHeroSlides() 回傳值即可。
-function pickHeroSlides(){
-  const withImage = state.events.filter(ev => ev.image);
-  if(withImage.length === 0) return [];
-
-  const shuffled = withImage.slice();
-  for(let i = shuffled.length - 1; i > 0; i--){
+// ---------- 精選展覽卡片輪播（Hero）----------
+// 優先挑「有官方圖片」的展覽，隨機排序後最多取 12 檔放進輪播；
+// 之後想固定指定某幾檔，只要改成自己組一份固定清單塞進 pickFeaturedEvents() 回傳值即可。
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return shuffled.slice(0, 5);
+  return a;
 }
 
-function updateHeroText(ev){
-  const titleEl = document.getElementById('heroTitle');
-  const dateEl = document.getElementById('heroDate');
-  if(!ev){
-    titleEl.textContent = '探索全台精彩展覽';
-    dateEl.textContent = '';
-    return;
-  }
-  titleEl.textContent = ev.title;
-  dateEl.textContent = dateRangeText(ev);
+function pickFeaturedEvents(){
+  const withImage = shuffleArray(state.events.filter(ev => ev.image));
+  const withoutImage = shuffleArray(state.events.filter(ev => !ev.image));
+  return withImage.concat(withoutImage).slice(0, 12);
 }
 
-function initHeroCarousel(){
-  const el = document.getElementById('heroCarousel');
+function renderFeaturedCarousel(){
+  const el = document.getElementById('featuredCarousel');
   if(!el) return;
-
-  const slideEvents = pickHeroSlides();
-
-  if(slideEvents.length === 0){
-    // 目前資料裡沒有任何展覽附圖時的備援畫面，避免整個輪播區塊空白
-    el.innerHTML = `<div class="hero-slide active" style="background:${PLACEHOLDER_GRADIENTS.ticket}"></div>`;
-    updateHeroText(null);
-    return;
-  }
-
-  const slidesHtml = slideEvents.map((ev, i) => `
-    <div class="hero-slide ${i === 0 ? 'active' : ''}">
-      <div class="hero-slide-bg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
-      <div class="hero-slide-fg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
-    </div>
-  `).join('');
-  const dotsHtml = slideEvents.length > 1
-    ? `<div class="hero-dots">${slideEvents.map((_, i) => `<span class="hero-dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div>`
-    : '';
-
-  el.innerHTML = slidesHtml + dotsHtml;
-  updateHeroText(slideEvents[0]);
-
-  if(slideEvents.length <= 1) return;
-
-  let current = 0;
-  const slides = el.querySelectorAll('.hero-slide');
-  const dots = el.querySelectorAll('.hero-dot');
-  setInterval(() => {
-    slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = (current + 1) % slides.length;
-    slides[current].classList.add('active');
-    dots[current].classList.add('active');
-    // 延後一點時間再換文字，讓圖片淡入淡出先跑到一半再切換標題，感覺會比較同步
-    setTimeout(() => updateHeroText(slideEvents[current]), 350);
-  }, 4000);
+  const items = pickFeaturedEvents();
+  el.innerHTML = items.length
+    ? items.map(ev => cardMarkup(ev)).join('')
+    : '<div class="empty">目前沒有可顯示的精選展覽。</div>';
 }
+
+document.getElementById('featuredPrev').addEventListener('click', () => {
+  const el = document.getElementById('featuredCarousel');
+  el.scrollBy({ left: -el.clientWidth, behavior: 'smooth' });
+});
+document.getElementById('featuredNext').addEventListener('click', () => {
+  const el = document.getElementById('featuredCarousel');
+  el.scrollBy({ left: el.clientWidth, behavior: 'smooth' });
+});
+
+document.getElementById('randomPickBtn').addEventListener('click', () => {
+  if(state.events.length === 0) return;
+  const pick = state.events[Math.floor(Math.random() * state.events.length)];
+  if(pick.sourceUrl) location.href = `?event=${encodeURIComponent(pick.sourceUrl)}`;
+});
 
 loadData();
 </script>
