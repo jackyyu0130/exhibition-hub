@@ -113,24 +113,67 @@
   }
   @media (max-width: 900px){ .nav-search{ display:none; } }
 
-  /* ---------- Hero：標題 + 精選展覽卡片輪播 ---------- */
-  .hero-compact{
-    max-width: 1180px; margin: 0 auto; padding: 2.6rem 1.5rem 0;
+  /* ---------- 導覽列搜尋圖示按鈕 ---------- */
+  .nav-search-btn{
+    display:flex; align-items:center; justify-content:center;
+    width: 38px; height:38px; border-radius:50%;
+    background: var(--bg); border:1px solid var(--line); color: var(--ink-soft);
+    flex-shrink:0;
   }
-  .hero-compact-inner{
-    display:flex; align-items:flex-end; justify-content:space-between;
-    gap: 1.5rem; flex-wrap:wrap; margin-bottom: 1.8rem;
+  .nav-search-btn:hover{ border-color: var(--brand); color: var(--brand); }
+
+  /* ---------- Hero：全圖背景 ---------- */
+  .hero{
+    position:relative; width:100%;
+    height: min(58vh, 460px); min-height: 320px;
+    overflow:hidden;
   }
-  .hero-compact h1{
-    font-family:"Noto Serif TC", serif; font-weight:900;
-    font-size: clamp(1.6rem, 3.2vw, 2.2rem); margin: 0 0 .4rem;
+  .hero-slides{ position:absolute; inset:0; background: linear-gradient(135deg,#6D28D9,#4F46E5); }
+  .hero-slide{
+    position:absolute; inset:0; opacity:0; transition: opacity 1.2s ease;
+    background-size:cover; background-position:center;
   }
-  .hero-compact p.tagline{ color: var(--ink-soft); font-size:.95rem; margin:0; }
+  .hero-slide.active{ opacity:1; }
+  .hero-slide img{ width:100%; height:100%; object-fit:cover; object-position:center; }
+  .hero::after{
+    content:""; position:absolute; inset:0; z-index:1;
+    background: linear-gradient(180deg, rgba(20,15,40,.15) 0%, rgba(15,10,30,.3) 60%, rgba(10,8,20,.72) 100%);
+  }
+  .hero-overlay{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding: 2.2rem 2.6rem 2.4rem; max-width: 720px;
+  }
+  .hero-overlay h1{
+    font-family:"Noto Serif TC", serif; font-weight:900; color:#fff;
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem); line-height:1.35; margin: 0 0 .5rem;
+    text-shadow: 0 3px 14px rgba(0,0,0,.35);
+  }
+  .hero-overlay p.tagline{
+    color: rgba(255,255,255,.92); font-size:.95rem; margin:0 0 1.3rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .hero-overlay .search-bar{
+    background:#fff; border:none; border-radius:999px;
+    padding: .55rem .5rem .55rem 1.2rem;
+    display:flex; align-items:center; gap:.5rem; max-width: 460px;
+    box-shadow: 0 14px 34px rgba(0,0,0,.25);
+  }
+  .hero-overlay .search-bar svg{ flex-shrink:0; color: var(--ink-soft); }
+  .hero-overlay #searchInput{
+    flex:1; border:none; outline:none; font-size:.92rem; font-family:inherit;
+    background:transparent; padding:.4rem 0; color: var(--ink);
+  }
+  .hero-dots{
+    position:absolute; bottom:1rem; right:1.3rem; z-index:2;
+    display:flex; gap:.4rem;
+  }
+  .hero-dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5); }
+  .hero-dot.active{ background:#fff; }
 
   .random-pick-btn{
     display:inline-flex; align-items:center; gap:.5rem; flex-shrink:0;
     background: var(--card); border:1px solid var(--line); color: var(--ink);
-    padding:.65rem 1.2rem; border-radius:999px; font-size:.85rem; font-weight:600;
+    padding:.5rem 1rem; border-radius:999px; font-size:.8rem; font-weight:600;
   }
   .random-pick-btn:hover{ border-color: var(--brand); color: var(--brand); }
 
@@ -142,6 +185,11 @@
   }
   .locate-btn:hover{ background: var(--brand); border-color: var(--brand); }
   .locate-btn.active{ background: var(--brand); border-color: var(--brand); }
+
+  /* ---------- 精選展覽（獨立區塊）---------- */
+  .featured-section{
+    max-width: 1180px; margin: 2rem auto 0; padding: 0 1.5rem;
+  }
 
   /* ---------- 篩選區（Hero 下方獨立容器）---------- */
   .filters-section{
@@ -202,14 +250,26 @@
   }
   .cat-chip .icon-circle{
     width:56px; height:56px; border-radius:50%;
-    background:#fff; border:1px solid var(--line);
+    border:1px solid transparent;
     display:flex; align-items:center; justify-content:center;
-    color: var(--ink); transition: all .15s ease;
+    transition: all .15s ease;
   }
   .cat-chip span.label{ font-size:.78rem; }
-  .cat-chip:hover .icon-circle{ border-color: var(--brand); color:var(--brand); }
-  .cat-chip.active .icon-circle{ background: var(--brand); border-color:var(--brand); color:#fff; }
+  .cat-chip:hover .icon-circle{ filter: brightness(.94); }
+  .cat-chip.active .icon-circle{ background: var(--brand) !important; border-color:var(--brand); color:#fff !important; }
   .cat-chip.active span.label{ color:var(--brand); font-weight:600; }
+
+  .icon-circle.accent-music{ background:#EEF2FF; color:#6366F1; }
+  .icon-circle.accent-palette{ background:#FDF2F8; color:#DB2777; }
+  .icon-circle.accent-anime{ background:#FFFBEB; color:#D97706; }
+  .icon-circle.accent-masks{ background:#FFF1F2; color:#E11D48; }
+  .icon-circle.accent-dance{ background:#ECFDF5; color:#059669; }
+  .icon-circle.accent-camera{ background:#EFF6FF; color:#2563EB; }
+  .icon-circle.accent-design{ background:#F5F3FF; color:#7C3AED; }
+  .icon-circle.accent-mic{ background:#F0FDFA; color:#0D9488; }
+  .icon-circle.accent-bag{ background:#FFF7ED; color:#EA580C; }
+  .icon-circle.accent-briefcase{ background:#F1F5F9; color:#334155; }
+  .icon-circle.accent-ticket{ background:#F4F4F5; color:#52525B; }
 
   /* ---------- 主內容 ---------- */
   main{ max-width:1180px; margin:0 auto; padding: 2.4rem 1.5rem 5rem; }
@@ -469,34 +529,24 @@
       <a href="?view=favorites">我的收藏</a>
     </nav>
     <div class="nav-spacer"></div>
-    <div class="nav-search">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
-    </div>
+    <button class="nav-search-btn" id="navSearchBtn" type="button" aria-label="搜尋">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
     <span class="nav-count" id="navCount">載入中…</span>
   </div>
 </header>
 
-<section class="hero-compact" id="top">
-  <div class="hero-compact-inner">
-    <div>
-      <h1>探索全台精彩展覽</h1>
-      <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
-    </div>
-    <button class="random-pick-btn" id="randomPickBtn" type="button">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg>
-      隨機推薦一檔
-    </button>
-  </div>
-
-  <div class="cat-section-head">
-    <h2><span class="icon-sm">✦</span>精選展覽</h2>
-    <div class="row-controls">
-      <button class="row-nav prev" id="featuredPrev" aria-label="向左">‹</button>
-      <button class="row-nav next" id="featuredNext" aria-label="向右">›</button>
+<section class="hero" id="top">
+  <div class="hero-slides" id="heroCarousel"></div>
+  <div class="hero-overlay">
+    <h1>探索全台精彩展覽</h1>
+    <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
     </div>
   </div>
-  <div class="carousel" id="featuredCarousel"></div>
+  <div class="hero-dots" id="heroDots"></div>
 </section>
 
 <div class="filters-section">
@@ -516,8 +566,40 @@
   <div class="cat-row" id="catRow"></div>
 </div>
 
+<div class="featured-section">
+  <div class="cat-section-head">
+    <h2><span class="icon-sm">✦</span>精選展覽</h2>
+    <div class="row-controls">
+      <button class="random-pick-btn" id="randomPickBtn" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg>
+        隨機推薦一檔
+      </button>
+      <button class="row-nav prev" id="featuredPrev" aria-label="向左">‹</button>
+      <button class="row-nav next" id="featuredNext" aria-label="向右">›</button>
+    </div>
+  </div>
+  <div class="carousel" id="featuredCarousel"></div>
+</div>
+
 <main>
   <div id="homepageRows"></div>
+
+  <section class="section" id="nearbyPreviewSection" style="margin-top:2.6rem;">
+    <div class="section-head">
+      <h2>附近展覽</h2>
+      <span class="hint" id="nearbyPreviewHint"></span>
+    </div>
+    <div id="nearbyPreviewPrompt" style="display:none;">
+      <button class="locate-btn" id="nearbyPreviewLocateBtn" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        使用目前位置
+      </button>
+    </div>
+    <div class="scroll-row" id="nearbyPreviewRow"></div>
+    <div class="show-more-row">
+      <a class="show-more-btn" href="?view=nearby">檢視地圖 →</a>
+    </div>
+  </section>
 
   <div id="detailView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
@@ -529,7 +611,10 @@
       <div class="detail-main">
         <div class="section-head">
           <h2 id="detailTitle"></h2>
-          <span class="hint" id="detailHint"></span>
+          <div style="display:flex; align-items:center; gap:.8rem;">
+            <span class="hint" id="detailHint"></span>
+            <div id="detailSortControl"></div>
+          </div>
         </div>
         <div class="grid" id="detailGrid"></div>
       </div>
@@ -582,22 +667,6 @@
     <div class="grid" id="favoritesGrid"></div>
   </div>
 
-  <section class="section" id="nearbyPreviewSection" style="margin-top:2.6rem;">
-    <div class="section-head">
-      <h2>附近展覽</h2>
-      <span class="hint" id="nearbyPreviewHint"></span>
-    </div>
-    <div id="nearbyPreviewPrompt" style="display:none;">
-      <button class="locate-btn" id="nearbyPreviewLocateBtn" type="button">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-        使用目前位置
-      </button>
-    </div>
-    <div class="scroll-row" id="nearbyPreviewRow"></div>
-    <div class="show-more-row">
-      <a class="show-more-btn" href="?view=nearby">檢視地圖 →</a>
-    </div>
-  </section>
 </main>
 
 <footer>
@@ -764,6 +833,7 @@ async function loadData(){
     buildRegionPanel();
     buildVenuePanel();
     syncStatusButtons();
+    initHeroCarousel();
     renderFeaturedCarousel();
     render();
     updateNavCount();
@@ -818,7 +888,7 @@ function buildCategoryRow(){
   const row = document.getElementById('catRow');
   row.innerHTML = cats.map(cat => `
     <a class="cat-chip ${state.detailCategory === cat ? 'active' : ''}" href="${buildShowMoreUrl(cat)}">
-      <span class="icon-circle">${ICONS[iconKeyFor(cat)]}</span>
+      <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
       <span class="label">${escapeHtml(cat)}</span>
     </a>
   `).join('');
@@ -1163,81 +1233,44 @@ function rowSortControlHtml(rowKey){
 
 function renderHomepage(pool){
   const wrap = document.getElementById('homepageRows');
-  const byCategory = {};
-  pool.forEach(ev => {
-    const cats = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '其他'];
-    cats.forEach(cat => { (byCategory[cat] = byCategory[cat] || []).push(ev); });
-  });
 
-  let cats = sortByCategoryOrder(Object.keys(byCategory));
-  if(state.selectedCategories.size){
-    cats = cats.filter(c => state.selectedCategories.has(c));
-  }
-
-  if(cats.length === 0){
+  if(pool.length === 0){
     wrap.innerHTML = '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
     return;
   }
 
-  // 置頂精選列：即將結束、新開展的活動，讓使用者一眼看到有時效性的展覽
-  const urgentItems = sortRowItems(pool.filter(ev => computeBadge(ev)), 'ending').slice(0, ROW_MAX_ITEMS);
-  const urgentSectionHtml = urgentItems.length ? `
+  const upcoming = sortRowItems(pool.filter(ev => isUpcoming(ev)), 'newest').slice(0, ROW_MAX_ITEMS);
+  const ending = sortRowItems(pool.filter(ev => isOngoing(ev) && computeBadge(ev) && computeBadge(ev).cls === 'closing'), 'ending').slice(0, ROW_MAX_ITEMS);
+
+  const curatedRow = (key, icon, title, items) => items.length ? `
     <section class="cat-section">
       <div class="cat-section-head">
-        <h2><span class="icon-sm">🔥</span>即將結束＆新開展<span class="hint">（${urgentItems.length} 檔）</span></h2>
+        <h2><span class="icon-sm">${icon}</span>${title}<span class="hint">（${items.length} 檔）</span></h2>
         <div class="row-controls">
-          <button class="row-nav prev" data-row="__urgent__" aria-label="向左">‹</button>
-          <button class="row-nav next" data-row="__urgent__" aria-label="向右">›</button>
+          <button class="row-nav prev" data-row="${key}" aria-label="向左">‹</button>
+          <button class="row-nav next" data-row="${key}" aria-label="向右">›</button>
         </div>
       </div>
-      <div class="carousel" id="row-__urgent__">
-        ${urgentItems.map(ev => cardMarkup(ev)).join('')}
+      <div class="carousel" id="row-${key}">
+        ${items.map(ev => cardMarkup(ev)).join('')}
       </div>
     </section>
   ` : '';
 
-  const categorySectionsHtml = cats.map(cat => {
-    const sortMode = state.rowSort[cat] || 'default';
-    const items = sortRowItems(byCategory[cat], sortMode);
-    const shown = items.slice(0, ROW_MAX_ITEMS);
-    const hasMore = items.length > ROW_MAX_ITEMS;
-    return `
-      <section class="cat-section">
-        <div class="cat-section-head">
-          <h2><span class="icon-sm">${ICONS[iconKeyFor(cat)]}</span>${escapeHtml(cat)}<span class="hint">（${items.length} 檔）</span></h2>
-          <div class="row-controls">
-            ${rowSortControlHtml(cat)}
-            <button class="row-nav prev" data-row="${escapeAttr(cat)}" aria-label="向左">‹</button>
-            <button class="row-nav next" data-row="${escapeAttr(cat)}" aria-label="向右">›</button>
-          </div>
-        </div>
-        <div class="carousel" id="row-${cssId(cat)}">
-          ${shown.map(ev => cardMarkup(ev)).join('')}
-        </div>
-        ${hasMore ? `
-          <div class="show-more-row">
-            <a class="show-more-btn" href="${buildShowMoreUrl(cat)}" target="_blank" rel="noopener">顯示更多展覽 →</a>
-          </div>` : ''}
-      </section>
-    `;
-  }).join('');
+  wrap.innerHTML =
+    curatedRow('upcoming', '🌱', '即將開展', upcoming) +
+    curatedRow('ending', '⏳', '即將結束', ending);
 
-  wrap.innerHTML = urgentSectionHtml + categorySectionsHtml;
+  if(!upcoming.length && !ending.length){
+    wrap.innerHTML = '<div class="empty">目前沒有符合條件的「即將開展」或「即將結束」活動，用上方分類圖示或篩選找找看其他展覽吧。</div>';
+  }
 
   wrap.querySelectorAll('.row-nav').forEach(btn => {
     btn.addEventListener('click', () => {
-      const el = document.getElementById(`row-${cssId(btn.dataset.row)}`);
+      const el = document.getElementById(`row-${btn.dataset.row}`);
       if(!el) return;
       const dir = btn.classList.contains('next') ? 1 : -1;
       el.scrollBy({ left: dir * el.clientWidth, behavior: 'smooth' });
-    });
-  });
-
-  wrap.querySelectorAll('.row-sort-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const rowKey = btn.closest('.row-sort').dataset.rowSortKey;
-      state.rowSort[rowKey] = btn.dataset.sort;
-      render();
     });
   });
 }
@@ -1337,12 +1370,21 @@ function renderDetail(pool){
 
   renderDetailVenueSidebar(items);
 
-  const filteredItems = state.detailVenueFilter
+  let filteredItems = state.detailVenueFilter
     ? items.filter(ev => (ev.locationName || ev.location) === state.detailVenueFilter)
     : items;
+  filteredItems = sortRowItems(filteredItems, state.rowSort[category] || 'default');
 
   document.getElementById('detailTitle').textContent = category;
   document.getElementById('detailHint').textContent = `共 ${filteredItems.length} 檔`;
+  document.getElementById('detailSortControl').innerHTML = rowSortControlHtml(category);
+  document.querySelectorAll('#detailSortControl .row-sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.rowSort[category] = btn.dataset.sort;
+      render();
+    });
+  });
+
   const grid = document.getElementById('detailGrid');
   grid.innerHTML = filteredItems.length
     ? filteredItems.map(ev => cardMarkup(ev)).join('')
@@ -1654,6 +1696,49 @@ document.getElementById('randomPickBtn').addEventListener('click', () => {
   if(state.events.length === 0) return;
   const pick = state.events[Math.floor(Math.random() * state.events.length)];
   if(pick.sourceUrl) location.href = `?event=${encodeURIComponent(pick.sourceUrl)}`;
+});
+
+// ---------- Hero 全圖輪播 ----------
+function initHeroCarousel(){
+  const el = document.getElementById('heroCarousel');
+  const dotsEl = document.getElementById('heroDots');
+  if(!el) return;
+
+  const slideEvents = shuffleArray(state.events.filter(ev => ev.image)).slice(0, 6);
+
+  if(slideEvents.length === 0){
+    el.innerHTML = '';
+    dotsEl.innerHTML = '';
+    return;
+  }
+
+  el.innerHTML = slideEvents.map((ev, i) => `
+    <div class="hero-slide ${i === 0 ? 'active' : ''}">
+      <img src="${escapeAttr(ev.image)}" alt=""
+           onerror="this.closest('.hero-slide').style.background='${PLACEHOLDER_GRADIENTS[iconKeyFor(ev.category)]}'; this.remove();">
+    </div>
+  `).join('');
+
+  if(slideEvents.length <= 1){ dotsEl.innerHTML = ''; return; }
+
+  dotsEl.innerHTML = slideEvents.map((_, i) => `<span class="hero-dot ${i === 0 ? 'active' : ''}"></span>`).join('');
+
+  let current = 0;
+  const slides = el.querySelectorAll('.hero-slide');
+  const dots = dotsEl.querySelectorAll('.hero-dot');
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }, 4500);
+}
+
+// 導覽列的搜尋圖示：捲動回最上面並聚焦到 Hero 裡的搜尋框
+document.getElementById('navSearchBtn').addEventListener('click', () => {
+  document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => document.getElementById('searchInput').focus(), 400);
 });
 
 loadData();
