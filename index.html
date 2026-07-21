@@ -121,55 +121,47 @@
     flex-shrink:0;
   }
   .nav-search-btn:hover{ border-color: var(--brand); color: var(--brand); }
+  .nav-search-panel{
+    position:absolute; top: calc(100% + 10px); right:0; z-index:50;
+    background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:.6rem .9rem; width: 280px;
+    display:none; align-items:center; gap:.5rem;
+    box-shadow: 0 16px 40px rgba(20,20,40,.12);
+  }
+  .nav-search-panel.open{ display:flex; }
+  .nav-search-panel svg{ flex-shrink:0; color: var(--ink-soft); }
+  .nav-search-panel input{
+    flex:1; border:none; outline:none; font-family:inherit; font-size:.88rem;
+    background:transparent; color: var(--ink);
+  }
 
-  /* ---------- Hero：文字 + 適當尺寸圖框 ---------- */
+  /* ---------- Hero：文字置中 + 拼貼式 Banner ---------- */
   .hero{
     background: linear-gradient(135deg, #EEF0FF 0%, #F5F3FF 100%);
-    padding: 2.8rem 1.5rem;
+    padding: 2.6rem 1.5rem 0;
+    overflow:hidden;
   }
-  .hero-inner{
-    max-width: 1180px; margin:0 auto;
-    display:grid; grid-template-columns: 1.15fr .85fr; gap: 2.8rem; align-items:center;
+  .hero-text{
+    max-width: 640px; margin: 0 auto 1.6rem; text-align:center;
   }
-  @media (max-width: 820px){ .hero-inner{ grid-template-columns: 1fr; } }
-
   .hero-text h1{
     font-family:"Noto Serif TC", serif; font-weight:900; color: var(--ink);
     font-size: clamp(1.6rem, 3vw, 2.3rem); line-height:1.35; margin: 0 0 .6rem;
   }
-  .hero-text p.tagline{ color: var(--ink-soft); font-size:.95rem; margin:0 0 1.4rem; }
-  .hero-text .search-bar{
-    background:#fff; border:1px solid var(--line); border-radius:999px;
-    padding: .55rem .5rem .55rem 1.2rem;
-    display:flex; align-items:center; gap:.5rem; max-width: 460px;
-    box-shadow: 0 12px 28px rgba(30,20,70,.08);
-  }
-  .hero-text .search-bar svg{ flex-shrink:0; color: var(--ink-soft); }
-  .hero-text #searchInput{
-    flex:1; border:none; outline:none; font-size:.92rem; font-family:inherit;
-    background:transparent; padding:.4rem 0; color: var(--ink);
-  }
+  .hero-text p.tagline{ color: var(--ink-soft); font-size:.95rem; margin:0; }
 
-  /* 圖框維持中等大小、不硬拉伸放大，避免來源圖片解析度不足造成模糊 */
+  /* 拼貼式 banner：用展覽小圖片拼成活潑、不工整的排列，邊緣用遮罩漸層淡出 */
+  .hero-banner{
+    position:relative; max-width: 1180px; margin: 0 auto; height: 240px;
+    -webkit-mask-image: radial-gradient(ellipse 65% 78% at center, black 50%, transparent 100%);
+    mask-image: radial-gradient(ellipse 65% 78% at center, black 50%, transparent 100%);
+  }
   .hero-tile{
-    position:relative; width:100%; max-width: 420px; margin-left:auto;
-    aspect-ratio: 4 / 3; border-radius: 18px; overflow:hidden;
-    box-shadow: 0 20px 45px rgba(30,20,70,.14);
-    background: linear-gradient(135deg,#6D28D9,#4F46E5);
+    position:absolute; border-radius:10px; overflow:hidden;
+    box-shadow: 0 10px 26px rgba(30,20,70,.18);
+    background: linear-gradient(135deg,#818CF8,#4F46E5);
   }
-  @media (max-width: 820px){ .hero-tile{ margin: 0 auto; } }
-  .hero-slides{ position:absolute; inset:0; }
-  .hero-slide{
-    position:absolute; inset:0; opacity:0; transition: opacity 1.2s ease;
-  }
-  .hero-slide.active{ opacity:1; }
-  .hero-slide img{ width:100%; height:100%; object-fit:cover; object-position:center; }
-  .hero-dots{
-    position:absolute; bottom:.8rem; right:.9rem; z-index:2;
-    display:flex; gap:.4rem;
-  }
-  .hero-dot{ width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.55); }
-  .hero-dot.active{ background:#fff; }
+  .hero-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
 
   .random-pick-btn{
     display:inline-flex; align-items:center; gap:.5rem; flex-shrink:0;
@@ -186,6 +178,8 @@
   }
   .locate-btn:hover{ background: var(--brand); border-color: var(--brand); }
   .locate-btn.active{ background: var(--brand); border-color: var(--brand); }
+
+  /* ---------- 舊有殘留樣式保留相容 ---------- */
 
   /* ---------- 精選展覽（獨立區塊）---------- */
   .featured-section{
@@ -338,10 +332,19 @@
   }
   .event-carousel .event-slide{
     position:absolute; inset:0; opacity:0; transition: opacity .6s ease;
-    background-size:cover; background-position:center;
-    display:flex; align-items:center; justify-content:center; color:#fff;
+    overflow:hidden;
   }
   .event-carousel .event-slide.active{ opacity:1; }
+  .event-slide-bg{
+    position:absolute; inset:-15px;
+    background-size:cover; background-position:center;
+    filter: blur(22px) brightness(.75) saturate(1.1);
+    transform: scale(1.15);
+  }
+  .event-slide-fg{
+    position:absolute; inset:0;
+    background-size:contain; background-position:center; background-repeat:no-repeat;
+  }
   .event-carousel .event-dots{
     position:absolute; bottom:.8rem; left:50%; transform:translateX(-50%); z-index:2;
     display:flex; gap:.4rem;
@@ -584,28 +587,25 @@
       <a href="?view=favorites">我的收藏</a>
     </nav>
     <div class="nav-spacer"></div>
-    <button class="nav-search-btn" id="navSearchBtn" type="button" aria-label="搜尋">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </button>
+    <div class="dropdown-wrap">
+      <button class="nav-search-btn" id="navSearchBtn" type="button" aria-label="搜尋">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <div class="nav-search-panel" id="navSearchPanel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
+      </div>
+    </div>
     <span class="nav-count" id="navCount">載入中…</span>
   </div>
 </header>
 
 <section class="hero" id="top">
-  <div class="hero-inner">
-    <div class="hero-text">
-      <h1>探索全台精彩展覽</h1>
-      <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
-      <div class="search-bar">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
-      </div>
-    </div>
-    <div class="hero-tile">
-      <div class="hero-slides" id="heroCarousel"></div>
-      <div class="hero-dots" id="heroDots"></div>
-    </div>
+  <div class="hero-text">
+    <h1>探索全台精彩展覽</h1>
+    <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
   </div>
+  <div class="hero-banner" id="heroBanner"></div>
 </section>
 
 <div class="filters-section">
@@ -917,11 +917,12 @@ async function loadData(){
     buildRegionPanel();
     buildVenuePanel();
     syncStatusButtons();
-    initHeroCarousel();
+    renderHeroBanner();
     renderFeaturedCarousel();
     renderVenueCarousel();
     render();
     updateNavCount();
+    autoRequestLocationOnce();
   }catch(err){
     document.getElementById('homepageRows').innerHTML =
       '<div class="empty">資料載入失敗，請確認 data/exhibitions.json 是否存在。</div>';
@@ -1400,7 +1401,12 @@ function renderEventDetail(){
   if(images.length === 0){
     carouselEl.innerHTML = `<div class="event-slide active" style="background:${PLACEHOLDER_GRADIENTS[iconKey]}">${ICONS[iconKey]}</div>`;
   }else{
-    const slidesHtml = images.map((src, i) => `<div class="event-slide ${i===0?'active':''}" style="background-image:url('${escapeAttr(src)}')"></div>`).join('');
+    const slidesHtml = images.map((src, i) => `
+      <div class="event-slide ${i===0?'active':''}">
+        <div class="event-slide-bg" style="background-image:url('${escapeAttr(src)}')"></div>
+        <div class="event-slide-fg" style="background-image:url('${escapeAttr(src)}')"></div>
+      </div>
+    `).join('');
     const navHtml = images.length > 1
       ? `<button class="event-nav prev" type="button" aria-label="上一張">‹</button><button class="event-nav next" type="button" aria-label="下一張">›</button>
          <div class="event-dots">${images.map((_,i)=>`<span class="event-dot ${i===0?'active':''}"></span>`).join('')}</div>`
@@ -1599,10 +1605,11 @@ function render(){
   document.getElementById('nearbyPreviewSection').style.display = (mode === 'home') ? 'block' : 'none';
 
   // 分類頁面(detail)、場館頁面(venue)不需要 Hero、精選展覽、展演空間，日曆改在側邊欄用展開式月曆呈現
-  const hideTopSections = (mode === 'detail' || mode === 'venue');
+  const hideTopSections = (mode === 'detail' || mode === 'venue' || mode === 'event');
   document.querySelector('.hero').style.display = hideTopSections ? 'none' : 'block';
   document.querySelectorAll('.featured-section').forEach(el => { el.style.display = hideTopSections ? 'none' : 'block'; });
   document.querySelector('.calendar-picker').style.display = mode === 'detail' ? 'none' : 'flex';
+  document.querySelector('.filters-section').style.display = mode === 'event' ? 'none' : 'block';
 
   if(mode === 'detail'){
     renderDetail(pool);
@@ -1771,12 +1778,9 @@ document.querySelectorAll('.status-btn').forEach(btn => {
 });
 
 function requestUserLocation(btn){
-  if(!navigator.geolocation){
-    alert('你的瀏覽器不支援定位功能');
-    return;
-  }
-  const originalHtml = btn.innerHTML;
-  btn.textContent = '定位中…';
+  if(!navigator.geolocation) return;
+  const originalHtml = btn ? btn.innerHTML : '';
+  if(btn) btn.textContent = '定位中…';
   navigator.geolocation.getCurrentPosition(
     pos => {
       state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -1786,7 +1790,26 @@ function requestUserLocation(btn){
       });
       render();
     },
-    () => { btn.innerHTML = originalHtml; btn.textContent = '定位失敗，重試'; }
+    () => { if(btn){ btn.innerHTML = originalHtml; btn.textContent = '定位失敗，重試'; } }
+  );
+}
+
+// 進站時自動嘗試定位一次，避免每次都要手動點「使用目前位置」按鈕
+// (瀏覽器還是會照樣跳出原生的定位授權詢問視窗，這是瀏覽器安全機制，無法略過)
+let autoLocationRequested = false;
+function autoRequestLocationOnce(){
+  if(autoLocationRequested || state.userLoc || !navigator.geolocation) return;
+  autoLocationRequested = true;
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      document.querySelectorAll('.locate-btn').forEach(b => {
+        b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> 已定位';
+        b.classList.add('active');
+      });
+      render();
+    },
+    () => { /* 使用者拒絕或定位失敗就算了，畫面上還是有按鈕可以手動重試 */ }
   );
 }
 
@@ -1918,46 +1941,58 @@ document.getElementById('randomPickBtn').addEventListener('click', () => {
 });
 
 // ---------- Hero 全圖輪播 ----------
-function initHeroCarousel(){
-  const el = document.getElementById('heroCarousel');
-  const dotsEl = document.getElementById('heroDots');
+// 拼貼式 banner 的排版模板：位置、大小、旋轉角度都刻意不對齊，做出活潑、隨性擺放的感覺
+const HERO_TILE_LAYOUT = [
+  { top: '2%',  left: '2%',  w: 108, h: 88,  rot: -7 },
+  { top: '34%', left: '0%',  w: 88,  h: 118, rot: 5 },
+  { top: '60%', left: '8%',  w: 128, h: 78,  rot: -3 },
+  { top: '0%',  left: '19%', w: 92,  h: 128, rot: 4 },
+  { top: '46%', left: '23%', w: 112, h: 92,  rot: -8 },
+  { top: '8%',  left: '37%', w: 138, h: 98,  rot: 2 },
+  { top: '56%', left: '41%', w: 98,  h: 108, rot: -4 },
+  { top: '2%',  left: '55%', w: 104, h: 88,  rot: 6 },
+  { top: '40%', left: '59%', w: 118, h: 128, rot: -2 },
+  { top: '6%',  left: '74%', w: 128, h: 92,  rot: -5 },
+  { top: '48%', left: '77%', w: 94,  h: 108, rot: 7 },
+  { top: '18%', left: '89%', w: 98,  h: 88,  rot: -6 },
+];
+
+function renderHeroBanner(){
+  const el = document.getElementById('heroBanner');
   if(!el) return;
 
-  const slideEvents = shuffleArray(state.events.filter(ev => ev.image)).slice(0, 6);
-
-  if(slideEvents.length === 0){
+  const withImage = shuffleArray(state.events.filter(ev => ev.image));
+  if(withImage.length === 0){
     el.innerHTML = '';
-    dotsEl.innerHTML = '';
     return;
   }
 
-  el.innerHTML = slideEvents.map((ev, i) => `
-    <div class="hero-slide ${i === 0 ? 'active' : ''}">
-      <img src="${escapeAttr(ev.image)}" alt=""
-           onerror="this.closest('.hero-slide').style.background='${PLACEHOLDER_GRADIENTS[iconKeyFor(ev.category)]}'; this.remove();">
-    </div>
-  `).join('');
-
-  if(slideEvents.length <= 1){ dotsEl.innerHTML = ''; return; }
-
-  dotsEl.innerHTML = slideEvents.map((_, i) => `<span class="hero-dot ${i === 0 ? 'active' : ''}"></span>`).join('');
-
-  let current = 0;
-  const slides = el.querySelectorAll('.hero-slide');
-  const dots = dotsEl.querySelectorAll('.hero-dot');
-  setInterval(() => {
-    slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = (current + 1) % slides.length;
-    slides[current].classList.add('active');
-    dots[current].classList.add('active');
-  }, 4500);
+  el.innerHTML = HERO_TILE_LAYOUT.map((slot, i) => {
+    const ev = withImage[i % withImage.length];
+    const jitterRot = slot.rot + (Math.random() * 4 - 2); // 加一點隨機微調，避免每次看起來一模一樣
+    const z = 1 + Math.round(Math.random() * 4);
+    return `
+      <div class="hero-tile" style="top:${slot.top}; left:${slot.left}; width:${slot.w}px; height:${slot.h}px; transform:rotate(${jitterRot.toFixed(1)}deg); z-index:${z};">
+        <img src="${escapeAttr(ev.image)}" alt=""
+             onerror="this.closest('.hero-tile').style.background='${PLACEHOLDER_GRADIENTS.ticket}'; this.remove();">
+      </div>
+    `;
+  }).join('');
 }
 
 // 導覽列的搜尋圖示：捲動回最上面並聚焦到 Hero 裡的搜尋框
-document.getElementById('navSearchBtn').addEventListener('click', () => {
-  document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
-  setTimeout(() => document.getElementById('searchInput').focus(), 400);
+document.getElementById('navSearchBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const panel = document.getElementById('navSearchPanel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')) document.getElementById('searchInput').focus();
+});
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('navSearchPanel');
+  const btn = document.getElementById('navSearchBtn');
+  if(!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)){
+    panel.classList.remove('open');
+  }
 });
 
 loadData();
