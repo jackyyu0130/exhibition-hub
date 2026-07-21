@@ -144,6 +144,33 @@ def extract_price_info(text: str) -> str:
     return f"NT$ {values[0]} - NT$ {values[-1]}"
 
 
+def collect_page_images(soup, base_url: str, primary_image: str = "", limit: int = 5) -> list:
+    """從頁面裡盡量收集幾張看起來像展覽主視覺/相關照片的圖片，用來支援之後的多圖輪播。
+    目前多數活動只找得到一張官方圖，這支函式先把「有多張圖就都收進來」的能力準備好。"""
+    images = []
+    if primary_image:
+        images.append(primary_image)
+
+    keyword_pattern = re.compile(r"(exhibition|event|thumb|banner|cover|main|visual|kv|gallery|slide)", re.IGNORECASE)
+    exclude_pattern = re.compile(r"(logo|icon|menu|nav|avatar|footer|share|qrcode)", re.IGNORECASE)
+
+    for img in soup.find_all("img"):
+        if len(images) >= limit:
+            break
+        src = img.get("src") or img.get("data-src")
+        if not src or exclude_pattern.search(src):
+            continue
+        if not (keyword_pattern.search(src) or img.get("data-src")):
+            continue
+        if not src.startswith("http"):
+            src = urljoin(base_url, src)
+        valid = valid_image_url(src)
+        if valid and valid not in images:
+            images.append(valid)
+
+    return images
+
+
 def fetch_huashan_detail(url: str) -> dict:
     """進入單一活動的詳情頁，抓取官方提供的 og:image 主視覺圖、簡介文字與票價資訊。
     每個活動頁面都有這組資料（用來給 Facebook/LINE 分享用的），比起在列表頁
@@ -153,7 +180,7 @@ def fetch_huashan_detail(url: str) -> dict:
         resp.raise_for_status()
     except Exception as exc:  # noqa: BLE001
         print(f"[華山] 讀取詳情頁失敗，略過圖片：{url}：{exc}")
-        return {"image": "", "description": "", "price": ""}
+        return {"image": "", "images": [], "description": "", "price": ""}
 
     soup = BeautifulSoup(resp.text, "html.parser")
     og_image = soup.find("meta", attrs={"property": "og:image"})
@@ -163,7 +190,8 @@ def fetch_huashan_detail(url: str) -> dict:
     if len(description) > 200:
         description = description[:200] + "…"
     price = extract_price_info(soup.get_text(" ", strip=True))
-    return {"image": image, "description": description, "price": price}
+    images = collect_page_images(soup, url, primary_image=image)
+    return {"image": image, "images": images, "description": description, "price": price}
 
 
 def fetch_huashan(max_pages: int = 6):
@@ -219,6 +247,7 @@ def fetch_huashan(max_pages: int = 6):
                 "unit": "",
                 "description": detail["description"],
                 "image": detail["image"],
+                "images": detail.get("images") or ([detail["image"]] if detail["image"] else []),
                 "price": detail.get("price", ""),
                 "startDate": start_date,
                 "endDate": end_date,
@@ -277,6 +306,7 @@ def normalize(item: dict) -> dict:
 
     categories = classify_category(safe_str(item.get("category")), title, description)
     price = extract_price_info(description)
+    image = valid_image_url(safe_str(item.get("imageURL")))
 
     return {
         "title": title,
@@ -284,7 +314,8 @@ def normalize(item: dict) -> dict:
         "category": categories[0],
         "unit": safe_str(item.get("showUnit")) or safe_str(item.get("masterUnit")),
         "description": description,
-        "image": valid_image_url(safe_str(item.get("imageURL"))),
+        "image": image,
+        "images": [image] if image else [],
         "price": price,
         "startDate": safe_str(item.get("startDate")),
         "endDate": safe_str(item.get("endDate")),
@@ -421,7 +452,7 @@ def fetch_detail_extras(url: str) -> dict:
         resp.raise_for_status()
     except Exception as exc:  # noqa: BLE001
         print(f"[圖片] 讀取官方頁面失敗，略過：{url}：{exc}")
-        return {"image": "", "price": ""}
+        return {"image": "", "images": [], "price": ""}
 
     image = ""
     price = ""
@@ -463,10 +494,12 @@ def fetch_detail_extras(url: str) -> dict:
                 image = valid_image_url(src)
 
         price = extract_price_info(soup.get_text(" ", strip=True))
+        images = collect_page_images(soup, url, primary_image=image)
     except Exception as exc:  # noqa: BLE001
         print(f"[圖片] 解析官方頁面失敗，略過：{url}：{exc}")
+        images = [image] if image else []
 
-    return {"image": image, "price": price}
+    return {"image": image, "images": images, "price": price}
 
 
 # ---------------------------------------------------------------------------
@@ -553,6 +586,7 @@ def fetch_tainex(max_events: int = 40):
             "unit": "",
             "description": "",
             "image": extras["image"],
+            "images": extras.get("images") or ([extras["image"]] if extras["image"] else []),
             "price": extras["price"],
             "startDate": start_date,
             "endDate": end_date,
@@ -616,8 +650,11 @@ def main():
             extras = fetch_detail_extras(event["sourceUrl"])
             if needs_image and extras["image"]:
                 event["image"] = extras["image"]
+                event["images"] = extras.get("images") or [extras["image"]]
             if needs_price and extras["price"]:
                 event["price"] = extras["price"]
+        if not event.get("images") and event.get("image"):
+            event["images"] = [event["image"]]
 
     events.sort(key=lambda e: e.get("startDate") or "", reverse=True)
 
