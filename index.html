@@ -122,12 +122,22 @@
   .hero-slides{ position:absolute; inset:0; }
   .hero-slide{
     position:absolute; inset:0; opacity:0; transition: opacity 1.2s ease;
-    background-size:cover; background-position:center;
+    overflow:hidden;
   }
   .hero-slide.active{ opacity:1; }
+  .hero-slide-bg{
+    position:absolute; inset:-20px;
+    background-size:cover; background-position:center;
+    filter: blur(30px) brightness(.65) saturate(1.1);
+    transform: scale(1.15);
+  }
+  .hero-slide-fg{
+    position:absolute; inset:0;
+    background-size:contain; background-position:center; background-repeat:no-repeat;
+  }
   .hero::after{
     content:""; position:absolute; inset:0; z-index:1;
-    background: linear-gradient(180deg, rgba(20,15,40,.15) 0%, rgba(15,10,30,.25) 55%, rgba(10,8,20,.65) 100%);
+    background: linear-gradient(180deg, rgba(20,15,40,.1) 0%, rgba(15,10,30,.2) 55%, rgba(10,8,20,.6) 100%);
   }
   .hero-overlay{
     position:absolute; left:0; right:0; bottom:0; z-index:2;
@@ -279,6 +289,62 @@
     display:grid; grid-template-columns: 220px 1fr; gap: 2rem; align-items:start;
   }
   @media (max-width: 760px){ .detail-layout{ grid-template-columns: 1fr; } }
+
+  /* ---------- 站內展覽詳情頁 ---------- */
+  .event-detail-layout{
+    display:grid; grid-template-columns: minmax(240px, 380px) 1fr; gap: 2.6rem; align-items:start;
+  }
+  @media (max-width: 760px){ .event-detail-layout{ grid-template-columns: 1fr; } }
+
+  .event-carousel{
+    position:relative; aspect-ratio: 4 / 5; border-radius: 16px; overflow:hidden;
+    background: var(--card); border:1px solid var(--line);
+    box-shadow: 0 16px 40px rgba(30,20,70,.08);
+  }
+  .event-carousel .event-slide{
+    position:absolute; inset:0; opacity:0; transition: opacity .6s ease;
+    background-size:cover; background-position:center;
+    display:flex; align-items:center; justify-content:center; color:#fff;
+  }
+  .event-carousel .event-slide.active{ opacity:1; }
+  .event-carousel .event-dots{
+    position:absolute; bottom:.8rem; left:50%; transform:translateX(-50%); z-index:2;
+    display:flex; gap:.4rem;
+  }
+  .event-carousel .event-dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5); }
+  .event-carousel .event-dot.active{ background:#fff; }
+  .event-carousel .event-nav{
+    position:absolute; top:50%; transform:translateY(-50%); z-index:2;
+    width:34px; height:34px; border-radius:50%; border:none;
+    background: rgba(255,255,255,.85); color: var(--ink);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .event-carousel .event-nav.prev{ left:.6rem; }
+  .event-carousel .event-nav.next{ right:.6rem; }
+
+  .event-detail-info h1{
+    font-family:"Noto Serif TC", serif; font-size:1.6rem; font-weight:900;
+    margin: .8rem 0 1rem; line-height:1.4;
+  }
+  .event-meta-list{
+    display:flex; flex-direction:column; gap:.5rem;
+    background: var(--card); border:1px solid var(--line); border-radius:10px;
+    padding: 1rem 1.2rem; margin-bottom: 1.2rem;
+  }
+  .event-meta-list .meta-row{ display:flex; gap:.8rem; font-size:.9rem; }
+  .event-meta-list .meta-label{
+    flex-shrink:0; width: 3.6rem; color: var(--ink-soft); font-weight:600;
+  }
+  .event-description{
+    font-size:.92rem; line-height:1.8; color: var(--ink); margin: 0 0 1.6rem;
+    white-space: pre-line;
+  }
+  .detail-external-btn{
+    display:inline-flex; align-items:center; gap:.4rem;
+    background: var(--brand); color:#fff; font-weight:600;
+    padding: .8rem 1.6rem; border-radius:999px; font-size:.95rem;
+  }
+  .detail-external-btn:hover{ background: var(--brand-dark); }
 
   .detail-sidebar{
     background:#fff; border:1px solid var(--line); border-radius:10px;
@@ -488,6 +554,31 @@
     <div class="grid" id="nearbyPageGrid"></div>
   </div>
 
+  <div id="eventDetailView" style="display:none;">
+    <a class="back-link" href="./">← 回首頁</a>
+    <div class="event-detail-layout">
+      <div class="event-carousel" id="eventCarousel"></div>
+
+      <div class="event-detail-info">
+        <div class="card-cat-row" id="eventCatRow"></div>
+        <h1 id="eventTitle"></h1>
+        <div class="event-meta-list">
+          <div class="meta-row"><span class="meta-label">日期</span><span id="eventDate"></span></div>
+          <div class="meta-row"><span class="meta-label">地點</span><span id="eventVenue"></span></div>
+          <div class="meta-row"><span class="meta-label">票價</span><span id="eventPrice"></span></div>
+        </div>
+        <p class="event-description" id="eventDescription"></p>
+        <a class="detail-external-btn" id="eventExternalLink" target="_blank" rel="noopener">詳細資訊 →</a>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:2.4rem;">
+      <h2>地點</h2>
+      <span class="hint" id="eventMapHint"></span>
+    </div>
+    <div id="eventMapContainer" style="height:360px;"></div>
+  </div>
+
   <section class="section" id="nearbyPreviewSection" style="margin-top:2.6rem;">
     <div class="section-head">
       <h2>附近展覽</h2>
@@ -522,7 +613,8 @@ const state = {
   selectedDate: null,
   detailCategory: null,
   detailVenueFilter: null,
-  viewMode: 'home', // 'home' | 'detail' | 'nearby'
+  viewMode: 'home', // 'home' | 'detail' | 'nearby' | 'event'
+  eventDetailUrl: null,
   lastPool: [],
   map: null,
   markers: [],
@@ -648,8 +740,10 @@ function readUrlParams(){
   const category = params.get('category');
   const status = params.get('status');
   const view = params.get('view');
+  const eventUrl = params.get('event');
   if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
   if(view === 'nearby') state.viewMode = 'nearby';
+  if(eventUrl){ state.eventDetailUrl = eventUrl; state.viewMode = 'event'; }
   if(status && ['all','ongoing','upcoming'].includes(status)) state.statusFilter = status;
 }
 
@@ -962,7 +1056,7 @@ function cardMarkup(ev, { showDistance } = {}){
   const iconKey = iconKeyFor(ev.category);
   const badge = computeBadge(ev);
   const tag = ev.sourceUrl ? 'a' : 'div';
-  const href = ev.sourceUrl ? `href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener"` : '';
+  const href = ev.sourceUrl ? `href="?event=${encodeURIComponent(ev.sourceUrl)}"` : '';
   const gradient = PLACEHOLDER_GRADIENTS[iconKey];
   const categories = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '活動'];
   // 圖片一律先放 icon 佔位圖在底層，真的圖片載入成功才蓋在上面；
@@ -1061,6 +1155,102 @@ function cssId(str){
   return str.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
 }
 
+// ---------- 站內展覽詳情頁 ----------
+function findEventByUrl(url){
+  return state.events.find(ev => ev.sourceUrl === url);
+}
+
+function renderEventDetail(){
+  const ev = findEventByUrl(state.eventDetailUrl);
+  const view = document.getElementById('eventDetailView');
+  if(!ev){
+    view.innerHTML = '<a class="back-link" href="./">← 回首頁</a><div class="empty">找不到這檔活動的資料，可能已經下架或連結有誤。</div>';
+    return;
+  }
+
+  // 圖片輪播
+  const images = (Array.isArray(ev.images) && ev.images.length ? ev.images : (ev.image ? [ev.image] : []));
+  const iconKey = iconKeyFor(ev.category);
+  const carouselEl = document.getElementById('eventCarousel');
+  if(images.length === 0){
+    carouselEl.innerHTML = `<div class="event-slide active" style="background:${PLACEHOLDER_GRADIENTS[iconKey]}">${ICONS[iconKey]}</div>`;
+  }else{
+    const slidesHtml = images.map((src, i) => `<div class="event-slide ${i===0?'active':''}" style="background-image:url('${escapeAttr(src)}')"></div>`).join('');
+    const navHtml = images.length > 1
+      ? `<button class="event-nav prev" type="button" aria-label="上一張">‹</button><button class="event-nav next" type="button" aria-label="下一張">›</button>
+         <div class="event-dots">${images.map((_,i)=>`<span class="event-dot ${i===0?'active':''}"></span>`).join('')}</div>`
+      : '';
+    carouselEl.innerHTML = slidesHtml + navHtml;
+
+    if(images.length > 1){
+      let current = 0;
+      const slides = carouselEl.querySelectorAll('.event-slide');
+      const dots = carouselEl.querySelectorAll('.event-dot');
+      const goTo = (idx) => {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (idx + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+      };
+      carouselEl.querySelector('.event-nav.prev').addEventListener('click', () => goTo(current - 1));
+      carouselEl.querySelector('.event-nav.next').addEventListener('click', () => goTo(current + 1));
+    }
+  }
+
+  // 分類標籤
+  const categories = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '活動'];
+  document.getElementById('eventCatRow').innerHTML = categories.map(c => `<span class="card-cat">${escapeHtml(c)}</span>`).join('');
+
+  document.getElementById('eventTitle').textContent = ev.title;
+  document.getElementById('eventDate').textContent = dateRangeText(ev);
+  document.getElementById('eventVenue').textContent = ev.locationName || ev.location || '地點未提供';
+  const priceEl = document.getElementById('eventPrice');
+  priceEl.textContent = ev.price || '票價未提供';
+  priceEl.className = ev.price === '免費' ? 'is-free' : (!ev.price ? 'is-unknown' : '');
+
+  document.getElementById('eventDescription').textContent = ev.description || '目前沒有更多介紹文字，詳情請參考官方頁面。';
+
+  const linkEl = document.getElementById('eventExternalLink');
+  if(ev.sourceUrl){
+    linkEl.href = ev.sourceUrl;
+    linkEl.style.display = 'inline-flex';
+  }else{
+    linkEl.style.display = 'none';
+  }
+
+  renderEventMap(ev);
+}
+
+function initEventMapIfNeeded(){
+  if(state.eventMap) return;
+  state.eventMap = L.map('eventMapContainer', { scrollWheelZoom: false }).setView([23.7, 121.0], 7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap 貢獻者 &copy; CARTO',
+    maxZoom: 19,
+    subdomains: 'abcd',
+  }).addTo(state.eventMap);
+  state.eventMarkerLayer = L.layerGroup().addTo(state.eventMap);
+}
+
+function renderEventMap(ev){
+  const hint = document.getElementById('eventMapHint');
+  const lat = parseFloat(ev.latitude);
+  const lng = parseFloat(ev.longitude);
+  if(isNaN(lat) || isNaN(lng)){
+    hint.textContent = '這檔活動目前沒有提供座標資訊';
+    document.getElementById('eventMapContainer').innerHTML = '';
+    state.eventMap = null;
+    return;
+  }
+  hint.textContent = ev.locationName || ev.location || '';
+  initEventMapIfNeeded();
+  state.eventMarkerLayer.clearLayers();
+  L.marker([lat, lng]).addTo(state.eventMarkerLayer).bindPopup(escapeHtml(ev.title));
+  state.eventMap.setView([lat, lng], 15);
+  setTimeout(() => state.eventMap && state.eventMap.invalidateSize(), 60);
+}
+
 function renderDetail(pool){
   const category = state.detailCategory;
   const items = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(category) : ev.category === category);
@@ -1116,7 +1306,8 @@ function render(){
   document.getElementById('homepageRows').style.display = mode === 'home' ? 'block' : 'none';
   document.getElementById('detailView').style.display = mode === 'detail' ? 'block' : 'none';
   document.getElementById('nearbyPageView').style.display = mode === 'nearby' ? 'block' : 'none';
-  document.getElementById('nearbyPreviewSection').style.display = mode === 'nearby' ? 'none' : 'block';
+  document.getElementById('eventDetailView').style.display = mode === 'event' ? 'block' : 'none';
+  document.getElementById('nearbyPreviewSection').style.display = (mode === 'nearby' || mode === 'event') ? 'none' : 'block';
 
   if(mode === 'detail'){
     renderDetail(pool);
@@ -1127,6 +1318,8 @@ function render(){
     renderNearbyPreview(previewPool);
   }else if(mode === 'nearby'){
     renderNearbyPage(pool);
+  }else if(mode === 'event'){
+    renderEventDetail();
   }else{
     renderHomepage(pool);
     renderNearbyPreview(pool);
@@ -1179,9 +1372,10 @@ function renderNearbyPage(pool){
 function initNearbyMapIfNeeded(){
   if(state.nearbyMap) return;
   state.nearbyMap = L.map('nearbyMapContainer').setView([23.7, 121.0], 7);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap 貢獻者',
-    maxZoom: 18,
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap 貢獻者 &copy; CARTO',
+    maxZoom: 19,
+    subdomains: 'abcd',
   }).addTo(state.nearbyMap);
   state.nearbyMarkerLayer = L.layerGroup().addTo(state.nearbyMap);
 }
@@ -1202,7 +1396,7 @@ function renderNearbyMap(items){
     const lng = parseFloat(ev.longitude);
     const marker = L.marker([lat, lng]);
     const linkHtml = ev.sourceUrl
-      ? `<a href="${escapeAttr(ev.sourceUrl)}" target="_blank" rel="noopener">前往官方頁面 →</a>`
+      ? `<a href="?event=${encodeURIComponent(ev.sourceUrl)}">查看詳情 →</a>`
       : '';
     marker.bindPopup(`
       <div class="map-popup">
@@ -1378,7 +1572,10 @@ function initHeroCarousel(){
   }
 
   const slidesHtml = slideEvents.map((ev, i) => `
-    <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image:url('${escapeAttr(ev.image)}')"></div>
+    <div class="hero-slide ${i === 0 ? 'active' : ''}">
+      <div class="hero-slide-bg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
+      <div class="hero-slide-fg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
+    </div>
   `).join('');
   const dotsHtml = slideEvents.length > 1
     ? `<div class="hero-dots">${slideEvents.map((_, i) => `<span class="hero-dot ${i === 0 ? 'active' : ''}"></span>`).join('')}</div>`
@@ -1398,7 +1595,8 @@ function initHeroCarousel(){
     current = (current + 1) % slides.length;
     slides[current].classList.add('active');
     dots[current].classList.add('active');
-    updateHeroText(slideEvents[current]);
+    // 延後一點時間再換文字，讓圖片淡入淡出先跑到一半再切換標題，感覺會比較同步
+    setTimeout(() => updateHeroText(slideEvents[current]), 350);
   }, 4000);
 }
 
