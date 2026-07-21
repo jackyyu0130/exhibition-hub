@@ -131,7 +131,7 @@
   /* ---------- Hero：四周拼圖框 + 中間開放空間放標語 ---------- */
   .hero{
     position:relative;
-    background: linear-gradient(135deg, #EEF0FF 0%, #F5F3FF 100%);
+    background: var(--bg);
     height: 460px;
     overflow:hidden;
   }
@@ -144,11 +144,25 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     text-align:center; padding: 0 1.5rem;
   }
+  .hero-center::before{
+    content:""; position:absolute; z-index:-1;
+    width: 420px; height: 420px; border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,255,.9) 0%, rgba(255,255,255,.4) 45%, transparent 72%);
+    filter: blur(2px);
+  }
+  .hero-center .frame-corner{
+    position:absolute; width: 26px; height: 26px; border: 2px solid var(--brand); opacity:.55;
+  }
+  .hero-center .frame-corner.tl{ top:-18px; left:-30px; border-right:none; border-bottom:none; }
+  .hero-center .frame-corner.tr{ top:-18px; right:-30px; border-left:none; border-bottom:none; }
+  .hero-center .frame-corner.bl{ bottom:-18px; left:-30px; border-right:none; border-top:none; }
+  .hero-center .frame-corner.br{ bottom:-18px; right:-30px; border-left:none; border-top:none; }
   .hero-center h1{
     font-family:"Noto Serif TC", serif; font-weight:900; color: var(--ink);
-    font-size: clamp(1.7rem, 3.2vw, 2.4rem); line-height:1.4; margin: 0 0 .7rem;
+    font-size: clamp(1.9rem, 3.6vw, 2.7rem); line-height:1.4; margin: 0 0 .7rem;
+    position:relative;
   }
-  .hero-center p.tagline{ color: var(--ink-soft); font-size:.98rem; margin:0; }
+  .hero-center p.tagline{ color: var(--ink-soft); font-size:1rem; margin:0; position:relative; }
 
   /* 拼圖片：用絕對定位讓每片散落在四周邊緣，中間留白 */
   .hero-tile{
@@ -604,6 +618,10 @@
 <section class="hero" id="top">
   <div class="hero-banner" id="heroBanner"></div>
   <div class="hero-center">
+    <span class="frame-corner tl"></span>
+    <span class="frame-corner tr"></span>
+    <span class="frame-corner bl"></span>
+    <span class="frame-corner br"></span>
     <h1>探索全台精彩展覽</h1>
     <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
   </div>
@@ -655,11 +673,19 @@
 <main>
   <div id="venueDetailView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
-    <div class="section-head">
-      <h2 id="venueDetailTitle"></h2>
-      <span class="hint" id="venueDetailHint"></span>
+    <div class="detail-layout">
+      <aside class="detail-sidebar">
+        <div class="filter-title-static">地點</div>
+        <div id="venueSidebarOptions"></div>
+      </aside>
+      <div class="detail-main">
+        <div class="section-head">
+          <h2 id="venueDetailTitle"></h2>
+          <span class="hint" id="venueDetailHint"></span>
+        </div>
+        <div class="grid" id="venueDetailGrid"></div>
+      </div>
     </div>
-    <div class="grid" id="venueDetailGrid"></div>
   </div>
 
   <div id="regionDetailView" style="display:none;">
@@ -1946,6 +1972,38 @@ function renderVenueDetail(pool){
   document.getElementById('venueDetailGrid').innerHTML = items.length
     ? items.map(ev => cardMarkup(ev)).join('')
     : '<div class="empty">這個展演空間目前沒有符合篩選條件的活動。</div>';
+
+  renderVenueSidebar(venue);
+}
+
+function renderVenueSidebar(currentVenue){
+  const counts = {};
+  const macroByVenue = {};
+  state.events.forEach(ev => {
+    const v = ev.locationName || ev.location;
+    if(!v) return;
+    counts[v] = (counts[v] || 0) + 1;
+    macroByVenue[v] = macroOf(ev.region);
+  });
+
+  const byMacro = {};
+  Object.keys(counts).forEach(v => {
+    const macro = macroByVenue[v];
+    (byMacro[macro] = byMacro[macro] || []).push(v);
+  });
+
+  const el = document.getElementById('venueSidebarOptions');
+  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
+    const venues = byMacro[macro].sort((a, b) => counts[b] - counts[a]);
+    return `
+      <div class="filter-title-static" style="margin-top:1rem;">${escapeHtml(macro)}</div>
+      ${venues.map(v => `
+        <a class="venue-opt ${v === currentVenue ? 'active' : ''}" href="?venue=${encodeURIComponent(v)}">
+          ${escapeHtml(v)}<span class="c">${counts[v]}</span>
+        </a>
+      `).join('')}
+    `;
+  }).join('');
 }
 
 function renderRegionDetail(pool){
@@ -2021,27 +2079,30 @@ function buildPerimeterSlots(){
   const slots = [];
   const rand = (min, max) => min + Math.random() * (max - min);
 
-  // 上緣一整排
-  for(let i = 0; i < 9; i++){
-    slots.push({ top: rand(-2, 9), left: i * 11 + rand(-2, 3), w: rand(70, 100), h: rand(55, 80) });
+  // 上緣：外層(貼齊邊緣、排列工整) + 內層(較靠近中間、之後會做散落效果)
+  for(let i = 0; i < 11; i++){
+    slots.push({ top: rand(-3, 3), left: i * 9.5 - 2 + rand(-1, 1), w: rand(72, 96), h: rand(58, 78), inner: false });
   }
-  // 下緣一整排
-  for(let i = 0; i < 9; i++){
-    slots.push({ top: rand(90, 100), left: i * 11 + rand(-2, 3), w: rand(70, 100), h: rand(55, 80) });
+  for(let i = 0; i < 10; i++){
+    slots.push({ top: rand(8, 17), left: i * 10.5 + 2 + rand(-2, 2), w: rand(66, 88), h: rand(54, 72), inner: true });
   }
-  // 左緣中段
-  for(let i = 0; i < 5; i++){
-    slots.push({ top: 16 + i * 15 + rand(-3, 3), left: rand(-2, 6), w: rand(65, 90), h: rand(60, 85) });
+  // 下緣：外層 + 內層
+  for(let i = 0; i < 11; i++){
+    slots.push({ top: rand(94, 100), left: i * 9.5 - 2 + rand(-1, 1), w: rand(72, 96), h: rand(58, 78), inner: false });
   }
-  // 右緣中段
-  for(let i = 0; i < 5; i++){
-    slots.push({ top: 16 + i * 15 + rand(-3, 3), left: rand(92, 100), w: rand(65, 90), h: rand(60, 85) });
+  for(let i = 0; i < 10; i++){
+    slots.push({ top: rand(80, 89), left: i * 10.5 + 2 + rand(-2, 2), w: rand(66, 88), h: rand(54, 72), inner: true });
   }
-  // 四個角落加密，呼應參考圖角落較密集的堆疊感
-  [[0,0],[0,88],[85,0],[85,88]].forEach(([top,left]) => {
-    slots.push({ top: top + rand(0,8), left: left + rand(0,8), w: rand(60,85), h: rand(55,75) });
-    slots.push({ top: top + rand(4,14), left: left + rand(4,14), w: rand(55,75), h: rand(50,70) });
-  });
+  // 左緣中段：外層(貼齊左邊界) + 內層
+  for(let i = 0; i < 6; i++){
+    slots.push({ top: 18 + i * 11 + rand(-2, 2), left: rand(-3, 2), w: rand(68, 92), h: rand(58, 80), inner: false });
+    slots.push({ top: 22 + i * 11 + rand(-2, 2), left: rand(9, 15), w: rand(60, 82), h: rand(52, 72), inner: true });
+  }
+  // 右緣中段：外層(貼齊右邊界) + 內層
+  for(let i = 0; i < 6; i++){
+    slots.push({ top: 18 + i * 11 + rand(-2, 2), left: rand(95, 100), w: rand(68, 92), h: rand(58, 80), inner: false });
+    slots.push({ top: 22 + i * 11 + rand(-2, 2), left: rand(83, 89), w: rand(60, 82), h: rand(52, 72), inner: true });
+  }
 
   return slots;
 }
@@ -2061,11 +2122,16 @@ function renderHeroBanner(){
   el.innerHTML = slots.map((slot, i) => {
     const ev = withImage[i % withImage.length];
     const notchClass = notchOptions[Math.floor(Math.random() * notchOptions.length)];
-    const rot = (Math.random() * 20 - 10).toFixed(1);
-    const isScattered = Math.random() < 0.35;
-    const scale = isScattered ? (1.08 + Math.random() * 0.12).toFixed(2) : 1;
+    let rot, scale;
+    if(slot.inner){
+      rot = (Math.random() * 26 - 13).toFixed(1);
+      scale = (1.1 + Math.random() * 0.15).toFixed(2);
+    }else{
+      rot = (Math.random() * 6 - 3).toFixed(1);
+      scale = 1;
+    }
     return `
-      <div class="hero-tile ${notchClass} ${isScattered ? 'scattered' : ''}"
+      <div class="hero-tile ${notchClass} ${slot.inner ? 'scattered' : ''}"
            style="top:${slot.top.toFixed(1)}%; left:${slot.left.toFixed(1)}%; width:${slot.w.toFixed(0)}px; height:${slot.h.toFixed(0)}px; transform: rotate(${rot}deg) scale(${scale});">
         <img src="${escapeAttr(ev.image)}" alt=""
              onerror="this.closest('.hero-tile').style.background='${PLACEHOLDER_GRADIENTS.ticket}'; this.remove();">
