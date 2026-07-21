@@ -128,186 +128,101 @@
   @media (max-width: 980px){ .nav-search-inline{ width: 160px; } }
   @media (max-width: 820px){ .nav-search-inline{ display:none; } }
 
-  /* ---------- Hero：木質桌面平拍風格 ---------- */
+  /* ---------- Hero：翻書互動樣式 ---------- */
   .hero{
     position:relative;
-    height: 920px;
-    padding-bottom: 60px; /* 保留空間讓票券可以凸出場景底部 */
-    overflow:visible;
-  }
-  .hero-scene{
-    position:relative; height: 100%; overflow:hidden;
-    background:
-      repeating-linear-gradient(97deg, rgba(255,255,255,.045) 0px, transparent 2px, transparent 30px, rgba(0,0,0,.06) 32px),
-      repeating-linear-gradient(3deg, rgba(255,255,255,.02) 0px, transparent 3px, transparent 90px, rgba(0,0,0,.04) 92px),
-      linear-gradient(120deg, #8f6a45 0%, #6b4c30 45%, #43301d 100%);
-  }
-  .hero-scene::before{
-    /* 顆粒雜訊，讓木紋看起來比較有真實材質感、不會太平滑卡通 */
-    content:""; position:absolute; inset:0; opacity:.35; mix-blend-mode:overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  }
-  .hero-scene::after{
-    content:""; position:absolute; inset:0;
-    background: radial-gradient(ellipse at 28% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 100%);
-  }
-
-  .hero-text{
-    position:absolute; left: 3.2rem; top:50%; transform: translateY(-50%);
-    z-index:5; max-width: 340px;
-  }
-  .hero-text h1{
-    font-family:"Noto Serif TC", serif; font-weight:900; color:#fff;
-    font-size: clamp(1.8rem, 3vw, 2.5rem); line-height:1.4; margin:0 0 .7rem;
-    text-shadow: 0 3px 12px rgba(0,0,0,.4);
-  }
-  .hero-text .tagline{ color: rgba(255,255,255,.88); font-size:.98rem; margin:0; }
-
-  /* 桌上的地圖道具 */
-  .flatlay-map{
-    position:absolute; width: 240px; height: 300px; top: 8%; right: 30%;
-    background: #EDE6D4; border-radius:4px; transform: rotate(-8deg);
-    box-shadow: 0 24px 44px rgba(0,0,0,.4);
-    background-image:
-      repeating-linear-gradient(0deg, transparent 0 20px, rgba(90,70,40,.13) 20px 21px),
-      repeating-linear-gradient(90deg, transparent 0 20px, rgba(90,70,40,.13) 20px 21px);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .flatlay-map::before{
-    content:""; position:absolute; inset:6px; border:1px solid rgba(90,70,40,.3);
-  }
-  .flatlay-map span{ font-size: 3.2rem; opacity:.5; }
-
-  /* 桌上的筆記本道具 */
-  .flatlay-notebook{
-    position:absolute; width: 200px; height: 150px; bottom: 14%; left: 8%;
-    background: #F4EFE3; border-radius:5px; transform: rotate(6deg);
-    box-shadow: 0 18px 32px rgba(0,0,0,.35);
-    padding: 1.6rem 1.4rem;
-  }
-  .flatlay-notebook::before{
-    content:""; position:absolute; left:0; top:0; bottom:0; width:22px;
-    background: repeating-linear-gradient(180deg, transparent 0 8px, rgba(150,40,40,.35) 8px 9px);
-  }
-  .flatlay-notebook span{ display:block; height:2px; background: rgba(60,50,40,.25); margin-bottom:14px; }
-  .flatlay-notebook span:last-child{ width:60%; }
-
-  /* 桌上的咖啡杯道具 */
-  .flatlay-coffee{
-    position:absolute; width: 108px; height: 108px; top: 6%; left: 6%;
-  }
-  .coffee-saucer{
-    position:absolute; inset:0; border-radius:50%;
-    background: linear-gradient(160deg, #fff, #ddd);
-    box-shadow: 0 16px 30px rgba(0,0,0,.4);
-  }
-  .coffee-cup{
-    position:absolute; top:12%; left:12%; width:76%; height:76%; border-radius:50%;
-    background: radial-gradient(circle at 35% 30%, #6b4226, #2e1c10 75%);
-    box-shadow: inset 0 4px 10px rgba(0,0,0,.5);
-  }
-  .coffee-steam{
-    position:absolute; top:-26px; width:3px; height:26px; border-radius:3px;
-    background: rgba(255,255,255,.5); filter: blur(2px);
-    animation: steamRise 3s ease-in-out infinite;
-  }
-  .coffee-steam.s1{ left:38%; animation-delay:0s; }
-  .coffee-steam.s2{ left:56%; animation-delay:1.2s; }
-  @keyframes steamRise{
-    0%{ transform:translateY(0) scaleY(1); opacity:.5; }
-    50%{ transform:translateY(-14px) scaleY(1.3); opacity:.15; }
-    100%{ transform:translateY(-26px) scaleY(1); opacity:0; }
-  }
-
-  /* 桌上的手機道具 */
-  .flatlay-phone{
-    position:absolute; width: 128px; height: 256px; bottom: 8%; right: 6%;
-    background: #191919; border-radius: 22px; padding: 8px;
-    transform: rotate(11deg);
-    box-shadow: 0 26px 44px rgba(0,0,0,.45);
-  }
-  .phone-screen{
-    position:relative; width:100%; height:100%; border-radius:16px;
-    background: linear-gradient(160deg, #4F46E5, #818CF8);
+    height: 620px;
+    background: var(--bg);
     overflow:hidden;
   }
-  .phone-screen::after{
-    content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%);
-    width:44px; height:5px; border-radius:3px; background:rgba(0,0,0,.35);
+  .hero-left{
+    position:absolute; left: 3.5rem; top:50%; transform:translateY(-50%);
+    z-index:2; max-width: 380px;
+    transition: opacity .6s ease, transform .6s ease;
   }
-  .phone-pin{
-    position:absolute; top:40%; left:50%; transform:translate(-50%,-50%);
-    font-size:1.9rem;
+  .hero-left.faded{ opacity:0; transform:translateY(-50%) translateX(-20px); pointer-events:none; }
+  .hero-left h1{
+    font-family:"Noto Serif TC", serif; font-weight:900; color: var(--ink);
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem); line-height:1.4; margin:0 0 .7rem;
   }
-  .phone-lines{ position:absolute; bottom:16px; left:16px; right:16px; display:flex; flex-direction:column; gap:7px; }
-  .phone-lines span{ display:block; height:7px; border-radius:3px; background:rgba(255,255,255,.5); }
-  .phone-lines span:nth-child(2){ width:70%; }
-  .phone-lines span:nth-child(3){ width:45%; }
-
-  /* 桌上的展覽票券道具：橫向長條票根造型，會凸出Hero底部、疊在下一個區塊上方 */
-  .flatlay-ticket{
-    position:absolute; left: 50%; bottom: 0;
-    transform: translate(-50%, 45%) rotate(-2deg);
-    z-index:10; width: 400px; display:flex;
-    background: #FBF6E9; border-radius:12px;
-    box-shadow: 0 24px 46px rgba(20,10,0,.32);
-    overflow:hidden;
+  .hero-left .tagline{ color: var(--ink-soft); font-size:.98rem; margin:0 0 1.6rem; }
+  .hero-left .search-bar{
+    background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding: .6rem .6rem .6rem 1.2rem; max-width: 420px;
+    display:flex; align-items:center; gap:.5rem;
+    box-shadow: 0 14px 30px rgba(30,20,70,.1);
   }
-  .ticket-main{ flex:1; padding: 1.1rem 1.2rem; min-width:0; }
-  .ticket-eyebrow{
-    font-family:"JetBrains Mono", monospace; font-size:.62rem; letter-spacing:.15em;
-    color:#B08D57; margin-bottom:.4rem;
-  }
-  .ticket-title{
-    font-family:"Noto Serif TC", serif; font-weight:700; font-size:1.05rem; color:#2b2118;
-    line-height:1.4; margin-bottom:.35rem;
-    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;
-  }
-  .ticket-venue{ font-size:.78rem; color:#8a7a60; }
-  .ticket-divider{
-    position:relative; width:0; border-left:1px dashed #C9BFA0; margin: .8rem 0;
-  }
-  .ticket-divider::before, .ticket-divider::after{
-    content:""; position:absolute; left:50%; transform:translateX(-50%);
-    width:16px; height:16px; border-radius:50%; background: var(--bg);
-  }
-  .ticket-divider::before{ top:-.8rem; }
-  .ticket-divider::after{ bottom:-.8rem; }
-  .ticket-stub{
-    width: 108px; flex-shrink:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; padding: 1rem .6rem;
-    background: rgba(176,141,87,.08);
-  }
-  .stub-label{
-    font-family:"JetBrains Mono", monospace; font-size:.58rem; letter-spacing:.1em;
-    color:#B08D57; margin-bottom:.35rem;
-  }
-  .stub-date{
-    font-family:"JetBrains Mono", monospace; font-size:.75rem; color:#2b2118;
-    font-weight:600; text-align:center;
+  .hero-left .search-bar svg{ flex-shrink:0; color: var(--ink-soft); }
+  .hero-left #heroSearchInput{
+    flex:1; min-width:0; border:none; outline:none; font-size:.92rem; font-family:inherit;
+    background:transparent; padding:.3rem 0; color: var(--ink);
   }
 
-  .random-pick-btn{
-    display:inline-flex; align-items:center; gap:.5rem; flex-shrink:0;
-    background: var(--card); border:1px solid var(--line); color: var(--ink);
-    padding:.5rem 1rem; border-radius:999px; font-size:.8rem; font-weight:600;
+  .hero-book-wrap{
+    position:absolute; right: 8%; top:50%; transform:translateY(-50%);
+    z-index:3; display:flex; flex-direction:column; align-items:center; gap:.9rem;
   }
-  .random-pick-btn:hover{ border-color: var(--brand); color: var(--brand); }
+  .hero-book{
+    position:relative; width: 300px; height: 400px; perspective: 1600px;
+  }
+  .book-page{
+    position:absolute; inset:0; border-radius:10px; overflow:hidden;
+    background:#FBF6E9; box-shadow: 10px 14px 34px rgba(30,20,10,.28);
+    display:flex; flex-direction:column; cursor:pointer;
+  }
+  .book-page-img{
+    flex:1; background-size:cover; background-position:center;
+    background: linear-gradient(135deg,#818CF8,#4F46E5);
+  }
+  .book-page-body{ padding: .9rem 1.1rem 1.1rem; }
+  .book-page-title{
+    font-family:"Noto Serif TC", serif; font-weight:700; font-size:.98rem; color:#2b2118;
+    line-height:1.4; margin-bottom:.4rem;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .book-page-meta{
+    display:flex; flex-direction:column; gap:.2rem;
+    font-family:"JetBrains Mono", monospace; font-size:.68rem; color:#7a6a52;
+  }
+  .book-page.flipping{ animation: pageFlip .5s ease; }
+  @keyframes pageFlip{
+    0%{ transform:rotateY(0deg); }
+    50%{ transform:rotateY(-90deg); filter:brightness(.7); }
+    100%{ transform:rotateY(0deg); }
+  }
 
-  @media (max-width: 820px){
-    .flatlay-map, .flatlay-phone, .flatlay-notebook, .flatlay-coffee{ display:none; }
-    .hero{ height:auto; padding-bottom: 0; }
-    .hero-scene{ height:auto; padding: 2.6rem 0 3.4rem; }
-    .hero-text{
+  .book-cover{
+    position:absolute; inset:0; border-radius:10px; cursor:pointer;
+    background: linear-gradient(135deg, #4F46E5, #312E81);
+    transform-origin: left center; transform: rotateY(0deg);
+    transition: transform .8s cubic-bezier(.4,0,.2,1);
+    box-shadow: 10px 14px 34px rgba(20,15,50,.4);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:#fff; z-index:5; text-align:center;
+  }
+  .book-cover::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:14px;
+    background: linear-gradient(90deg, rgba(0,0,0,.35), transparent);
+  }
+  .book-cover.open{ transform: rotateY(-150deg); pointer-events:none; opacity:0; }
+  .book-cover-icon{ font-size:2.6rem; margin-bottom:.7rem; }
+  .book-cover-label{ font-size:.85rem; line-height:1.6; opacity:.9; }
+
+  .book-hint{ font-size:.78rem; color: var(--ink-soft); margin:0; }
+
+  @media (max-width: 900px){
+    .hero{ height:auto; padding: 2.6rem 0 3rem; }
+    .hero-left{
       position:relative; left:auto; top:auto; transform:none;
-      max-width:100%; text-align:center; padding:0 1.5rem;
+      max-width:100%; text-align:center; padding:0 1.5rem; margin-bottom:2rem;
     }
-    .flatlay-ticket{
-      position:relative; left:auto; bottom:auto; transform:none;
-      width: 90%; max-width:380px;
-      margin: 1.6rem auto 0;
+    .hero-left .search-bar{ margin:0 auto; }
+    .hero-book-wrap{
+      position:relative; right:auto; top:auto; transform:none;
+      margin:0 auto;
     }
   }
+
 
   .locate-btn{
     display:inline-flex; align-items:center; gap:.4rem;
@@ -316,6 +231,22 @@
     white-space:nowrap;
   }
   .locate-btn:hover{ background: var(--brand); border-color: var(--brand); }
+
+  .search-page-header{
+    display:flex; align-items:center; justify-content:center; gap:1.5rem;
+    flex-wrap:wrap; margin-bottom: 1.6rem;
+  }
+  .search-bar-large{
+    background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding: .65rem .8rem .65rem 1.3rem; max-width: 460px; width:100%;
+    display:flex; align-items:center; gap:.6rem;
+    box-shadow: 0 12px 28px rgba(30,20,70,.08);
+  }
+  .search-bar-large svg{ flex-shrink:0; color: var(--ink-soft); }
+  .search-bar-large input{
+    flex:1; min-width:0; border:none; outline:none; font-size:1rem; font-family:inherit;
+    background:transparent; padding:.3rem 0; color: var(--ink);
+  }
   .locate-btn.active{ background: var(--brand); border-color: var(--brand); }
 
   /* ---------- 舊有殘留樣式保留相容 ---------- */
@@ -738,46 +669,33 @@
 </header>
 
 <section class="hero" id="top">
-  <div class="hero-scene">
-    <div class="hero-text">
-      <h1>探索全台精彩展覽</h1>
-      <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
-    </div>
-
-    <div class="flatlay-map"><span>🗺️</span></div>
-
-    <div class="flatlay-notebook">
-      <span></span><span></span><span></span><span></span>
-    </div>
-
-    <div class="flatlay-coffee">
-      <div class="coffee-saucer"></div>
-      <div class="coffee-cup"></div>
-      <div class="coffee-steam s1"></div>
-      <div class="coffee-steam s2"></div>
-    </div>
-
-    <div class="flatlay-phone">
-      <div class="phone-screen">
-        <div class="phone-pin">📍</div>
-        <div class="phone-lines">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
+  <div class="hero-left" id="heroLeft">
+    <h1>探索全台精彩展覽</h1>
+    <p class="tagline">彙整文化部開放資料與各大展演場館資訊，每日自動更新</p>
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="heroSearchInput" placeholder="搜尋展覽、地點、關鍵字…按 Enter 搜尋">
     </div>
   </div>
 
-  <div class="flatlay-ticket" id="heroTicket">
-    <div class="ticket-main">
-      <div class="ticket-eyebrow">EXHIBITION TICKET</div>
-      <div class="ticket-title" id="heroTicketTitle">載入中…</div>
-      <div class="ticket-venue" id="heroTicketVenue"></div>
+  <div class="hero-book-wrap">
+    <div class="hero-book" id="heroBook">
+      <div class="book-page" id="bookPage">
+        <div class="book-page-img" id="bookPageImg"></div>
+        <div class="book-page-body">
+          <div class="book-page-title" id="bookPageTitle"></div>
+          <div class="book-page-meta">
+            <span id="bookPageDate"></span>
+            <span id="bookPageAddress"></span>
+          </div>
+        </div>
+      </div>
+      <div class="book-cover" id="bookCover">
+        <span class="book-cover-icon">📖</span>
+        <span class="book-cover-label">點擊翻開<br>今日展覽</span>
+      </div>
     </div>
-    <div class="ticket-divider"></div>
-    <div class="ticket-stub">
-      <span class="stub-label">DATE</span>
-      <span class="stub-date" id="heroTicketDate"></span>
-    </div>
+    <p class="book-hint" id="bookHint">點一下翻開，再點可以翻到下一檔</p>
   </div>
 </section>
 
@@ -908,6 +826,38 @@
     </div>
   </div>
 
+  <div id="searchView" style="display:none;">
+    <a class="back-link" href="./">← 回首頁</a>
+
+    <div class="search-page-header">
+      <div class="search-bar search-bar-large">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchPageInput" placeholder="搜尋展覽、地點、關鍵字…">
+      </div>
+      <div class="status-toggle" id="searchStatusToggle">
+        <button class="status-btn" data-status="all" type="button">全部</button>
+        <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
+        <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
+      </div>
+    </div>
+    <div class="cat-row" id="searchCatRow"></div>
+
+    <div class="detail-layout" style="margin-top:2rem;">
+      <aside class="detail-sidebar">
+        <div id="searchCalendar"></div>
+        <div class="filter-title-static">地點</div>
+        <div id="searchVenueOptions"></div>
+      </aside>
+      <div class="detail-main">
+        <div class="section-head">
+          <h2>搜尋結果</h2>
+          <span class="hint" id="searchHint"></span>
+        </div>
+        <div class="grid" id="searchGrid"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="nearbyPageView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
     <div class="section-head">
@@ -987,6 +937,9 @@ const state = {
   detailRegion: null,
   specialType: null,
   venueImages: {},
+  searchQuery: '',
+  searchCategories: new Set(),
+  searchVenueFilter: null,
   detailVenueFilter: null,
   rowSort: {},
   calendarViewDate: new Date(),
@@ -1121,7 +1074,9 @@ function readUrlParams(){
   const venue = params.get('venue');
   const region = params.get('region');
   const special = params.get('special');
+  const q = params.get('q');
   if(special === 'upcoming' || special === 'ending'){ state.specialType = special; state.viewMode = 'special'; }
+  if(q){ state.searchQuery = q; state.viewMode = 'search'; }
   if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
   if(venue){ state.detailVenue = venue; state.viewMode = 'venue'; }
   if(region){ state.detailRegion = region; state.viewMode = 'region'; }
@@ -1133,6 +1088,7 @@ function readUrlParams(){
 
 async function loadData(){
   readUrlParams();
+  setSearchQuery(state.searchQuery);
   try{
     const res = await fetch('data/exhibitions.json', { cache: 'no-store' });
     const data = await res.json();
@@ -1144,7 +1100,7 @@ async function loadData(){
     buildRegionPanel();
     buildVenuePanel();
     syncStatusButtons();
-    renderHeroTicket();
+    initHeroBook();
     renderFeaturedCarousel();
     renderVenueCarousel();
     render();
@@ -1382,7 +1338,7 @@ function parsePriceRange(priceStr){
 }
 
 function getFilteredPool(){
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const q = (state.searchQuery || '').trim().toLowerCase();
   let pool = state.events.filter(ev => {
     if(!ev.sourceUrl) return false;
     if(state.selectedRegions.size && !state.selectedRegions.has(ev.region)) return false;
@@ -1815,17 +1771,18 @@ function render(){
   document.getElementById('venueDetailView').style.display = mode === 'venue' ? 'block' : 'none';
   document.getElementById('regionDetailView').style.display = mode === 'region' ? 'block' : 'none';
   document.getElementById('specialView').style.display = mode === 'special' ? 'block' : 'none';
+  document.getElementById('searchView').style.display = mode === 'search' ? 'block' : 'none';
   document.getElementById('nearbyPageView').style.display = mode === 'nearby' ? 'block' : 'none';
   document.getElementById('eventDetailView').style.display = mode === 'event' ? 'block' : 'none';
   document.getElementById('favoritesView').style.display = mode === 'favorites' ? 'block' : 'none';
   document.getElementById('nearbyPreviewSection').style.display = (mode === 'home') ? 'block' : 'none';
 
-  // 分類頁面(detail)、場館頁面(venue)、地區頁面(region)、即將開展/結束(special)不需要 Hero、精選展覽、展演空間
-  const hideTopSections = (mode === 'detail' || mode === 'venue' || mode === 'region' || mode === 'event' || mode === 'special');
+  // 分類頁面(detail)、場館頁面(venue)、地區頁面(region)、即將開展/結束(special)、搜尋結果(search)不需要 Hero、精選展覽、展演空間
+  const hideTopSections = (mode === 'detail' || mode === 'venue' || mode === 'region' || mode === 'event' || mode === 'special' || mode === 'search');
   document.querySelector('.hero').style.display = hideTopSections ? 'none' : 'block';
   document.querySelectorAll('.featured-section').forEach(el => { el.style.display = hideTopSections ? 'none' : 'block'; });
   document.querySelector('.calendar-picker').style.display = mode === 'detail' ? 'none' : 'flex';
-  document.querySelector('.filters-section').style.display = (mode === 'event' || mode === 'special') ? 'none' : 'block';
+  document.querySelector('.filters-section').style.display = (mode === 'event' || mode === 'special' || mode === 'search') ? 'none' : 'block';
 
   if(mode === 'detail'){
     renderDetail(pool);
@@ -1835,6 +1792,8 @@ function render(){
     renderRegionDetail(pool);
   }else if(mode === 'special'){
     renderSpecialPage(pool);
+  }else if(mode === 'search'){
+    renderSearchPage(pool);
   }else if(mode === 'nearby'){
     renderNearbyPage(pool);
   }else if(mode === 'event'){
@@ -1977,7 +1936,31 @@ function escapeHtml(str){
 function escapeAttr(str){ return escapeHtml(str); }
 
 // ---------- 事件綁定 ----------
-document.getElementById('searchInput').addEventListener('input', render);
+function setSearchQuery(q, sourceEl){
+  state.searchQuery = q;
+  ['searchInput', 'heroSearchInput', 'searchPageInput'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el !== sourceEl && el.value !== q) el.value = q;
+  });
+}
+
+function goToSearch(q){
+  const trimmed = (q || '').trim();
+  if(!trimmed) return;
+  location.href = `?q=${encodeURIComponent(trimmed)}`;
+}
+
+['searchInput', 'heroSearchInput', 'searchPageInput'].forEach(id => {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input', (e) => {
+    setSearchQuery(e.target.value, e.target);
+    if(state.viewMode === 'search') render();
+  });
+  el.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') goToSearch(e.target.value);
+  });
+});
 
 document.getElementById('datePicker').addEventListener('change', (e) => {
   state.selectedDate = e.target.value || null;
@@ -2251,6 +2234,82 @@ function renderSpecialPage(pool){
     : `<div class="empty">目前沒有符合篩選條件的「${title}」活動。</div>`;
 }
 
+// ---------- 搜尋結果頁 ----------
+function renderSearchPage(pool){
+  // pool 已經套用了搜尋關鍵字、舉辦狀態、日期篩選(共用同一套 getFilteredPool)
+  let items = pool;
+
+  if(state.searchCategories.size){
+    items = items.filter(ev => Array.isArray(ev.categories)
+      ? ev.categories.some(c => state.searchCategories.has(c))
+      : state.searchCategories.has(ev.category));
+  }
+  if(state.searchVenueFilter){
+    items = items.filter(ev => (ev.locationName || ev.location) === state.searchVenueFilter);
+  }
+
+  const query = state.searchQuery || '';
+  document.getElementById('searchHint').textContent = query
+    ? `「${escapeHtml(query)}」共 ${items.length} 檔結果`
+    : `共 ${items.length} 檔結果`;
+  document.getElementById('searchGrid').innerHTML = items.length
+    ? items.map(ev => cardMarkup(ev)).join('')
+    : '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
+
+  renderMiniCalendar('searchCalendar', pool);
+  renderSearchVenueSidebar(pool);
+  renderSearchCategoryRow(pool);
+  syncStatusButtons();
+}
+
+function renderSearchVenueSidebar(pool){
+  const counts = {};
+  pool.forEach(ev => {
+    const v = ev.locationName || ev.location;
+    if(!v) return;
+    counts[v] = (counts[v] || 0) + 1;
+  });
+  const venues = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  const el = document.getElementById('searchVenueOptions');
+  el.innerHTML = `
+    <button type="button" class="venue-opt ${!state.searchVenueFilter ? 'active' : ''}" data-venue="">
+      全部地點<span class="c">${pool.length}</span>
+    </button>
+    ${venues.map(v => `
+      <button type="button" class="venue-opt ${state.searchVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
+        ${escapeHtml(v)}<span class="c">${counts[v]}</span>
+      </button>
+    `).join('')}
+  `;
+  el.querySelectorAll('.venue-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.searchVenueFilter = btn.dataset.venue || null;
+      render();
+    });
+  });
+}
+
+function renderSearchCategoryRow(pool){
+  const counts = countByArrayField(pool, 'categories');
+  const cats = sortByCategoryOrder(Object.keys(counts));
+  const row = document.getElementById('searchCatRow');
+  row.innerHTML = cats.map(cat => `
+    <button type="button" class="cat-chip ${state.searchCategories.has(cat) ? 'active' : ''}" data-cat="${escapeAttr(cat)}">
+      <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
+      <span class="label">${escapeHtml(cat)}<span class="c">${counts[cat]}</span></span>
+    </button>
+  `).join('');
+  row.querySelectorAll('.cat-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      if(state.searchCategories.has(cat)) state.searchCategories.delete(cat);
+      else state.searchCategories.add(cat);
+      render();
+    });
+  });
+}
+
+
 document.getElementById('featuredPrev').addEventListener('click', () => {
   const el = document.getElementById('featuredCarousel');
   el.scrollBy({ left: -el.clientWidth, behavior: 'smooth' });
@@ -2267,24 +2326,54 @@ document.getElementById('randomPickBtn').addEventListener('click', () => {
 });
 
 // ---------- Hero 票券道具：隨機挑一檔展覽填進票券內容 ----------
-function renderHeroTicket(){
-  const ticketEl = document.getElementById('heroTicket');
-  if(!ticketEl) return;
-
+function fillBookPage(){
   const candidates = state.events.filter(ev => ev.sourceUrl);
-  if(candidates.length === 0){
-    document.getElementById('heroTicketTitle').textContent = '台灣展覽誌';
-    document.getElementById('heroTicketDate').textContent = '';
-    document.getElementById('heroTicketVenue').textContent = '';
-    return;
-  }
-
+  if(candidates.length === 0) return null;
   const pick = candidates[Math.floor(Math.random() * candidates.length)];
-  document.getElementById('heroTicketTitle').textContent = pick.title;
-  document.getElementById('heroTicketDate').textContent = dateRangeText(pick);
-  document.getElementById('heroTicketVenue').textContent = pick.locationName || pick.location || '';
-  ticketEl.onclick = () => { location.href = `?event=${encodeURIComponent(pick.sourceUrl)}`; };
-  ticketEl.style.cursor = 'pointer';
+  const iconKey = iconKeyFor(pick.category);
+  const imgEl = document.getElementById('bookPageImg');
+  if(pick.image){
+    imgEl.style.backgroundImage = `url('${pick.image}')`;
+  }else{
+    imgEl.style.backgroundImage = 'none';
+    imgEl.style.background = PLACEHOLDER_GRADIENTS[iconKey];
+  }
+  document.getElementById('bookPageTitle').textContent = pick.title;
+  document.getElementById('bookPageDate').textContent = dateRangeText(pick);
+  document.getElementById('bookPageAddress').textContent = pick.location || pick.locationName || '地址未提供';
+  document.getElementById('bookPage').dataset.url = pick.sourceUrl || '';
+  return pick;
+}
+
+function initHeroBook(){
+  const cover = document.getElementById('bookCover');
+  const page = document.getElementById('bookPage');
+  const heroLeft = document.getElementById('heroLeft');
+  const hint = document.getElementById('bookHint');
+  if(!cover || !page) return;
+
+  let opened = false;
+
+  cover.addEventListener('click', () => {
+    if(opened) return;
+    opened = true;
+    fillBookPage();
+    cover.classList.add('open');
+    heroLeft.classList.add('faded');
+    hint.textContent = '點一下翻到下一檔展覽，快點兩下前往該展覽頁面';
+  });
+
+  page.addEventListener('click', () => {
+    if(!opened) return;
+    page.classList.add('flipping');
+    setTimeout(fillBookPage, 240);
+    setTimeout(() => page.classList.remove('flipping'), 500);
+  });
+
+  page.addEventListener('dblclick', () => {
+    const url = page.dataset.url;
+    if(url) window.open(url, '_blank', 'noopener');
+  });
 }
 
 
