@@ -131,94 +131,160 @@
   /* ---------- Hero：木質桌面平拍風格 ---------- */
   .hero{
     position:relative;
-    height: 460px;
-    padding-bottom: 46px; /* 保留空間讓票券可以凸出場景底部 */
+    height: 920px;
+    padding-bottom: 60px; /* 保留空間讓票券可以凸出場景底部 */
     overflow:visible;
   }
   .hero-scene{
     position:relative; height: 100%; overflow:hidden;
     background:
-      repeating-linear-gradient(100deg, rgba(255,255,255,.035) 0px, transparent 2px, transparent 34px, rgba(0,0,0,.05) 36px),
-      linear-gradient(120deg, #8a6644 0%, #6b4c30 45%, #4a3320 100%);
+      repeating-linear-gradient(97deg, rgba(255,255,255,.045) 0px, transparent 2px, transparent 30px, rgba(0,0,0,.06) 32px),
+      repeating-linear-gradient(3deg, rgba(255,255,255,.02) 0px, transparent 3px, transparent 90px, rgba(0,0,0,.04) 92px),
+      linear-gradient(120deg, #8f6a45 0%, #6b4c30 45%, #43301d 100%);
+  }
+  .hero-scene::before{
+    /* 顆粒雜訊，讓木紋看起來比較有真實材質感、不會太平滑卡通 */
+    content:""; position:absolute; inset:0; opacity:.35; mix-blend-mode:overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   }
   .hero-scene::after{
     content:""; position:absolute; inset:0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,.32) 100%);
+    background: radial-gradient(ellipse at 28% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 100%);
   }
 
   .hero-text{
-    position:absolute; left: 3rem; top:50%; transform: translateY(-50%);
-    z-index:5; max-width: 320px;
+    position:absolute; left: 3.2rem; top:50%; transform: translateY(-50%);
+    z-index:5; max-width: 340px;
   }
   .hero-text h1{
     font-family:"Noto Serif TC", serif; font-weight:900; color:#fff;
-    font-size: clamp(1.6rem, 2.8vw, 2.2rem); line-height:1.4; margin:0 0 .6rem;
-    text-shadow: 0 3px 12px rgba(0,0,0,.35);
+    font-size: clamp(1.8rem, 3vw, 2.5rem); line-height:1.4; margin:0 0 .7rem;
+    text-shadow: 0 3px 12px rgba(0,0,0,.4);
   }
-  .hero-text .tagline{ color: rgba(255,255,255,.85); font-size:.92rem; margin:0; }
+  .hero-text .tagline{ color: rgba(255,255,255,.88); font-size:.98rem; margin:0; }
 
   /* 桌上的地圖道具 */
   .flatlay-map{
-    position:absolute; width: 190px; height: 240px; top: 12%; right: 26%;
-    background: #EDE6D4; border-radius:6px; transform: rotate(-9deg);
-    box-shadow: 0 20px 38px rgba(0,0,0,.35);
+    position:absolute; width: 240px; height: 300px; top: 8%; right: 30%;
+    background: #EDE6D4; border-radius:4px; transform: rotate(-8deg);
+    box-shadow: 0 24px 44px rgba(0,0,0,.4);
     background-image:
-      repeating-linear-gradient(0deg, transparent 0 17px, rgba(90,70,40,.12) 17px 18px),
-      repeating-linear-gradient(90deg, transparent 0 17px, rgba(90,70,40,.12) 17px 18px);
+      repeating-linear-gradient(0deg, transparent 0 20px, rgba(90,70,40,.13) 20px 21px),
+      repeating-linear-gradient(90deg, transparent 0 20px, rgba(90,70,40,.13) 20px 21px);
     display:flex; align-items:center; justify-content:center;
   }
-  .flatlay-map span{ font-size: 2.6rem; opacity:.5; }
+  .flatlay-map::before{
+    content:""; position:absolute; inset:6px; border:1px solid rgba(90,70,40,.3);
+  }
+  .flatlay-map span{ font-size: 3.2rem; opacity:.5; }
+
+  /* 桌上的筆記本道具 */
+  .flatlay-notebook{
+    position:absolute; width: 200px; height: 150px; bottom: 14%; left: 8%;
+    background: #F4EFE3; border-radius:5px; transform: rotate(6deg);
+    box-shadow: 0 18px 32px rgba(0,0,0,.35);
+    padding: 1.6rem 1.4rem;
+  }
+  .flatlay-notebook::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:22px;
+    background: repeating-linear-gradient(180deg, transparent 0 8px, rgba(150,40,40,.35) 8px 9px);
+  }
+  .flatlay-notebook span{ display:block; height:2px; background: rgba(60,50,40,.25); margin-bottom:14px; }
+  .flatlay-notebook span:last-child{ width:60%; }
+
+  /* 桌上的咖啡杯道具 */
+  .flatlay-coffee{
+    position:absolute; width: 108px; height: 108px; top: 6%; left: 6%;
+  }
+  .coffee-saucer{
+    position:absolute; inset:0; border-radius:50%;
+    background: linear-gradient(160deg, #fff, #ddd);
+    box-shadow: 0 16px 30px rgba(0,0,0,.4);
+  }
+  .coffee-cup{
+    position:absolute; top:12%; left:12%; width:76%; height:76%; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #6b4226, #2e1c10 75%);
+    box-shadow: inset 0 4px 10px rgba(0,0,0,.5);
+  }
+  .coffee-steam{
+    position:absolute; top:-26px; width:3px; height:26px; border-radius:3px;
+    background: rgba(255,255,255,.5); filter: blur(2px);
+    animation: steamRise 3s ease-in-out infinite;
+  }
+  .coffee-steam.s1{ left:38%; animation-delay:0s; }
+  .coffee-steam.s2{ left:56%; animation-delay:1.2s; }
+  @keyframes steamRise{
+    0%{ transform:translateY(0) scaleY(1); opacity:.5; }
+    50%{ transform:translateY(-14px) scaleY(1.3); opacity:.15; }
+    100%{ transform:translateY(-26px) scaleY(1); opacity:0; }
+  }
 
   /* 桌上的手機道具 */
   .flatlay-phone{
-    position:absolute; width: 108px; height: 216px; bottom: 8%; right: 6%;
-    background: #191919; border-radius: 18px; padding: 7px;
+    position:absolute; width: 128px; height: 256px; bottom: 8%; right: 6%;
+    background: #191919; border-radius: 22px; padding: 8px;
     transform: rotate(11deg);
-    box-shadow: 0 22px 38px rgba(0,0,0,.4);
+    box-shadow: 0 26px 44px rgba(0,0,0,.45);
   }
   .phone-screen{
-    position:relative; width:100%; height:100%; border-radius:13px;
+    position:relative; width:100%; height:100%; border-radius:16px;
     background: linear-gradient(160deg, #4F46E5, #818CF8);
     overflow:hidden;
   }
-  .phone-pin{
-    position:absolute; top:38%; left:50%; transform:translate(-50%,-50%);
-    font-size:1.6rem;
+  .phone-screen::after{
+    content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%);
+    width:44px; height:5px; border-radius:3px; background:rgba(0,0,0,.35);
   }
-  .phone-lines{ position:absolute; bottom:14px; left:14px; right:14px; display:flex; flex-direction:column; gap:6px; }
-  .phone-lines span{ display:block; height:6px; border-radius:3px; background:rgba(255,255,255,.5); }
+  .phone-pin{
+    position:absolute; top:40%; left:50%; transform:translate(-50%,-50%);
+    font-size:1.9rem;
+  }
+  .phone-lines{ position:absolute; bottom:16px; left:16px; right:16px; display:flex; flex-direction:column; gap:7px; }
+  .phone-lines span{ display:block; height:7px; border-radius:3px; background:rgba(255,255,255,.5); }
   .phone-lines span:nth-child(2){ width:70%; }
   .phone-lines span:nth-child(3){ width:45%; }
 
-  /* 桌上的展覽票券道具（會凸出Hero底部，疊在下一個區塊上方） */
+  /* 桌上的展覽票券道具：橫向長條票根造型，會凸出Hero底部、疊在下一個區塊上方 */
   .flatlay-ticket{
     position:absolute; left: 50%; bottom: 0;
-    transform: translate(-50%, 30%) rotate(-3deg);
-    z-index:10; width: 250px;
-    background: #FBF6E9; border-radius:10px; padding: 1.1rem 1.2rem 1.2rem;
-    box-shadow: 0 20px 40px rgba(20,10,0,.3);
+    transform: translate(-50%, 45%) rotate(-2deg);
+    z-index:10; width: 400px; display:flex;
+    background: #FBF6E9; border-radius:12px;
+    box-shadow: 0 24px 46px rgba(20,10,0,.32);
+    overflow:hidden;
   }
+  .ticket-main{ flex:1; padding: 1.1rem 1.2rem; min-width:0; }
   .ticket-eyebrow{
     font-family:"JetBrains Mono", monospace; font-size:.62rem; letter-spacing:.15em;
     color:#B08D57; margin-bottom:.4rem;
   }
   .ticket-title{
-    font-family:"Noto Serif TC", serif; font-weight:700; font-size:1rem; color:#2b2118;
-    line-height:1.4; margin-bottom:.6rem;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    font-family:"Noto Serif TC", serif; font-weight:700; font-size:1.05rem; color:#2b2118;
+    line-height:1.4; margin-bottom:.35rem;
+    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;
   }
+  .ticket-venue{ font-size:.78rem; color:#8a7a60; }
   .ticket-divider{
-    position:relative; height:0; border-top:1px dashed #C9BFA0; margin: .3rem 0 .6rem;
+    position:relative; width:0; border-left:1px dashed #C9BFA0; margin: .8rem 0;
   }
   .ticket-divider::before, .ticket-divider::after{
-    content:""; position:absolute; top:50%; transform:translateY(-50%);
-    width:14px; height:14px; border-radius:50%; background: var(--bg);
+    content:""; position:absolute; left:50%; transform:translateX(-50%);
+    width:16px; height:16px; border-radius:50%; background: var(--bg);
   }
-  .ticket-divider::before{ left:-1.2rem; }
-  .ticket-divider::after{ right:-1.2rem; }
-  .ticket-meta{
-    display:flex; justify-content:space-between; gap:.6rem;
-    font-family:"JetBrains Mono", monospace; font-size:.68rem; color:#7a6a52;
+  .ticket-divider::before{ top:-.8rem; }
+  .ticket-divider::after{ bottom:-.8rem; }
+  .ticket-stub{
+    width: 108px; flex-shrink:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding: 1rem .6rem;
+    background: rgba(176,141,87,.08);
+  }
+  .stub-label{
+    font-family:"JetBrains Mono", monospace; font-size:.58rem; letter-spacing:.1em;
+    color:#B08D57; margin-bottom:.35rem;
+  }
+  .stub-date{
+    font-family:"JetBrains Mono", monospace; font-size:.75rem; color:#2b2118;
+    font-weight:600; text-align:center;
   }
 
   .random-pick-btn{
@@ -229,7 +295,7 @@
   .random-pick-btn:hover{ border-color: var(--brand); color: var(--brand); }
 
   @media (max-width: 820px){
-    .flatlay-map, .flatlay-phone{ display:none; }
+    .flatlay-map, .flatlay-phone, .flatlay-notebook, .flatlay-coffee{ display:none; }
     .hero{ height:auto; padding-bottom: 0; }
     .hero-scene{ height:auto; padding: 2.6rem 0 3.4rem; }
     .hero-text{
@@ -238,6 +304,7 @@
     }
     .flatlay-ticket{
       position:relative; left:auto; bottom:auto; transform:none;
+      width: 90%; max-width:380px;
       margin: 1.6rem auto 0;
     }
   }
@@ -545,6 +612,7 @@
     color:#fff; position:relative;
   }
   .venue-card .venue-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .venue-card .venue-fallback-icon{ position:absolute; inset:0; align-items:center; justify-content:center; }
   .venue-card .venue-body{ padding: .9rem 1rem 1.05rem; }
   .venue-card .venue-name{
     font-size:.98rem; font-weight:700; margin:0 0 .3rem;
@@ -678,6 +746,17 @@
 
     <div class="flatlay-map"><span>🗺️</span></div>
 
+    <div class="flatlay-notebook">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="flatlay-coffee">
+      <div class="coffee-saucer"></div>
+      <div class="coffee-cup"></div>
+      <div class="coffee-steam s1"></div>
+      <div class="coffee-steam s2"></div>
+    </div>
+
     <div class="flatlay-phone">
       <div class="phone-screen">
         <div class="phone-pin">📍</div>
@@ -689,12 +768,15 @@
   </div>
 
   <div class="flatlay-ticket" id="heroTicket">
-    <div class="ticket-eyebrow">EXHIBITION TICKET</div>
-    <div class="ticket-title" id="heroTicketTitle">載入中…</div>
+    <div class="ticket-main">
+      <div class="ticket-eyebrow">EXHIBITION TICKET</div>
+      <div class="ticket-title" id="heroTicketTitle">載入中…</div>
+      <div class="ticket-venue" id="heroTicketVenue"></div>
+    </div>
     <div class="ticket-divider"></div>
-    <div class="ticket-meta">
-      <span id="heroTicketDate"></span>
-      <span id="heroTicketVenue"></span>
+    <div class="ticket-stub">
+      <span class="stub-label">DATE</span>
+      <span class="stub-date" id="heroTicketDate"></span>
     </div>
   </div>
 </section>
@@ -904,6 +986,7 @@ const state = {
   detailVenue: null,
   detailRegion: null,
   specialType: null,
+  venueImages: {},
   detailVenueFilter: null,
   rowSort: {},
   calendarViewDate: new Date(),
@@ -1055,6 +1138,7 @@ async function loadData(){
     const data = await res.json();
     state.events = (data.events || []).map(ev => ({ ...ev, region: detectRegion(ev) }));
     state.updatedAt = data.updatedAt;
+    state.venueImages = data.venueImages || {};
     buildCategoryRow();
     buildCategoryPanel();
     buildRegionPanel();
@@ -2030,10 +2114,15 @@ function venueCardMarkup(venue, count){
   const region = VENUE_REGION_MAP[venue] || '';
   const gradient = VENUE_CARD_PALETTE[hashString(venue) % VENUE_CARD_PALETTE.length];
   const iconPath = venueIconPath(venue);
+  const realImage = state.venueImages && state.venueImages[venue];
+  const media = realImage
+    ? `<img src="${escapeAttr(realImage)}" alt="" loading="lazy" onerror="this.remove(); this.parentElement.style.background='${gradient}'; this.parentElement.querySelector('.venue-fallback-icon').style.display='flex';">
+       <div class="venue-fallback-icon" style="display:none;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="${iconPath}"/></svg></div>`
+    : `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="${iconPath}"/></svg>`;
   return `
     <a class="venue-card card-flat" href="?venue=${encodeURIComponent(venue)}">
-      <div class="venue-media" style="background:${gradient}">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="${iconPath}"/></svg>
+      <div class="venue-media" style="background:${realImage ? 'none' : gradient}">
+        ${media}
       </div>
       <div class="venue-body">
         <div class="venue-name">${escapeHtml(venue)}</div>
