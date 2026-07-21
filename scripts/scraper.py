@@ -379,6 +379,25 @@ MAJOR_VENUE_ALIASES = {
     "屏東演藝廳": ["屏東演藝廳"],
 }
 
+# 已確認過網址正確的場館官網首頁，用來抓取官方自己設定的分享縮圖(og:image)
+# 當作展演空間卡片的代表圖。只收錄有把握確認過的場館，其餘場館寧可先不放，
+# 也不要猜錯網址抓到不相關的圖片。
+VENUE_OFFICIAL_URLS = {
+    "台北市立美術館": "https://www.tfam.museum/",
+    "國立故宮博物院": "https://www.npm.gov.tw/",
+    "國立歷史博物館": "https://www.nmh.gov.tw/",
+    "國立臺灣博物館": "https://www.ntm.gov.tw/",
+    "國父紀念館": "https://www.yatsen.gov.tw/",
+    "中正紀念堂": "https://www.cksmh.gov.tw/",
+    "華山1914文化創意產業園區": "https://www.huashan1914.com/",
+    "南港展覽館": "https://www.tainex.com.tw/",
+    "國家兩廳院": "https://www.npac-ntch.org/",
+    "台中國家歌劇院": "https://www.npac-ntt.org/",
+    "衛武營國家藝術文化中心": "https://www.npac-weiwuying.org/",
+    "高雄市立美術館": "https://www.kmfa.gov.tw/",
+    "駁二藝術特區": "https://pier2.org/",
+}
+
 # 各場館所在縣市，用來精準判斷「地區」，不再依賴地址文字裡有沒有寫到縣市關鍵字
 MAJOR_VENUE_REGIONS = {
     "台北市立美術館": "台北市", "國立故宮博物院": "台北市", "國立歷史博物館": "台北市",
@@ -682,10 +701,21 @@ def main():
 
     events.sort(key=lambda e: e.get("startDate") or "", reverse=True)
 
+    # 幫已確認過網址的場館，抓取官網自己設定的分享縮圖，當作展演空間卡片代表圖
+    venue_images = {}
+    for venue_name, url in VENUE_OFFICIAL_URLS.items():
+        extras = fetch_detail_extras(url)
+        if extras.get("image"):
+            venue_images[venue_name] = extras["image"]
+            print(f"[展演空間圖片] {venue_name} 抓取成功")
+        else:
+            print(f"[展演空間圖片] {venue_name} 抓不到圖片，前端會用預設配色卡片")
+
     payload = {
         "updatedAt": now.isoformat(),
         "count": len(events),
         "events": events,
+        "venueImages": venue_images,
     }
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
