@@ -81,11 +81,12 @@
   .dropdown-panel.open{ display:block; }
   .dropdown-panel .opt{
     display:flex; align-items:center; gap:.55rem;
-    font-size:.87rem; padding:.32rem 0; color:var(--ink);
+    font-size:.87rem; padding:.4rem 0; color:var(--ink);
   }
-  .dropdown-panel .opt input{ accent-color:var(--brand); width:15px; height:15px; }
+  .dropdown-panel .opt:hover{ color: var(--brand); }
+  .dropdown-panel .opt .opt-icon{ display:flex; width:14px; height:14px; color: var(--brand); flex-shrink:0; }
+  .dropdown-panel .opt .opt-icon svg{ width:14px; height:14px; }
   .dropdown-panel .opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
-  .dropdown-clear{ font-size:.75rem; color:var(--brand); background:none; border:none; margin-bottom:.5rem; padding:0; }
   .dropdown-panel-wide{ width: 300px; max-height: 420px; }
   .dropdown-group-toggle{
     width:100%; display:flex; align-items:center; justify-content:space-between;
@@ -114,26 +115,18 @@
   @media (max-width: 900px){ .nav-search{ display:none; } }
 
   /* ---------- 導覽列搜尋圖示按鈕 ---------- */
-  .nav-search-btn{
-    display:flex; align-items:center; justify-content:center;
-    width: 38px; height:38px; border-radius:50%;
-    background: var(--bg); border:1px solid var(--line); color: var(--ink-soft);
-    flex-shrink:0;
+  .nav-search-inline{
+    display:flex; align-items:center; gap:.5rem;
+    background: var(--bg); border:1px solid var(--line); border-radius:999px;
+    padding:.45rem .9rem; width: 240px; flex-shrink:0;
   }
-  .nav-search-btn:hover{ border-color: var(--brand); color: var(--brand); }
-  .nav-search-panel{
-    position:absolute; top: calc(100% + 10px); right:0; z-index:50;
-    background:#fff; border:1px solid var(--line); border-radius:10px;
-    padding:.6rem .9rem; width: 280px;
-    display:none; align-items:center; gap:.5rem;
-    box-shadow: 0 16px 40px rgba(20,20,40,.12);
-  }
-  .nav-search-panel.open{ display:flex; }
-  .nav-search-panel svg{ flex-shrink:0; color: var(--ink-soft); }
-  .nav-search-panel input{
-    flex:1; border:none; outline:none; font-family:inherit; font-size:.88rem;
+  .nav-search-inline svg{ flex-shrink:0; color: var(--ink-soft); }
+  .nav-search-inline input{
+    flex:1; min-width:0; border:none; outline:none; font-family:inherit; font-size:.85rem;
     background:transparent; color: var(--ink);
   }
+  @media (max-width: 980px){ .nav-search-inline{ width: 160px; } }
+  @media (max-width: 820px){ .nav-search-inline{ display:none; } }
 
   /* ---------- Hero：左側文字 + 右側展覽拼圖牆 ---------- */
   .hero{
@@ -156,21 +149,26 @@
 
   /* 拼圖牆：一格一格排整齊的網格為底，中間挑幾格用位移/旋轉/放大做出散落感 */
   .hero-banner{
-    position:relative; height: 260px;
+    position:relative; height: 346px;
     display:grid; grid-template-columns: repeat(10, 1fr); grid-auto-rows: 1fr; gap: 5px;
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 100%);
     mask-image: linear-gradient(to right, transparent 0%, black 10%, black 100%);
   }
   @media (max-width: 820px){ .hero-banner{ display:none; } }
   .hero-tile{
-    position:relative; border-radius:8px; overflow:hidden;
+    position:relative; border-radius:6px; overflow:hidden;
     background: linear-gradient(135deg,#818CF8,#4F46E5);
   }
   .hero-tile img{ width:100%; height:100%; object-fit:cover; display:block; }
   .hero-tile.scattered{
-    z-index:5; border-radius:10px;
+    z-index:5; border-radius:8px;
     box-shadow: 0 14px 30px rgba(30,20,70,.28);
   }
+  /* 拼圖缺口：每格挖一個小圓弧缺角，模擬拼圖片彼此咬合的視覺效果 */
+  .hero-tile.notch-r{ -webkit-mask-image: radial-gradient(circle 9px at 100% 50%, transparent 9px, black 9.5px); mask-image: radial-gradient(circle 9px at 100% 50%, transparent 9px, black 9.5px); }
+  .hero-tile.notch-l{ -webkit-mask-image: radial-gradient(circle 9px at 0% 50%, transparent 9px, black 9.5px); mask-image: radial-gradient(circle 9px at 0% 50%, transparent 9px, black 9.5px); }
+  .hero-tile.notch-t{ -webkit-mask-image: radial-gradient(circle 9px at 50% 0%, transparent 9px, black 9.5px); mask-image: radial-gradient(circle 9px at 50% 0%, transparent 9px, black 9.5px); }
+  .hero-tile.notch-b{ -webkit-mask-image: radial-gradient(circle 9px at 50% 100%, transparent 9px, black 9.5px); mask-image: radial-gradient(circle 9px at 50% 100%, transparent 9px, black 9.5px); }
 
   .random-pick-btn{
     display:inline-flex; align-items:center; gap:.5rem; flex-shrink:0;
@@ -579,21 +577,18 @@
       <div class="dropdown-wrap">
         <button class="nav-item" id="categoryNavBtn">分類 ▾</button>
         <div class="dropdown-panel" id="categoryPanel">
-          <button class="dropdown-clear" data-clear="category">清除已選分類</button>
           <div id="categoryOptions"></div>
         </div>
       </div>
       <div class="dropdown-wrap">
         <button class="nav-item" id="regionNavBtn">地區 ▾</button>
         <div class="dropdown-panel" id="regionPanel">
-          <button class="dropdown-clear" data-clear="region">清除已選地區</button>
           <div id="regionOptions"></div>
         </div>
       </div>
       <div class="dropdown-wrap">
         <button class="nav-item" id="venueNavBtn">地點 ▾</button>
         <div class="dropdown-panel dropdown-panel-wide" id="venuePanel">
-          <button class="dropdown-clear" data-clear="venue">清除已選地點</button>
           <div id="venueOptions"></div>
         </div>
       </div>
@@ -601,14 +596,9 @@
       <a href="?view=favorites">我的收藏</a>
     </nav>
     <div class="nav-spacer"></div>
-    <div class="dropdown-wrap">
-      <button class="nav-search-btn" id="navSearchBtn" type="button" aria-label="搜尋">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-      <div class="nav-search-panel" id="navSearchPanel">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
-      </div>
+    <div class="nav-search-inline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
     </div>
     <span class="nav-count" id="navCount">載入中…</span>
   </div>
@@ -675,6 +665,15 @@
       <span class="hint" id="venueDetailHint"></span>
     </div>
     <div class="grid" id="venueDetailGrid"></div>
+  </div>
+
+  <div id="regionDetailView" style="display:none;">
+    <a class="back-link" href="./">← 回首頁</a>
+    <div class="section-head">
+      <h2 id="regionDetailTitle"></h2>
+      <span class="hint" id="regionDetailHint"></span>
+    </div>
+    <div class="grid" id="regionDetailGrid"></div>
   </div>
 
   <div id="specialView" style="display:none;">
@@ -766,6 +765,12 @@
       <h2>附近展覽</h2>
       <span class="hint" id="eventNearbyHint"></span>
     </div>
+    <div id="eventNearbyPrompt" style="display:none;">
+      <button class="locate-btn" id="eventNearbyLocateBtn" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        使用目前位置
+      </button>
+    </div>
     <div class="scroll-row" id="eventNearbyRow"></div>
   </div>
 
@@ -796,6 +801,7 @@ const state = {
   selectedDate: null,
   detailCategory: null,
   detailVenue: null,
+  detailRegion: null,
   specialType: null,
   detailVenueFilter: null,
   rowSort: {},
@@ -929,10 +935,12 @@ function readUrlParams(){
   const view = params.get('view');
   const eventUrl = params.get('event');
   const venue = params.get('venue');
+  const region = params.get('region');
   const special = params.get('special');
   if(special === 'upcoming' || special === 'ending'){ state.specialType = special; state.viewMode = 'special'; }
   if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
   if(venue){ state.detailVenue = venue; state.viewMode = 'venue'; }
+  if(region){ state.detailRegion = region; state.viewMode = 'region'; }
   if(view === 'nearby') state.viewMode = 'nearby';
   if(view === 'favorites') state.viewMode = 'favorites';
   if(eventUrl){ state.eventDetailUrl = eventUrl; state.viewMode = 'event'; }
@@ -1019,31 +1027,12 @@ function buildCategoryPanel(){
   const cats = sortByCategoryOrder(Object.keys(counts));
   const el = document.getElementById('categoryOptions');
   el.innerHTML = cats.map(cat => `
-    <label class="opt">
-      <input type="checkbox" data-category="${escapeAttr(cat)}">
+    <a class="opt" href="${buildShowMoreUrl(cat)}">
+      <span class="opt-icon">${ICONS[iconKeyFor(cat)]}</span>
       ${escapeHtml(cat)}
       <span class="c">${counts[cat]}</span>
-    </label>
+    </a>
   `).join('');
-  el.querySelectorAll('input[data-category]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      toggleCategory(cb.dataset.category, cb.checked);
-    });
-  });
-  syncCategoryPanelChecks();
-}
-
-function toggleCategory(cat, forceState){
-  const on = forceState !== undefined ? forceState : !state.selectedCategories.has(cat);
-  if(on) state.selectedCategories.add(cat); else state.selectedCategories.delete(cat);
-  syncCategoryPanelChecks();
-  render();
-}
-
-function syncCategoryPanelChecks(){
-  document.querySelectorAll('input[data-category]').forEach(cb => {
-    cb.checked = state.selectedCategories.has(cb.dataset.category);
-  });
 }
 
 function buildRegionPanel(){
@@ -1058,33 +1047,24 @@ function buildRegionPanel(){
 
   el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
     const regions = sortByRegionOrder(byMacro[macro]);
-    const selectedCount = regions.filter(r => state.selectedRegions.has(r)).length;
     return `
       <div class="dropdown-group">
         <button type="button" class="dropdown-group-toggle" data-group="region-${cssId(macro)}">
-          <span>${escapeHtml(macro)}${selectedCount ? `（已選 ${selectedCount}）` : ''}</span>
+          <span>${escapeHtml(macro)}</span>
           <span class="arrow">▸</span>
         </button>
         <div class="dropdown-group-body" data-group-body="region-${cssId(macro)}">
           ${regions.map(region => `
-            <label class="opt">
-              <input type="checkbox" data-region="${escapeAttr(region)}">
+            <a class="opt" href="?region=${encodeURIComponent(region)}">
               ${escapeHtml(region)}
               <span class="c">${counts[region]}</span>
-            </label>
+            </a>
           `).join('')}
         </div>
       </div>
     `;
   }).join('');
 
-  el.querySelectorAll('input[data-region]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      const r = cb.dataset.region;
-      if(cb.checked) state.selectedRegions.add(r); else state.selectedRegions.delete(r);
-      render();
-    });
-  });
   bindGroupToggles(el);
 }
 
@@ -1107,33 +1087,24 @@ function buildVenuePanel(){
   const el = document.getElementById('venueOptions');
   el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
     const venues = byMacro[macro].sort((a,b) => counts[b] - counts[a]);
-    const selectedCount = venues.filter(v => state.selectedVenues.has(v)).length;
     return `
       <div class="dropdown-group">
         <button type="button" class="dropdown-group-toggle" data-group="venue-${cssId(macro)}">
-          <span>${escapeHtml(macro)}${selectedCount ? `（已選 ${selectedCount}）` : ''}</span>
+          <span>${escapeHtml(macro)}</span>
           <span class="arrow">▸</span>
         </button>
         <div class="dropdown-group-body" data-group-body="venue-${cssId(macro)}">
           ${venues.map(venue => `
-            <label class="opt">
-              <input type="checkbox" data-venue="${escapeAttr(venue)}">
+            <a class="opt" href="?venue=${encodeURIComponent(venue)}">
               ${escapeHtml(venue)}
               <span class="c">${counts[venue]}</span>
-            </label>
+            </a>
           `).join('')}
         </div>
       </div>
     `;
   }).join('');
 
-  el.querySelectorAll('input[data-venue]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      const v = cb.dataset.venue;
-      if(cb.checked) state.selectedVenues.add(v); else state.selectedVenues.delete(v);
-      render();
-    });
-  });
   bindGroupToggles(el);
 }
 
@@ -1437,39 +1408,19 @@ function renderEventDetail(){
     return;
   }
 
-  // 圖片輪播
-  const images = (Array.isArray(ev.images) && ev.images.length ? ev.images : (ev.image ? [ev.image] : []));
+  // 只使用這檔展覽自己的單張圖片，不再用多圖輪播
+  // (原本的 images 陣列有時候會混到抓取過程中頁面上其他活動的縮圖，資料不夠可靠)
   const iconKey = iconKeyFor(ev.category);
   const carouselEl = document.getElementById('eventCarousel');
-  if(images.length === 0){
+  if(!ev.image){
     carouselEl.innerHTML = `<div class="event-slide active" style="background:${PLACEHOLDER_GRADIENTS[iconKey]}">${ICONS[iconKey]}</div>`;
   }else{
-    const slidesHtml = images.map((src, i) => `
-      <div class="event-slide ${i===0?'active':''}">
-        <div class="event-slide-bg" style="background-image:url('${escapeAttr(src)}')"></div>
-        <div class="event-slide-fg" style="background-image:url('${escapeAttr(src)}')"></div>
+    carouselEl.innerHTML = `
+      <div class="event-slide active">
+        <div class="event-slide-bg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
+        <div class="event-slide-fg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
       </div>
-    `).join('');
-    const navHtml = images.length > 1
-      ? `<button class="event-nav prev" type="button" aria-label="上一張">‹</button><button class="event-nav next" type="button" aria-label="下一張">›</button>
-         <div class="event-dots">${images.map((_,i)=>`<span class="event-dot ${i===0?'active':''}"></span>`).join('')}</div>`
-      : '';
-    carouselEl.innerHTML = slidesHtml + navHtml;
-
-    if(images.length > 1){
-      let current = 0;
-      const slides = carouselEl.querySelectorAll('.event-slide');
-      const dots = carouselEl.querySelectorAll('.event-dot');
-      const goTo = (idx) => {
-        slides[current].classList.remove('active');
-        dots[current].classList.remove('active');
-        current = (idx + slides.length) % slides.length;
-        slides[current].classList.add('active');
-        dots[current].classList.add('active');
-      };
-      carouselEl.querySelector('.event-nav.prev').addEventListener('click', () => goTo(current - 1));
-      carouselEl.querySelector('.event-nav.next').addEventListener('click', () => goTo(current + 1));
-    }
+    `;
   }
 
   // 分類標籤
@@ -1511,14 +1462,15 @@ function renderEventDetail(){
 function renderEventNearby(ev){
   const hintEl = document.getElementById('eventNearbyHint');
   const rowEl = document.getElementById('eventNearbyRow');
-  const lat = parseFloat(ev.latitude);
-  const lng = parseFloat(ev.longitude);
+  const promptEl = document.getElementById('eventNearbyPrompt');
 
-  if(isNaN(lat) || isNaN(lng)){
-    hintEl.textContent = '這檔活動沒有座標資訊，暫時無法計算附近展覽';
+  if(!state.userLoc){
+    hintEl.textContent = '請允許定位，才能看到附近的展覽';
+    promptEl.style.display = 'block';
     rowEl.innerHTML = '';
     return;
   }
+  promptEl.style.display = 'none';
 
   const nearby = state.events
     .filter(other => other.sourceUrl && other.sourceUrl !== ev.sourceUrl)
@@ -1526,16 +1478,16 @@ function renderEventNearby(ev){
       const oLat = parseFloat(other.latitude);
       const oLng = parseFloat(other.longitude);
       if(isNaN(oLat) || isNaN(oLng)) return null;
-      return { ...other, _distance: haversine(lat, lng, oLat, oLng) };
+      return { ...other, _distance: haversine(state.userLoc.lat, state.userLoc.lng, oLat, oLng) };
     })
     .filter(Boolean)
     .sort((a, b) => a._distance - b._distance)
     .slice(0, 8);
 
-  hintEl.textContent = nearby.length ? '依距離由近到遠' : '';
+  hintEl.textContent = nearby.length ? '依你目前位置，由近到遠排序' : '';
   rowEl.innerHTML = nearby.length
     ? nearby.map(other => cardMarkup(other, { showDistance: true })).join('')
-    : '<div class="empty">附近暫時沒有其他展覽資訊。</div>';
+    : '<div class="empty">目前沒有活動提供座標資訊，暫時無法計算距離。</div>';
 }
 
 function renderDetail(pool){
@@ -1676,14 +1628,15 @@ function render(){
   document.getElementById('homepageRows').style.display = mode === 'home' ? 'block' : 'none';
   document.getElementById('detailView').style.display = mode === 'detail' ? 'block' : 'none';
   document.getElementById('venueDetailView').style.display = mode === 'venue' ? 'block' : 'none';
+  document.getElementById('regionDetailView').style.display = mode === 'region' ? 'block' : 'none';
   document.getElementById('specialView').style.display = mode === 'special' ? 'block' : 'none';
   document.getElementById('nearbyPageView').style.display = mode === 'nearby' ? 'block' : 'none';
   document.getElementById('eventDetailView').style.display = mode === 'event' ? 'block' : 'none';
   document.getElementById('favoritesView').style.display = mode === 'favorites' ? 'block' : 'none';
   document.getElementById('nearbyPreviewSection').style.display = (mode === 'home') ? 'block' : 'none';
 
-  // 分類頁面(detail)、場館頁面(venue)、即將開展/結束(special)不需要 Hero、精選展覽、展演空間
-  const hideTopSections = (mode === 'detail' || mode === 'venue' || mode === 'event' || mode === 'special');
+  // 分類頁面(detail)、場館頁面(venue)、地區頁面(region)、即將開展/結束(special)不需要 Hero、精選展覽、展演空間
+  const hideTopSections = (mode === 'detail' || mode === 'venue' || mode === 'region' || mode === 'event' || mode === 'special');
   document.querySelector('.hero').style.display = hideTopSections ? 'none' : 'block';
   document.querySelectorAll('.featured-section').forEach(el => { el.style.display = hideTopSections ? 'none' : 'block'; });
   document.querySelector('.calendar-picker').style.display = mode === 'detail' ? 'none' : 'flex';
@@ -1693,6 +1646,8 @@ function render(){
     renderDetail(pool);
   }else if(mode === 'venue'){
     renderVenueDetail(pool);
+  }else if(mode === 'region'){
+    renderRegionDetail(pool);
   }else if(mode === 'special'){
     renderSpecialPage(pool);
   }else if(mode === 'nearby'){
@@ -1895,6 +1850,7 @@ function autoRequestLocationOnce(){
 
 document.getElementById('nearbyLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
 document.getElementById('nearbyPreviewLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
+document.getElementById('eventNearbyLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
 
 function setupDropdown(navBtnId, panelId){
   const navBtn = document.getElementById(navBtnId);
@@ -1911,22 +1867,6 @@ function setupDropdown(navBtnId, panelId){
 setupDropdown('regionNavBtn', 'regionPanel');
 setupDropdown('categoryNavBtn', 'categoryPanel');
 setupDropdown('venueNavBtn', 'venuePanel');
-
-document.querySelector('[data-clear="region"]').addEventListener('click', () => {
-  state.selectedRegions.clear();
-  document.querySelectorAll('input[data-region]').forEach(cb => cb.checked = false);
-  render();
-});
-document.querySelector('[data-clear="category"]').addEventListener('click', () => {
-  state.selectedCategories.clear();
-  syncCategoryPanelChecks();
-  render();
-});
-document.querySelector('[data-clear="venue"]').addEventListener('click', () => {
-  state.selectedVenues.clear();
-  document.querySelectorAll('input[data-venue]').forEach(cb => cb.checked = false);
-  render();
-});
 
 // ---------- 精選展覽卡片輪播（Hero）----------
 // 優先挑「有官方圖片」的展覽，隨機排序後最多取 12 檔放進輪播；
@@ -2005,6 +1945,16 @@ function renderVenueDetail(pool){
     : '<div class="empty">這個展演空間目前沒有符合篩選條件的活動。</div>';
 }
 
+function renderRegionDetail(pool){
+  const region = state.detailRegion;
+  const items = pool.filter(ev => ev.region === region);
+  document.getElementById('regionDetailTitle').textContent = region;
+  document.getElementById('regionDetailHint').textContent = `共 ${items.length} 檔`;
+  document.getElementById('regionDetailGrid').innerHTML = items.length
+    ? items.map(ev => cardMarkup(ev)).join('')
+    : '<div class="empty">這個地區目前沒有符合篩選條件的活動。</div>';
+}
+
 function renderSpecialPage(pool){
   let items, title;
   if(state.specialType === 'upcoming'){
@@ -2056,9 +2006,11 @@ function renderHeroBanner(){
     return;
   }
 
+  const notchOptions = ['notch-r', 'notch-l', 'notch-t', 'notch-b'];
   el.innerHTML = Array.from({ length: totalTiles }).map((_, i) => {
     const ev = withImage[i % withImage.length];
     const isScattered = HERO_SCATTERED_INDEXES.includes(i);
+    const notchClass = notchOptions[Math.floor(Math.random() * notchOptions.length)];
     let style = '';
     if(isScattered){
       const rot = (Math.random() * 16 - 8).toFixed(1);
@@ -2066,7 +2018,7 @@ function renderHeroBanner(){
       style = `transform: rotate(${rot}deg) scale(${scale});`;
     }
     return `
-      <div class="hero-tile ${isScattered ? 'scattered' : ''}" style="${style}">
+      <div class="hero-tile ${notchClass} ${isScattered ? 'scattered' : ''}" style="${style}">
         <img src="${escapeAttr(ev.image)}" alt=""
              onerror="this.closest('.hero-tile').style.background='${PLACEHOLDER_GRADIENTS.ticket}'; this.remove();">
       </div>
@@ -2074,20 +2026,6 @@ function renderHeroBanner(){
   }).join('');
 }
 
-// 導覽列的搜尋圖示：捲動回最上面並聚焦到 Hero 裡的搜尋框
-document.getElementById('navSearchBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const panel = document.getElementById('navSearchPanel');
-  panel.classList.toggle('open');
-  if(panel.classList.contains('open')) document.getElementById('searchInput').focus();
-});
-document.addEventListener('click', (e) => {
-  const panel = document.getElementById('navSearchPanel');
-  const btn = document.getElementById('navSearchBtn');
-  if(!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)){
-    panel.classList.remove('open');
-  }
-});
 
 loadData();
 </script>
