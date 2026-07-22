@@ -622,17 +622,38 @@
     } catch (error) { if (error.name !== 'AbortError') showToast('暫時無法分享'); }
   }
 
+  async function fetchEventPayload() {
+    const sources = [
+      {url:'data/exhibitions.json', local:true},
+      {url:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=all', local:false},
+      {url:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJOpenApi&category=all', local:false},
+    ];
+    const failures = [];
+    for (const source of sources) {
+      try {
+        const response = await fetch(source.url, {cache:'no-store'});
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        const rawEvents = Array.isArray(payload) ? payload : payload.events || payload.data || payload.result || [];
+        if (!Array.isArray(rawEvents) || !rawEvents.length) throw new Error('資料為空');
+        return {payload, rawEvents, local:source.local};
+      } catch (error) {
+        failures.push(`${source.url}: ${error.message}`);
+        console.warn('[Exhibition Hub] data source failed', source.url, error);
+      }
+    }
+    throw new Error(failures.join(' | '));
+  }
+
   async function loadData() {
     readParams();
     bindEvents();
     try {
-      const response = await fetch('data/exhibitions.json', {cache:'no-store'});
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const payload = await response.json();
-      state.updatedAt = payload.updatedAt || payload.updated_at || null;
+      const {payload, rawEvents, local} = await fetchEventPayload();
+      state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.venueImages = payload.venueImages || {};
-      const rawEvents = Array.isArray(payload) ? payload : payload.events || [];
       state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event));
+      if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
       renderCurrentView();
     } catch (error) {
       console.error(error);

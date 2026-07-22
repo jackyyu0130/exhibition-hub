@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-22T17:00:03+08:00",
-  "source": "文化部文化資料開放服務網與既有自訂資料",
+  "updatedAt": null,
+  "source": "首次載入時由官方文化部 API 備援，GitHub Action 成功後會自動覆蓋本檔案",
   "events": [],
   "venueImages": {}
 }

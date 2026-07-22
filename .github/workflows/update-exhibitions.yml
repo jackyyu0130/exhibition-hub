@@ -6,6 +6,8 @@ on:
     - cron: "25 21 * * *" # 每天台灣時間 05:25
   push:
     branches: [main]
+    paths-ignore:
+      - data/exhibitions.json
 
 permissions:
   contents: write

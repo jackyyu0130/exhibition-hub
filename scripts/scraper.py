@@ -28,10 +28,13 @@ from urllib.parse import urlparse
 
 import requests
 
-API_URL = (
-    "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do"
-    "?method=doFindTypeJOpenApi&category=all"
-)
+API_URLS = [
+    # 政府資料開放平臺目前實際的 JSON 資源網址
+    "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=all",
+    # 文化部資料集備註所列的 OAS 介接網址，保留為備援
+    "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJOpenApi&category=all",
+]
+API_URL = API_URLS[0]
 DEFAULT_OUTPUT = Path("data/exhibitions.json")
 TAIPEI_TZ = timezone(timedelta(hours=8))
 USER_AGENT = "TaiwanExhibitionJournal/3.0 (+https://github.com/jackyyu0130/exhibition-hub)"
@@ -298,22 +301,32 @@ def load_existing(path: Path) -> list[dict[str, Any]]:
 def fetch_json(config: SourceConfig) -> list[dict[str, Any]]:
     session = requests.Session()
     session.headers.update({"User-Agent": USER_AGENT, "Accept": "application/json,text/plain,*/*"})
-    error: Exception | None = None
-    for attempt in range(1, config.retries + 1):
-        try:
-            response = session.get(config.url, timeout=config.timeout)
-            response.raise_for_status()
-            response.encoding = response.apparent_encoding or "utf-8"
-            payload = response.json()
-            if isinstance(payload, dict):
-                payload = payload.get("events") or payload.get("data") or payload.get("result") or []
-            if not isinstance(payload, list):
-                raise ValueError("API response is not a JSON array")
-            return [item for item in payload if isinstance(item, dict)]
-        except (requests.RequestException, ValueError, json.JSONDecodeError) as exc:
-            error = exc
-            print(f"[warning] API attempt {attempt}/{config.retries} failed: {exc}", file=sys.stderr)
-    raise RuntimeError(f"Unable to fetch source data: {error}")
+    urls = [config.url]
+    if config.url == API_URL:
+        urls.extend(url for url in API_URLS if url not in urls)
+
+    errors: list[str] = []
+    for url in urls:
+        for attempt in range(1, config.retries + 1):
+            try:
+                response = session.get(url, timeout=config.timeout)
+                response.raise_for_status()
+                response.encoding = response.apparent_encoding or "utf-8"
+                payload = response.json()
+                if isinstance(payload, dict):
+                    payload = payload.get("events") or payload.get("data") or payload.get("result") or []
+                if not isinstance(payload, list):
+                    raise ValueError("API response is not a JSON array")
+                records = [item for item in payload if isinstance(item, dict)]
+                if not records:
+                    raise ValueError("API returned an empty record list")
+                print(f"Fetched {len(records)} source records from {url}")
+                return records
+            except (requests.RequestException, ValueError, json.JSONDecodeError) as exc:
+                message = f"{url} attempt {attempt}/{config.retries}: {exc}"
+                errors.append(message)
+                print(f"[warning] {message}", file=sys.stderr)
+    raise RuntimeError("Unable to fetch source data. " + " | ".join(errors[-6:]))
 
 
 def read_input_file(path: Path) -> list[dict[str, Any]]:
