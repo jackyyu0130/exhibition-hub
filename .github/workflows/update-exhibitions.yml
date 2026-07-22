@@ -50,9 +50,9 @@ jobs:
       - name: Fetch and normalize exhibition data
         if: github.event_name != 'push'
         env:
-          MAX_DETAIL_FETCHES: "250"
-          MAX_IMAGE_FETCHES: "300"
-          MAX_GEOCODES: "25"
+          MAX_DETAIL_FETCHES: "400"
+          MAX_IMAGE_FETCHES: "500"
+          MAX_GEOCODES: "40"
         run: python scripts/scraper.py
 
       - name: Commit updated data safely

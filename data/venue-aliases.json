@@ -1,0 +1,113 @@
+{
+  "venues": [
+    {
+      "name": "華山1914文化創意產業園區",
+      "patterns": [
+        "華山1914文創園區",
+        "華山1914",
+        "華山文化創意產業園區",
+        "華山文創園區",
+        "華山創意文化園區"
+      ],
+      "homepage": "https://www.huashan1914.com/w/huashan1914/index"
+    },
+    {
+      "name": "松山文創園區",
+      "patterns": [
+        "松山文創園區",
+        "松菸文創園區",
+        "松菸"
+      ],
+      "homepage": "https://www.songshanculturalpark.org/"
+    },
+    {
+      "name": "臺北市立美術館",
+      "patterns": [
+        "臺北市立美術館",
+        "台北市立美術館",
+        "北美館"
+      ],
+      "homepage": "https://www.tfam.museum/index.aspx?ddlLang=zh-tw"
+    },
+    {
+      "name": "國立臺灣美術館",
+      "patterns": [
+        "國立臺灣美術館",
+        "國立台灣美術館",
+        "國美館"
+      ],
+      "homepage": "https://www.ntmofa.gov.tw/"
+    },
+    {
+      "name": "國立故宮博物院",
+      "patterns": [
+        "國立故宮博物院",
+        "故宮博物院",
+        "故宮南院",
+        "故宮北院"
+      ],
+      "homepage": "https://www.npm.gov.tw/"
+    },
+    {
+      "name": "駁二藝術特區",
+      "patterns": [
+        "駁二藝術特區",
+        "駁二"
+      ],
+      "homepage": "https://pier2.org/"
+    },
+    {
+      "name": "衛武營國家藝術文化中心",
+      "patterns": [
+        "衛武營國家藝術文化中心",
+        "衛武營"
+      ],
+      "homepage": "https://www.npac-weiwuying.org/"
+    },
+    {
+      "name": "臺中國家歌劇院",
+      "patterns": [
+        "臺中國家歌劇院",
+        "台中國家歌劇院",
+        "台中歌劇院"
+      ],
+      "homepage": "https://www.npac-ntt.org/"
+    },
+    {
+      "name": "臺北表演藝術中心",
+      "patterns": [
+        "臺北表演藝術中心",
+        "台北表演藝術中心",
+        "北藝中心"
+      ],
+      "homepage": "https://tpac.org.taipei/"
+    },
+    {
+      "name": "國家兩廳院",
+      "patterns": [
+        "國家兩廳院",
+        "國家音樂廳",
+        "國家戲劇院"
+      ],
+      "homepage": "https://www.ntch.edu.tw/"
+    },
+    {
+      "name": "高雄市立美術館",
+      "patterns": [
+        "高雄市立美術館",
+        "高美館"
+      ],
+      "homepage": "https://www.kmfa.gov.tw/"
+    },
+    {
+      "name": "臺灣當代文化實驗場 C-LAB",
+      "patterns": [
+        "臺灣當代文化實驗場",
+        "台灣當代文化實驗場",
+        "C-LAB",
+        "空總"
+      ],
+      "homepage": "https://clab.org.tw/"
+    }
+  ]
+}

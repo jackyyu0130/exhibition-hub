@@ -906,3 +906,381 @@ img, video, svg { display: block; max-width: 100%; }
   .hero-ticket-card, .hero-ticket-stack { transition: none; animation: none !important; }
   .hero-ticket-hint span { animation: none; }
 }
+
+/* =========================================================
+   V3.4 — calm ticket counter, compact filters and data polish
+   ========================================================= */
+
+/* Softer global type scale */
+.panel-topline h2,
+.section-heading h2,
+.nearby-copy h2 {
+  font-size: clamp(26px, 2.6vw, 34px);
+  line-height: 1.34;
+  letter-spacing: -.018em;
+}
+.editorial-section { padding-bottom: 66px; }
+.discovery-panel { margin-bottom: 62px; }
+.section-heading { margin-bottom: 20px; }
+
+/* Minimal ticket-counter hero */
+.hero { padding-top: 54px; padding-bottom: 66px; }
+.hero-visual {
+  min-height: 520px;
+  isolation: isolate;
+  background: #e9e3d9;
+  box-shadow: 0 24px 60px rgba(56,44,31,.12);
+}
+.hero-counter-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-counter-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.12), transparent 48%),
+    linear-gradient(to top, rgba(37,27,20,.12), transparent 38%);
+}
+.hero-shuffle-button {
+  position: absolute;
+  z-index: 7;
+  top: 20px;
+  left: 20px;
+  max-width: calc(100% - 40px);
+  min-height: 42px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(58,47,36,.14);
+  border-radius: 999px;
+  background: rgba(255,255,255,.86);
+  color: #4e473f;
+  box-shadow: 0 10px 25px rgba(50,38,27,.08);
+  backdrop-filter: blur(12px);
+  font-size: 12px;
+  font-weight: 650;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.hero-shuffle-button:hover {
+  transform: translateY(-2px);
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(50,38,27,.12);
+}
+.hero-shuffle-button:disabled { cursor: wait; opacity: .72; transform: none; }
+.shuffle-icon { font-size: 17px; line-height: 1; transition: transform .45s ease; }
+.hero-shuffle-button:hover .shuffle-icon { transform: rotate(-35deg); }
+.hero-ticket-stack {
+  z-index: 4;
+  transition: opacity .48s ease, transform .48s ease, filter .48s ease;
+}
+.hero-ticket-stack.is-changing {
+  opacity: 0;
+  transform: translateX(-14px) translateY(4px);
+  filter: blur(2px);
+}
+.hero-ticket-card {
+  background: rgba(255,255,255,.975);
+  box-shadow: 0 20px 44px rgba(30,22,17,.18);
+  transition: transform .34s ease, box-shadow .34s ease, opacity .34s ease;
+}
+.hero-ticket-card::before,
+.hero-ticket-card::after { background: #e8e1d7; }
+.hero-ticket-slot-1 { left: 28px; right: 38px; bottom: 32px; }
+.hero-ticket-slot-2 { width: 77%; right: 16px; top: 174px; }
+.hero-ticket-slot-3 { width: 65%; right: -12px; top: 82px; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-1 { animation: ticket-slide-calm 1.55s cubic-bezier(.18,.72,.18,1) both; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-2 { animation: ticket-slide-calm 1.55s .16s cubic-bezier(.18,.72,.18,1) both; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-3 { animation: ticket-slide-calm 1.55s .31s cubic-bezier(.18,.72,.18,1) both; }
+@keyframes ticket-slide-calm {
+  from { opacity: 0; transform: translateX(122%) rotate(4deg); filter: blur(2px); }
+  55% { opacity: 1; }
+  to { filter: blur(0); }
+}
+.hero-ticket-hint { color: rgba(255,255,255,.88); text-shadow: 0 1px 10px rgba(20,14,9,.4); }
+
+/* Date results: graceful reveal and dismissal */
+.date-results-section {
+  opacity: 0;
+  transform: translateY(14px);
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  border-color: transparent;
+  transition:
+    opacity .42s ease,
+    transform .52s cubic-bezier(.2,.75,.2,1),
+    max-height .52s cubic-bezier(.2,.75,.2,1),
+    margin .52s ease,
+    padding .52s ease,
+    border-color .35s ease;
+}
+.date-results-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 980px;
+  margin-bottom: 64px;
+  padding-top: 28px;
+  padding-bottom: 30px;
+  border-color: var(--line);
+}
+.date-results-section.is-leaving { opacity: 0; transform: translateY(-8px); }
+.date-reveal-card {
+  opacity: 0;
+  transform: translateY(13px);
+  animation: date-card-reveal .48s calc(var(--reveal-index, 0) * 70ms + 130ms) ease forwards;
+}
+@keyframes date-card-reveal { to { opacity: 1; transform: translateY(0); } }
+
+/* Pastel, exceptional-only badges */
+.card-badges {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: calc(100% - 64px);
+}
+.card-badge {
+  position: static;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: 10px;
+  line-height: 1;
+}
+.badge-new { background: #fff5cf; border-color: #eadca8; color: #6d5a24; }
+.badge-upcoming { background: #e9f2f8; border-color: #cbdde9; color: #375b70; }
+.badge-ending { background: #f8e9e6; border-color: #ebcbc4; color: #7b443c; }
+.badge-free { background: #e8f3ec; border-color: #c9dfd0; color: #365f45; }
+.badge-curated { background: #eeeaf6; border-color: #d9d0e8; color: #5d5075; }
+
+/* Compact Explore header */
+.listing-view-hero {
+  padding: 36px 0 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+}
+.view-title-row { display: flex; align-items: center; gap: 13px; }
+.view-title-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--accent);
+}
+.view-title-icon svg { width: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.listing-view-hero h1 { margin: 0; font-size: clamp(34px, 3.8vw, 44px); }
+.listing-view-hero .eyebrow { margin-bottom: 3px; }
+.listing-view-hero > p { max-width: 440px; text-align: right; font-size: 13px; }
+
+/* Smaller circular categories */
+.listing-filter-hub {
+  margin-bottom: 26px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  grid-template-rows: auto;
+  align-items: end;
+  gap: 14px;
+}
+.listing-category-panel,
+.listing-status-panel {
+  padding: 18px 20px;
+  border-radius: 16px;
+  box-shadow: none;
+}
+.listing-category-panel { grid-row: auto; }
+.filter-panel-heading { margin-bottom: 14px; }
+.filter-panel-heading.compact > div { display: block; }
+.filter-panel-heading h2 { font-size: 17px; }
+.listing-category-grid {
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 10px;
+}
+.listing-category-option {
+  min-height: 76px;
+  padding: 5px 2px;
+  gap: 5px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  transform: none;
+}
+.listing-category-option:hover { transform: none; border-color: transparent; background: var(--surface-soft); }
+.listing-category-option .category-icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #ded8ce;
+  border-radius: 50%;
+  background: #f4f1ec;
+  color: #514b44;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.listing-category-option .category-icon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.listing-category-option strong { font-size: 12px; font-weight: 600; }
+.listing-category-option small { display: none; }
+.listing-category-option.active { border: 0; background: transparent; box-shadow: none; }
+.listing-category-option.active .category-icon {
+  border-color: #c49372;
+  background: #f8e9df;
+  color: #815137;
+  box-shadow: 0 0 0 3px rgba(180,111,69,.1);
+  transform: translateY(-2px);
+}
+.listing-category-option.active strong { color: var(--accent-dark); font-weight: 700; }
+.listing-status-panel { min-width: 250px; }
+.listing-status-options { max-width: 260px; }
+.status-filter-button { min-height: 34px; padding: 0 11px; font-size: 11px; }
+
+/* Calendar and county panel share the same sidebar */
+.listing-layout { grid-template-columns: 302px minmax(0,1fr); gap: 30px; }
+.filter-sidebar {
+  position: sticky;
+  top: 94px;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.sidebar-calendar-panel,
+.location-filter-panel {
+  width: 100%;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.location-filter-panel { margin-top: 13px; }
+.sidebar-panel-heading { margin-bottom: 10px; }
+.calendar-shell { padding: 0; }
+.calendar-head { grid-template-columns: 30px 1fr 30px; margin-bottom: 8px; }
+.calendar-head strong { font-size: 14px; }
+.calendar-head button { width: 29px; height: 29px; font-size: 11px; }
+.calendar-weekdays,
+.calendar-grid { gap: 3px; }
+.calendar-weekdays { margin-bottom: 3px; font-size: 9px; }
+.calendar-day { min-height: 32px; aspect-ratio: auto; border-radius: 7px; font-size: 10px; }
+.calendar-day small { top: 1px; right: 2px; font-size: 6px; }
+.calendar-day.has-events::after { bottom: 3px; }
+.calendar-footer { margin-top: 8px; padding-top: 8px; font-size: 9px; }
+.filter-sidebar-intro { margin: 8px 0 13px; }
+.location-accordion { max-height: min(46vh, 520px); overflow-y: auto; padding-right: 3px; }
+
+/* Square, lower-fatigue cards in listing view only */
+.listing-content .card-image { aspect-ratio: 1 / 1; }
+.listing-content .exhibition-grid { gap: 18px; }
+.listing-content .card-body { padding: 14px 14px 16px; }
+.listing-content .card-title { font-size: 16px; min-height: 2.8em; }
+.listing-content .card-meta { font-size: 11px; }
+
+/* Venue cards no longer misuse event posters */
+.venue-tile.venue-placeholder {
+  background:
+    radial-gradient(circle at 80% 10%, rgba(255,255,255,.5), transparent 35%),
+    linear-gradient(135deg, #d8c9b9, #9c8069);
+}
+.venue-placeholder-mark {
+  position: absolute;
+  right: 18px;
+  top: 15px;
+  color: rgba(255,255,255,.34);
+  font-family: "Noto Serif TC", serif;
+  font-size: 58px;
+  font-weight: 900;
+}
+
+/* Detail page: calmer title, stronger factual information */
+.detail-info h1 {
+  margin: 10px 0 22px;
+  font-size: clamp(34px, 3.35vw, 42px);
+  line-height: 1.34;
+}
+.detail-category { font-size: 13px; }
+.detail-meta-row { padding-top: 17px; padding-bottom: 17px; }
+.detail-meta-row small { font-size: 12px; }
+.detail-meta-row strong { font-size: 16px; line-height: 1.65; }
+.detail-description p { font-size: 16px; line-height: 1.85; }
+.detail-description h2, .detail-related h2 { font-size: 24px; }
+
+@media (max-width: 1050px) {
+  .listing-filter-hub { grid-template-columns: 1fr; }
+  .listing-status-panel { min-width: 0; }
+  .listing-status-options { max-width: none; }
+  .listing-category-grid { grid-template-columns: repeat(9, minmax(56px,1fr)); overflow-x: auto; padding-bottom: 4px; }
+}
+
+@media (max-width: 820px) {
+  .hero { padding-top: 38px; }
+  .hero-visual { min-height: 500px; }
+  .listing-view-hero { align-items: flex-start; flex-direction: column; gap: 8px; padding-top: 28px; }
+  .listing-view-hero > p { text-align: left; }
+  .listing-layout { grid-template-columns: 1fr; }
+  .filter-sidebar {
+    position: fixed;
+    inset: 74px 0 0;
+    z-index: 120;
+    padding: 18px;
+    overflow-y: auto;
+    background: var(--bg);
+  }
+  .filter-sidebar:not(.open) { display: none; }
+  .location-accordion { max-height: none; }
+  .listing-category-grid { grid-template-columns: repeat(7, 64px); }
+}
+
+@media (max-width: 600px) {
+  .panel-topline h2,
+  .section-heading h2,
+  .nearby-copy h2 { font-size: 24px; }
+  .editorial-section { padding-bottom: 52px; }
+  .hero-visual { min-height: 455px; }
+  .hero-shuffle-button { top: 13px; left: 13px; min-height: 38px; font-size: 11px; }
+  .hero-ticket-slot-1 { left: 12px; right: 12px; bottom: 25px; }
+  .hero-ticket-slot-2 { width: 85%; top: 148px; right: 4px; }
+  .hero-ticket-slot-3 { width: 73%; top: 66px; right: -10px; }
+  .hero-ticket-stack.is-entering .hero-ticket-slot-1,
+  .hero-ticket-stack.is-entering .hero-ticket-slot-2,
+  .hero-ticket-stack.is-entering .hero-ticket-slot-3 { animation-duration: 1.35s; }
+  .date-results-section.is-visible { margin-bottom: 50px; padding-top: 24px; padding-bottom: 24px; }
+  .listing-category-panel, .listing-status-panel { padding: 15px; }
+  .listing-category-grid { grid-template-columns: repeat(6, 58px); gap: 7px; }
+  .listing-category-option { min-height: 70px; }
+  .listing-category-option .category-icon { width: 44px; height: 44px; }
+  .listing-category-option .category-icon svg { width: 21px; height: 21px; }
+  .listing-content .exhibition-grid { grid-template-columns: 1fr; }
+  .detail-info h1 { font-size: 29px; }
+  .detail-meta-row strong { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .date-results-section,
+  .date-reveal-card,
+  .hero-shuffle-button,
+  .hero-ticket-stack { animation: none !important; transition: none !important; }
+}

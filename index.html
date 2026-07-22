@@ -82,16 +82,14 @@
         </div>
 
         <div class="hero-visual" aria-label="隨機展覽票券推薦">
-          <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-art.svg">
-            <source src="assets/hero-video.mp4" type="video/mp4">
-          </video>
-          <div class="hero-shade"></div>
-          <div class="hero-scene-caption" aria-hidden="true">
-            <span>THREE PICKS</span>
-            <strong>從右側抽出今天的觀展靈感</strong>
-          </div>
+          <img class="hero-counter-art" src="assets/hero-counter.svg" alt="" aria-hidden="true">
+          <div class="hero-counter-overlay" aria-hidden="true"></div>
+          <button class="hero-shuffle-button" id="heroShuffleButton" type="button">
+            <span class="shuffle-icon" aria-hidden="true">↻</span>
+            <span id="heroShuffleText">從右側抽出今天的觀展靈感</span>
+          </button>
           <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-label="隨機推薦三檔展覽"></div>
-          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 8 秒換一組推薦</div>
+          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 10 秒換一組推薦</div>
         </div>
       </section>
 
@@ -206,53 +204,31 @@
     </section>
 
     <section class="listing-view app-view" id="listingView" hidden>
-      <div class="view-hero compact-view-hero">
-        <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
-        <h1 id="listingTitle">探索全台展覽</h1>
-        <p id="listingDescription">依分類、地區、日期與舉辦狀態，找到適合你的展覽。</p>
+      <div class="view-hero compact-view-hero listing-view-hero">
+        <div class="view-title-row">
+          <span class="view-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5M10 6v8M6 10h8"></path></svg>
+          </span>
+          <div>
+            <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
+            <h1 id="listingTitle">探索全台展覽</h1>
+          </div>
+        </div>
+        <p id="listingDescription">依分類、日期與場館，找到適合你的下一場展覽。</p>
       </div>
 
       <div class="listing-filter-hub">
         <section class="listing-category-panel" aria-labelledby="listingCategoryTitle">
-          <div class="filter-panel-heading">
-            <div>
-              <span class="filter-step">01</span>
-              <div><small>CATEGORY</small><h2 id="listingCategoryTitle">選擇展覽分類</h2></div>
-            </div>
+          <div class="filter-panel-heading compact">
+            <div><small>CATEGORY</small><h2 id="listingCategoryTitle">展覽分類</h2></div>
             <button class="text-button" type="button" data-clear-filter="category">清除分類</button>
           </div>
           <div class="listing-category-grid" id="listingCategoryOptions"></div>
         </section>
 
-        <section class="listing-calendar-panel" aria-labelledby="listingCalendarTitle">
-          <div class="filter-panel-heading">
-            <div>
-              <span class="filter-step">02</span>
-              <div><small>DATE</small><h2 id="listingCalendarTitle">選擇觀展日期</h2></div>
-            </div>
-            <button class="text-button" type="button" id="sidebarClearDate">清除日期</button>
-          </div>
-          <div class="calendar-shell" id="listingCalendar">
-            <div class="calendar-head">
-              <button type="button" id="calendarPrevButton" aria-label="上個月">←</button>
-              <strong id="calendarMonthLabel"></strong>
-              <button type="button" id="calendarNextButton" aria-label="下個月">→</button>
-            </div>
-            <div class="calendar-weekdays" aria-hidden="true"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
-            <div class="calendar-grid" id="listingCalendarGrid"></div>
-            <div class="calendar-footer">
-              <button type="button" id="calendarTodayButton">回到今天</button>
-              <span id="calendarSelectionText">尚未選擇日期</span>
-            </div>
-          </div>
-        </section>
-
         <section class="listing-status-panel" aria-labelledby="listingStatusTitle">
           <div class="filter-panel-heading compact">
-            <div>
-              <span class="filter-step">03</span>
-              <div><small>STATUS</small><h2 id="listingStatusTitle">舉辦狀態</h2></div>
-            </div>
+            <div><small>STATUS</small><h2 id="listingStatusTitle">舉辦狀態</h2></div>
           </div>
           <div class="listing-status-options" id="listingStatusOptions"></div>
         </section>
@@ -260,18 +236,39 @@
 
       <div class="listing-layout">
         <aside class="filter-sidebar" id="filterSidebar">
-          <div class="filter-sidebar-head">
-            <div><small>LOCATION</small><h2>依縣市與場館篩選</h2></div>
-            <button class="filter-close-button" id="filterCloseButton" type="button" aria-label="關閉篩選">×</button>
+          <section class="sidebar-calendar-panel" aria-labelledby="listingCalendarTitle">
+            <div class="filter-panel-heading compact sidebar-panel-heading">
+              <div><small>DATE</small><h2 id="listingCalendarTitle">觀展日期</h2></div>
+              <button class="text-button" type="button" id="sidebarClearDate">清除</button>
+            </div>
+            <div class="calendar-shell" id="listingCalendar">
+              <div class="calendar-head">
+                <button type="button" id="calendarPrevButton" aria-label="上個月">←</button>
+                <strong id="calendarMonthLabel"></strong>
+                <button type="button" id="calendarNextButton" aria-label="下個月">→</button>
+              </div>
+              <div class="calendar-weekdays" aria-hidden="true"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+              <div class="calendar-grid" id="listingCalendarGrid"></div>
+              <div class="calendar-footer">
+                <button type="button" id="calendarTodayButton">今天</button>
+                <span id="calendarSelectionText">尚未選擇日期</span>
+              </div>
+            </div>
+          </section>
+          <div class="location-filter-panel">
+            <div class="filter-sidebar-head">
+              <div><small>LOCATION</small><h2>依縣市與場館篩選</h2></div>
+              <button class="filter-close-button" id="filterCloseButton" type="button" aria-label="關閉篩選">×</button>
+            </div>
+            <p class="filter-sidebar-intro">展開縣市後，再選擇同一園區或場館。</p>
+            <div class="location-accordion" id="listingLocationAccordion"></div>
           </div>
-          <p class="filter-sidebar-intro">先展開縣市，再選擇該縣市目前有活動的展覽場所。</p>
-          <div class="location-accordion" id="listingLocationAccordion"></div>
         </aside>
 
         <div class="listing-content">
           <div class="listing-toolbar">
             <div>
-              <button class="filter-drawer-button" id="filterDrawerButton" type="button">地點篩選</button>
+              <button class="filter-drawer-button" id="filterDrawerButton" type="button">日期與地點篩選</button>
               <span id="listingCount">載入中…</span>
             </div>
             <select id="sortSelect" aria-label="排序方式">

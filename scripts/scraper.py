@@ -33,37 +33,28 @@ DEFAULT_OUTPUT = Path("data/exhibitions.json")
 DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.3 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.4 (+https://github.com/jackyyu0130/exhibition-hub)"
+DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
-# Official Culture Ministry category codes.
+# Official Culture Ministry category codes. Public-facing categories deliberately
+# omit 「徵選」 and 「商展」; those records are reclassified from their content.
 CATEGORY_CODE_MAP = {
-    "1": "音樂",      # 音樂表演
-    "2": "表演",      # 戲劇表演
-    "3": "舞蹈",
-    "4": "親子",
-    "5": "音樂",      # 獨立音樂
-    "6": "美術",      # 展覽資訊
-    "7": "講座",
-    "8": "電影",
-    "11": "表演",     # 綜藝活動
-    "13": "競賽",
-    "14": "徵選",
-    "15": "其他",
-    "17": "音樂",     # 演唱會
-    "19": "研習",
+    "1": "音樂", "2": "表演", "3": "舞蹈", "4": "親子", "5": "音樂",
+    "6": "美術", "7": "講座", "8": "電影", "11": "表演", "13": "競賽",
+    "14": "其他", "15": "其他", "17": "音樂", "19": "研習",
 }
 CATEGORY_FEEDS = tuple(CATEGORY_CODE_MAP)
 ALLOWED_CATEGORIES = (
-    "快閃", "美術", "攝影", "設計", "動漫", "音樂", "表演", "舞蹈", "講座",
-    "市集", "商展", "電影", "親子", "競賽", "徵選", "研習", "其他",
+    "快閃", "美術", "攝影", "設計", "動漫", "歷史文化", "自然科學", "親子",
+    "音樂", "表演", "舞蹈", "電影", "講座", "研習", "市集", "競賽", "科技", "其他",
 )
 CATEGORY_ALIASES = {
     "展覽": "美術", "展覽資訊": "美術", "藝術": "美術", "視覺藝術": "美術",
     "戲劇": "表演", "戲劇表演": "表演", "綜藝": "表演", "綜藝活動": "表演",
     "音樂表演": "音樂", "獨立音樂": "音樂", "演唱會": "音樂",
     "講座資訊": "講座", "親子活動": "親子", "電影欣賞": "電影",
-    "競賽活動": "競賽", "徵選活動": "徵選", "研習課程": "研習",
-    "其他藝文資訊": "其他",
+    "競賽活動": "競賽", "徵選活動": "其他", "徵選": "其他", "商展": "其他",
+    "研習課程": "研習", "其他藝文資訊": "其他",
 }
 
 REGION_ALIASES = {"臺北市": "台北市", "臺中市": "台中市", "臺南市": "台南市", "臺東縣": "台東縣"}
@@ -77,19 +68,20 @@ KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("快閃", re.compile(r"快閃|期間限定|popup|pop-up", re.I)),
     ("攝影", re.compile(r"攝影|影像展|photo(?:graphy)?", re.I)),
     ("動漫", re.compile(r"動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展", re.I)),
-    ("設計", re.compile(r"設計|建築|工藝|時尚|design", re.I)),
+    ("歷史文化", re.compile(r"歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗", re.I)),
+    ("自然科學", re.compile(r"自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育", re.I)),
+    ("科技", re.compile(r"科技|人工智慧|\bAI\b|數位科技|半導體|資訊展|電腦展|機器人", re.I)),
+    ("設計", re.compile(r"設計|建築|工藝|時尚|家居|文具|design", re.I)),
     ("舞蹈", re.compile(r"舞蹈|舞作|芭蕾", re.I)),
     ("音樂", re.compile(r"音樂|演唱會|樂團|管弦|獨立音樂|concert", re.I)),
     ("表演", re.compile(r"戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲", re.I)),
+    ("電影", re.compile(r"電影|影展|放映", re.I)),
     ("講座", re.compile(r"講座|論壇|座談|分享會|演講", re.I)),
     ("研習", re.compile(r"研習|課程|工作坊|營隊", re.I)),
-    ("市集", re.compile(r"市集|祭典|嘉年華|文創攤位", re.I)),
-    ("商展", re.compile(r"展售|博覽會|商展|產業展|商品展", re.I)),
-    ("電影", re.compile(r"電影|影展|放映", re.I)),
+    ("市集", re.compile(r"市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位", re.I)),
     ("親子", re.compile(r"親子|兒童|家庭|幼兒", re.I)),
     ("競賽", re.compile(r"競賽|比賽|大賽|徵件比賽", re.I)),
-    ("徵選", re.compile(r"徵選|徵件|徵稿|招募", re.I)),
-    ("美術", re.compile(r"美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術", re.I)),
+    ("美術", re.compile(r"美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會", re.I)),
 ]
 
 IMAGE_META_PATTERNS = [
@@ -104,6 +96,14 @@ IMG_SRCSET_PATTERN = re.compile(r'<(?:img|source)[^>]+(?:srcset|data-srcset)=["\
 JSON_IMAGE_PATTERN = re.compile(r'["\'](?:image|imageUrl|imageURL|thumbnailUrl|contentUrl)["\']\s*:\s*["\']([^"\']+)', re.I)
 BACKGROUND_IMAGE_PATTERN = re.compile(r'background(?:-image)?\s*:\s*url\(["\']?([^"\')]+)', re.I)
 BAD_IMAGE_HINTS = re.compile(r"(?:favicon|logo|icon|avatar|spacer|blank|loading|pixel|sprite|qr[_-]?code)", re.I)
+LD_JSON_PATTERN = re.compile(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.I | re.S)
+HTML_ADDRESS_PATTERN = re.compile(r'(?:\d{3,6}\s*)?(?:臺|台|新北|桃園|新竹|苗栗|彰化|南投|雲林|嘉義|高雄|屏東|宜蘭|花蓮|臺東|台東|澎湖|金門|連江)[^<\n]{0,55}?(?:路|街|大道|巷|弄)[^<\n]{0,28}?號(?:之\d+)?(?:\d+樓)?')
+COORDINATE_PATTERNS = [
+    re.compile(r'@(-?\d{2}\.\d+),(-?\d{2,3}\.\d+)'),
+    re.compile(r'(?:query|q|destination)=(-?\d{2}\.\d+)%?2[Cc](-?\d{2,3}\.\d+)'),
+    re.compile(r'["\']latitude["\']\s*:\s*["\']?(-?\d{2}\.\d+).*?["\']longitude["\']\s*:\s*["\']?(-?\d{2,3}\.\d+)', re.I | re.S),
+]
+VENUE_LABEL_PATTERN = re.compile(r'(?:活動地點|展演地點|展覽地點|場地|地點)\s*[：:]\s*([^<\n]{2,80})', re.I)
 
 
 @dataclass(frozen=True)
@@ -124,6 +124,60 @@ def clean_text(value: Any) -> str:
     text = re.sub(r"[ \t\r\f\v]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
+
+
+def clean_place_text(value: Any) -> str:
+    text = clean_text(value)
+    text = re.sub(r"^[=＝:：;；|｜]+|[=＝:：;；|｜]+$", "", text).strip()
+    text = re.sub(r"\s{2,}", " ", text)
+    return text
+
+
+def load_venue_profiles(path: Path = DEFAULT_VENUE_ALIASES) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    items = payload.get("venues", []) if isinstance(payload, dict) else payload
+    return [item for item in items if isinstance(item, dict) and clean_text(item.get("name"))]
+
+
+VENUE_PROFILES = load_venue_profiles()
+
+
+def normalize_venue_name(raw_venue: Any, address: Any = "") -> tuple[str, str]:
+    original = clean_place_text(first_value(raw_venue, address, "地點待確認"))
+    for profile in VENUE_PROFILES:
+        canonical = clean_place_text(profile.get("name"))
+        patterns = sorted((clean_place_text(item) for item in profile.get("patterns", []) if clean_place_text(item)), key=len, reverse=True)
+        matched = next((pattern for pattern in patterns if pattern.lower() in original.lower()), "")
+        if matched:
+            detail = clean_place_text(original.replace(matched, "", 1))
+            detail = re.sub(r"^[\s、,，/\-—－]+", "", detail)
+            return canonical, detail
+
+    district_only = bool(
+        re.fullmatch(r"(?:臺|台|新北|桃園|新竹|苗栗|彰化|南投|雲林|嘉義|高雄|屏東|宜蘭|花蓮|臺東|台東|澎湖|金門|連江).{0,3}[市縣].{1,4}區(?:[（(].+[）)])?", original)
+        or re.fullmatch(r".{1,6}區(?:[（(](?:臺|台).+[市縣][）)])?", original)
+    )
+    address_like = bool(re.search(r"(?:路|街|大道|巷|弄|號|樓)", original)) and not bool(re.search(r"館|園區|中心|藝廊|劇院|展場|空間|博物館|美術館|文化館|文創", original))
+    if district_only or address_like:
+        region = detect_region(address, original)
+        return f"{region}｜場館資料整理中", ""
+    return original or "地點待確認", ""
+
+
+def poor_venue(value: Any) -> bool:
+    text = clean_place_text(value)
+    if not text or text == "地點待確認" or "場館資料整理中" in text:
+        return True
+    if re.search(r"[=＝]$", text):
+        return True
+    if re.fullmatch(r".{1,8}區(?:[（(].+[）)])?", text):
+        return True
+    return False
 
 
 def first_value(*values: Any) -> Any:
@@ -260,9 +314,12 @@ def split_category_values(raw: Any) -> Iterator[str]:
 
 def normalize_categories(raw_category: Any, title: str, description: str, feed_category: Any = "") -> list[str]:
     categories: list[str] = []
+    saw_other = False
     for value in [*split_category_values(raw_category), *split_category_values(feed_category)]:
         mapped = CATEGORY_CODE_MAP.get(value) or CATEGORY_ALIASES.get(value) or (value if value in ALLOWED_CATEGORIES else "")
-        if mapped and mapped not in categories:
+        if mapped == "其他":
+            saw_other = True
+        elif mapped and mapped not in categories:
             categories.append(mapped)
 
     combined = f"{title} {description}"
@@ -270,9 +327,9 @@ def normalize_categories(raw_category: Any, title: str, description: str, feed_c
         if pattern.search(combined) and category not in categories:
             categories.insert(0, category)
 
-    cleaned = [category for category in categories if category in ALLOWED_CATEGORIES]
+    cleaned = [category for category in categories if category in ALLOWED_CATEGORIES and category != "其他"]
     if not cleaned:
-        cleaned = ["其他"]
+        cleaned = ["其他"] if saw_other or combined.strip() else ["其他"]
     return list(dict.fromkeys(cleaned))[:3]
 
 
@@ -358,9 +415,19 @@ def probable_content_image(url: str) -> bool:
     return True
 
 
-def discover_page_images(url: str, *, timeout: int = 14) -> list[str]:
+def _walk_jsonld(value: Any) -> Iterator[dict[str, Any]]:
+    if isinstance(value, dict):
+        yield value
+        for child in value.values():
+            yield from _walk_jsonld(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _walk_jsonld(child)
+
+
+def discover_page_metadata(url: str, *, timeout: int = 16) -> dict[str, Any]:
     if not url:
-        return []
+        return {}
     try:
         response = requests.get(
             url,
@@ -371,20 +438,94 @@ def discover_page_images(url: str, *, timeout: int = 14) -> list[str]:
         response.raise_for_status()
         content_type = response.headers.get("content-type", "").lower()
         if "html" not in content_type and not response.text.lstrip().startswith("<"):
-            return []
-        page = response.text[:1_200_000]
-        candidates: list[str] = []
+            return {}
+        page = response.text[:1_600_000]
+        images: list[str] = []
+        venue = ""
+        address = ""
+        latitude: float | None = None
+        longitude: float | None = None
+
+        # Prefer social metadata and structured data over arbitrary inline images.
         for pattern in IMAGE_META_PATTERNS:
-            candidates.extend(match.group(1) for match in pattern.finditer(page))
-        candidates.extend(match.group(1) for match in IMG_SRC_PATTERN.finditer(page))
+            images.extend(match.group(1) for match in pattern.finditer(page))
+
+        for match in LD_JSON_PATTERN.finditer(page):
+            raw = html.unescape(match.group(1)).strip()
+            try:
+                payload = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            for node in _walk_jsonld(payload):
+                node_type = clean_text(node.get("@type")).lower()
+                if "image" in node:
+                    images.extend(flatten_values(node.get("image")))
+                if node_type in {"event", "place", "civicstructure", "performingartstheater", "museum"}:
+                    location = node.get("location")
+                    if isinstance(location, dict):
+                        venue = venue or clean_place_text(first_value(location.get("name"), location.get("alternateName")))
+                        address_value = location.get("address")
+                        if isinstance(address_value, dict):
+                            address = address or clean_place_text("".join(clean_text(address_value.get(key)) for key in ("postalCode", "addressRegion", "addressLocality", "streetAddress")))
+                        else:
+                            address = address or clean_place_text(address_value)
+                        geo = location.get("geo") if isinstance(location.get("geo"), dict) else {}
+                        lat, lon = coordinate_pair(geo, location)
+                        latitude = latitude if latitude is not None else lat
+                        longitude = longitude if longitude is not None else lon
+                    if node_type in {"place", "civicstructure", "performingartstheater", "museum"}:
+                        venue = venue or clean_place_text(first_value(node.get("name"), node.get("alternateName")))
+                        address_value = node.get("address")
+                        if isinstance(address_value, dict):
+                            address = address or clean_place_text("".join(clean_text(address_value.get(key)) for key in ("postalCode", "addressRegion", "addressLocality", "streetAddress")))
+                        else:
+                            address = address or clean_place_text(address_value)
+                        lat, lon = coordinate_pair(node.get("geo") if isinstance(node.get("geo"), dict) else {}, node)
+                        latitude = latitude if latitude is not None else lat
+                        longitude = longitude if longitude is not None else lon
+
+        images.extend(match.group(1) for match in IMG_SRC_PATTERN.finditer(page))
         for match in IMG_SRCSET_PATTERN.finditer(page):
             for candidate in match.group(1).split(","):
-                candidates.append(candidate.strip().split(" ")[0])
-        candidates.extend(match.group(1) for match in JSON_IMAGE_PATTERN.finditer(page))
-        candidates.extend(match.group(1) for match in BACKGROUND_IMAGE_PATTERN.finditer(page))
-        return [item for item in unique_urls(candidates, base_url=response.url) if probable_content_image(item)][:10]
+                images.append(candidate.strip().split(" ")[0])
+        images.extend(match.group(1) for match in JSON_IMAGE_PATTERN.finditer(page))
+        images.extend(match.group(1) for match in BACKGROUND_IMAGE_PATTERN.finditer(page))
+
+        plain = clean_text(page)
+        if not address:
+            match = HTML_ADDRESS_PATTERN.search(plain)
+            if match:
+                address = clean_place_text(match.group(0))
+        if not venue:
+            match = VENUE_LABEL_PATTERN.search(plain)
+            if match:
+                venue = clean_place_text(match.group(1))
+        if latitude is None or longitude is None:
+            for pattern in COORDINATE_PATTERNS:
+                match = pattern.search(page)
+                if not match:
+                    continue
+                lat = number_or_none(match.group(1), latitude=True)
+                lon = number_or_none(match.group(2), latitude=False)
+                if lat is not None and lon is not None:
+                    latitude, longitude = lat, lon
+                    break
+
+        normalized_images = [item for item in unique_urls(images, base_url=response.url) if probable_content_image(item)][:12]
+        return {
+            "images": normalized_images,
+            "venue": venue,
+            "address": address,
+            "latitude": latitude,
+            "longitude": longitude,
+            "checkedUrl": response.url,
+        }
     except requests.RequestException:
-        return []
+        return {}
+
+
+def discover_page_images(url: str, *, timeout: int = 16) -> list[str]:
+    return list(discover_page_metadata(url, timeout=timeout).get("images") or [])
 
 
 def stable_id(*values: Any) -> str:
@@ -401,11 +542,13 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
     raw_description = first_value(raw.get("description"), raw.get("descriptionFilterHtml"), raw.get("comment"))
     description = clean_text(raw_description)
     event_source_url = source_url(raw)
-    address = clean_text(first_value(raw.get("address"), raw.get("location"), show.get("location"), show.get("address")))
-    venue = clean_text(first_value(raw.get("locationName"), raw.get("venue"), show.get("locationName"), show.get("venue"), address, "地點待確認"))
+    address = clean_place_text(first_value(raw.get("address"), raw.get("location"), show.get("location"), show.get("address")))
+    raw_venue = clean_place_text(first_value(raw.get("venueGroup"), raw.get("locationName"), raw.get("venue"), show.get("locationName"), show.get("venue"), address, "地點待確認"))
+    venue_group, inferred_detail = normalize_venue_name(raw_venue, address)
+    venue_detail = clean_place_text(first_value(raw.get("venueDetail"), inferred_detail))
     start_date = date_string(first_value(raw.get("startDate"), raw.get("start"), raw.get("startTime"), show.get("time"), show.get("startTime")))
     end_date = date_string(first_value(raw.get("endDate"), raw.get("end"), raw.get("endTime"), show.get("endTime"), start_date))
-    uid = clean_text(first_value(raw.get("id"), raw.get("UID"), raw.get("uid"), raw.get("actId"))) or stable_id(title, start_date, venue, event_source_url, index)
+    uid = clean_text(first_value(raw.get("id"), raw.get("UID"), raw.get("uid"), raw.get("actId"))) or stable_id(title, start_date, venue_group, event_source_url, index)
     categories = normalize_categories(
         first_value(raw.get("categories"), raw.get("categoryName"), raw.get("category")),
         title,
@@ -434,10 +577,12 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
         "category": categories[0],
         "startDate": start_date,
         "endDate": end_date,
-        "locationName": venue,
-        "location": venue,
+        "locationName": venue_group,
+        "location": venue_group,
+        "venueGroup": venue_group,
+        "venueDetail": venue_detail,
         "address": address,
-        "region": detect_region(raw.get("region"), raw.get("cityName"), address, venue),
+        "region": detect_region(raw.get("region"), raw.get("cityName"), address, venue_group, raw_venue),
         "latitude": latitude,
         "longitude": longitude,
         "price": price,
@@ -449,6 +594,9 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
         "sessions": sessions,
         "hitRate": int(raw.get("hitRate") or 0) if str(raw.get("hitRate") or "0").isdigit() else 0,
         "source": clean_text(first_value(raw.get("source"), raw.get("sourceWebName"))) or "文化部開放資料",
+        "firstSeenAt": clean_text(first_value(raw.get("firstSeenAt"), raw.get("first_seen_at"))),
+        "lastSeenAt": clean_text(first_value(raw.get("lastSeenAt"), raw.get("last_seen_at"))),
+        "pageMetadataCheckedAt": clean_text(raw.get("pageMetadataCheckedAt")),
     }
 
 
@@ -459,6 +607,13 @@ def is_demo_record(record: dict[str, Any]) -> bool:
     if "example.com" in event_url or "用於版面檢視" in description:
         return True
     return bool(re.fullmatch(r"e\d+", uid, re.I) and clean_text(record.get("title")))
+
+
+def is_recruitment_only(record: dict[str, Any]) -> bool:
+    text = f"{clean_text(record.get('title'))} {clean_text(record.get('description'))}"
+    recruitment = bool(re.search(r"徵選|徵件|徵稿|招募|報名簡章|申請辦法", text))
+    public_outcome = bool(re.search(r"成果展|入選展|得獎作品展|展覽|展出|發表會|頒獎典禮", text))
+    return recruitment and not public_outcome
 
 
 def is_still_relevant(record: dict[str, Any], *, past_grace_days: int = 7, future_days: int = 550) -> bool:
@@ -502,6 +657,8 @@ def merge_two_records(old: dict[str, Any], new: dict[str, Any]) -> dict[str, Any
             continue
         if key == "description" and len(clean_text(value)) < len(clean_text(old_value)):
             continue
+        if key in {"locationName", "location", "venueGroup"} and poor_venue(value) and not poor_venue(old_value):
+            continue
         merged[key] = value
     merged["images"] = merge_list_values(old.get("images"), new.get("images"))[:10]
     if merged["images"]:
@@ -514,13 +671,28 @@ def merge_two_records(old: dict[str, Any], new: dict[str, Any]) -> dict[str, Any
 
 def merge_records(primary: Iterable[dict[str, Any]], existing: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     merged: dict[str, dict[str, Any]] = {}
+    now = datetime.now(TAIPEI_TZ).isoformat(timespec="seconds")
     for record in existing:
-        if not is_demo_record(record) and is_still_relevant(record):
+        if not is_demo_record(record) and not is_recruitment_only(record) and is_still_relevant(record):
+            record = dict(record)
+            record["firstSeenAt"] = clean_text(record.get("firstSeenAt")) or now
+            record["lastSeenAt"] = clean_text(record.get("lastSeenAt")) or record["firstSeenAt"]
             merged[dedupe_key(record)] = record
     for record in primary:
-        if is_still_relevant(record):
-            key = dedupe_key(record)
-            merged[key] = merge_two_records(merged[key], record) if key in merged else record
+        if is_recruitment_only(record) or not is_still_relevant(record):
+            continue
+        key = dedupe_key(record)
+        if key in merged:
+            first_seen = clean_text(merged[key].get("firstSeenAt")) or now
+            combined = merge_two_records(merged[key], record)
+            combined["firstSeenAt"] = first_seen
+            combined["lastSeenAt"] = now
+            merged[key] = combined
+        else:
+            record = dict(record)
+            record["firstSeenAt"] = clean_text(record.get("firstSeenAt")) or now
+            record["lastSeenAt"] = now
+            merged[key] = record
 
     def sort_key(item: dict[str, Any]) -> tuple[date, str]:
         return parse_date(item.get("startDate")) or date.max, clean_text(item.get("title"))
@@ -671,7 +843,8 @@ def enrich_from_official_details(events: list[dict[str, Any]], *, max_fetches: i
             not event.get("images")
             or event.get("latitude") is None
             or event.get("longitude") is None
-            or not clean_text(event.get("address"))
+            or not clean_place_text(event.get("address"))
+            or poor_venue(event.get("venueGroup") or event.get("locationName"))
             or len(clean_text(event.get("description"))) < 60
         )
     ]
@@ -700,36 +873,82 @@ def enrich_from_official_details(events: list[dict[str, Any]], *, max_fetches: i
                 enriched += 1
     return enriched
 
-def enrich_missing_images(events: list[dict[str, Any]], *, max_fetches: int = 300, workers: int = 10) -> int:
-    candidates = [event for event in events if not event.get("images") and valid_http_url(event.get("sourceUrl"))]
-    candidates.sort(key=lambda event: int(event.get("hitRate") or 0), reverse=True)
+def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450, workers: int = 10) -> int:
+    now = datetime.now(TAIPEI_TZ)
+    candidates: list[dict[str, Any]] = []
+    for event in events:
+        if not valid_http_url(event.get("sourceUrl")):
+            continue
+        checked = parse_date(event.get("pageMetadataCheckedAt"))
+        recently_checked = checked is not None and checked >= (now.date() - timedelta(days=21))
+        needs_data = (
+            not event.get("images")
+            or event.get("latitude") is None
+            or event.get("longitude") is None
+            or not clean_place_text(event.get("address"))
+            or poor_venue(event.get("venueGroup") or event.get("locationName"))
+        )
+        if needs_data and not recently_checked:
+            candidates.append(event)
+    candidates.sort(key=lambda event: (not bool(event.get("images")), poor_venue(event.get("venueGroup") or event.get("locationName")), int(event.get("hitRate") or 0)), reverse=True)
     candidates = candidates[:max_fetches]
     if not candidates:
         return 0
 
-    found = 0
+    enriched = 0
+    checked_at = now.isoformat(timespec="seconds")
     with ThreadPoolExecutor(max_workers=max(1, workers)) as executor:
-        futures = {executor.submit(discover_page_images, event["sourceUrl"]): event for event in candidates}
+        futures = {executor.submit(discover_page_metadata, event["sourceUrl"]): event for event in candidates}
         for future in as_completed(futures):
             event = futures[future]
+            event["pageMetadataCheckedAt"] = checked_at
             try:
-                images = future.result()
+                metadata = future.result()
             except Exception:
-                images = []
+                metadata = {}
+            if not metadata:
+                continue
+            changed = False
+            images = metadata.get("images") or []
             if images:
-                event["images"] = merge_list_values(event.get("images"), images)[:10]
+                event["images"] = merge_list_values(event.get("images"), images)[:12]
                 event["image"] = event["images"][0]
-                found += 1
-    return found
+                changed = True
+            if metadata.get("address") and not clean_place_text(event.get("address")):
+                event["address"] = clean_place_text(metadata["address"])
+                changed = True
+            if metadata.get("venue") and poor_venue(event.get("venueGroup") or event.get("locationName")):
+                group, detail = normalize_venue_name(metadata["venue"], metadata.get("address") or event.get("address"))
+                event["venueGroup"] = group
+                event["venueDetail"] = detail
+                event["locationName"] = group
+                event["location"] = group
+                event["region"] = detect_region(event.get("address"), group)
+                changed = True
+            if event.get("latitude") is None and metadata.get("latitude") is not None:
+                event["latitude"] = metadata["latitude"]
+                changed = True
+            if event.get("longitude") is None and metadata.get("longitude") is not None:
+                event["longitude"] = metadata["longitude"]
+                changed = True
+            if changed:
+                enriched += 1
+    return enriched
 
 
 def venue_images(events: Iterable[dict[str, Any]]) -> dict[str, str]:
+    # Venue cards use official venue-homepage imagery only. Event posters are not
+    # recycled as venue photos because that gives a misleading visual cue.
+    active_venues = {clean_place_text(event.get("venueGroup") or event.get("locationName")) for event in events}
     result: dict[str, str] = {}
-    for event in events:
-        venue = clean_text(event.get("locationName"))
-        image = valid_http_url(event.get("image"))
-        if venue and image and venue not in result:
-            result[venue] = image
+    for profile in VENUE_PROFILES:
+        name = clean_place_text(profile.get("name"))
+        homepage = valid_http_url(profile.get("homepage"))
+        if not name or name not in active_venues or not homepage:
+            continue
+        images = discover_page_images(homepage, timeout=18)
+        if images:
+            result[name] = images[0]
     return result
 
 
@@ -839,7 +1058,7 @@ def main() -> int:
     parser.add_argument("--no-image-enrichment", action="store_true")
     parser.add_argument("--no-geocoding", action="store_true")
     parser.add_argument("--max-detail-fetches", type=int, default=int(os.environ.get("MAX_DETAIL_FETCHES", "250")))
-    parser.add_argument("--max-image-fetches", type=int, default=int(os.environ.get("MAX_IMAGE_FETCHES", "300")))
+    parser.add_argument("--max-image-fetches", type=int, default=int(os.environ.get("MAX_IMAGE_FETCHES", "450")))
     parser.add_argument("--max-geocodes", type=int, default=int(os.environ.get("MAX_GEOCODES", "25")))
     parser.add_argument("--geocode-cache", type=Path, default=DEFAULT_GEOCODE_CACHE)
     args = parser.parse_args()
@@ -860,14 +1079,14 @@ def main() -> int:
 
     enriched_images = 0
     if not args.no_image_enrichment and not args.input_file and args.max_image_fetches > 0:
-        enriched_images = enrich_missing_images(events, max_fetches=args.max_image_fetches)
+        enriched_images = enrich_source_pages(events, max_fetches=args.max_image_fetches)
 
     write_output(args.output, events)
     image_count = sum(1 for event in events if valid_http_url(event.get("image")))
     coordinate_count = sum(1 for event in events if event.get("latitude") is not None and event.get("longitude") is not None)
     print(
         f"Wrote {len(events)} events to {args.output}; official-details enriched={detail_enriched}; images={image_count} "
-        f"(source-page enriched {enriched_images}); coordinates={coordinate_count} "
+        f"(source-page metadata enriched {enriched_images}); coordinates={coordinate_count} "
         f"(matched {inherited_coordinates}, geocoded {geocoded})"
     )
     return 0
