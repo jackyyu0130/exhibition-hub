@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Build data/exhibitions.json for the Exhibition Hub GitHub Pages site.
 
-Primary source: Ministry of Culture open data API (all categories).
-The script also keeps still-valid custom records already present in the output file,
-so replacing the frontend does not erase events collected by other sources.
+This version fixes two common problems in the Ministry of Culture feed:
+1. Event sessions are normally stored under ``showInfo`` (capital I), while some
+   older data exports use ``showinfo``. Coordinates and venue data are read from
+   both spellings and from every session, not only the first incomplete one.
+2. Promotional images may use several field names, be nested, be relative URLs,
+   or only appear as Open Graph metadata on the event source page.
 
 Usage:
     python scripts/scraper.py
@@ -20,24 +23,24 @@ import json
 import os
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Iterable
-from urllib.parse import urlparse
+from typing import Any, Iterable, Iterator
+from urllib.parse import unquote, urljoin, urlparse
 
 import requests
 
 API_URLS = [
-    # 政府資料開放平臺目前實際的 JSON 資源網址
-    "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=all",
-    # 文化部資料集備註所列的 OAS 介接網址，保留為備援
+    "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?category=all&method=doFindTypeJ",
     "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJOpenApi&category=all",
 ]
 API_URL = API_URLS[0]
 DEFAULT_OUTPUT = Path("data/exhibitions.json")
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.0 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.2 (+https://github.com/jackyyu0130/exhibition-hub)"
+CULTURE_BASE_URL = "https://cloud.culture.tw/"
 
 CATEGORY_MAP = {
     "1": "音樂", "2": "表演", "3": "舞蹈", "4": "親子", "5": "音樂",
@@ -63,6 +66,15 @@ KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("商展", re.compile(r"展售|博覽會|商展|產業展", re.I)),
     ("親子", re.compile(r"親子|兒童|家庭", re.I)),
 ]
+
+IMAGE_META_PATTERNS = [
+    re.compile(r'<meta[^>]+(?:property|name)=["\']og:image(?::secure_url)?["\'][^>]+content=["\']([^"\']+)', re.I),
+    re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']og:image(?::secure_url)?["\']', re.I),
+    re.compile(r'<meta[^>]+(?:property|name)=["\']twitter:image(?::src)?["\'][^>]+content=["\']([^"\']+)', re.I),
+    re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']twitter:image(?::src)?["\']', re.I),
+    re.compile(r'<link[^>]+rel=["\']image_src["\'][^>]+href=["\']([^"\']+)', re.I),
+]
+IMG_SRC_PATTERN = re.compile(r'<img[^>]+(?:src|data-src|data-original)=["\']([^"\']+)', re.I)
 
 
 @dataclass(frozen=True)
@@ -97,12 +109,54 @@ def first_value(*values: Any) -> Any:
     return ""
 
 
-def valid_http_url(value: Any) -> str:
-    text = clean_text(value)
+def flatten_values(value: Any) -> Iterator[Any]:
+    if value is None:
+        return
+    if isinstance(value, (list, tuple, set)):
+        for item in value:
+            yield from flatten_values(item)
+        return
+    if isinstance(value, dict):
+        preferred = ("url", "src", "href", "image", "imageUrl", "imageURL", "original", "large")
+        found = False
+        for key in preferred:
+            if key in value:
+                found = True
+                yield from flatten_values(value[key])
+        if not found:
+            for item in value.values():
+                yield from flatten_values(item)
+        return
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped.startswith("[") or stripped.startswith("{"):
+            try:
+                yield from flatten_values(json.loads(stripped))
+                return
+            except json.JSONDecodeError:
+                pass
+    yield value
+
+
+def normalize_url(value: Any, *, base_url: str = CULTURE_BASE_URL) -> str:
+    text = html.unescape(str(value or "")).strip().strip('"\'')
     if not text:
         return ""
+    text = text.replace("\\/", "/")
+    # Some sources return percent-encoded full URLs.
+    if re.match(r"^https?%3A", text, re.I):
+        text = unquote(text)
+    if text.startswith("//"):
+        text = "https:" + text
+    text = urljoin(base_url, text)
     parsed = urlparse(text)
-    return text if parsed.scheme in {"http", "https"} and parsed.netloc else ""
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return ""
+    return text
+
+
+def valid_http_url(value: Any) -> str:
+    return normalize_url(value)
 
 
 def parse_date(value: Any) -> date | None:
@@ -126,13 +180,34 @@ def date_string(value: Any) -> str:
 
 def number_or_none(value: Any, *, latitude: bool) -> float | None:
     try:
-        number = float(str(value).strip())
+        text = str(value).strip().replace(",", ".")
+        number = float(text)
     except (TypeError, ValueError):
         return None
     limit = 90 if latitude else 180
     if not -limit <= number <= limit or number == 0:
         return None
     return round(number, 7)
+
+
+def coordinate_pair(*sources: dict[str, Any]) -> tuple[float | None, float | None]:
+    lat_keys = ("latitude", "Latitude", "lat", "Lat", "mapLat", "y")
+    lon_keys = ("longitude", "Longitude", "lng", "lon", "Lng", "mapLng", "x")
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        raw_lat = first_value(*(source.get(key) for key in lat_keys))
+        raw_lon = first_value(*(source.get(key) for key in lon_keys))
+        lat = number_or_none(raw_lat, latitude=True)
+        lon = number_or_none(raw_lon, latitude=False)
+        if lat is not None and lon is not None:
+            return lat, lon
+        # Occasionally feeds swap x/y or latitude/longitude.
+        swapped_lat = number_or_none(raw_lon, latitude=True)
+        swapped_lon = number_or_none(raw_lat, latitude=False)
+        if swapped_lat is not None and swapped_lon is not None:
+            return swapped_lat, swapped_lon
+    return None, None
 
 
 def detect_region(*values: Any) -> str:
@@ -164,18 +239,99 @@ def normalize_categories(raw_category: Any, title: str, description: str) -> lis
     return categories[:3]
 
 
-def image_url(raw: dict[str, Any]) -> str:
-    candidates: list[Any] = [raw.get("image"), raw.get("imageURL"), raw.get("imageUrl")]
-    images = raw.get("images")
-    if isinstance(images, list):
-        candidates.extend(images)
-    for candidate in candidates:
-        if isinstance(candidate, dict):
-            candidate = first_value(candidate.get("url"), candidate.get("src"), candidate.get("image"))
-        url = valid_http_url(candidate)
+def show_entries(raw: dict[str, Any]) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+    for key in ("showInfo", "showinfo", "show_info", "shows", "sessions"):
+        value = raw.get(key)
+        if isinstance(value, dict):
+            entries.append(value)
+        elif isinstance(value, list):
+            entries.extend(item for item in value if isinstance(item, dict))
+    return entries
+
+
+def show_score(show: dict[str, Any]) -> int:
+    lat, lon = coordinate_pair(show)
+    score = 0
+    if lat is not None and lon is not None:
+        score += 100
+    if clean_text(first_value(show.get("locationName"), show.get("venue"))):
+        score += 25
+    if clean_text(first_value(show.get("location"), show.get("address"))):
+        score += 20
+    if clean_text(first_value(show.get("time"), show.get("startTime"))):
+        score += 5
+    return score
+
+
+def best_show(raw: dict[str, Any]) -> dict[str, Any]:
+    entries = show_entries(raw)
+    return max(entries, key=show_score) if entries else {}
+
+
+def image_candidates(raw: dict[str, Any], show: dict[str, Any] | None = None) -> Iterator[Any]:
+    keys = (
+        "image", "images", "imageUrl", "imageURL", "imageURLList", "imageUrls",
+        "poster", "posterUrl", "picture", "pictureUrl", "photo", "photoUrl", "cover", "coverUrl",
+    )
+    for source in (raw, show or {}):
+        for key in keys:
+            if key in source:
+                yield from flatten_values(source.get(key))
+
+
+def image_from_html(raw_html: Any, *, base_url: str = CULTURE_BASE_URL) -> str:
+    text = html.unescape(str(raw_html or ""))
+    for match in IMG_SRC_PATTERN.finditer(text):
+        url = normalize_url(match.group(1), base_url=base_url)
         if url:
             return url
     return ""
+
+
+def image_url(raw: dict[str, Any], show: dict[str, Any] | None = None) -> str:
+    for candidate in image_candidates(raw, show):
+        url = normalize_url(candidate)
+        if url:
+            return url
+    return image_from_html(first_value(raw.get("descriptionFilterHtml"), raw.get("description")))
+
+
+def source_url(raw: dict[str, Any]) -> str:
+    for candidate in (
+        raw.get("sourceUrl"), raw.get("sourceWebPromote"), raw.get("webSales"),
+        raw.get("sourceWebSite"), raw.get("url"), raw.get("website"),
+    ):
+        url = normalize_url(candidate)
+        if url:
+            return url
+    return ""
+
+
+def discover_page_image(url: str, *, timeout: int = 12) -> str:
+    if not url:
+        return ""
+    try:
+        response = requests.get(
+            url,
+            timeout=timeout,
+            allow_redirects=True,
+            headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"},
+        )
+        response.raise_for_status()
+        content_type = response.headers.get("content-type", "").lower()
+        if "html" not in content_type and not response.text.lstrip().startswith("<"):
+            return ""
+        page = response.text[:800_000]
+        for pattern in IMAGE_META_PATTERNS:
+            match = pattern.search(page)
+            if match:
+                image = normalize_url(match.group(1), base_url=response.url)
+                if image:
+                    return image
+        return image_from_html(page, base_url=response.url)
+    except requests.RequestException:
+        return ""
 
 
 def stable_id(*values: Any) -> str:
@@ -184,38 +340,44 @@ def stable_id(*values: Any) -> str:
 
 
 def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
-    show_info = raw.get("showinfo")
-    show = show_info[0] if isinstance(show_info, list) and show_info else {}
-    if not isinstance(show, dict):
-        show = {}
-
+    show = best_show(raw)
     title = clean_text(first_value(raw.get("title"), raw.get("titile"), raw.get("name")))
     if not title:
         return None
 
-    description = clean_text(first_value(raw.get("description"), raw.get("descriptionFilterHtml"), raw.get("comment")))
-    address = clean_text(first_value(raw.get("address"), raw.get("location"), show.get("location")))
-    venue = clean_text(first_value(raw.get("locationName"), raw.get("venue"), show.get("locationName"), address, "地點待確認"))
-    start_date = date_string(first_value(raw.get("startDate"), raw.get("start"), show.get("time")))
-    end_date = date_string(first_value(raw.get("endDate"), raw.get("end"), raw.get("endTime"), show.get("endTime"), start_date))
-    source_url = valid_http_url(first_value(raw.get("sourceUrl"), raw.get("sourceWebPromote"), raw.get("webSales"), raw.get("sourceWebSite"), raw.get("url")))
-    uid = clean_text(first_value(raw.get("id"), raw.get("UID"), raw.get("uid"))) or stable_id(title, start_date, venue, source_url, index)
-    categories = normalize_categories(first_value(raw.get("categories"), raw.get("categoryName"), raw.get("category")), title, description)
+    raw_description = first_value(raw.get("description"), raw.get("descriptionFilterHtml"), raw.get("comment"))
+    description = clean_text(raw_description)
+    address = clean_text(first_value(
+        raw.get("address"), raw.get("location"), show.get("location"), show.get("address")
+    ))
+    venue = clean_text(first_value(
+        raw.get("locationName"), raw.get("venue"), show.get("locationName"), show.get("venue"), address, "地點待確認"
+    ))
+    start_date = date_string(first_value(raw.get("startDate"), raw.get("start"), show.get("time"), show.get("startTime")))
+    end_date = date_string(first_value(
+        raw.get("endDate"), raw.get("end"), raw.get("endTime"), show.get("endTime"), start_date
+    ))
+    event_source_url = source_url(raw)
+    uid = clean_text(first_value(raw.get("id"), raw.get("UID"), raw.get("uid"))) or stable_id(
+        title, start_date, venue, event_source_url, index
+    )
+    categories = normalize_categories(
+        first_value(raw.get("categories"), raw.get("categoryName"), raw.get("category")), title, description
+    )
     price = clean_text(first_value(raw.get("price"), raw.get("Price"), show.get("price"), raw.get("discountInfo")))
-    if not price and str(raw.get("onSales", "")).upper() == "N":
+    if not price and str(first_value(show.get("onSales"), raw.get("onSales"))).upper() == "N":
         price = "免費"
     if not price:
         price = "票價請見活動頁面"
 
-    latitude = number_or_none(first_value(raw.get("latitude"), raw.get("lat"), show.get("latitude")), latitude=True)
-    longitude = number_or_none(first_value(raw.get("longitude"), raw.get("lng"), show.get("longitude")), latitude=False)
+    latitude, longitude = coordinate_pair(show, raw)
 
     return {
         "id": uid,
         "title": title,
         "description": description,
-        "sourceUrl": source_url,
-        "image": image_url(raw),
+        "sourceUrl": event_source_url,
+        "image": image_url(raw, show),
         "categories": categories,
         "category": categories[0],
         "startDate": start_date,
@@ -234,6 +396,21 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
     }
 
 
+
+def is_demo_record(record: dict[str, Any]) -> bool:
+    """Ignore the temporary mock records that shipped with the visual preview."""
+    event_url = clean_text(record.get("sourceUrl")).lower()
+    description = clean_text(record.get("description"))
+    uid = clean_text(record.get("id"))
+    title = clean_text(record.get("title"))
+    if "example.com" in event_url:
+        return True
+    if "用於版面檢視" in description:
+        return True
+    if re.fullmatch(r"e\d+", uid, re.I) and title:
+        return True
+    return False
+
 def is_still_relevant(record: dict[str, Any], *, past_grace_days: int = 7, future_days: int = 550) -> bool:
     today = datetime.now(TAIPEI_TZ).date()
     start = parse_date(record.get("startDate"))
@@ -246,27 +423,95 @@ def is_still_relevant(record: dict[str, Any], *, past_grace_days: int = 7, futur
 
 
 def dedupe_key(record: dict[str, Any]) -> str:
-    source_url = clean_text(record.get("sourceUrl"))
-    if source_url:
-        return f"url:{source_url.rstrip('/').lower()}"
+    uid = clean_text(record.get("id"))
+    if uid:
+        return f"id:{uid.lower()}"
+    event_url = clean_text(record.get("sourceUrl"))
+    if event_url:
+        return f"url:{event_url.rstrip('/').lower()}"
     return "text:" + stable_id(record.get("title"), record.get("startDate"), record.get("locationName"))
 
 
 def merge_records(primary: Iterable[dict[str, Any]], existing: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
     merged: dict[str, dict[str, Any]] = {}
     for record in existing:
-        if is_still_relevant(record):
+        if not is_demo_record(record) and is_still_relevant(record):
             merged[dedupe_key(record)] = record
     for record in primary:
         if is_still_relevant(record):
             key = dedupe_key(record)
             old = merged.get(key, {})
+            # Empty values from today's feed must not erase a previously discovered image or coordinate.
             merged[key] = {**old, **{k: v for k, v in record.items() if v not in (None, "", [])}}
 
     def sort_key(item: dict[str, Any]) -> tuple[date, str]:
         return parse_date(item.get("startDate")) or date.max, clean_text(item.get("title"))
 
     return sorted(merged.values(), key=sort_key)
+
+
+def place_key(record: dict[str, Any], *, address_first: bool) -> str:
+    value = record.get("address") if address_first else record.get("locationName")
+    text = clean_text(value).replace("臺", "台")
+    text = re.sub(r"[\s　,，、()（）\-]+", "", text).lower()
+    region = clean_text(record.get("region")).replace("臺", "台")
+    return f"{region}|{text}" if text else ""
+
+
+def fill_coordinates_from_matching_places(events: list[dict[str, Any]]) -> int:
+    address_map: dict[str, tuple[float, float]] = {}
+    venue_map: dict[str, tuple[float, float]] = {}
+    ambiguous: set[str] = set()
+
+    for event in events:
+        lat = event.get("latitude")
+        lon = event.get("longitude")
+        if not isinstance(lat, (int, float)) or not isinstance(lon, (int, float)):
+            continue
+        for key, mapping in ((place_key(event, address_first=True), address_map), (place_key(event, address_first=False), venue_map)):
+            if not key:
+                continue
+            pair = (round(float(lat), 6), round(float(lon), 6))
+            if key in mapping and mapping[key] != pair:
+                ambiguous.add(key)
+            else:
+                mapping[key] = pair
+
+    for key in ambiguous:
+        address_map.pop(key, None)
+        venue_map.pop(key, None)
+
+    filled = 0
+    for event in events:
+        if event.get("latitude") is not None and event.get("longitude") is not None:
+            continue
+        pair = address_map.get(place_key(event, address_first=True)) or venue_map.get(place_key(event, address_first=False))
+        if pair:
+            event["latitude"], event["longitude"] = pair
+            filled += 1
+    return filled
+
+
+def enrich_missing_images(events: list[dict[str, Any]], *, max_fetches: int = 80, workers: int = 8) -> int:
+    candidates = [event for event in events if not valid_http_url(event.get("image")) and valid_http_url(event.get("sourceUrl"))]
+    candidates.sort(key=lambda event: int(event.get("hitRate") or 0), reverse=True)
+    candidates = candidates[:max_fetches]
+    if not candidates:
+        return 0
+
+    found = 0
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as executor:
+        futures = {executor.submit(discover_page_image, event["sourceUrl"]): event for event in candidates}
+        for future in as_completed(futures):
+            event = futures[future]
+            try:
+                image = future.result()
+            except Exception:  # Defensive: one page must not stop the daily update.
+                image = ""
+            if image:
+                event["image"] = image
+                found += 1
+    return found
 
 
 def venue_images(events: Iterable[dict[str, Any]]) -> dict[str, str]:
@@ -292,7 +537,6 @@ def load_existing(path: Path) -> list[dict[str, Any]]:
         if isinstance(item, dict):
             normalized = normalize_record(item, index)
             if normalized:
-                # Keep source attribution from custom datasets when available.
                 normalized["source"] = clean_text(item.get("source")) or normalized["source"]
                 result.append(normalized)
     return result
@@ -340,9 +584,21 @@ def read_input_file(path: Path) -> list[dict[str, Any]]:
 
 def write_output(path: Path, events: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    image_count = sum(1 for event in events if valid_http_url(event.get("image")))
+    coordinate_count = sum(
+        1 for event in events
+        if event.get("latitude") is not None and event.get("longitude") is not None
+    )
     payload = {
         "updatedAt": datetime.now(TAIPEI_TZ).isoformat(timespec="seconds"),
         "source": "文化部文化資料開放服務網與既有自訂資料",
+        "stats": {
+            "eventCount": len(events),
+            "imageCount": image_count,
+            "coordinateCount": coordinate_count,
+            "imageCoverage": round(image_count / len(events), 4) if events else 0,
+            "coordinateCoverage": round(coordinate_count / len(events), 4) if events else 0,
+        },
         "events": events,
         "venueImages": venue_images(events),
     }
@@ -356,6 +612,8 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--input-file", type=Path, help="Read source records from a local JSON file instead of the API")
     parser.add_argument("--no-preserve-existing", action="store_true", help="Do not merge still-valid records already in the output file")
+    parser.add_argument("--no-image-enrichment", action="store_true", help="Do not inspect source pages for missing Open Graph images")
+    parser.add_argument("--max-image-fetches", type=int, default=int(os.environ.get("MAX_IMAGE_FETCHES", "80")))
     parser.add_argument("--api-url", default=os.environ.get("EXHIBITION_API_URL", API_URL))
     args = parser.parse_args()
 
@@ -366,9 +624,21 @@ def main() -> int:
         record = normalize_record(raw, index)
         if record:
             normalized.append(record)
+
     events = merge_records(normalized, existing)
+    coordinate_fills = fill_coordinates_from_matching_places(events)
+    image_fills = 0
+    if not args.no_image_enrichment and not args.input_file:
+        image_fills = enrich_missing_images(events, max_fetches=max(0, args.max_image_fetches))
+
     write_output(args.output, events)
-    print(f"Wrote {len(events)} events to {args.output}")
+    image_count = sum(1 for event in events if valid_http_url(event.get("image")))
+    coordinate_count = sum(1 for event in events if event.get("latitude") is not None and event.get("longitude") is not None)
+    print(
+        f"Wrote {len(events)} events to {args.output}; "
+        f"images={image_count} (enriched {image_fills}); "
+        f"coordinates={coordinate_count} (inherited {coordinate_fills})"
+    )
     return 0
 
 

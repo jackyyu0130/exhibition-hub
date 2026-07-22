@@ -36,7 +36,10 @@
 
   function safeUrl(value = '') {
     try {
-      const url = new URL(value, location.href);
+      let text = String(value ?? '').trim().replace(/\\\//g, '/');
+      if (!text) return '';
+      if (text.startsWith('//')) text = `https:${text}`;
+      const url = new URL(text, location.href);
       return ['http:','https:'].includes(url.protocol) ? url.href : '';
     } catch { return ''; }
   }
@@ -74,40 +77,101 @@
     return categories.filter((cat, index, arr) => arr.indexOf(cat) === index).slice(0, 3);
   }
 
+  function flattenImageCandidates(raw) {
+    if (raw === undefined || raw === null || raw === '') return [];
+    if (Array.isArray(raw)) return raw.flatMap(flattenImageCandidates);
+    if (typeof raw === 'object') {
+      const keys = ['url','src','href','image','imageUrl','imageURL','original','large','poster','cover'];
+      const preferred = keys.flatMap(key => key in raw ? flattenImageCandidates(raw[key]) : []);
+      return preferred.length ? preferred : Object.values(raw).flatMap(flattenImageCandidates);
+    }
+    if (typeof raw === 'string') {
+      const value = raw.trim();
+      if ((value.startsWith('[') && value.endsWith(']')) || (value.startsWith('{') && value.endsWith('}'))) {
+        try { return flattenImageCandidates(JSON.parse(value)); } catch {}
+      }
+      return [value];
+    }
+    return [];
+  }
+
   function normalizeImage(raw) {
-    const candidates = [];
-    if (Array.isArray(raw)) candidates.push(...raw);
-    else if (raw && typeof raw === 'object') candidates.push(raw.url, raw.src, raw.image);
-    else candidates.push(raw);
-    return candidates.map(item => typeof item === 'string' ? item : '').map(safeUrl).find(Boolean) || '';
+    return flattenImageCandidates(raw).map(safeUrl).find(Boolean) || '';
+  }
+
+  function getShowEntries(raw) {
+    const entries = [];
+    ['showInfo','showinfo','show_info','shows','sessions'].forEach(key => {
+      const value = raw?.[key];
+      if (Array.isArray(value)) entries.push(...value.filter(item => item && typeof item === 'object'));
+      else if (value && typeof value === 'object') entries.push(value);
+    });
+    return entries;
+  }
+
+  function coordinateValue(value, latitude) {
+    const number = Number(String(value ?? '').trim().replace(',', '.'));
+    const limit = latitude ? 90 : 180;
+    return Number.isFinite(number) && number !== 0 && Math.abs(number) <= limit ? number : null;
+  }
+
+  function coordinatesFrom(...sources) {
+    const latKeys = ['latitude','Latitude','lat','Lat','mapLat','y'];
+    const lngKeys = ['longitude','Longitude','lng','lon','Lng','mapLng','x'];
+    for (const source of sources) {
+      if (!source || typeof source !== 'object') continue;
+      const rawLat = firstValue(...latKeys.map(key => source[key]));
+      const rawLng = firstValue(...lngKeys.map(key => source[key]));
+      let latitude = coordinateValue(rawLat, true);
+      let longitude = coordinateValue(rawLng, false);
+      if (latitude !== null && longitude !== null) return {latitude, longitude};
+      latitude = coordinateValue(rawLng, true);
+      longitude = coordinateValue(rawLat, false);
+      if (latitude !== null && longitude !== null) return {latitude, longitude};
+    }
+    return {latitude:null, longitude:null};
+  }
+
+  function bestShow(raw) {
+    const entries = getShowEntries(raw);
+    if (!entries.length) return {};
+    const score = show => {
+      const {latitude, longitude} = coordinatesFrom(show);
+      return (latitude !== null && longitude !== null ? 100 : 0)
+        + (firstValue(show.locationName, show.venue) ? 25 : 0)
+        + (firstValue(show.location, show.address) ? 20 : 0)
+        + (firstValue(show.time, show.startTime) ? 5 : 0);
+    };
+    return entries.sort((a,b) => score(b) - score(a))[0] || {};
   }
 
   function normalizeEvent(raw, index) {
-    const show = Array.isArray(raw.showinfo) ? raw.showinfo[0] || {} : {};
+    const show = bestShow(raw);
     const title = firstValue(raw.title, raw.titile, raw.name, '未命名展覽');
     const description = firstValue(raw.description, raw.descriptionFilterHtml, raw.comment);
-    const address = firstValue(raw.address, raw.location, show.location);
-    const venue = firstValue(raw.locationName, raw.venue, show.locationName, address);
-    const sourceUrl = firstValue(raw.sourceUrl, raw.sourceWebPromote, raw.webSales, raw.sourceWebSite, raw.url);
+    const address = firstValue(raw.address, raw.location, show.location, show.address);
+    const venue = firstValue(raw.locationName, raw.venue, show.locationName, show.venue, address);
+    const sourceUrl = firstValue(raw.sourceUrl, raw.sourceWebPromote, raw.webSales, raw.sourceWebSite, raw.url, raw.website);
     const id = String(firstValue(raw.id, raw.UID, raw.uid, sourceUrl, `${title}-${index}`));
     const rawCategories = firstValue(raw.categories, raw.categoryName, raw.category);
-    const image = normalizeImage(firstValue(raw.image, raw.images, raw.imageURL, raw.imageUrl));
-    const latitude = Number(firstValue(raw.latitude, raw.lat, show.latitude));
-    const longitude = Number(firstValue(raw.longitude, raw.lng, show.longitude));
+    const image = normalizeImage(firstValue(
+      raw.image, raw.images, raw.imageURL, raw.imageUrl, raw.imageUrls,
+      raw.poster, raw.posterUrl, raw.picture, raw.pictureUrl, show.image, show.imageUrl, show.imageURL
+    ));
+    const {latitude, longitude} = coordinatesFrom(show, raw);
     const region = normalizeRegion(firstValue(raw.region, address, venue));
-    const price = firstValue(raw.price, raw.Price, show.price, raw.discountInfo, raw.onSales === 'N' ? '免費' : '');
+    const price = firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : '');
+    const categories = normalizeCategories(rawCategories, title, description);
     return {
       id, title: String(title).trim(), description: stripHtml(description),
       sourceUrl: safeUrl(sourceUrl), image,
       images: Array.isArray(raw.images) ? raw.images.map(normalizeImage).filter(Boolean) : image ? [image] : [],
-      categories: normalizeCategories(rawCategories, title, description),
-      category: normalizeCategories(rawCategories, title, description)[0],
-      startDate: firstValue(raw.startDate, raw.start, show.time),
+      categories, category: categories[0],
+      startDate: firstValue(raw.startDate, raw.start, show.time, show.startTime),
       endDate: firstValue(raw.endDate, raw.end, raw.endTime, show.endTime, raw.startDate),
       locationName: String(venue || '地點待確認').trim(),
       location: String(venue || '地點待確認').trim(), address: String(address || '').trim(), region,
-      latitude: Number.isFinite(latitude) && Math.abs(latitude) <= 90 ? latitude : null,
-      longitude: Number.isFinite(longitude) && Math.abs(longitude) <= 180 ? longitude : null,
+      latitude, longitude,
       price: String(price || '票價請見活動頁面').trim(),
       unit: Array.isArray(raw.masterUnit) ? raw.masterUnit.join('、') : firstValue(raw.unit, raw.organizer, raw.showUnit, raw.masterUnit),
       transitInfo: firstValue(raw.transitInfo, raw.transit),
@@ -203,7 +267,7 @@
 
   function imageMarkup(event, className = '') {
     if (!event.image) return `<div class="${className || 'card-placeholder'}">${escapeHtml(CATEGORY_ICON[event.category] || '展')}</div>`;
-    return `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'${className || 'card-placeholder'}',textContent:'${escapeHtml(CATEGORY_ICON[event.category] || '展')}'}))">`;
+    return `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'${className || 'card-placeholder'}',textContent:'${escapeHtml(CATEGORY_ICON[event.category] || '展')}'}))">`;
   }
 
   function cardBadge(event) {
@@ -359,11 +423,11 @@
 
   function renderVenueGrid() {
     const counts = countBy(state.events, event => event.locationName);
-    const venues = Object.keys(counts).filter(Boolean).sort((a,b) => counts[b] - counts[a]).slice(0, 7);
+    const venues = Object.keys(counts).filter(Boolean).sort((a,b) => counts[b] - counts[a]).slice(0, 8);
     $('#venueGrid').innerHTML = venues.map((venue, index) => {
       const image = state.venueImages[venue] || state.events.find(event => event.locationName === venue && event.image)?.image || '';
       return `<a class="venue-tile" href="${venueHref(venue)}">
-        ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(venue)}" loading="lazy">` : ''}
+        ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(venue)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}
         <div class="venue-tile-content"><small>VENUE ${String(index+1).padStart(2,'0')}</small><h3>${escapeHtml(venue)}</h3><p>${counts[venue]} 檔展覽</p></div>
       </a>`;
     }).join('') || emptyInline('目前沒有場館資料');
@@ -441,7 +505,7 @@
     $('#detailContent').innerHTML = `
       <div class="detail-breadcrumb"><a href="./">首頁</a> / <a href="${categoryHref(event.category)}">${escapeHtml(event.category)}</a> / ${escapeHtml(event.title)}</div>
       <div class="detail-grid">
-        <div class="detail-poster">${event.image ? `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}">` : `<div class="detail-poster-placeholder">${CATEGORY_ICON[event.category] || '展'}</div>`}</div>
+        <div class="detail-poster">${event.image ? `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'detail-poster-placeholder',textContent:'${CATEGORY_ICON[event.category] || '展'}'}))">` : `<div class="detail-poster-placeholder">${CATEGORY_ICON[event.category] || '展'}</div>`}</div>
         <article class="detail-info">
           <div class="detail-category">${escapeHtml(event.categories.join(' · '))} / ${escapeHtml(event.region)}</div>
           <h1>${escapeHtml(event.title)}</h1>
