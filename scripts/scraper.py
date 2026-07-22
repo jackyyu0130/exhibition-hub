@@ -402,6 +402,8 @@ VENUE_OFFICIAL_URLS = {
     "台北流行音樂中心": "https://www.tmc.taipei/",
     "國立臺灣美術館": "https://www.ntmofa.gov.tw/",
     "台南市美術館": "https://www.tnam.museum/",
+    "國立臺灣工藝研究發展中心": "https://www.ntcri.gov.tw/",
+    "高雄市電影館": "https://kfa.kcg.gov.tw/",
 }
 
 # 各場館所在縣市，用來精準判斷「地區」，不再依賴地址文字裡有沒有寫到縣市關鍵字
