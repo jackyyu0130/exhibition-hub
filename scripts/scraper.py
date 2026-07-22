@@ -400,6 +400,8 @@ VENUE_OFFICIAL_URLS = {
     "松山文創園區": "https://www.songshanculturalpark.org/",
     "空總臺灣當代文化實驗場": "https://clab.org.tw/",
     "台北流行音樂中心": "https://www.tmc.taipei/",
+    "國立臺灣美術館": "https://www.ntmofa.gov.tw/",
+    "台南市美術館": "https://www.tnam.museum/",
 }
 
 # 各場館所在縣市，用來精準判斷「地區」，不再依賴地址文字裡有沒有寫到縣市關鍵字
@@ -494,7 +496,7 @@ def fetch_detail_extras(url: str) -> dict:
     順便也嘗試從頁面文字裡找票價資訊。這是網頁分享到 FB/LINE 時會用到的
     官方主視覺圖，比起資料庫裡的 imageURL 欄位（常常是空的）可靠很多。"""
     try:
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
         resp.raise_for_status()
     except Exception as exc:  # noqa: BLE001
         print(f"[圖片] 讀取官方頁面失敗，略過：{url}：{exc}")
