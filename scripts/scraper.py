@@ -41,7 +41,7 @@ CATEGORY_RULES = [
         r"憤怒鳥|Angry ?Birds|迷你兵團|Minions|樂高|LEGO",
         re.IGNORECASE,
     )),
-    ("快閃店", re.compile(r"快閃店|期間限定店|概念店|限定店|POP.?UP", re.IGNORECASE)),
+    ("快閃", re.compile(r"快閃店|期間限定店|概念店|限定店|POP.?UP", re.IGNORECASE)),
     ("音樂", re.compile(r"音樂|演唱|演奏|樂團|交響|爵士|歌唱")),
     ("美術", re.compile(r"美術|畫展|畫作|藝術(?!家)|雕塑|策展|插畫|水彩|油畫|版畫|書法")),
     ("表演", re.compile(r"戲劇|劇場|歌劇|舞台劇|表演藝術|展演活動|音樂劇|馬戲")),
