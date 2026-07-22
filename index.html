@@ -156,6 +156,14 @@
   }
   .locate-btn:hover{ background: var(--brand); border-color: var(--brand); }
 
+  .breadcrumb{
+    font-size:.82rem; color: var(--ink-soft); margin: .8rem 0 1.4rem;
+  }
+  .breadcrumb a{ color: var(--ink-soft); }
+  .breadcrumb a:hover{ color: var(--brand); }
+  .breadcrumb .sep{ margin: 0 .4rem; }
+  .breadcrumb .current{ color: var(--ink); font-weight:600; }
+
   .search-page-header{
     display:flex; align-items:center; justify-content:center; gap:1.5rem;
     flex-wrap:wrap; margin-bottom: 1.6rem;
@@ -245,8 +253,8 @@
   }
   .cat-chip span.label{ font-size:.78rem; }
   .cat-chip:hover .icon-circle{ filter: brightness(.94); }
-  .cat-chip.active .icon-circle{ background: var(--brand) !important; border-color:var(--brand); color:#fff !important; }
-  .cat-chip.active span.label{ color:var(--brand); font-weight:600; }
+  .cat-chip.active .icon-circle{ background: #FBEFC7 !important; border-color:#F0DB93; color:#9C7F1E !important; }
+  .cat-chip.active span.label{ color:#B08D2E; font-weight:600; }
 
   .icon-circle.accent-music{ background:#FDF2E9; color:#C2620F; }
   .icon-circle.accent-palette{ background:#FDF2F8; color:#DB2777; }
@@ -695,18 +703,36 @@
 
   <div id="specialView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
-    <div class="section-head">
-      <h2 id="specialTitle"></h2>
-      <span class="hint" id="specialHint"></span>
+    <div class="filter-toolbar" style="margin-bottom:1rem;">
+      <div class="status-toggle" id="specialStatusToggle">
+        <button class="status-btn" data-status="all" type="button">全部</button>
+        <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
+        <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
+      </div>
     </div>
-    <div class="grid" id="specialGrid"></div>
+    <div class="cat-row" id="specialCatRow"></div>
+
+    <div class="detail-layout" style="margin-top:2rem;">
+      <aside class="detail-sidebar">
+        <div id="specialCalendar"></div>
+        <div class="filter-title-static">地點</div>
+        <div id="specialVenueOptions"></div>
+      </aside>
+      <div class="detail-main">
+        <div class="section-head">
+          <h2 id="specialTitle"></h2>
+          <span class="hint" id="specialHint"></span>
+        </div>
+        <div class="grid" id="specialGrid"></div>
+      </div>
+    </div>
   </div>
 
   <div id="homepageRows"></div>
 
   <section class="section" id="nearbyPreviewSection" style="margin-top:2.6rem;">
     <div class="section-head">
-      <h2><span class="icon-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>附近展覽</h2>
+      <h2><span class="icon-sm">📍</span>附近展覽</h2>
       <span class="hint" id="nearbyPreviewHint"></span>
     </div>
     <div id="nearbyPreviewPrompt" style="display:none;">
@@ -777,7 +803,7 @@
   <div id="nearbyPageView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
     <div class="section-head">
-      <h2><span class="icon-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>附近展覽</h2>
+      <h2><span class="icon-sm">📍</span>附近展覽</h2>
       <span class="hint" id="nearbyPageHint"></span>
     </div>
     <div id="nearbyPagePrompt" style="display:none;">
@@ -792,6 +818,7 @@
 
   <div id="eventDetailView" style="display:none;">
     <a class="back-link" href="./">← 回首頁</a>
+    <div class="breadcrumb" id="eventBreadcrumb"></div>
     <div class="event-detail-layout">
       <div class="event-carousel" id="eventCarousel"></div>
 
@@ -818,7 +845,7 @@
     </div>
 
     <div class="section-head" style="margin-top:2.4rem;">
-      <h2><span class="icon-sm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>附近展覽</h2>
+      <h2><span class="icon-sm">📍</span>附近展覽</h2>
       <span class="hint" id="eventNearbyHint"></span>
     </div>
     <div id="eventNearbyPrompt" style="display:none;">
@@ -863,6 +890,8 @@ const state = {
   searchQuery: '',
   searchCategories: new Set(),
   searchVenueFilter: null,
+  specialCategories: new Set(),
+  specialVenueFilter: null,
   detailVenueFilter: null,
   rowSort: {},
   calendarViewDate: new Date(),
@@ -1000,13 +1029,18 @@ function readUrlParams(){
   const region = params.get('region');
   const special = params.get('special');
   const q = params.get('q');
-  if(special === 'upcoming' || special === 'ending'){ state.specialType = special; state.viewMode = 'special'; }
+  if(special === 'upcoming' || special === 'ending'){
+    state.specialType = special;
+    state.viewMode = 'special';
+    state.statusFilter = special === 'upcoming' ? 'upcoming' : 'ongoing';
+  }
   if(q){ state.searchQuery = q; state.viewMode = 'search'; }
   if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
   if(venue){ state.detailVenue = venue; state.viewMode = 'venue'; }
   if(region){ state.detailRegion = region; state.viewMode = 'region'; }
   if(view === 'nearby') state.viewMode = 'nearby';
   if(view === 'favorites') state.viewMode = 'favorites';
+  if(view === 'all'){ state.viewMode = 'search'; state.searchQuery = ''; }
   if(eventUrl){ state.eventDetailUrl = eventUrl; state.viewMode = 'event'; }
   if(status && ['all','ongoing','upcoming'].includes(status)) state.statusFilter = status;
 }
@@ -1079,12 +1113,16 @@ function buildCategoryRow(){
   const counts = countByArrayField(state.events, 'categories');
   const cats = sortByCategoryOrder(Object.keys(counts));
   const row = document.getElementById('catRow');
-  row.innerHTML = cats.map(cat => `
-    <a class="cat-chip ${state.detailCategory === cat ? 'active' : ''}" href="${buildShowMoreUrl(cat)}">
+  row.innerHTML = cats.map(cat => {
+    const isActive = state.viewMode === 'detail' && state.detailCategory === cat;
+    const href = isActive ? '?view=all' : buildShowMoreUrl(cat);
+    return `
+    <a class="cat-chip ${isActive ? 'active' : ''}" href="${href}">
       <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
       <span class="label">${escapeHtml(cat)}</span>
     </a>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function buildCategoryPanel(){
@@ -1497,6 +1535,13 @@ function renderEventDetail(){
   `).join('');
 
   document.getElementById('eventTitle').textContent = ev.title;
+
+  const primaryCat = (Array.isArray(ev.categories) && ev.categories[0]) || ev.category || '';
+  document.getElementById('eventBreadcrumb').innerHTML = `
+    <a href="./">首頁</a><span class="sep">›</span>
+    ${primaryCat ? `<a href="${buildShowMoreUrl(primaryCat)}">${escapeHtml(primaryCat)}</a><span class="sep">›</span>` : ''}
+    <span class="current">${escapeHtml(ev.title)}</span>
+  `;
   document.getElementById('eventDate').textContent = dateRangeText(ev);
   document.getElementById('eventVenue').textContent = ev.locationName || ev.location || '地點未提供';
   document.getElementById('eventAddress').textContent = ev.location || '地址未提供';
@@ -2198,11 +2243,90 @@ function renderSpecialPage(pool){
       .sort((a, b) => (parseDate(a.endDate)?.getTime() ?? Infinity) - (parseDate(b.endDate)?.getTime() ?? Infinity));
     title = '即將結束';
   }
+
+  const baseItems = items;
+
+  if(state.specialCategories.size){
+    items = items.filter(ev => Array.isArray(ev.categories)
+      ? ev.categories.some(c => state.specialCategories.has(c))
+      : state.specialCategories.has(ev.category));
+  }
+  if(state.specialVenueFilter){
+    items = items.filter(ev => (ev.locationName || ev.location) === state.specialVenueFilter);
+  }
+
   document.getElementById('specialTitle').textContent = title;
   document.getElementById('specialHint').textContent = `共 ${items.length} 檔`;
   document.getElementById('specialGrid').innerHTML = items.length
     ? items.map(ev => cardMarkup(ev)).join('')
     : `<div class="empty">目前沒有符合篩選條件的「${title}」活動。</div>`;
+
+  renderMiniCalendar('specialCalendar', baseItems);
+  renderSpecialVenueSidebar(baseItems);
+  renderSpecialCategoryRow(baseItems);
+  syncStatusButtons();
+}
+
+function renderSpecialVenueSidebar(pool){
+  const counts = {};
+  const macroByVenue = {};
+  pool.forEach(ev => {
+    const v = ev.locationName || ev.location;
+    if(!v) return;
+    counts[v] = (counts[v] || 0) + 1;
+    macroByVenue[v] = macroOf(ev.region);
+  });
+  const byMacro = {};
+  Object.keys(counts).forEach(v => {
+    const macro = macroByVenue[v];
+    (byMacro[macro] = byMacro[macro] || []).push(v);
+  });
+
+  const el = document.getElementById('specialVenueOptions');
+  const allBtn = `
+    <button type="button" class="venue-opt ${!state.specialVenueFilter ? 'active' : ''}" data-venue="">
+      全部地點<span class="c">${pool.length}</span>
+    </button>
+  `;
+  const groupsHtml = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
+    const venues = byMacro[macro].sort((a, b) => counts[b] - counts[a]);
+    return `
+      <div class="filter-title-static" style="margin-top:.9rem;">${escapeHtml(macro)}</div>
+      ${venues.map(v => `
+        <button type="button" class="venue-opt ${state.specialVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
+          ${escapeHtml(v)}<span class="c">${counts[v]}</span>
+        </button>
+      `).join('')}
+    `;
+  }).join('');
+
+  el.innerHTML = allBtn + groupsHtml;
+  el.querySelectorAll('.venue-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.specialVenueFilter = btn.dataset.venue || null;
+      render();
+    });
+  });
+}
+
+function renderSpecialCategoryRow(pool){
+  const counts = countByArrayField(pool, 'categories');
+  const cats = sortByCategoryOrder(Object.keys(counts));
+  const row = document.getElementById('specialCatRow');
+  row.innerHTML = cats.map(cat => `
+    <button type="button" class="cat-chip ${state.specialCategories.has(cat) ? 'active' : ''}" data-cat="${escapeAttr(cat)}">
+      <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
+      <span class="label">${escapeHtml(cat)}<span class="c">${counts[cat]}</span></span>
+    </button>
+  `).join('');
+  row.querySelectorAll('.cat-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      if(state.specialCategories.has(cat)) state.specialCategories.delete(cat);
+      else state.specialCategories.add(cat);
+      render();
+    });
+  });
 }
 
 // ---------- 搜尋結果頁 ----------
@@ -2235,23 +2359,39 @@ function renderSearchPage(pool){
 
 function renderSearchVenueSidebar(pool){
   const counts = {};
+  const macroByVenue = {};
   pool.forEach(ev => {
     const v = ev.locationName || ev.location;
     if(!v) return;
     counts[v] = (counts[v] || 0) + 1;
+    macroByVenue[v] = macroOf(ev.region);
   });
-  const venues = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+
+  const byMacro = {};
+  Object.keys(counts).forEach(v => {
+    const macro = macroByVenue[v];
+    (byMacro[macro] = byMacro[macro] || []).push(v);
+  });
+
   const el = document.getElementById('searchVenueOptions');
-  el.innerHTML = `
+  const allBtn = `
     <button type="button" class="venue-opt ${!state.searchVenueFilter ? 'active' : ''}" data-venue="">
       全部地點<span class="c">${pool.length}</span>
     </button>
-    ${venues.map(v => `
-      <button type="button" class="venue-opt ${state.searchVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
-        ${escapeHtml(v)}<span class="c">${counts[v]}</span>
-      </button>
-    `).join('')}
   `;
+  const groupsHtml = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
+    const venues = byMacro[macro].sort((a, b) => counts[b] - counts[a]);
+    return `
+      <div class="filter-title-static" style="margin-top:.9rem;">${escapeHtml(macro)}</div>
+      ${venues.map(v => `
+        <button type="button" class="venue-opt ${state.searchVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
+          ${escapeHtml(v)}<span class="c">${counts[v]}</span>
+        </button>
+      `).join('')}
+    `;
+  }).join('');
+
+  el.innerHTML = allBtn + groupsHtml;
   el.querySelectorAll('.venue-opt').forEach(btn => {
     btn.addEventListener('click', () => {
       state.searchVenueFilter = btn.dataset.venue || null;
