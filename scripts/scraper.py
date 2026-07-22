@@ -397,6 +397,9 @@ VENUE_OFFICIAL_URLS = {
     "衛武營國家藝術文化中心": "https://www.npac-weiwuying.org/",
     "高雄市立美術館": "https://www.kmfa.gov.tw/",
     "駁二藝術特區": "https://pier2.org/",
+    "松山文創園區": "https://www.songshanculturalpark.org/",
+    "空總臺灣當代文化實驗場": "https://clab.org.tw/",
+    "台北流行音樂中心": "https://www.tmc.taipei/",
 }
 
 # 各場館所在縣市，用來精準判斷「地區」，不再依賴地址文字裡有沒有寫到縣市關鍵字
