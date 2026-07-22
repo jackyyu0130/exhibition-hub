@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f4efe6">
   <meta name="description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="台灣展覽誌｜探索全台藝文展覽">
+  <meta property="og:description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
+  <link rel="canonical" href="./">
   <title>台灣展覽誌｜探索全台藝文展覽</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/styles.css?v=3.5">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -77,12 +81,23 @@
           <div class="hero-stats" aria-label="網站統計">
             <div><strong id="heroEventCount">—</strong><span>收錄活動</span></div>
             <div><strong id="heroVenueCount">—</strong><span>展演場館</span></div>
-            <div><strong>每日</strong><span>自動更新</span></div>
+            <div class="updated-stat"><strong id="heroUpdatedDate">—</strong><span id="heroUpdatedTime">自動更新</span></div>
           </div>
         </div>
 
-        <div class="hero-visual" aria-label="隨機展覽票券推薦">
-          <img class="hero-counter-art" src="assets/hero-counter.svg" alt="" aria-hidden="true">
+        <div class="hero-visual hero-paper-collage" aria-label="隨機展覽票券推薦">
+          <div class="paper-collage-layer" aria-hidden="true">
+            <span class="paper-sheet paper-sheet-main"></span>
+            <span class="paper-sheet paper-sheet-grid"></span>
+            <span class="paper-map-fragment">
+              <svg viewBox="0 0 260 150" aria-hidden="true"><path d="M10 118c26-34 51-18 77-48 25-29 45-51 78-29 23 16 34 4 75-23"></path><path d="M16 62c28 7 43 31 72 25 23-5 37-30 62-28 29 2 46 27 91 25"></path><path d="M42 20v118M98 8v132M156 12v127M214 6v134"></path></svg>
+            </span>
+            <span class="paper-stamp">TAIWAN<br><b>EXHIBITION</b><small>CURATED DAILY</small></span>
+            <span class="paper-date" id="heroPaperDate">2026.07</span>
+            <span class="paper-ticket-stub">ADMIT ONE · JOURNAL</span>
+            <span class="paper-tape tape-one"></span>
+            <span class="paper-tape tape-two"></span>
+          </div>
           <div class="hero-counter-overlay" aria-hidden="true"></div>
           <button class="hero-shuffle-button" id="heroShuffleButton" type="button">
             <span class="shuffle-icon" aria-hidden="true">↻</span>
@@ -102,7 +117,7 @@
           <a href="?view=all" class="section-link">查看全部展覽 <span>↗</span></a>
         </div>
 
-        <div class="quick-filters">
+        <div class="quick-filters reveal-sequence" data-reveal-sequence>
           <div class="date-field">
             <label for="datePicker">選擇日期</label>
             <input type="date" id="datePicker">
@@ -116,7 +131,7 @@
           <button class="clear-filter" id="clearFiltersButton" type="button">清除篩選</button>
         </div>
 
-        <div class="category-strip" id="categoryStrip" aria-label="展覽分類"></div>
+        <div class="category-strip reveal-sequence" id="categoryStrip" data-reveal-sequence aria-label="展覽分類"></div>
       </section>
 
       <section class="editorial-section date-results-section" id="dateResultsSection" hidden>
@@ -359,6 +374,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js"></script>
+  <script src="assets/app.js?v=3.5"></script>
 </body>
 </html>

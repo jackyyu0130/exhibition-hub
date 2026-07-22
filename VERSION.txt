@@ -1,4 +1,3 @@
-Taiwan Exhibition Journal V3.0
-Generated: 2026-07-22
-Frontend: Vanilla HTML/CSS/JavaScript
-Data: Python scraper + GitHub Actions
+Exhibition Hub V3.5
+2026-07-23
+Paper Collage Hero / Media & Location Reliability / Motion Refinement / Custom Domain Guide

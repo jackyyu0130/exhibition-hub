@@ -44,6 +44,16 @@
   ];
   const REGION_ORDER = ['台北市','新北市','基隆市','桃園市','新竹市','新竹縣','苗栗縣','台中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣','台南市','高雄市','屏東縣','宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣','其他地區'];
   const REGION_ALIASES = {'臺北市':'台北市','臺中市':'台中市','臺南市':'台南市','臺東縣':'台東縣'};
+  const REGION_CENTERS = {
+    '台北市':[25.05,121.54,42], '新北市':[25.02,121.47,62], '基隆市':[25.13,121.74,28],
+    '桃園市':[24.99,121.30,58], '新竹市':[24.81,120.97,26], '新竹縣':[24.84,121.15,58],
+    '苗栗縣':[24.56,120.82,62], '台中市':[24.16,120.68,70], '彰化縣':[24.08,120.54,52],
+    '南投縣':[23.91,120.69,86], '雲林縣':[23.71,120.43,58], '嘉義市':[23.48,120.45,24],
+    '嘉義縣':[23.46,120.57,74], '台南市':[23.00,120.22,73], '高雄市':[22.63,120.31,94],
+    '屏東縣':[22.55,120.55,102], '宜蘭縣':[24.68,121.77,76], '花蓮縣':[23.99,121.61,120],
+    '台東縣':[22.76,121.15,126], '澎湖縣':[23.57,119.58,55], '金門縣':[24.44,118.32,36],
+    '連江縣':[26.16,119.95,48]
+  };
   const FAVORITES_KEY = 'exhibition-hub-favorites-v3';
 
   const state = {
@@ -68,6 +78,7 @@
     heroLastKeys: [],
     heroHasShuffled: false,
     lastRenderedDate: null,
+    revealObserver: null,
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -122,7 +133,7 @@
       ['自然科學', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
       ['設計', /設計|建築|工藝|時尚|家居|文具|design/i], ['舞蹈', /舞蹈|舞作|芭蕾/i],
       ['音樂', /音樂|演唱會|樂團|管弦|獨立音樂|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
-      ['電影', /電影|影展|放映/i], ['講座', /講座|論壇|座談|分享會|演講/i],
+      ['電影', /電影|(?<!攝)影展|放映/i], ['講座', /講座|論壇|座談|分享會|演講/i],
       ['研習', /研習|課程|工作坊|營隊/i], ['市集', /市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
       ['親子', /親子|兒童|家庭|幼兒/i], ['競賽', /競賽|比賽|大賽|徵件比賽/i],
       ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會/i]
@@ -261,7 +272,7 @@
       endDate: firstValue(raw.endDate, raw.end, raw.endTime, show.endTime, raw.startDate),
       locationName: String(venueGroup || '地點待確認').trim(),
       location: String(venueGroup || '地點待確認').trim(), venueGroup, venueDetail, address: String(address || '').trim(), region,
-      latitude, longitude,
+      latitude, longitude, coordinateSource: firstValue(raw.coordinateSource, raw.coordinate_source),
       price: String(price || '票價請見活動頁面').trim(),
       unit: Array.isArray(raw.masterUnit) ? raw.masterUnit.join('、') : firstValue(raw.unit, raw.organizer, raw.showUnit, raw.masterUnit),
       transitInfo: firstValue(raw.transitInfo, raw.transit),
@@ -371,10 +382,15 @@
   }
 
   function imageMarkup(event, className = '') {
-    const candidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(Boolean);
-    if (!candidates.length) return `<div class="${className || 'card-placeholder'}">${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}</div>`;
+    const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(Boolean);
+    const allowVenueFallback = !String(className).startsWith('detail-poster');
+    const venueImage = allowVenueFallback ? safeUrl(state.venueImages[event.venueGroup || event.locationName] || '') : '';
+    const candidates = eventCandidates.length ? eventCandidates : venueImage ? [venueImage] : [];
+    const mediaKind = eventCandidates.length ? 'event' : venueImage ? 'venue' : 'placeholder';
+    if (!candidates.length) return `<div class="${className || 'card-placeholder'}" data-media-kind="placeholder">${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}</div>`;
     const serialized = escapeHtml(JSON.stringify(candidates));
-    return `<img src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-placeholder-text="${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}" alt="${escapeHtml(event.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="window.__exhibitionImageFallback(this)">`;
+    const alt = mediaKind === 'venue' ? `${event.venueGroup || event.locationName}場館示意` : event.title;
+    return `<img src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-media-kind="${mediaKind}" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-placeholder-text="${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="window.__exhibitionImageFallback(this)">`;
   }
 
   window.__exhibitionImageFallback = image => {
@@ -418,6 +434,7 @@
       <article class="exhibition-card${Number.isInteger(options.revealIndex) ? ' date-reveal-card' : ''}"${revealStyle}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
+          ${!(event.images?.length || event.image) && state.venueImages[event.venueGroup || event.locationName] ? '<span class="venue-image-label">場館示意</span>' : ''}
           ${badges.length ? `<span class="card-badges">${badges.map(badge => `<span class="card-badge badge-${badge.type}">${badge.label}</span>`).join('')}</span>` : ''}
         </a>
         <button class="favorite-button ${isFavorite(event) ? 'active' : ''}" type="button" data-favorite="${escapeHtml(eventKey(event))}" aria-label="${isFavorite(event) ? '取消收藏' : '加入收藏'}">${isFavorite(event) ? '♥' : '♡'}</button>
@@ -553,11 +570,11 @@
       stack.innerHTML = picks.map(heroTicketMarkup).join('');
       stack.classList.remove('is-changing');
       requestAnimationFrame(() => stack.classList.add('is-entering'));
-      setTimeout(() => stack.classList.remove('is-entering'), 1850);
+      setTimeout(() => stack.classList.remove('is-entering'), 2350);
     };
     if (animate && stack.children.length) {
       stack.classList.add('is-changing');
-      setTimeout(apply, 480);
+      setTimeout(apply, 720);
     } else apply();
   }
 
@@ -587,7 +604,7 @@
             section.classList.remove('is-leaving');
             $('#dateResultsRail').innerHTML = '';
           }
-        }, 420);
+        }, 920);
       } else section.hidden = true;
       return;
     }
@@ -620,6 +637,17 @@
 
     $('#heroEventCount').textContent = state.events.length.toLocaleString('zh-TW');
     $('#heroVenueCount').textContent = new Set(state.events.map(event => event.venueGroup || event.locationName).filter(Boolean)).size.toLocaleString('zh-TW');
+    const updated = parseDate(state.updatedAt);
+    $('#heroUpdatedDate').textContent = updated
+      ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日`
+      : '每日更新';
+    $('#heroUpdatedTime').textContent = updated
+      ? `${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分更新`
+      : '自動更新';
+    const paperDate = $('#heroPaperDate');
+    if (paperDate) paperDate.textContent = updated
+      ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')}`
+      : localDateKey(new Date()).replaceAll('-', '.');
     if (!$('#heroTicketStack').children.length) renderHeroTickets({animate:false});
     ensureHeroRotation();
 
@@ -631,6 +659,7 @@
     renderVenueGrid();
     renderHomeNearby();
     syncHomeFilters();
+    setupScrollReveal();
   }
 
   function renderCategoryStrip() {
@@ -640,7 +669,7 @@
       return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
     }).slice(0, 12);
     $('#categoryStrip').innerHTML = categories.map(category => `
-      <a class="category-chip ${state.categories.has(category) ? 'active' : ''}" href="${categoryHref(category)}">
+      <a class="category-chip reveal-item ${state.categories.has(category) ? 'active' : ''}" style="--reveal-index:${categories.indexOf(category)}" href="${categoryHref(category)}">
         <span class="category-icon">${CATEGORY_ICON[category] || '＋'}</span>
         <strong>${escapeHtml(category)}</strong><small>${counts[category]} 檔</small>
       </a>`).join('');
@@ -689,6 +718,14 @@
     renderActiveFilters();
   }
 
+  function displayableVenueName(value = '') {
+    const text = cleanPlaceText(value);
+    if (!text || /^(?:地點待確認|其他地區|場館資料整理中)$/.test(text)) return '';
+    if (/資料整理中|(?:^|｜)場館資料整理中/.test(text)) return '';
+    if (/^[^館園中心場空間劇院美術博物文創藝廊文化]+(?:區|鄉|鎮|市)(?:[（(].+[）)])?$/.test(text)) return '';
+    return text.replace(/\s*[=＝:：;；|｜]+\s*$/g, '').trim();
+  }
+
   function renderSidebarOptions() {
     const statusOptions = [['all','全部展覽'],['ongoing','目前舉辦'],['upcoming','即將舉辦'],['ending','即將結束'],['free','免費展覽']];
     $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="status-filter-button ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}" type="button">${label}</button>`).join('');
@@ -700,14 +737,14 @@
     const regionGroups = REGION_ORDER.map(region => {
       const regionEvents = state.events.filter(event => event.region === region);
       if (!regionEvents.length) return '';
-      const venueCounts = countBy(regionEvents, event => event.venueGroup || event.locationName);
-      const venues = Object.keys(venueCounts).filter(venue => venue && venue !== '地點待確認').sort((a,b) => venueCounts[b] - venueCounts[a]);
+      const venueCounts = countBy(regionEvents, event => displayableVenueName(event.venueGroup || event.locationName));
+      const venues = Object.keys(venueCounts).filter(Boolean).sort((a,b) => venueCounts[b] - venueCounts[a] || a.localeCompare(b, 'zh-Hant'));
       const isOpen = state.region === region || (state.venue && venues.includes(state.venue));
       return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" ${isOpen ? 'open' : ''}>
-        <summary><span>${escapeHtml(region)}</span><small>${regionEvents.length.toLocaleString('zh-TW')} 檔</small><i>⌄</i></summary>
+        <summary><span class="region-name">${escapeHtml(region)}</span><small>${regionEvents.length.toLocaleString('zh-TW')} 檔</small><i aria-hidden="true">⌄</i></summary>
         <div class="region-venues">
           <button class="venue-filter-option ${state.region === region && !state.venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter=""><span>全部 ${escapeHtml(region)}</span><small>${regionEvents.length}</small></button>
-          ${venues.map(venue => `<button class="venue-filter-option ${state.venue === venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter="${escapeHtml(venue)}"><span>${escapeHtml(venue)}</span><small>${venueCounts[venue]}</small></button>`).join('')}
+          ${venues.length ? venues.map(venue => `<button class="venue-filter-option ${state.venue === venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter="${escapeHtml(venue)}"><span title="${escapeHtml(venue)}">${escapeHtml(venue)}</span><small>${venueCounts[venue]}</small></button>`).join('') : '<p class="region-no-venue">目前沒有可確認的場館名稱</p>'}
         </div>
       </details>`;
     }).join('');
@@ -779,7 +816,11 @@
       <div class="detail-grid">
         <div class="detail-poster">${imageMarkup(event, 'detail-poster-placeholder')}</div>
         <article class="detail-info">
-          <div class="detail-category">${escapeHtml(event.categories.join(' · '))} / ${escapeHtml(event.region)}</div>
+          <div class="detail-category detail-taxonomy">
+            ${event.categories.map(category => `<a href="${categoryHref(category)}">${escapeHtml(category)}</a>`).join('<span aria-hidden="true">·</span>')}
+            <span aria-hidden="true">/</span>
+            <a href="${regionHref(event.region)}">${escapeHtml(event.region)}</a>
+          </div>
           <h1>${escapeHtml(event.title)}</h1>
           <div class="detail-meta">
             ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail ? `${event.venueGroup || event.locationName}｜${event.venueDetail}` : (event.venueGroup || event.locationName))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', event.price)}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
@@ -853,9 +894,25 @@
     }, {enableHighAccuracy:true,timeout:12000,maximumAge:300000});
   }
 
+  function coordinateMatchesRegion(event) {
+    if (!hasCoordinates(event)) return false;
+    const profile = REGION_CENTERS[event.region];
+    if (!profile) return event.latitude >= 21.7 && event.latitude <= 26.5 && event.longitude >= 118 && event.longitude <= 122.5;
+    return haversine(profile[0], profile[1], event.latitude, event.longitude) <= profile[2];
+  }
+
+  function navigationQuery(event) {
+    const address = cleanPlaceText(event.address || '');
+    const venue = displayableVenueName(event.venueGroup || event.locationName || '');
+    const addressLooksUseful = address && /(?:路|街|大道|巷|弄|號|村|里)/.test(address) && (!event.region || address.includes(event.region.replace('台','臺')) || address.includes(event.region));
+    if (addressLooksUseful) return `${venue ? `${venue} ` : ''}${address}`.trim();
+    if (venue) return `${event.region || ''} ${venue}`.trim();
+    if (coordinateMatchesRegion(event)) return `${event.latitude},${event.longitude}`;
+    return `${event.region || '台灣'} ${event.title}`.trim();
+  }
+
   function googleMapsUrl(event) {
-    const query = hasCoordinates(event) ? `${event.latitude},${event.longitude}` : `${event.locationName} ${event.address}`;
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navigationQuery(event))}`;
   }
 
   function renderCurrentView() {
@@ -873,7 +930,7 @@
   function updateFooter() {
     $('#footerRecordCount').textContent = `目前收錄 ${state.events.length.toLocaleString('zh-TW')} 檔活動`;
     const updated = parseDate(state.updatedAt);
-    $('#footerUpdatedAt').textContent = updated ? `最後更新 ${updated.toLocaleString('zh-TW',{dateStyle:'medium',timeStyle:'short'})}` : '每日自動更新';
+    $('#footerUpdatedAt').textContent = updated ? `最後更新 ${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日 ${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分` : '每日自動更新';
   }
 
   function updateUrl(filters = {}) {
@@ -906,6 +963,32 @@
     toast.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function setupScrollReveal() {
+    const groups = $$('[data-reveal-sequence]');
+    groups.forEach(group => {
+      [...group.children].forEach((child, index) => {
+        child.classList.add('reveal-item');
+        child.style.setProperty('--reveal-index', index);
+      });
+    });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      groups.forEach(group => group.classList.add('is-in-view'));
+      return;
+    }
+    if (!state.revealObserver) {
+      state.revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-in-view');
+          state.revealObserver.unobserve(entry.target);
+        });
+      }, {threshold:.16, rootMargin:'0px 0px -6% 0px'});
+    }
+    groups.forEach(group => {
+      if (!group.classList.contains('is-in-view')) state.revealObserver.observe(group);
+    });
   }
 
   function bindEvents() {

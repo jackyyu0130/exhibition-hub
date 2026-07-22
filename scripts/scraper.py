@@ -13,6 +13,7 @@ import argparse
 import hashlib
 import html
 import json
+import math
 import os
 import re
 import sys
@@ -33,7 +34,7 @@ DEFAULT_OUTPUT = Path("data/exhibitions.json")
 DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.4 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.5 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -64,6 +65,19 @@ REGIONS = [
     "宜蘭縣", "花蓮縣", "台東縣", "澎湖縣", "金門縣", "連江縣",
 ]
 
+# Region center/radius checks are used to reject obviously wrong official coordinates
+# (for example a Miaoli event accidentally pointing to Taipei).
+REGION_CENTERS: dict[str, tuple[float, float, float]] = {
+    "台北市": (25.05, 121.54, 42), "新北市": (25.02, 121.47, 62), "基隆市": (25.13, 121.74, 28),
+    "桃園市": (24.99, 121.30, 58), "新竹市": (24.81, 120.97, 26), "新竹縣": (24.84, 121.15, 58),
+    "苗栗縣": (24.56, 120.82, 62), "台中市": (24.16, 120.68, 70), "彰化縣": (24.08, 120.54, 52),
+    "南投縣": (23.91, 120.69, 86), "雲林縣": (23.71, 120.43, 58), "嘉義市": (23.48, 120.45, 24),
+    "嘉義縣": (23.46, 120.57, 74), "台南市": (23.00, 120.22, 73), "高雄市": (22.63, 120.31, 94),
+    "屏東縣": (22.55, 120.55, 102), "宜蘭縣": (24.68, 121.77, 76), "花蓮縣": (23.99, 121.61, 120),
+    "台東縣": (22.76, 121.15, 126), "澎湖縣": (23.57, 119.58, 55), "金門縣": (24.44, 118.32, 36),
+    "連江縣": (26.16, 119.95, 48),
+}
+
 KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("快閃", re.compile(r"快閃|期間限定|popup|pop-up", re.I)),
     ("攝影", re.compile(r"攝影|影像展|photo(?:graphy)?", re.I)),
@@ -75,7 +89,7 @@ KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("舞蹈", re.compile(r"舞蹈|舞作|芭蕾", re.I)),
     ("音樂", re.compile(r"音樂|演唱會|樂團|管弦|獨立音樂|concert", re.I)),
     ("表演", re.compile(r"戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲", re.I)),
-    ("電影", re.compile(r"電影|影展|放映", re.I)),
+    ("電影", re.compile(r"電影|(?<!攝)影展|放映", re.I)),
     ("講座", re.compile(r"講座|論壇|座談|分享會|演講", re.I)),
     ("研習", re.compile(r"研習|課程|工作坊|營隊", re.I)),
     ("市集", re.compile(r"市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位", re.I)),
@@ -91,7 +105,7 @@ IMAGE_META_PATTERNS = [
     re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']twitter:image(?::src)?["\']', re.I),
     re.compile(r'<link[^>]+rel=["\']image_src["\'][^>]+href=["\']([^"\']+)', re.I),
 ]
-IMG_SRC_PATTERN = re.compile(r'<img[^>]+(?:src|data-src|data-original|data-lazy-src)=["\']([^"\']+)', re.I)
+IMG_SRC_PATTERN = re.compile(r'<img[^>]+(?:src|data-src|data-original|data-lazy-src|data-original-src|data-flickity-lazyload|data-echo)=["\']([^"\']+)', re.I)
 IMG_SRCSET_PATTERN = re.compile(r'<(?:img|source)[^>]+(?:srcset|data-srcset)=["\']([^"\']+)', re.I)
 JSON_IMAGE_PATTERN = re.compile(r'["\'](?:image|imageUrl|imageURL|thumbnailUrl|contentUrl)["\']\s*:\s*["\']([^"\']+)', re.I)
 BACKGROUND_IMAGE_PATTERN = re.compile(r'background(?:-image)?\s*:\s*url\(["\']?([^"\')]+)', re.I)
@@ -104,6 +118,10 @@ COORDINATE_PATTERNS = [
     re.compile(r'["\']latitude["\']\s*:\s*["\']?(-?\d{2}\.\d+).*?["\']longitude["\']\s*:\s*["\']?(-?\d{2,3}\.\d+)', re.I | re.S),
 ]
 VENUE_LABEL_PATTERN = re.compile(r'(?:活動地點|展演地點|展覽地點|場地|地點)\s*[：:]\s*([^<\n]{2,80})', re.I)
+ABSOLUTE_IMAGE_PATTERN = re.compile(r'https?://[^\s"\'<>]+?\.(?:jpe?g|png|webp|avif)(?:\?[^\s"\'<>]*)?', re.I)
+RELATED_LINK_PATTERN = re.compile(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', re.I | re.S)
+CANONICAL_LINK_PATTERN = re.compile(r'<link[^>]+rel=["\'](?:canonical|alternate)["\'][^>]+href=["\']([^"\']+)', re.I)
+IMAGE_VALIDATION_CACHE: dict[str, bool] = {}
 
 
 @dataclass(frozen=True)
@@ -293,6 +311,26 @@ def coordinate_pair(*sources: dict[str, Any]) -> tuple[float | None, float | Non
     return None, None
 
 
+def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    radius = 6371.0
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    value = math.sin(dlat / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dlon / 2) ** 2
+    return radius * 2 * math.atan2(math.sqrt(value), math.sqrt(max(0.0, 1 - value)))
+
+
+def coordinate_matches_region(region: str, lat: Any, lon: Any) -> bool:
+    if not isinstance(lat, (int, float)) or not isinstance(lon, (int, float)):
+        return False
+    if not (20 <= lat <= 27 and 117.5 <= lon <= 124):
+        return False
+    profile = REGION_CENTERS.get(region)
+    if not profile:
+        return True
+    return haversine_km(profile[0], profile[1], float(lat), float(lon)) <= profile[2]
+
+
 def detect_region(*values: Any) -> str:
     text = " ".join(clean_text(value) for value in values)
     for old, new in REGION_ALIASES.items():
@@ -408,11 +446,57 @@ def collect_image_urls(raw: dict[str, Any], show: dict[str, Any] | None = None, 
 
 def probable_content_image(url: str) -> bool:
     parsed = urlparse(url)
-    if BAD_IMAGE_HINTS.search(parsed.path):
+    path = unquote(parsed.path).lower()
+    if BAD_IMAGE_HINTS.search(path):
         return False
-    if parsed.path.lower().endswith(".svg"):
+    if path.endswith((".svg", ".gif", ".ico")):
+        return False
+    # Tiny CMS thumbnails and tracking endpoints are rarely exhibition key art.
+    if re.search(r"(?:^|[/_-])(16x16|32x32|50x50|64x64|80x80|100x100)(?:[/_.-]|$)", path):
         return False
     return True
+
+
+def image_url_responds(url: str, *, timeout: int = 12) -> bool:
+    if url in IMAGE_VALIDATION_CACHE:
+        return IMAGE_VALIDATION_CACHE[url]
+    result = False
+    try:
+        response = requests.get(
+            url,
+            timeout=timeout,
+            allow_redirects=True,
+            stream=True,
+            headers={"User-Agent": USER_AGENT, "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.7", "Range": "bytes=0-65535"},
+        )
+        content_type = response.headers.get("content-type", "").lower()
+        length = int(response.headers.get("content-length") or 0)
+        chunk = next(response.iter_content(4096), b"")
+        result = response.status_code in {200, 206} and bool(chunk) and (content_type.startswith("image/") or re.search(r"\.(?:jpe?g|png|webp|avif)(?:$|\?)", response.url, re.I)) and (not length or length >= 2500)
+        response.close()
+    except (requests.RequestException, ValueError, StopIteration):
+        result = False
+    IMAGE_VALIDATION_CACHE[url] = result
+    return result
+
+
+def related_page_urls(page: str, base_url: str) -> list[str]:
+    result: list[str] = []
+    for match in CANONICAL_LINK_PATTERN.finditer(page):
+        url = normalize_url(match.group(1), base_url=base_url)
+        if url and url != base_url and url not in result:
+            result.append(url)
+    keywords = re.compile(r"官方|活動官網|詳細資訊|售票|購票|主辦|event|detail|ticket", re.I)
+    for match in RELATED_LINK_PATTERN.finditer(page):
+        label = clean_text(match.group(2))
+        href = normalize_url(match.group(1), base_url=base_url)
+        if not href or href == base_url or not keywords.search(label + " " + href):
+            continue
+        if urlparse(href).netloc and href not in result:
+            result.append(href)
+        if len(result) >= 5:
+            break
+    return result
 
 
 def _walk_jsonld(value: Any) -> Iterator[dict[str, Any]]:
@@ -425,7 +509,7 @@ def _walk_jsonld(value: Any) -> Iterator[dict[str, Any]]:
             yield from _walk_jsonld(child)
 
 
-def discover_page_metadata(url: str, *, timeout: int = 16) -> dict[str, Any]:
+def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> dict[str, Any]:
     if not url:
         return {}
     try:
@@ -490,6 +574,7 @@ def discover_page_metadata(url: str, *, timeout: int = 16) -> dict[str, Any]:
                 images.append(candidate.strip().split(" ")[0])
         images.extend(match.group(1) for match in JSON_IMAGE_PATTERN.finditer(page))
         images.extend(match.group(1) for match in BACKGROUND_IMAGE_PATTERN.finditer(page))
+        images.extend(match.group(0) for match in ABSOLUTE_IMAGE_PATTERN.finditer(page))
 
         plain = clean_text(page)
         if not address:
@@ -511,7 +596,13 @@ def discover_page_metadata(url: str, *, timeout: int = 16) -> dict[str, Any]:
                     latitude, longitude = lat, lon
                     break
 
-        normalized_images = [item for item in unique_urls(images, base_url=response.url) if probable_content_image(item)][:12]
+        normalized_images = [item for item in unique_urls(images, base_url=response.url) if probable_content_image(item)]
+        # Keep official/social metadata first, but move URLs that contain title tokens upward.
+        title_tokens = [token.lower() for token in re.split(r"[\s：:、,，/|()（）【】]+", title) if len(token) >= 2]
+        original_order = {item: index for index, item in enumerate(normalized_images)}
+        normalized_images.sort(key=lambda item: (0 if any(token in unquote(item).lower() for token in title_tokens) else 1, original_order[item]))
+        validated = [item for item in normalized_images[:18] if image_url_responds(item)]
+        normalized_images = list(dict.fromkeys([*validated, *normalized_images]))[:14]
         return {
             "images": normalized_images,
             "venue": venue,
@@ -519,6 +610,7 @@ def discover_page_metadata(url: str, *, timeout: int = 16) -> dict[str, Any]:
             "latitude": latitude,
             "longitude": longitude,
             "checkedUrl": response.url,
+            "relatedUrls": related_page_urls(page, response.url),
         }
     except requests.RequestException:
         return {}
@@ -526,6 +618,24 @@ def discover_page_metadata(url: str, *, timeout: int = 16) -> dict[str, Any]:
 
 def discover_page_images(url: str, *, timeout: int = 16) -> list[str]:
     return list(discover_page_metadata(url, timeout=timeout).get("images") or [])
+
+
+def discover_event_metadata(url: str, title: str, *, timeout: int = 18) -> dict[str, Any]:
+    """Read the source page and up to two likely official/detail links."""
+    primary = discover_page_metadata(url, title=title, timeout=timeout)
+    if not primary:
+        return {}
+    combined = dict(primary)
+    combined["images"] = list(primary.get("images") or [])
+    for related in (primary.get("relatedUrls") or [])[:2]:
+        child = discover_page_metadata(related, title=title, timeout=timeout)
+        if not child:
+            continue
+        combined["images"] = merge_list_values(combined.get("images"), child.get("images"))[:16]
+        for key in ("venue", "address", "latitude", "longitude"):
+            if combined.get(key) in (None, "") and child.get(key) not in (None, ""):
+                combined[key] = child[key]
+    return combined
 
 
 def stable_id(*values: Any) -> str:
@@ -585,6 +695,7 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
         "region": detect_region(raw.get("region"), raw.get("cityName"), address, venue_group, raw_venue),
         "latitude": latitude,
         "longitude": longitude,
+        "coordinateSource": clean_text(raw.get("coordinateSource")) or ("official_feed" if latitude is not None and longitude is not None else ""),
         "price": price,
         "unit": clean_text(first_value(raw.get("unit"), raw.get("organizer"), raw.get("showUnit"), raw.get("masterUnit"), raw.get("org"))),
         "transitInfo": clean_text(first_value(raw.get("transitInfo"), raw.get("transit"), raw.get("travellinginfo"))),
@@ -735,6 +846,7 @@ def fill_coordinates_from_matching_places(events: list[dict[str, Any]]) -> int:
         pair = address_map.get(place_key(event, address_first=True)) or venue_map.get(place_key(event, address_first=False))
         if pair:
             event["latitude"], event["longitude"] = pair
+            event["coordinateSource"] = "matched_place"
             filled += 1
     return filled
 
@@ -773,8 +885,10 @@ def geocode_missing_coordinates(events: list[dict[str, Any]], *, cache_path: Pat
         if key in cache:
             pair = cache[key]
             if isinstance(pair, list) and len(pair) == 2:
-                event["latitude"], event["longitude"] = pair
-                filled += 1
+                if coordinate_matches_region(clean_text(event.get("region")), pair[0], pair[1]):
+                    event["latitude"], event["longitude"] = pair
+                    event["coordinateSource"] = "geocode_cache"
+                    filled += 1
             continue
         if network_used >= max_fetches:
             break
@@ -789,9 +903,10 @@ def geocode_missing_coordinates(events: list[dict[str, Any]], *, cache_path: Pat
             if data:
                 lat = number_or_none(data[0].get("lat"), latitude=True)
                 lon = number_or_none(data[0].get("lon"), latitude=False)
-                if lat is not None and lon is not None and 20 <= lat <= 27 and 118 <= lon <= 123.8:
+                if lat is not None and lon is not None and coordinate_matches_region(clean_text(event.get("region")), lat, lon):
                     cache[key] = [lat, lon]
                     event["latitude"], event["longitude"] = lat, lon
+                    event["coordinateSource"] = "nominatim"
                     filled += 1
                 else:
                     cache[key] = None
@@ -898,7 +1013,7 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
     enriched = 0
     checked_at = now.isoformat(timespec="seconds")
     with ThreadPoolExecutor(max_workers=max(1, workers)) as executor:
-        futures = {executor.submit(discover_page_metadata, event["sourceUrl"]): event for event in candidates}
+        futures = {executor.submit(discover_event_metadata, event["sourceUrl"], clean_text(event.get("title"))): event for event in candidates}
         for future in as_completed(futures):
             event = futures[future]
             event["pageMetadataCheckedAt"] = checked_at
@@ -926,14 +1041,35 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
                 event["region"] = detect_region(event.get("address"), group)
                 changed = True
             if event.get("latitude") is None and metadata.get("latitude") is not None:
-                event["latitude"] = metadata["latitude"]
-                changed = True
+                if coordinate_matches_region(clean_text(event.get("region")), metadata["latitude"], metadata.get("longitude")):
+                    event["latitude"] = metadata["latitude"]
+                    event["coordinateSource"] = "source_page"
+                    changed = True
             if event.get("longitude") is None and metadata.get("longitude") is not None:
-                event["longitude"] = metadata["longitude"]
-                changed = True
+                if coordinate_matches_region(clean_text(event.get("region")), metadata.get("latitude"), metadata["longitude"]):
+                    event["longitude"] = metadata["longitude"]
+                    event["coordinateSource"] = "source_page"
+                    changed = True
             if changed:
                 enriched += 1
     return enriched
+
+
+def validate_all_coordinates(events: list[dict[str, Any]]) -> int:
+    """Clear coordinates that are outside Taiwan or implausible for their stated county/city."""
+    cleared = 0
+    for event in events:
+        lat, lon = event.get("latitude"), event.get("longitude")
+        if lat is None or lon is None:
+            continue
+        if coordinate_matches_region(clean_text(event.get("region")), lat, lon):
+            continue
+        event["coordinateRejected"] = {"latitude": lat, "longitude": lon, "reason": "region_mismatch"}
+        event["latitude"] = None
+        event["longitude"] = None
+        event["coordinateSource"] = ""
+        cleared += 1
+    return cleared
 
 
 def venue_images(events: Iterable[dict[str, Any]]) -> dict[str, str]:
@@ -946,7 +1082,7 @@ def venue_images(events: Iterable[dict[str, Any]]) -> dict[str, str]:
         homepage = valid_http_url(profile.get("homepage"))
         if not name or name not in active_venues or not homepage:
             continue
-        images = discover_page_images(homepage, timeout=18)
+        images = [item for item in discover_page_images(homepage, timeout=18) if image_url_responds(item)]
         if images:
             result[name] = images[0]
     return result
@@ -1072,14 +1208,17 @@ def main() -> int:
     if not args.input_file and args.max_detail_fetches > 0:
         detail_enriched = enrich_from_official_details(events, max_fetches=args.max_detail_fetches)
 
+    enriched_images = 0
+    if not args.no_image_enrichment and not args.input_file and args.max_image_fetches > 0:
+        enriched_images = enrich_source_pages(events, max_fetches=args.max_image_fetches)
+
+    rejected_coordinates = validate_all_coordinates(events)
     inherited_coordinates = fill_coordinates_from_matching_places(events)
     geocoded = 0
     if not args.no_geocoding and not args.input_file and args.max_geocodes > 0:
         geocoded = geocode_missing_coordinates(events, cache_path=args.geocode_cache, max_fetches=args.max_geocodes)
-
-    enriched_images = 0
-    if not args.no_image_enrichment and not args.input_file and args.max_image_fetches > 0:
-        enriched_images = enrich_source_pages(events, max_fetches=args.max_image_fetches)
+    # Validate the inherited/geocoded results one more time before publishing.
+    rejected_coordinates += validate_all_coordinates(events)
 
     write_output(args.output, events)
     image_count = sum(1 for event in events if valid_http_url(event.get("image")))
@@ -1087,7 +1226,7 @@ def main() -> int:
     print(
         f"Wrote {len(events)} events to {args.output}; official-details enriched={detail_enriched}; images={image_count} "
         f"(source-page metadata enriched {enriched_images}); coordinates={coordinate_count} "
-        f"(matched {inherited_coordinates}, geocoded {geocoded})"
+        f"(matched {inherited_coordinates}, geocoded {geocoded}, rejected mismatches {rejected_coordinates})"
     )
     return 0
 

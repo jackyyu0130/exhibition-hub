@@ -108,6 +108,115 @@
         "空總"
       ],
       "homepage": "https://clab.org.tw/"
+    },
+    {
+      "name": "客家委員會客家文化發展中心臺灣客家文化館",
+      "patterns": [
+        "臺灣客家文化館",
+        "台湾客家文化館",
+        "台灣客家文化館",
+        "苗栗園區",
+        "客家文化發展中心苗栗園區"
+      ],
+      "homepage": "https://thcdc.hakka.gov.tw/"
+    },
+    {
+      "name": "國立臺灣博物館",
+      "patterns": [
+        "國立臺灣博物館",
+        "國立台灣博物館",
+        "臺博館",
+        "台博館",
+        "鐵道部園區"
+      ],
+      "homepage": "https://www.ntm.gov.tw/"
+    },
+    {
+      "name": "國立自然科學博物館",
+      "patterns": [
+        "國立自然科學博物館",
+        "自然科學博物館",
+        "科博館"
+      ],
+      "homepage": "https://www.nmns.edu.tw/"
+    },
+    {
+      "name": "國立臺灣歷史博物館",
+      "patterns": [
+        "國立臺灣歷史博物館",
+        "國立台灣歷史博物館",
+        "臺史博",
+        "台史博"
+      ],
+      "homepage": "https://www.nmth.gov.tw/"
+    },
+    {
+      "name": "新北市美術館",
+      "patterns": [
+        "新北市美術館",
+        "新美館"
+      ],
+      "homepage": "https://ntcart.museum/"
+    },
+    {
+      "name": "桃園市立美術館",
+      "patterns": [
+        "桃園市立美術館",
+        "桃美館",
+        "桃園市兒童美術館"
+      ],
+      "homepage": "https://tmofa.tycg.gov.tw/"
+    },
+    {
+      "name": "嘉義市立美術館",
+      "patterns": [
+        "嘉義市立美術館",
+        "嘉美館"
+      ],
+      "homepage": "https://chiayiartmuseum.chiayi.gov.tw/"
+    },
+    {
+      "name": "臺南市美術館",
+      "patterns": [
+        "臺南市美術館",
+        "台南市美術館",
+        "南美館"
+      ],
+      "homepage": "https://www.tnam.museum/"
+    },
+    {
+      "name": "臺北當代藝術館",
+      "patterns": [
+        "臺北當代藝術館",
+        "台北當代藝術館",
+        "當代館",
+        "MOCA Taipei"
+      ],
+      "homepage": "https://www.mocataipei.org.tw/"
+    },
+    {
+      "name": "國立中正紀念堂",
+      "patterns": [
+        "國立中正紀念堂",
+        "中正紀念堂"
+      ],
+      "homepage": "https://www.cksmh.gov.tw/"
+    },
+    {
+      "name": "國立科學工藝博物館",
+      "patterns": [
+        "國立科學工藝博物館",
+        "科工館"
+      ],
+      "homepage": "https://www.nstm.gov.tw/"
+    },
+    {
+      "name": "高雄流行音樂中心",
+      "patterns": [
+        "高雄流行音樂中心",
+        "高流"
+      ],
+      "homepage": "https://kpmc.com.tw/"
     }
   ]
 }
