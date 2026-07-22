@@ -1,0 +1,13 @@
+台灣展覽誌 V3｜整包替換方式
+
+1. 解壓縮 exhibition-hub-v3-full-replacement.zip。
+2. 將解壓縮後的所有檔案與資料夾，上傳到 GitHub 儲存庫 main 分支的根目錄。
+3. 覆蓋 index.html、scripts/scraper.py 與其他同名檔案。
+4. 原本的 data/exhibitions.json 可以保留；新版可直接相容。
+5. 若你已刪除 data/exhibitions.json，上傳後 GitHub Actions 會自動重新建立。
+6. 原本的 assets/hero-video.mp4 可以保留；若沒有影片，新版會使用 hero-art.svg。
+
+不需要手動搜尋或刪除任何程式碼段落。
+
+7. 到 Settings → Pages，將 Source 設定為 GitHub Actions。
+8. 到 Actions → Update data and deploy site → Run workflow，手動執行一次。

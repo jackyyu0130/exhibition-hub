@@ -1,2453 +1,320 @@
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>台灣展覽誌｜全台藝文活動每日自動更新</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<style>
-  :root{
-    --brand: #C3A464;
-    --brand-dark: #9C7F3F;
-    --ink: #2A2418;
-    --ink-soft: #7A7160;
-    --bg: #FFFFFF;
-    --card: #FFFFFF;
-    --line: #ECE7DC;
-    --hot: #E8734A;
-    --closing: #E8734A;
-    --new: #4D9A7A;
-    --radius: 16px;
-  }
-
-  *{ box-sizing:border-box; }
-  body{
-    margin:0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: "Noto Sans TC", sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{ color:inherit; text-decoration:none; }
-  button{ font-family:inherit; cursor:pointer; }
-
-  /* ---------- 導覽列 ---------- */
-  .nav{
-    position: sticky; top:0; z-index: 40;
-    background: rgba(255,255,255,.92);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
-  }
-  .nav-inner{
-    max-width: 1180px; margin:0 auto;
-    padding: .9rem 1.5rem;
-    display:flex; align-items:center; gap: 1.8rem;
-  }
-  .brand{ display:flex; align-items:center; gap:.55rem; font-weight:700; font-size:1.05rem; flex-shrink:0; }
-  .brand-mark{
-    width:32px; height:32px; border-radius:9px;
-    background: linear-gradient(135deg, var(--brand), #E8A63B);
-    display:flex; align-items:center; justify-content:center;
-    color:#fff; font-size:1.05rem; transform: rotate(-6deg);
-  }
-  .brand-sub{ display:block; font-size:.68rem; font-weight:400; color:var(--ink-soft); margin-top:1px; }
-
-  .nav-links{ display:flex; align-items:center; gap:1.4rem; font-size:.92rem; color:var(--ink-soft); position:relative; }
-  .nav-links a, .nav-links button.nav-item{
-    background:none; border:none; padding:.4rem 0; color:var(--ink-soft); font-size:.92rem;
-  }
-  .nav-links a:hover, .nav-links button.nav-item:hover{ color:var(--ink); }
-
-  .nav-spacer{ flex:1; }
-  .nav-count{
-    font-size:.8rem; color:var(--ink-soft);
-    background: var(--bg); border:1px solid var(--line);
-    padding:.35rem .75rem; border-radius:999px;
-    white-space:nowrap;
-  }
-
-  /* 下拉篩選面板（地區／分類共用樣式）*/
-  .dropdown-wrap{ position:relative; }
-  .dropdown-panel{
-    position:absolute; top: calc(100% + 10px); left:0;
-    background:#fff; border:1px solid var(--line); border-radius: 10px;
-    box-shadow: 0 16px 40px rgba(20,20,40,.12);
-    padding: .9rem; width: 240px;
-    display:none; max-height: 340px; overflow-y:auto; z-index: 50;
-  }
-  .dropdown-panel.open{ display:block; }
-  .dropdown-panel .opt{
-    display:flex; align-items:center; gap:.55rem;
-    font-size:.87rem; padding:.4rem 0; color:var(--ink);
-  }
-  .dropdown-panel .opt:hover{ color: var(--brand); }
-  .dropdown-panel .opt .opt-icon{ display:flex; width:14px; height:14px; color: var(--brand); flex-shrink:0; }
-  .dropdown-panel .opt .opt-icon svg{ width:14px; height:14px; }
-  .dropdown-panel .opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
-  .dropdown-panel-wide{ width: 300px; max-height: 420px; }
-  .dropdown-group-toggle{
-    width:100%; display:flex; align-items:center; justify-content:space-between;
-    background:none; border:none; text-align:left;
-    font-size:.78rem; font-weight:700; color:var(--brand);
-    text-transform:uppercase; letter-spacing:.06em;
-    margin: .5rem 0 0; padding:.5rem 0; border-top:1px solid var(--line);
-  }
-  .dropdown-group:first-child .dropdown-group-toggle{ border-top:none; margin-top:0; }
-  .dropdown-group-toggle .arrow{ transition: transform .15s ease; font-size:.7rem; }
-  .dropdown-group-toggle.open .arrow{ transform: rotate(90deg); }
-  .dropdown-group-body{ display:none; padding-bottom:.3rem; }
-  .dropdown-group-body.open{ display:block; }
-
-  /* ---------- 導覽列搜尋框 ---------- */
-  .nav-search{
-    display:flex; align-items:center; gap:.5rem;
-    background: var(--bg); border:1px solid var(--line); border-radius:999px;
-    padding:.4rem .9rem; width: 240px; flex-shrink:0;
-  }
-  .nav-search svg{ flex-shrink:0; color: var(--ink-soft); }
-  .nav-search input{
-    flex:1; min-width:0; border:none; outline:none; background:transparent;
-    font-family:inherit; font-size:.82rem; color: var(--ink);
-  }
-  @media (max-width: 900px){ .nav-search{ display:none; } }
-
-  /* ---------- 導覽列搜尋圖示按鈕 ---------- */
-  .nav-search-inline{
-    display:flex; align-items:center; gap:.5rem;
-    background: var(--bg); border:1px solid var(--line); border-radius:999px;
-    padding:.45rem .9rem; width: 240px; flex-shrink:0;
-  }
-  .nav-search-inline svg{ flex-shrink:0; color: var(--ink-soft); }
-  .nav-search-inline input{
-    flex:1; min-width:0; border:none; outline:none; font-family:inherit; font-size:.85rem;
-    background:transparent; color: var(--ink);
-  }
-  @media (max-width: 980px){ .nav-search-inline{ width: 160px; } }
-  @media (max-width: 820px){ .nav-search-inline{ display:none; } }
-
-  /* ---------- Hero：影片背景（依16:9比例完整呈現，不裁切）---------- */
-  .hero{
-    position:relative;
-    width:100%;
-    aspect-ratio: 16 / 9;
-    max-height: 640px;
-    background: #000;
-    overflow:hidden;
-  }
-  .hero-video{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit: contain; /* 完整呈現影片畫面，不裁切 */
-    background:#000;
-  }
-
-  @media (max-width: 760px){
-    .hero{ aspect-ratio: 4 / 5; max-height: none; }
-  }
-
-
-  .locate-btn{
-    display:inline-flex; align-items:center; gap:.4rem;
-    background: var(--ink); border:1px solid var(--ink);
-    color:#fff; border-radius:999px; padding:.6rem 1.1rem; font-size:.85rem; font-weight:500;
-    white-space:nowrap;
-  }
-  .locate-btn:hover{ background: var(--brand); border-color: var(--brand); }
-
-  .breadcrumb{
-    font-size:.82rem; color: var(--ink-soft); margin: .8rem 0 1.4rem;
-  }
-  .breadcrumb a{ color: var(--ink-soft); }
-  .breadcrumb a:hover{ color: var(--brand); }
-  .breadcrumb .sep{ margin: 0 .4rem; }
-  .breadcrumb .current{ color: var(--ink); font-weight:600; }
-
-  .search-page-header{
-    display:flex; align-items:center; justify-content:center; gap:1.5rem;
-    flex-wrap:wrap; margin-bottom: 1.6rem;
-  }
-  .search-bar-large{
-    background:#fff; border:1px solid var(--line); border-radius:999px;
-    padding: .65rem .8rem .65rem 1.3rem; max-width: 460px; width:100%;
-    display:flex; align-items:center; gap:.6rem;
-    box-shadow: 0 12px 28px rgba(30,20,70,.08);
-  }
-  .search-bar-large svg{ flex-shrink:0; color: var(--ink-soft); }
-  .search-bar-large input{
-    flex:1; min-width:0; border:none; outline:none; font-size:1rem; font-family:inherit;
-    background:transparent; padding:.3rem 0; color: var(--ink);
-  }
-  .locate-btn.active{ background: var(--brand); border-color: var(--brand); }
-
-  /* ---------- 舊有殘留樣式保留相容 ---------- */
-
-  /* ---------- 精選展覽（獨立區塊）---------- */
-  .featured-section{
-    max-width: 1180px; margin: 2rem auto 0; padding: 0 1.5rem;
-  }
-
-  /* ---------- 篩選區（Hero 下方獨立容器）---------- */
-  .filters-section{
-    max-width: 1180px; margin: 2rem auto 0; padding: 0 1.5rem;
-  }
-
-  /* 進行中／未來舉辦 狀態切換 */
-  .status-toggle{ display:flex; gap:.5rem; flex-wrap:wrap; }
-  .status-btn{
-    border:1px solid var(--line); background:#fff; color:var(--ink-soft);
-    padding:.5rem 1.1rem; border-radius:999px; font-size:.85rem;
-  }
-  .status-btn.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
-
-  .filter-toolbar{
-    display:flex; align-items:center; justify-content:space-between;
-    gap: 1rem; flex-wrap:wrap;
-  }
-  .calendar-picker{
-    display:flex; align-items:center; gap:.5rem;
-    color: var(--ink-soft);
-  }
-  .calendar-picker input[type="date"]{
-    font-family:inherit; font-size:.85rem; padding:.45rem .6rem;
-    border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink);
-  }
-  .calendar-picker button{
-    font-size:.78rem; color:var(--brand); background:none; border:none;
-    text-decoration:underline; padding:0; white-space:nowrap;
-  }
-
-  .price-filter{
-    margin: 1rem 0 0;
-    background:#fff; border:1px solid var(--line); border-radius:10px;
-    padding: .9rem 1.1rem; display:flex; align-items:center; gap:.7rem;
-    flex-wrap:wrap; font-size:.85rem; color: var(--ink-soft);
-  }
-  .price-filter-label{ font-weight:600; color:var(--ink); flex-shrink:0; }
-  .price-filter input[type="number"]{
-    width: 92px; padding:.4rem .55rem; border:1px solid var(--line);
-    border-radius:6px; font-family:inherit; font-size:.85rem;
-  }
-  .price-filter .sep{ color:var(--ink-soft); }
-  .price-filter .checkbox-label{
-    display:flex; align-items:center; gap:.4rem; margin-left:auto; white-space:nowrap;
-  }
-  .price-filter .checkbox-label input{ accent-color: var(--brand); width:15px; height:15px; }
-
-  /* ---------- 分類圖示列 ---------- */
-  .cat-row{
-    margin: 2rem 0 0;
-    display:flex; gap: 1.6rem; flex-wrap:wrap; justify-content:center;
-    position:relative;
-  }
-  .cat-chip{
-    display:flex; flex-direction:column; align-items:center; gap:.5rem;
-    background:none; border:none; color: var(--ink-soft); width: 76px;
-  }
-  .cat-chip .icon-circle{
-    width:56px; height:56px; border-radius:50%;
-    border:1px solid transparent;
-    display:flex; align-items:center; justify-content:center;
-    transition: all .15s ease;
-  }
-  .cat-chip span.label{ font-size:.78rem; }
-  .cat-chip:hover .icon-circle{ filter: brightness(.94); }
-  .cat-chip.active .icon-circle{ background: #FBEFC7 !important; border-color:#F0DB93; color:#9C7F1E !important; }
-  .cat-chip.active span.label{ color:#B08D2E; font-weight:600; }
-
-  .icon-circle.accent-music{ background:#FDF2E9; color:#C2620F; }
-  .icon-circle.accent-palette{ background:#FDF2F8; color:#DB2777; }
-  .icon-circle.accent-anime{ background:#FFFBEB; color:#D97706; }
-  .icon-circle.accent-masks{ background:#FFF1F2; color:#E11D48; }
-  .icon-circle.accent-dance{ background:#ECFDF5; color:#059669; }
-  .icon-circle.accent-camera{ background:#EFF6FF; color:#2563EB; }
-  .icon-circle.accent-design{ background:#FDF6E3; color:#B8860B; }
-  .icon-circle.accent-mic{ background:#F0FDFA; color:#0D9488; }
-  .icon-circle.accent-bag{ background:#FFF7ED; color:#EA580C; }
-  .icon-circle.accent-briefcase{ background:#F1F5F9; color:#334155; }
-  .icon-circle.accent-popup{ background:#FFF1E6; color:#C2410C; }
-  .icon-circle.accent-ticket{ background:#F4F4F5; color:#52525B; }
-
-  /* ---------- 主內容 ---------- */
-  main{ max-width:1180px; margin:0 auto; padding: 2.4rem 1.5rem 5rem; }
-
-  /* 分類卡片列（首頁）*/
-  .cat-section{ margin-bottom: 2.6rem; }
-  .cat-section-head{
-    display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;
-  }
-  .cat-section-head h2{
-    font-size:1.15rem; margin:0; display:flex; align-items:center; gap:.6rem;
-  }
-  .cat-section-head .icon-sm{
-    width:30px; height:30px; border-radius:50%; background:var(--bg);
-    display:flex; align-items:center; justify-content:center; color:var(--brand); flex-shrink:0;
-  }
-  .cat-section-head .icon-sm svg{ width:16px; height:16px; }
-  .row-controls{ display:flex; align-items:center; gap:.6rem; }
-  .view-all-link{ font-size:.8rem; color: var(--brand); font-weight:600; white-space:nowrap; }
-  .row-nav{
-    width:32px; height:32px; border-radius:50%; border:1px solid var(--line);
-    background:#fff; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);
-  }
-  .row-nav:hover{ border-color:var(--brand); color:var(--brand); }
-
-  .row-sort{ display:flex; background:#fff; border:1px solid var(--line); border-radius:999px; padding:.15rem; }
-  .row-sort-btn{
-    border:none; background:none; font-size:.72rem; color:var(--ink-soft);
-    padding:.3rem .65rem; border-radius:999px; white-space:nowrap;
-  }
-  .row-sort-btn.active{ background: var(--brand); color:#fff; }
-
-  .carousel{
-    display:grid; grid-auto-flow:column; grid-auto-columns: calc((100% - 3*1.3rem)/4);
-    gap:1.3rem; overflow-x:auto; scroll-snap-type:x proximity; padding-bottom:.5rem;
-  }
-  .carousel .card{ scroll-snap-align:start; }
-  @media (max-width:1020px){ .carousel{ grid-auto-columns: calc((100% - 2*1.3rem)/3); } }
-  @media (max-width:760px){ .carousel{ grid-auto-columns: calc((100% - 1.3rem)/2); } }
-  @media (max-width:520px){ .carousel{ grid-auto-columns: 78%; } }
-
-  .show-more-row{ text-align:center; margin-top:1.1rem; }
-  .show-more-btn{
-    display:inline-block; border:1px solid var(--brand); color:var(--brand); background:#fff;
-    padding:.55rem 1.3rem; border-radius:999px; font-size:.85rem; font-weight:600;
-  }
-  .show-more-btn:hover{ background:var(--brand); color:#fff; }
-
-  .back-link{ display:inline-block; margin-bottom:1.2rem; font-size:.85rem; color:var(--brand); font-weight:600; }
-
-  .detail-layout{
-    display:grid; grid-template-columns: 220px 1fr; gap: 2rem; align-items:start;
-  }
-  @media (max-width: 760px){ .detail-layout{ grid-template-columns: 1fr; } }
-
-  /* ---------- 站內展覽詳情頁 ---------- */
-  .event-detail-layout{
-    display:grid; grid-template-columns: minmax(240px, 380px) 1fr; gap: 2.6rem; align-items:start;
-  }
-  @media (max-width: 760px){ .event-detail-layout{ grid-template-columns: 1fr; } }
-
-  .event-carousel{
-    position:relative; aspect-ratio: 4 / 5; border-radius: 16px; overflow:hidden;
-    background: var(--card); border:1px solid var(--line);
-    box-shadow: 0 16px 40px rgba(30,20,70,.08);
-  }
-  .event-carousel .event-slide{
-    position:absolute; inset:0; opacity:0; transition: opacity .6s ease;
-    overflow:hidden;
-  }
-  .event-carousel .event-slide.active{ opacity:1; }
-  .event-slide-bg{
-    position:absolute; inset:-15px;
-    background-size:cover; background-position:center;
-    filter: blur(22px) brightness(.75) saturate(1.1);
-    transform: scale(1.15);
-  }
-  .event-slide-fg{
-    position:absolute; inset:0;
-    background-size:contain; background-position:center; background-repeat:no-repeat;
-  }
-  .event-carousel .event-dots{
-    position:absolute; bottom:.8rem; left:50%; transform:translateX(-50%); z-index:2;
-    display:flex; gap:.4rem;
-  }
-  .event-carousel .event-dot{ width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5); }
-  .event-carousel .event-dot.active{ background:#fff; }
-  .event-carousel .event-nav{
-    position:absolute; top:50%; transform:translateY(-50%); z-index:2;
-    width:34px; height:34px; border-radius:50%; border:none;
-    background: rgba(255,255,255,.85); color: var(--ink);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .event-carousel .event-nav.prev{ left:.6rem; }
-  .event-carousel .event-nav.next{ right:.6rem; }
-
-  .event-detail-info h1{
-    font-family:"Noto Serif TC", serif; font-size:1.6rem; font-weight:900;
-    margin: .8rem 0 1rem; line-height:1.4;
-  }
-  .event-meta-list{
-    display:flex; flex-direction:column; gap:.5rem;
-    background: var(--card); border:1px solid var(--line); border-radius:10px;
-    padding: 1rem 1.2rem; margin-bottom: 1.2rem;
-  }
-  .event-meta-list .meta-row{ display:flex; gap:.8rem; font-size:.9rem; }
-  .event-meta-list .meta-label{
-    flex-shrink:0; width: 3.6rem; color: var(--ink-soft); font-weight:600;
-  }
-  .event-description{
-    font-size:.92rem; line-height:1.8; color: var(--ink); margin: 0 0 1.6rem;
-    white-space: pre-line;
-  }
-  .detail-external-btn{
-    display:inline-flex; align-items:center; gap:.4rem;
-    background: var(--brand); color:#fff; font-weight:600;
-    padding: .8rem 1.6rem; border-radius:999px; font-size:.95rem;
-  }
-  .event-action-row{ display:flex; align-items:center; gap:.7rem; }
-  .event-icon-btn{
-    width:44px; height:44px; border-radius:50%; flex-shrink:0;
-    background:#fff; border:1px solid var(--line); color: var(--ink-soft);
-    display:flex; align-items:center; justify-content:center; font-size:1.1rem;
-  }
-  .event-icon-btn:hover{ border-color: var(--brand); color: var(--brand); }
-  .event-icon-btn.active{ color: var(--hot); border-color: var(--hot); }
-  .detail-external-btn:hover{ background: var(--brand-dark); }
-
-  .detail-sidebar{
-    background:#fff; border:1px solid var(--line); border-radius:10px;
-    padding: 1.1rem 1.2rem; position: sticky; top: 1.25rem;
-  }
-
-  .mini-calendar{ margin-bottom: 1.3rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--line); }
-  .mini-calendar-head{
-    display:flex; align-items:center; justify-content:space-between; margin-bottom:.7rem;
-  }
-  .mini-calendar-head .month-label{ font-size:.85rem; font-weight:700; }
-  .mini-calendar-head button{
-    width:24px; height:24px; border-radius:50%; border:1px solid var(--line);
-    background:#fff; color:var(--ink-soft); display:flex; align-items:center; justify-content:center;
-    font-size:.8rem;
-  }
-  .mini-calendar-grid{ display:grid; grid-template-columns: repeat(7, 1fr); gap:.2rem; text-align:center; }
-  .mini-calendar-grid .dow{ font-size:.65rem; color:var(--ink-soft); padding:.2rem 0; }
-  .mini-calendar-grid .day{
-    position:relative; font-size:.75rem; padding:.35rem 0; border-radius:6px; color:var(--ink);
-    cursor:pointer;
-  }
-  .mini-calendar-grid .day.empty{ cursor:default; }
-  .mini-calendar-grid .day:not(.empty):hover{ background: var(--bg); }
-  .mini-calendar-grid .day.has-event::after{
-    content:""; position:absolute; bottom:2px; left:50%; transform:translateX(-50%);
-    width:4px; height:4px; border-radius:50%; background: var(--brand);
-  }
-  .mini-calendar-grid .day.selected{ background: var(--brand); color:#fff; font-weight:700; }
-  .mini-calendar-grid .day.selected.has-event::after{ background:#fff; }
-  .mini-calendar-clear{
-    display:block; margin-top:.5rem; font-size:.72rem; color: var(--brand);
-    background:none; border:none; text-decoration:underline; padding:0;
-  }
-
-  .filter-title-static{
-    font-size:.72rem; font-weight:700; color:var(--ink-soft);
-    text-transform:uppercase; letter-spacing:.06em; margin-bottom:.7rem;
-  }
-  .venue-opt{
-    display:flex; align-items:center; width:100%; text-align:left;
-    background:none; border:none; padding:.42rem 0; font-size:.85rem;
-    color: var(--ink-soft); cursor:pointer;
-  }
-  .venue-opt:hover{ color: var(--ink); }
-  .venue-opt.active{ color: var(--brand); font-weight:700; }
-  .venue-opt .c{ margin-left:auto; font-size:.72rem; color:var(--ink-soft); }
-
-  .section-head{
-    display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem;
-  }
-  .section-head h2{ font-size:1.3rem; margin:0; }
-  .section-head .hint{ font-size:.85rem; color:var(--ink-soft); }
-
-  .grid{
-    display:grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem;
-  }
-  @media (max-width: 1020px){ .grid{ grid-template-columns: repeat(3,1fr); } }
-  @media (max-width: 760px){ .grid{ grid-template-columns: repeat(2,1fr); } }
-  @media (max-width: 480px){ .grid{ grid-template-columns: 1fr; } }
-
-  .card{
-    background: var(--card); border:1px solid var(--line); border-radius: var(--radius);
-    overflow:hidden; display:block; transition: transform .15s ease, box-shadow .15s ease;
-  }
-  a.card:hover{ transform: translateY(-3px); box-shadow: 0 16px 34px rgba(20,20,50,.1); }
-
-  .card-media{
-    aspect-ratio: 4 / 3; position:relative; overflow:hidden;
-    display:flex; align-items:center; justify-content:center; color:#fff;
-  }
-  .card-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .card-media .icon-wrap{ position:relative; z-index:0; }
-
-  /* 扁平卡片：展演空間／即將開展／即將結束用，跟精選展覽的直式卡片做出區隔，降低瀏覽疲勞感 */
-  .card.card-flat .card-media{ aspect-ratio: 16 / 7; }
-
-  /* 展演空間卡片 */
-  .venue-card{
-    display:block; background: var(--card); border:1px solid var(--line);
-    border-radius: var(--radius); overflow:hidden; text-decoration:none; color:inherit;
-    transition: transform .15s ease, box-shadow .15s ease;
-  }
-  .venue-card:hover{ transform: translateY(-3px); box-shadow: 0 16px 34px rgba(20,20,50,.1); }
-  .venue-card .venue-media{
-    aspect-ratio: 16 / 7; display:flex; align-items:center; justify-content:center;
-    color:#fff; position:relative;
-  }
-  .venue-card .venue-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .venue-card .venue-fallback-icon{ position:absolute; inset:0; align-items:center; justify-content:center; }
-  .venue-card .venue-body{ padding: .9rem 1rem 1.05rem; }
-  .venue-card .venue-name{
-    font-size:.98rem; font-weight:700; margin:0 0 .3rem;
-    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden;
-  }
-  .venue-card .venue-count{ font-size:.8rem; color: var(--ink-soft); }
-  .card-badge{
-    position:absolute; top:.6rem; left:.6rem;
-    font-size:.68rem; font-weight:700; color:#fff;
-    padding:.22rem .6rem; border-radius:999px;
-  }
-  .card-badge.closing{ background: var(--closing); }
-  .card-badge.new{ background: var(--new); }
-  .card-badge.upcoming{ background: #0EA5E9; }
-
-  .fav-btn{
-    position:absolute; top:.55rem; right:.55rem; z-index:3;
-    width:30px; height:30px; border-radius:50%; border:none;
-    background: rgba(255,255,255,.85); color: var(--ink-soft);
-    font-size:1rem; line-height:1; display:flex; align-items:center; justify-content:center;
-  }
-  .fav-btn.active{ color: var(--hot); background:#fff; }
-  .fav-btn:hover{ color: var(--hot); }
-
-  .card-body{ padding: .9rem 1rem 1.05rem; }
-  .card-cat-row{ display:flex; flex-wrap:wrap; gap:.3rem; margin-bottom:.4rem; }
-  .card-cat{
-    font-size:.68rem; color:var(--brand); font-weight:600;
-    background: rgba(79,70,229,.08); padding:.1rem .5rem; border-radius:999px;
-    display:inline-flex; align-items:center; gap:.3rem;
-  }
-  .card-cat .cat-icon{ display:inline-flex; width:12px; height:12px; }
-  .card-cat .cat-icon svg{ width:12px; height:12px; }
-  .card-price{ font-size:.78rem; color:var(--ink-soft); margin-top:.4rem; font-weight:500; }
-  .card-price.is-free{ color:#16A34A; font-weight:700; }
-  .card-price.is-unknown{ color:#B8B4AC; font-weight:400; }
-  #eventPrice.is-free{ color:#16A34A; font-weight:700; }
-  #eventPrice.is-unknown{ color:#B8B4AC; font-weight:400; }
-  .card-title{
-    font-size: .98rem; font-weight:700; line-height:1.4; margin:0 0 .45rem;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-    min-height: 2.7em;
-  }
-  .card-meta{ font-size:.8rem; color:var(--ink-soft); line-height:1.6; }
-  .card-meta .loc{ display:block; }
-  .card-dist{ font-size:.78rem; color:var(--brand); font-weight:600; margin-top:.35rem; }
-
-  .empty{
-    text-align:center; padding: 3.5rem 1rem;
-    color: var(--ink-soft); font-family:"Noto Serif TC", serif; font-size:1.05rem;
-  }
-  .grid .empty, .carousel .empty{ grid-column: 1 / -1; }
-
-  .scroll-row{
-    display:flex; gap: 1.1rem; overflow-x:auto; padding-bottom: .6rem;
-    scroll-snap-type: x proximity;
-  }
-  .scroll-row .card{ flex: 0 0 220px; scroll-snap-align:start; }
-
-  #mapContainer{
-    height: 380px; border-radius: var(--radius);
-    border:1px solid var(--line); overflow:hidden;
-    background:#fff;
-  }
-  .map-popup{ font-family:"Noto Sans TC", sans-serif; max-width:220px; }
-  .map-popup h4{ margin:0 0 .4rem; font-size:.9rem; }
-  .map-popup p{ margin:0 0 .3rem; font-size:.8rem; color:var(--ink-soft); }
-  .map-popup a{ font-size:.8rem; color:var(--brand); font-weight:600; }
-  .map-popup-item{
-    display:flex; flex-direction:column; gap:.05rem;
-    padding:.35rem 0; border-top:1px solid var(--line);
-  }
-  .map-popup-item:first-child{ border-top:none; }
-  .map-popup-item span{ font-size:.72rem; color:var(--ink-soft); }
-  .map-popup-more{ margin:.3rem 0 0; font-size:.72rem; color:var(--ink-soft); }
-
-  .gmap-key-notice{
-    height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:.7rem; color:var(--ink-soft); text-align:center; padding:2rem;
-  }
-  .gmap-key-notice code{ background:var(--bg); padding:.2rem .5rem; border-radius:4px; font-size:.82rem; }
-
-  footer{
-    text-align:center; padding: 2.2rem 1.5rem 3rem;
-    font-size:.8rem; color:var(--ink-soft);
-    border-top:1px solid var(--line);
-  }
-
-  :focus-visible{ outline:2px solid var(--brand); outline-offset:2px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4efe6">
+  <meta name="description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
+  <title>台灣展覽誌｜探索全台藝文展覽</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
+  <div class="page-noise" aria-hidden="true"></div>
 
-<header class="nav">
-  <div class="nav-inner">
-    <a class="brand" href="./" style="text-decoration:none;">
-      <span class="brand-mark">展</span>
-      <span>台灣展覽誌<span class="brand-sub">全台藝文活動平台</span></span>
-    </a>
-    <nav class="nav-links">
-      <div class="dropdown-wrap">
-        <button class="nav-item" id="categoryNavBtn">分類 ▾</button>
-        <div class="dropdown-panel" id="categoryPanel">
-          <div id="categoryOptions"></div>
-        </div>
-      </div>
-      <div class="dropdown-wrap">
-        <button class="nav-item" id="regionNavBtn">地區 ▾</button>
-        <div class="dropdown-panel" id="regionPanel">
-          <div id="regionOptions"></div>
-        </div>
-      </div>
-      <div class="dropdown-wrap">
-        <button class="nav-item" id="venueNavBtn">地點 ▾</button>
-        <div class="dropdown-panel dropdown-panel-wide" id="venuePanel">
-          <div id="venueOptions"></div>
-        </div>
-      </div>
+  <header class="site-header" id="siteHeader">
+    <div class="nav-shell">
+      <a class="brand" href="./" aria-label="台灣展覽誌首頁">
+        <span class="brand-seal">展</span>
+        <span class="brand-copy">
+          <strong>台灣展覽誌</strong>
+          <small>TAIWAN EXHIBITION JOURNAL</small>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="主要導覽">
+        <a href="?view=all">探索展覽</a>
+        <a href="?view=nearby">附近展覽</a>
+        <a href="?view=favorites">我的收藏</a>
+      </nav>
+
+      <form class="nav-search" id="navSearchForm" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+        <input id="navSearchInput" type="search" placeholder="搜尋展覽、場館、地區" autocomplete="off">
+      </form>
+
+      <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="開啟選單" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu" hidden>
+      <a href="?view=all">探索展覽</a>
       <a href="?view=nearby">附近展覽</a>
       <a href="?view=favorites">我的收藏</a>
-    </nav>
-    <div class="nav-spacer"></div>
-    <div class="nav-search-inline">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="搜尋展覽、地點、關鍵字…">
+      <form class="mobile-search" id="mobileSearchForm">
+        <input id="mobileSearchInput" type="search" placeholder="搜尋展覽、場館、地區">
+        <button type="submit">搜尋</button>
+      </form>
     </div>
-    <span class="nav-count" id="navCount">載入中…</span>
-  </div>
-</header>
+  </header>
 
-<section class="hero" id="top">
-  <video class="hero-video" id="heroVideoEl" autoplay muted loop playsinline preload="auto">
-    <source src="assets/hero-video.mp4" type="video/mp4">
-  </video>
-</section>
+  <main id="app">
+    <section class="home-view" id="homeView">
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">CURATED ACROSS TAIWAN</p>
+          <h1>把下一場展覽，<br>排進你的日常。</h1>
+          <p class="hero-lead">從城市角落到大型美術館，快速找到正在舉辦、即將開展，以及離你最近的藝文活動。</p>
 
-<div class="filters-section">
-  <div class="filter-toolbar">
-    <div class="calendar-picker">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <input type="date" id="datePicker">
-      <button type="button" id="clearDateBtn">清除日期</button>
-    </div>
-    <div class="status-toggle" id="statusToggle">
-      <button class="status-btn active" data-status="all" type="button">全部</button>
-      <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
-      <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
-    </div>
-  </div>
+          <form class="hero-search" id="heroSearchForm" role="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input id="heroSearchInput" type="search" placeholder="試試「攝影」、「台北」、「免費」">
+            <button type="submit">開始探索</button>
+          </form>
 
-  <div class="cat-row" id="catRow"></div>
-</div>
+          <div class="hero-actions">
+            <a class="primary-link" href="?view=nearby">
+              <span>查看附近展覽</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            </a>
+            <a class="text-link" href="#discover">瀏覽本週精選</a>
+          </div>
 
-<div class="featured-section">
-  <div class="cat-section-head">
-    <h2><span class="icon-sm">✦</span>精選展覽</h2>
-    <div class="row-controls">
-      <button class="random-pick-btn" id="randomPickBtn" type="button">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg>
-        隨機推薦一檔
-      </button>
-      <button class="row-nav prev" id="featuredPrev" aria-label="向左">‹</button>
-      <button class="row-nav next" id="featuredNext" aria-label="向右">›</button>
-    </div>
-  </div>
-  <div class="carousel" id="featuredCarousel"></div>
-</div>
-
-<div class="featured-section">
-  <div class="cat-section-head">
-    <h2><span class="icon-sm">🏛</span>展演空間</h2>
-    <div class="row-controls">
-      <button class="row-nav prev" id="venuePrev" aria-label="向左">‹</button>
-      <button class="row-nav next" id="venueNext" aria-label="向右">›</button>
-    </div>
-  </div>
-  <div class="carousel" id="venueCarousel"></div>
-</div>
-
-<main>
-  <div id="venueDetailView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="detail-layout">
-      <aside class="detail-sidebar">
-        <div id="venueCalendar"></div>
-        <div class="filter-title-static">地點</div>
-        <div id="venueSidebarOptions"></div>
-      </aside>
-      <div class="detail-main">
-        <div class="section-head">
-          <h2 id="venueDetailTitle"></h2>
-          <span class="hint" id="venueDetailHint"></span>
-        </div>
-        <div class="grid" id="venueDetailGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="regionDetailView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="detail-layout">
-      <aside class="detail-sidebar">
-        <div id="regionCalendar"></div>
-        <div class="filter-title-static">地區</div>
-        <div id="regionSidebarOptions"></div>
-      </aside>
-      <div class="detail-main">
-        <div class="section-head">
-          <h2 id="regionDetailTitle"></h2>
-          <span class="hint" id="regionDetailHint"></span>
-        </div>
-        <div class="grid" id="regionDetailGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="specialView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="filter-toolbar" style="margin-bottom:1rem;">
-      <div class="status-toggle" id="specialStatusToggle">
-        <button class="status-btn" data-status="all" type="button">全部</button>
-        <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
-        <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
-      </div>
-    </div>
-    <div class="cat-row" id="specialCatRow"></div>
-
-    <div class="detail-layout" style="margin-top:2rem;">
-      <aside class="detail-sidebar">
-        <div id="specialCalendar"></div>
-        <div class="filter-title-static">地點</div>
-        <div id="specialVenueOptions"></div>
-      </aside>
-      <div class="detail-main">
-        <div class="section-head">
-          <h2 id="specialTitle"></h2>
-          <span class="hint" id="specialHint"></span>
-        </div>
-        <div class="grid" id="specialGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="homepageRows"></div>
-
-  <section class="section" id="nearbyPreviewSection" style="margin-top:2.6rem;">
-    <div class="section-head">
-      <h2><span class="icon-sm">📍</span>附近展覽</h2>
-      <span class="hint" id="nearbyPreviewHint"></span>
-    </div>
-    <div id="nearbyPreviewPrompt" style="display:none;">
-      <button class="locate-btn" id="nearbyPreviewLocateBtn" type="button">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-        使用目前位置
-      </button>
-    </div>
-    <div class="scroll-row" id="nearbyPreviewRow"></div>
-    <div class="show-more-row">
-      <a class="show-more-btn" href="?view=nearby">檢視地圖 →</a>
-    </div>
-  </section>
-
-  <div id="detailView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="detail-layout">
-      <aside class="detail-sidebar">
-        <div id="detailCalendar"></div>
-        <div class="filter-title-static">地點</div>
-        <div id="detailVenueOptions"></div>
-      </aside>
-      <div class="detail-main">
-        <div class="section-head">
-          <h2 id="detailTitle"></h2>
-          <div style="display:flex; align-items:center; gap:.8rem;">
-            <span class="hint" id="detailHint"></span>
-            <div id="detailSortControl"></div>
+          <div class="hero-stats" aria-label="網站統計">
+            <div><strong id="heroEventCount">—</strong><span>收錄活動</span></div>
+            <div><strong id="heroVenueCount">—</strong><span>展演場館</span></div>
+            <div><strong>每日</strong><span>自動更新</span></div>
           </div>
         </div>
-        <div class="grid" id="detailGrid"></div>
-      </div>
-    </div>
-  </div>
 
-  <div id="searchView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-
-    <div class="search-page-header">
-      <div class="search-bar search-bar-large">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchPageInput" placeholder="搜尋展覽、地點、關鍵字…">
-      </div>
-      <div class="status-toggle" id="searchStatusToggle">
-        <button class="status-btn" data-status="all" type="button">全部</button>
-        <button class="status-btn" data-status="ongoing" type="button">目前舉辦</button>
-        <button class="status-btn" data-status="upcoming" type="button">即將舉辦</button>
-      </div>
-    </div>
-    <div class="cat-row" id="searchCatRow"></div>
-
-    <div class="detail-layout" style="margin-top:2rem;">
-      <aside class="detail-sidebar">
-        <div id="searchCalendar"></div>
-        <div class="filter-title-static">地點</div>
-        <div id="searchVenueOptions"></div>
-      </aside>
-      <div class="detail-main">
-        <div class="section-head">
-          <h2>搜尋結果</h2>
-          <span class="hint" id="searchHint"></span>
+        <div class="hero-visual" aria-label="展覽探索情境視覺">
+          <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-art.svg">
+            <source src="assets/hero-video.mp4" type="video/mp4">
+          </video>
+          <div class="hero-shade"></div>
+          <div class="floating-note note-top">THIS WEEK<br><strong>EDITOR'S PICK</strong></div>
+          <div class="ticket-card" id="heroTicket">
+            <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
+            <div class="ticket-main">
+              <span class="ticket-index">01</span>
+              <div>
+                <small>今日推薦</small>
+                <h2 id="heroTicketTitle">正在整理今日展覽</h2>
+                <p id="heroTicketMeta">載入展覽資料中…</p>
+              </div>
+            </div>
+            <div class="ticket-footer"><span>EXHIBITION JOURNAL</span><span class="barcode">|||| ||| ||||</span></div>
+          </div>
+          <div class="floating-note note-bottom">TAKE A DAY OFF<br><strong>FOR ART.</strong></div>
         </div>
-        <div class="grid" id="searchGrid"></div>
-      </div>
-    </div>
-  </div>
+      </section>
 
-  <div id="nearbyPageView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="section-head">
-      <h2><span class="icon-sm">📍</span>附近展覽</h2>
-      <span class="hint" id="nearbyPageHint"></span>
-    </div>
-    <div id="nearbyPagePrompt" style="display:none;">
-      <button class="locate-btn" id="nearbyLocateBtn" type="button">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-        使用目前位置
-      </button>
-    </div>
-    <div id="nearbyMapContainer" style="height:480px; margin-bottom:1.5rem;"></div>
-    <div class="grid" id="nearbyPageGrid"></div>
-  </div>
-
-  <div id="eventDetailView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="breadcrumb" id="eventBreadcrumb"></div>
-    <div class="event-detail-layout">
-      <div class="event-carousel" id="eventCarousel"></div>
-
-      <div class="event-detail-info">
-        <div class="card-cat-row" id="eventCatRow"></div>
-        <h1 id="eventTitle"></h1>
-        <div class="event-meta-list">
-          <div class="meta-row"><span class="meta-label">日期</span><span id="eventDate"></span></div>
-          <div class="meta-row"><span class="meta-label">地點</span><span id="eventVenue"></span></div>
-          <div class="meta-row"><span class="meta-label">地址</span><span id="eventAddress"></span></div>
-          <div class="meta-row" id="eventTransitRow" style="display:none;"><span class="meta-label">交通</span><span id="eventTransit"></span></div>
-          <div class="meta-row" id="eventUnitRow" style="display:none;"><span class="meta-label">主辦</span><span id="eventUnit"></span></div>
-          <div class="meta-row"><span class="meta-label">票價</span><span id="eventPrice"></span></div>
+      <section class="discovery-panel" id="discover">
+        <div class="panel-topline">
+          <div>
+            <p class="eyebrow">EXPLORE BY MOOD</p>
+            <h2>今天想看什麼？</h2>
+          </div>
+          <a href="?view=all" class="section-link">查看全部展覽 <span>↗</span></a>
         </div>
-        <p class="event-description" id="eventDescription"></p>
-        <div class="event-action-row">
-          <a class="detail-external-btn" id="eventExternalLink" target="_blank" rel="noopener">詳細資訊 →</a>
-          <button class="event-icon-btn" id="eventFavBtn" type="button" aria-label="收藏">♥</button>
-          <button class="event-icon-btn" id="eventShareBtn" type="button" aria-label="分享">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 3.9M15.4 6.6L8.6 10.5"/></svg>
+
+        <div class="quick-filters">
+          <div class="date-field">
+            <label for="datePicker">選擇日期</label>
+            <input type="date" id="datePicker">
+          </div>
+          <div class="status-pills" id="statusPills">
+            <button type="button" class="active" data-status="all">全部</button>
+            <button type="button" data-status="ongoing">目前舉辦</button>
+            <button type="button" data-status="upcoming">即將舉辦</button>
+            <button type="button" data-status="free">免費展覽</button>
+          </div>
+          <button class="clear-filter" id="clearFiltersButton" type="button">清除篩選</button>
+        </div>
+
+        <div class="category-strip" id="categoryStrip" aria-label="展覽分類"></div>
+      </section>
+
+      <section class="editorial-section featured-block">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EDITOR'S SELECTION</p>
+            <h2>本週值得出發的展覽</h2>
+          </div>
+          <div class="section-controls">
+            <button class="icon-button" type="button" data-scroll-target="featuredRail" data-dir="-1" aria-label="向左捲動">←</button>
+            <button class="icon-button" type="button" data-scroll-target="featuredRail" data-dir="1" aria-label="向右捲動">→</button>
+          </div>
+        </div>
+        <div class="featured-rail" id="featuredRail"></div>
+      </section>
+
+      <section class="editorial-section split-feature">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PLAN YOUR WEEK</p>
+            <h2>依照時間，安排你的觀展清單</h2>
+          </div>
+        </div>
+        <div class="time-grid">
+          <article class="time-column">
+            <div class="time-column-head">
+              <div><span class="time-dot upcoming"></span><h3>即將開展</h3></div>
+              <a href="?status=upcoming&view=all">看更多</a>
+            </div>
+            <div class="compact-list" id="upcomingList"></div>
+          </article>
+          <article class="time-column dark-column">
+            <div class="time-column-head">
+              <div><span class="time-dot closing"></span><h3>即將結束</h3></div>
+              <a href="?status=ending&view=all">看更多</a>
+            </div>
+            <div class="compact-list" id="endingList"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="nearby-home editorial-section">
+        <div class="nearby-copy">
+          <p class="eyebrow">AROUND YOU</p>
+          <h2>從現在的位置，<br>找到下一個目的地。</h2>
+          <p>允許定位後，依距離排序附近展覽。也可以直接打開地圖，安排一段城市散步。</p>
+          <button class="location-button" id="homeLocationButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
+            使用目前位置
           </button>
+          <a class="text-link" href="?view=nearby">開啟完整地圖 →</a>
         </div>
-      </div>
-    </div>
+        <div class="nearby-stack" id="nearbyHomeList"></div>
+      </section>
 
-    <div class="section-head" style="margin-top:2.4rem;">
-      <h2><span class="icon-sm">📍</span>附近展覽</h2>
-      <span class="hint" id="eventNearbyHint"></span>
-    </div>
-    <div id="eventNearbyPrompt" style="display:none;">
-      <button class="locate-btn" id="eventNearbyLocateBtn" type="button">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-        使用目前位置
-      </button>
-    </div>
-    <div class="scroll-row" id="eventNearbyRow"></div>
-  </div>
-
-  <div id="favoritesView" style="display:none;">
-    <a class="back-link" href="./">← 回首頁</a>
-    <div class="section-head">
-      <h2>我的收藏</h2>
-      <span class="hint" id="favoritesHint"></span>
-    </div>
-    <div class="grid" id="favoritesGrid"></div>
-  </div>
-
-</main>
-
-<footer>
-  每日自動更新
-</footer>
-
-<script>
-const state = {
-  events: [],
-  updatedAt: null,
-  selectedRegions: new Set(),
-  selectedCategories: new Set(),
-  selectedVenues: new Set(),
-  userLoc: null,
-  statusFilter: 'all',
-  selectedDate: null,
-  detailCategory: null,
-  detailVenue: null,
-  detailRegion: null,
-  specialType: null,
-  venueImages: {},
-  searchQuery: '',
-  searchCategories: new Set(),
-  searchVenueFilter: null,
-  specialCategories: new Set(),
-  specialVenueFilter: null,
-  detailVenueFilter: null,
-  rowSort: {},
-  calendarViewDate: new Date(),
-  viewMode: 'home', // 'home' | 'detail' | 'nearby' | 'event'
-  eventDetailUrl: null,
-  lastPool: [],
-  map: null,
-  markers: [],
-  nearbyMap: null,
-  nearbyMarkerLayer: null,
-};
-
-// 縣市顯示順序：北到南，接著中部，再來東部與離島
-const REGION_ORDER = [
-  '台北市','新北市','基隆市','桃園市','新竹市','新竹縣',
-  '苗栗縣','台中市','彰化縣','南投縣','雲林縣',
-  '嘉義市','嘉義縣','台南市','高雄市','屏東縣',
-  '宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣',
-  '其他地區',
-];
-
-const REGION_GROUPS = [
-  ['台北市','臺北市'], ['新北市'], ['基隆市'], ['桃園市'],
-  ['新竹市'], ['新竹縣'], ['苗栗縣'], ['台中市','臺中市'],
-  ['彰化縣'], ['南投縣'], ['雲林縣'], ['嘉義市'], ['嘉義縣'],
-  ['台南市','臺南市'], ['高雄市'], ['屏東縣'], ['宜蘭縣'],
-  ['花蓮縣'], ['台東縣','臺東縣'], ['澎湖縣'], ['金門縣'], ['連江縣'],
-];
-
-// 縣市 -> 北中南東部/離島 分區
-const REGION_MACRO_MAP = {
-  '台北市':'北部', '新北市':'北部', '基隆市':'北部', '桃園市':'北部', '新竹市':'北部', '新竹縣':'北部',
-  '苗栗縣':'中部', '台中市':'中部', '彰化縣':'中部', '南投縣':'中部', '雲林縣':'中部',
-  '嘉義市':'南部', '嘉義縣':'南部', '台南市':'南部', '高雄市':'南部', '屏東縣':'南部',
-  '宜蘭縣':'東部・離島', '花蓮縣':'東部・離島', '台東縣':'東部・離島',
-  '澎湖縣':'東部・離島', '金門縣':'東部・離島', '連江縣':'東部・離島',
-  '其他地區':'其他',
-};
-const MACRO_ORDER = ['北部','中部','南部','東部・離島','其他'];
-
-function macroOf(region){ return REGION_MACRO_MAP[region] || '其他'; }
-
-// 首頁分類區塊的顯示順序
-const CATEGORY_ORDER = ['快閃','音樂','美術','動漫','表演','舞蹈','攝影','設計','講座','市集','商展','其他'];
-
-const CATEGORY_ICON_MAP = {
-  '音樂': 'music', '美術': 'palette', '動漫': 'anime', '快閃': 'popup', '表演': 'masks',
-  '舞蹈': 'dance', '攝影': 'camera', '設計': 'design', '講座': 'mic',
-  '市集': 'bag', '商展': 'briefcase', '其他': 'ticket',
-};
-
-const ICONS = {
-  palette: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a10 10 0 1 0 0 20c1.5 0 2-1 2-2s-.5-1.5-.5-2 1-1.5 2-1.5H17a4 4 0 0 0 4-4c0-5.5-4.5-10-9-10Z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>',
-  music: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
-  masks: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 3a2 2 0 0 1 2 2c0 7-2.5 8-2.5 12a2.5 2.5 0 0 1-5 0"/><path d="M7 3a2 2 0 0 0-2 2c0 7 2.5 8 2.5 12a2.5 2.5 0 0 0 5 0"/></svg>',
-  camera: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
-  mic: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M9 22h6"/></svg>',
-  bag: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l1 12H5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
-  ticket: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>',
-  anime: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l1.6 4.9L18.5 8l-4.1 3 1.5 4.9-4-2.9-4 2.9 1.5-4.9L5.5 8l4.9-1.1z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>',
-  dance: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6M12 8l-5-2M12 8l5-2M12 13l-4 7M12 13l4 7"/></svg>',
-  design: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
-  popup: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l1.5-5h15L21 9"/><path d="M3 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/><path d="M5 9v11h14V9"/><path d="M10 20v-6h4v6"/></svg>',
-  briefcase: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>',
-};
-
-const PLACEHOLDER_GRADIENTS = {
-  palette: 'linear-gradient(135deg,#F472B6,#E8734A)',
-  music:   'linear-gradient(135deg,#60A5FA,#3B82C4)',
-  masks:   'linear-gradient(135deg,#FB923C,#F43F5E)',
-  camera:  'linear-gradient(135deg,#34D399,#0EA5E9)',
-  mic:     'linear-gradient(135deg,#F4B183,#C2620F)',
-  bag:     'linear-gradient(135deg,#FBBF24,#F97316)',
-  anime:   'linear-gradient(135deg,#FDE68A,#F59E0B)',
-  dance:   'linear-gradient(135deg,#5EEAD4,#0D9488)',
-  design:  'linear-gradient(135deg,#F5D28C,#B8860B)',
-  popup:   'linear-gradient(135deg,#FDBA74,#C2410C)',
-  briefcase: 'linear-gradient(135deg,#64748B,#334155)',
-  ticket:  'linear-gradient(135deg,#94A3B8,#475569)',
-};
-
-function iconKeyFor(category){ return CATEGORY_ICON_MAP[category] || 'ticket'; }
-
-// 場館 -> 縣市的精準對照（跟 scraper.py 的 MAJOR_VENUE_REGIONS 保持一致）
-// 直接用場館名稱判斷地區，比地址關鍵字比對準確很多
-const VENUE_REGION_MAP = {
-  '台北市立美術館':'台北市', '國立故宮博物院':'台北市', '國立歷史博物館':'台北市',
-  '國立臺灣博物館':'台北市', '台北當代藝術館':'台北市', '華山1914文化創意產業園區':'台北市',
-  '松山文創園區':'台北市', '空總臺灣當代文化實驗場':'台北市', '國父紀念館':'台北市',
-  '中正紀念堂':'台北市', '國家兩廳院':'台北市', '台北流行音樂中心':'台北市',
-  '三創生活園區':'台北市', '台北世界貿易中心':'台北市', '順益台灣原住民博物館':'台北市',
-  '新北市美術館':'新北市', '雲門劇場':'新北市',
-  '桃園展演中心':'桃園市', '桃園市立美術館':'桃園市',
-  '新竹市美術館':'新竹市', '新竹生活美學館':'新竹市',
-  '國立臺灣美術館':'台中市', '台中國家歌劇院':'台中市',
-  '彰化縣立美術館':'彰化縣',
-  '國立臺灣工藝研究發展中心':'南投縣',
-  '高雄市立美術館':'高雄市', '衛武營國家藝術文化中心':'高雄市',
-  '駁二藝術特區':'高雄市', '高雄市電影館':'高雄市',
-  '台南市美術館':'台南市', '國立臺灣歷史博物館':'台南市', '台南文化中心':'台南市',
-  '屏東美術館':'屏東縣', '屏東演藝廳':'屏東縣',
-};
-
-function detectRegion(ev){
-  if(VENUE_REGION_MAP[ev.locationName]) return VENUE_REGION_MAP[ev.locationName];
-  const text = `${ev.locationName || ''} ${ev.location || ''}`;
-  for(const group of REGION_GROUPS){
-    if(group.some(kw => text.includes(kw))) return group[0];
-  }
-  return '其他地區';
-}
-
-function sortByRegionOrder(regions){
-  return regions.slice().sort((a,b) => {
-    const ai = REGION_ORDER.indexOf(a); const bi = REGION_ORDER.indexOf(b);
-    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-  });
-}
-
-function sortByCategoryOrder(cats){
-  return cats.slice().sort((a,b) => {
-    const ai = CATEGORY_ORDER.indexOf(a); const bi = CATEGORY_ORDER.indexOf(b);
-    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-  });
-}
-
-// ---------- 讀取網址參數（從「顯示更多展覽」「附近展覽」連結進來時使用）----------
-function readUrlParams(){
-  const params = new URLSearchParams(location.search);
-  const category = params.get('category');
-  const status = params.get('status');
-  const view = params.get('view');
-  const eventUrl = params.get('event');
-  const venue = params.get('venue');
-  const region = params.get('region');
-  const special = params.get('special');
-  const q = params.get('q');
-  if(special === 'upcoming' || special === 'ending'){
-    state.specialType = special;
-    state.viewMode = 'special';
-    state.statusFilter = special === 'upcoming' ? 'upcoming' : 'ongoing';
-  }
-  if(q){ state.searchQuery = q; state.viewMode = 'search'; }
-  if(category){ state.detailCategory = category; state.viewMode = 'detail'; }
-  if(venue){ state.detailVenue = venue; state.viewMode = 'venue'; }
-  if(region){ state.detailRegion = region; state.viewMode = 'region'; }
-  if(view === 'nearby') state.viewMode = 'nearby';
-  if(view === 'favorites') state.viewMode = 'favorites';
-  if(view === 'all'){ state.viewMode = 'search'; state.searchQuery = ''; }
-  if(eventUrl){ state.eventDetailUrl = eventUrl; state.viewMode = 'event'; }
-  if(status && ['all','ongoing','upcoming'].includes(status)) state.statusFilter = status;
-}
-
-async function loadData(){
-  readUrlParams();
-  setSearchQuery(state.searchQuery);
-  try{
-    const res = await fetch('data/exhibitions.json', { cache: 'no-store' });
-    const data = await res.json();
-    state.events = (data.events || []).map(ev => ({ ...ev, region: detectRegion(ev) }));
-    state.updatedAt = data.updatedAt;
-    state.venueImages = data.venueImages || {};
-    buildCategoryRow();
-    buildCategoryPanel();
-    buildRegionPanel();
-    buildVenuePanel();
-    syncStatusButtons();
-    renderFeaturedCarousel();
-    renderVenueCarousel();
-    render();
-    updateNavCount();
-    autoRequestLocationOnce();
-  }catch(err){
-    document.getElementById('homepageRows').innerHTML =
-      '<div class="empty">資料載入失敗，請確認 data/exhibitions.json 是否存在。</div>';
-    console.error(err);
-  }
-}
-
-function formatUpdatedAt(iso){
-  if(!iso) return '';
-  const d = new Date(iso);
-  if(isNaN(d.getTime())) return '';
-  const pad = n => String(n).padStart(2,'0');
-  return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function updateNavCount(){
-  const dateText = formatUpdatedAt(state.updatedAt);
-  document.getElementById('navCount').textContent =
-    `收錄 ${state.events.length} 檔活動${dateText ? ` · 最後更新 ${dateText}` : ''}`;
-}
-
-function countBy(list, key){
-  const counts = {};
-  list.forEach(ev => {
-    const v = ev[key];
-    if(!v) return;
-    counts[v] = (counts[v] || 0) + 1;
-  });
-  return counts;
-}
-
-// 給像 categories 這種「一筆資料可能對應多個值」的陣列欄位使用
-function countByArrayField(list, key){
-  const counts = {};
-  list.forEach(ev => {
-    const values = ev[key];
-    if(!Array.isArray(values)) return;
-    values.forEach(v => {
-      if(!v) return;
-      counts[v] = (counts[v] || 0) + 1;
-    });
-  });
-  return counts;
-}
-
-function buildCategoryRow(){
-  const counts = countByArrayField(state.events, 'categories');
-  const cats = sortByCategoryOrder(Object.keys(counts));
-  const row = document.getElementById('catRow');
-  row.innerHTML = cats.map(cat => {
-    const isActive = state.viewMode === 'detail' && state.detailCategory === cat;
-    const href = isActive ? '?view=all' : buildShowMoreUrl(cat);
-    return `
-    <a class="cat-chip ${isActive ? 'active' : ''}" href="${href}">
-      <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
-      <span class="label">${escapeHtml(cat)}</span>
-    </a>
-  `;
-  }).join('');
-}
-
-function buildCategoryPanel(){
-  const counts = countByArrayField(state.events, 'categories');
-  const cats = sortByCategoryOrder(Object.keys(counts));
-  const el = document.getElementById('categoryOptions');
-  el.innerHTML = cats.map(cat => `
-    <a class="opt" href="${buildShowMoreUrl(cat)}">
-      <span class="opt-icon">${ICONS[iconKeyFor(cat)]}</span>
-      ${escapeHtml(cat)}
-      <span class="c">${counts[cat]}</span>
-    </a>
-  `).join('');
-}
-
-function buildRegionPanel(){
-  const counts = countBy(state.events, 'region');
-  const el = document.getElementById('regionOptions');
-
-  const byMacro = {};
-  Object.keys(counts).forEach(region => {
-    const macro = macroOf(region);
-    (byMacro[macro] = byMacro[macro] || []).push(region);
-  });
-
-  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
-    const regions = sortByRegionOrder(byMacro[macro]);
-    return `
-      <div class="dropdown-group">
-        <button type="button" class="dropdown-group-toggle" data-group="region-${cssId(macro)}">
-          <span>${escapeHtml(macro)}</span>
-          <span class="arrow">▸</span>
-        </button>
-        <div class="dropdown-group-body" data-group-body="region-${cssId(macro)}">
-          ${regions.map(region => `
-            <a class="opt" href="?region=${encodeURIComponent(region)}">
-              ${escapeHtml(region)}
-              <span class="c">${counts[region]}</span>
-            </a>
-          `).join('')}
+      <section class="editorial-section venue-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">VENUE GUIDE</p>
+            <h2>從喜歡的場館開始探索</h2>
+          </div>
+          <a href="?view=all" class="section-link">瀏覽所有場館 <span>↗</span></a>
         </div>
+        <div class="venue-grid" id="venueGrid"></div>
+      </section>
+    </section>
+
+    <section class="listing-view app-view" id="listingView" hidden>
+      <div class="view-hero compact-view-hero">
+        <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
+        <h1 id="listingTitle">探索全台展覽</h1>
+        <p id="listingDescription">依分類、地區、日期與舉辦狀態，找到適合你的展覽。</p>
       </div>
-    `;
-  }).join('');
 
-  bindGroupToggles(el);
-}
+      <div class="listing-layout">
+        <aside class="filter-sidebar" id="filterSidebar">
+          <div class="filter-block">
+            <div class="filter-title"><span>日期</span><button type="button" id="sidebarClearDate">清除</button></div>
+            <input type="date" id="listingDatePicker">
+          </div>
+          <div class="filter-block">
+            <div class="filter-title"><span>舉辦狀態</span></div>
+            <div class="vertical-options" id="listingStatusOptions"></div>
+          </div>
+          <div class="filter-block">
+            <div class="filter-title"><span>分類</span></div>
+            <div class="vertical-options" id="listingCategoryOptions"></div>
+          </div>
+          <div class="filter-block">
+            <div class="filter-title"><span>地區</span></div>
+            <div class="vertical-options" id="listingRegionOptions"></div>
+          </div>
+        </aside>
 
-function buildVenuePanel(){
-  const counts = {};
-  const macroByVenue = {};
-  state.events.forEach(ev => {
-    const venue = ev.locationName || ev.location;
-    if(!venue) return;
-    counts[venue] = (counts[venue] || 0) + 1;
-    macroByVenue[venue] = macroOf(ev.region);
-  });
-
-  const byMacro = {};
-  Object.keys(counts).forEach(venue => {
-    const macro = macroByVenue[venue];
-    (byMacro[macro] = byMacro[macro] || []).push(venue);
-  });
-
-  const el = document.getElementById('venueOptions');
-  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
-    const venues = byMacro[macro].sort((a,b) => counts[b] - counts[a]);
-    return `
-      <div class="dropdown-group">
-        <button type="button" class="dropdown-group-toggle" data-group="venue-${cssId(macro)}">
-          <span>${escapeHtml(macro)}</span>
-          <span class="arrow">▸</span>
-        </button>
-        <div class="dropdown-group-body" data-group-body="venue-${cssId(macro)}">
-          ${venues.map(venue => `
-            <a class="opt" href="?venue=${encodeURIComponent(venue)}">
-              ${escapeHtml(venue)}
-              <span class="c">${counts[venue]}</span>
-            </a>
-          `).join('')}
+        <div class="listing-content">
+          <div class="listing-toolbar">
+            <div>
+              <button class="filter-drawer-button" id="filterDrawerButton" type="button">篩選條件</button>
+              <span id="listingCount">載入中…</span>
+            </div>
+            <select id="sortSelect" aria-label="排序方式">
+              <option value="recommended">推薦排序</option>
+              <option value="newest">最新開展</option>
+              <option value="ending">即將結束</option>
+              <option value="title">名稱排序</option>
+            </select>
+          </div>
+          <div class="active-filters" id="activeFilters"></div>
+          <div class="exhibition-grid" id="listingGrid"></div>
+          <div class="empty-state" id="listingEmpty" hidden>
+            <span>✦</span>
+            <h3>沒有找到符合條件的展覽</h3>
+            <p>試著調整日期、分類或地區。</p>
+          </div>
         </div>
-      </div>
-    `;
-  }).join('');
-
-  bindGroupToggles(el);
-}
-
-function bindGroupToggles(container){
-  container.querySelectorAll('.dropdown-group-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const body = container.querySelector(`[data-group-body="${btn.dataset.group}"]`);
-      const isOpen = body.classList.toggle('open');
-      btn.classList.toggle('open', isOpen);
-    });
-  });
-}
-
-function syncStatusButtons(){
-  document.querySelectorAll('.status-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.status === state.statusFilter);
-  });
-}
-
-// ---------- 日期／狀態判斷 ----------
-function parseDate(str){
-  if(!str) return null;
-  const parts = str.split(/[\/\-]/).map(Number);
-  if(parts.length < 3 || parts.some(isNaN)) return null;
-  return new Date(parts[0], parts[1]-1, parts[2]);
-}
-
-function isOngoing(ev){
-  const now = new Date();
-  const start = parseDate(ev.startDate);
-  const end = parseDate(ev.endDate);
-  if(start && start > now) return false;
-  if(end && end < now) return false;
-  return true;
-}
-function isUpcoming(ev){
-  const start = parseDate(ev.startDate);
-  return start ? start > new Date() : false;
-}
-
-// 進行中的展覽優先顯示，其次依日期排序（進行中→依結束日期排序；未開展→依開始日期排序）
-function compareEvents(a, b){
-  const aOngoing = isOngoing(a), bOngoing = isOngoing(b);
-  if(aOngoing !== bOngoing) return aOngoing ? -1 : 1;
-  if(aOngoing){
-    const aVal = parseDate(a.endDate)?.getTime() ?? Infinity;
-    const bVal = parseDate(b.endDate)?.getTime() ?? Infinity;
-    return aVal - bVal;
-  }
-  const aVal = parseDate(a.startDate)?.getTime() ?? Infinity;
-  const bVal = parseDate(b.startDate)?.getTime() ?? Infinity;
-  return aVal - bVal;
-}
-
-function computeBadge(ev){
-  const now = new Date();
-  const start = parseDate(ev.startDate);
-  const end = parseDate(ev.endDate);
-
-  // 還沒開展的活動，只可能是「即將開展」，絕對不能被判定成「即將結束」
-  if(start && start > now){
-    const daysUntilStart = (start - now) / 86400000;
-    if(daysUntilStart <= 14) return { label:'即將開展', cls:'upcoming' };
-    return null;
-  }
-
-  if(end){
-    const daysLeft = (end - now) / 86400000;
-    if(daysLeft >= 0 && daysLeft <= 7) return { label:'即將結束', cls:'closing' };
-  }
-  if(start){
-    const daysSinceStart = (now - start) / 86400000;
-    if(daysSinceStart >= 0 && daysSinceStart <= 10) return { label:'新開展', cls:'new' };
-  }
-  return null;
-}
-
-function dateRangeText(ev){
-  if(ev.startDate && ev.endDate && ev.startDate !== ev.endDate) return `${ev.startDate} – ${ev.endDate}`;
-  return ev.startDate || ev.endDate || '日期未提供';
-}
-
-// ---------- 篩選 ----------
-function parsePriceRange(priceStr){
-  if(!priceStr) return null;
-  if(priceStr.includes('免費')) return { min: 0, max: 0 };
-  const nums = (priceStr.match(/\d[\d,]*/g) || []).map(s => parseInt(s.replace(/,/g, ''), 10));
-  if(nums.length === 0) return null;
-  return { min: Math.min(...nums), max: Math.max(...nums) };
-}
-
-function getFilteredPool(){
-  const q = (state.searchQuery || '').trim().toLowerCase();
-  let pool = state.events.filter(ev => {
-    if(!ev.sourceUrl) return false;
-    if(state.selectedRegions.size && !state.selectedRegions.has(ev.region)) return false;
-    if(state.selectedVenues.size && !state.selectedVenues.has(ev.locationName || ev.location)) return false;
-    if(state.statusFilter === 'ongoing' && !isOngoing(ev)) return false;
-    if(state.statusFilter === 'upcoming' && !isUpcoming(ev)) return false;
-
-    if(state.selectedDate){
-      const picked = parseDate(state.selectedDate.replace(/-/g, '/'));
-      const start = parseDate(ev.startDate);
-      const end = parseDate(ev.endDate);
-      if(picked){
-        if(start && picked < start) return false;
-        if(end && picked > end) return false;
-      }
-    }
-
-    if(q){
-      const haystack = `${ev.title} ${ev.locationName} ${ev.location} ${ev.unit}`.toLowerCase();
-      if(!haystack.includes(q)) return false;
-    }
-    return true;
-  });
-  pool.sort(compareEvents);
-  return pool;
-}
-
-// ---------- 卡片 ----------
-// ---------- 收藏功能（存在瀏覽器本機，不需要登入）----------
-const FAVORITES_KEY = 'exhibitionHubFavorites';
-
-function getFavorites(){
-  try{
-    const raw = localStorage.getItem(FAVORITES_KEY);
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){
-    return [];
-  }
-}
-
-function isFavorite(url){
-  return getFavorites().includes(url);
-}
-
-function toggleFavorite(url){
-  let favs = getFavorites();
-  if(favs.includes(url)) favs = favs.filter(u => u !== url);
-  else favs.push(url);
-  try{ localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); }catch(e){ /* 儲存失敗就算了，不影響瀏覽 */ }
-}
-
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.fav-btn');
-  if(!btn) return;
-  e.preventDefault();
-  e.stopPropagation();
-  toggleFavorite(btn.dataset.fav);
-  btn.classList.toggle('active');
-  if(state.viewMode === 'favorites') render();
-});
-
-function cardMarkup(ev, { showDistance, flat } = {}){
-  const iconKey = iconKeyFor(ev.category);
-  const badge = computeBadge(ev);
-  const tag = ev.sourceUrl ? 'a' : 'div';
-  const href = ev.sourceUrl ? `href="?event=${encodeURIComponent(ev.sourceUrl)}"` : '';
-  const gradient = PLACEHOLDER_GRADIENTS[iconKey];
-  const categories = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '活動'];
-  // 圖片一律先放 icon 佔位圖在底層，真的圖片載入成功才蓋在上面；
-  // 如果圖片網址失效載入失敗，onerror 會把圖片移除，讓底下的佔位圖自然顯示出來
-  const media = `
-    <div class="icon-wrap">${ICONS[iconKey]}</div>
-    ${ev.image ? `<img src="${escapeAttr(ev.image)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
-  `;
-
-  return `
-    <${tag} class="card ${flat ? 'card-flat' : ''}" ${href}>
-      <div class="card-media" style="background:${gradient}">
-        ${media}
-        ${badge ? `<span class="card-badge ${badge.cls}">${badge.label}</span>` : ''}
-        ${ev.sourceUrl ? `<button class="fav-btn ${isFavorite(ev.sourceUrl) ? 'active' : ''}" data-fav="${escapeAttr(ev.sourceUrl)}" aria-label="收藏">♥</button>` : ''}
-      </div>
-      <div class="card-body">
-        <div class="card-cat-row">
-          ${categories.map(c => `<span class="card-cat">${escapeHtml(c)}</span>`).join('')}
-        </div>
-        <h3 class="card-title">${escapeHtml(ev.title)}</h3>
-        <div class="card-meta">
-          <span class="loc">${escapeHtml(ev.locationName || ev.location || '地點未提供')}</span>
-          <span>${escapeHtml(dateRangeText(ev))}</span>
-        </div>
-        <div class="card-price ${ev.price === '免費' ? 'is-free' : ''} ${!ev.price ? 'is-unknown' : ''}">${ev.price ? escapeHtml(ev.price) : '票價未提供'}</div>
-        ${showDistance && ev._distance != null ? `<div class="card-dist">距離約 ${ev._distance.toFixed(1)} 公里</div>` : ''}
-      </div>
-    </${tag}>
-  `;
-}
-
-// ---------- 首頁：依分類分區顯示 ----------
-const ROW_PAGE_SIZE = 4;
-const ROW_MAX_ITEMS = ROW_PAGE_SIZE * 3; // 最多顯示 3 頁
-
-function buildShowMoreUrl(category){
-  const params = new URLSearchParams();
-  params.set('category', category);
-  if(state.statusFilter !== 'all') params.set('status', state.statusFilter);
-  return `?${params.toString()}`;
-}
-
-function sortRowItems(items, mode){
-  const arr = items.slice();
-  if(mode === 'newest'){
-    arr.sort((a, b) => (parseDate(b.startDate)?.getTime() ?? 0) - (parseDate(a.startDate)?.getTime() ?? 0));
-  }else if(mode === 'ending'){
-    arr.sort((a, b) => (parseDate(a.endDate)?.getTime() ?? Infinity) - (parseDate(b.endDate)?.getTime() ?? Infinity));
-  }else{
-    arr.sort(compareEvents);
-  }
-  return arr;
-}
-
-function rowSortControlHtml(rowKey){
-  const mode = state.rowSort[rowKey] || 'default';
-  return `
-    <div class="row-sort" data-row-sort-key="${escapeAttr(rowKey)}">
-      <button class="row-sort-btn ${mode === 'default' ? 'active' : ''}" data-sort="default">推薦</button>
-      <button class="row-sort-btn ${mode === 'newest' ? 'active' : ''}" data-sort="newest">最新</button>
-      <button class="row-sort-btn ${mode === 'ending' ? 'active' : ''}" data-sort="ending">即將結束</button>
-    </div>
-  `;
-}
-
-function renderHomepage(pool){
-  const wrap = document.getElementById('homepageRows');
-
-  if(pool.length === 0){
-    wrap.innerHTML = '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
-    return;
-  }
-
-  // 即將開展：依開展日期由近到遠排序（原本用錯排序方向，導致近期才開展的展覽被排到後面擠掉）
-  const upcoming = pool
-    .filter(ev => isUpcoming(ev))
-    .sort((a, b) => (parseDate(a.startDate)?.getTime() ?? Infinity) - (parseDate(b.startDate)?.getTime() ?? Infinity));
-  // 即將結束：依結束日期由近到遠排序
-  const ending = pool
-    .filter(ev => isOngoing(ev) && computeBadge(ev) && computeBadge(ev).cls === 'closing')
-    .sort((a, b) => (parseDate(a.endDate)?.getTime() ?? Infinity) - (parseDate(b.endDate)?.getTime() ?? Infinity));
-
-  const curatedRow = (key, icon, title, items) => items.length ? `
-    <section class="cat-section">
-      <div class="cat-section-head">
-        <h2><span class="icon-sm">${icon}</span>${title}<span class="hint">（${items.length} 檔）</span></h2>
-        <div class="row-controls">
-          <button class="row-nav prev" data-row="${key}" aria-label="向左">‹</button>
-          <button class="row-nav next" data-row="${key}" aria-label="向右">›</button>
-        </div>
-      </div>
-      <div class="carousel carousel-flat" id="row-${key}">
-        ${items.slice(0, ROW_MAX_ITEMS).map(ev => cardMarkup(ev, { flat: true })).join('')}
-      </div>
-      <div class="show-more-row">
-        <a class="show-more-btn" href="?special=${key}">查看全部 →</a>
       </div>
     </section>
-  ` : '';
 
-  wrap.innerHTML =
-    curatedRow('upcoming', '🌱', '即將開展', upcoming) +
-    curatedRow('ending', '⏳', '即將結束', ending);
-
-  if(!upcoming.length && !ending.length){
-    wrap.innerHTML = '<div class="empty">目前沒有符合條件的「即將開展」或「即將結束」活動，用上方分類圖示或篩選找找看其他展覽吧。</div>';
-  }
-
-  wrap.querySelectorAll('.row-nav').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const el = document.getElementById(`row-${btn.dataset.row}`);
-      if(!el) return;
-      const dir = btn.classList.contains('next') ? 1 : -1;
-      el.scrollBy({ left: dir * el.clientWidth, behavior: 'smooth' });
-    });
-  });
-}
-
-function cssId(str){
-  return str.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
-}
-
-// ---------- 站內展覽詳情頁 ----------
-function findEventByUrl(url){
-  return state.events.find(ev => ev.sourceUrl === url);
-}
-
-function renderFavorites(){
-  const favs = getFavorites();
-  const items = state.events.filter(ev => favs.includes(ev.sourceUrl));
-  document.getElementById('favoritesHint').textContent = `共 ${items.length} 檔`;
-  const grid = document.getElementById('favoritesGrid');
-  grid.innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">還沒有收藏的展覽，點卡片右上角的愛心圖示即可收藏。</div>';
-}
-
-function renderEventDetail(){
-  const ev = findEventByUrl(state.eventDetailUrl);
-  const view = document.getElementById('eventDetailView');
-  if(!ev){
-    view.innerHTML = '<a class="back-link" href="./">← 回首頁</a><div class="empty">找不到這檔活動的資料，可能已經下架或連結有誤。</div>';
-    return;
-  }
-
-  // 只使用這檔展覽自己的單張圖片，不再用多圖輪播
-  // (原本的 images 陣列有時候會混到抓取過程中頁面上其他活動的縮圖，資料不夠可靠)
-  const iconKey = iconKeyFor(ev.category);
-  const carouselEl = document.getElementById('eventCarousel');
-  if(!ev.image){
-    carouselEl.innerHTML = `<div class="event-slide active" style="background:${PLACEHOLDER_GRADIENTS[iconKey]}">${ICONS[iconKey]}</div>`;
-  }else{
-    carouselEl.innerHTML = `
-      <div class="event-slide active">
-        <div class="event-slide-bg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
-        <div class="event-slide-fg" style="background-image:url('${escapeAttr(ev.image)}')"></div>
+    <section class="nearby-view app-view" id="nearbyView" hidden>
+      <div class="view-hero nearby-view-hero">
+        <div>
+          <p class="eyebrow">NEARBY EXHIBITIONS</p>
+          <h1>附近展覽</h1>
+          <p id="nearbyStatusText">允許定位後，依距離由近到遠顯示展覽。</p>
+        </div>
+        <button class="location-button light" id="nearbyLocationButton" type="button">重新取得位置</button>
       </div>
-    `;
-  }
+      <div class="nearby-layout">
+        <div class="nearby-map" id="nearbyMap"></div>
+        <div class="nearby-results">
+          <div class="nearby-results-head"><h2>距離你最近</h2><span id="nearbyCount"></span></div>
+          <div class="nearby-result-list" id="nearbyResultList"></div>
+        </div>
+      </div>
+    </section>
 
-  // 分類標籤
-  const categories = Array.isArray(ev.categories) && ev.categories.length ? ev.categories : [ev.category || '活動'];
-  document.getElementById('eventCatRow').innerHTML = categories.map(c => `
-    <span class="card-cat"><span class="cat-icon">${ICONS[iconKeyFor(c)]}</span>${escapeHtml(c)}</span>
-  `).join('');
+    <section class="detail-view app-view" id="detailView" hidden>
+      <div class="detail-shell" id="detailContent"></div>
+    </section>
 
-  document.getElementById('eventTitle').textContent = ev.title;
+    <section class="favorites-view app-view" id="favoritesView" hidden>
+      <div class="view-hero compact-view-hero">
+        <p class="eyebrow">YOUR SAVED LIST</p>
+        <h1>我的收藏</h1>
+        <p>把想看的展覽先存起來，慢慢安排下一次出發。</p>
+      </div>
+      <div class="favorites-shell">
+        <div class="listing-toolbar"><span id="favoritesCount"></span></div>
+        <div class="exhibition-grid" id="favoritesGrid"></div>
+        <div class="empty-state" id="favoritesEmpty" hidden>
+          <span>♡</span>
+          <h3>還沒有收藏任何展覽</h3>
+          <p>點選卡片上的愛心，就能加入你的觀展清單。</p>
+          <a class="primary-link" href="?view=all">開始探索</a>
+        </div>
+      </div>
+    </section>
 
-  const primaryCat = (Array.isArray(ev.categories) && ev.categories[0]) || ev.category || '';
-  document.getElementById('eventBreadcrumb').innerHTML = `
-    <a href="./">首頁</a><span class="sep">›</span>
-    ${primaryCat ? `<a href="${buildShowMoreUrl(primaryCat)}">${escapeHtml(primaryCat)}</a><span class="sep">›</span>` : ''}
-    <span class="current">${escapeHtml(ev.title)}</span>
-  `;
-  document.getElementById('eventDate').textContent = dateRangeText(ev);
-  document.getElementById('eventVenue').textContent = ev.locationName || ev.location || '地點未提供';
-  document.getElementById('eventAddress').textContent = ev.location || '地址未提供';
+    <section class="loading-view" id="loadingView">
+      <div class="loader-mark">展</div>
+      <p>正在整理今天的展覽</p>
+    </section>
 
-  const transitRow = document.getElementById('eventTransitRow');
-  if(ev.transitInfo){
-    document.getElementById('eventTransit').textContent = ev.transitInfo + '（僅供參考，實際請以現場指標為準）';
-    transitRow.style.display = 'flex';
-  }else{
-    transitRow.style.display = 'none';
-  }
+    <section class="error-view" id="errorView" hidden>
+      <span>!</span>
+      <h2>展覽資料暫時無法載入</h2>
+      <p>請確認 <code>data/exhibitions.json</code> 已存在，或稍後重新整理頁面。</p>
+      <button type="button" onclick="location.reload()">重新整理</button>
+    </section>
+  </main>
 
-  const unitRow = document.getElementById('eventUnitRow');
-  if(ev.unit){
-    document.getElementById('eventUnit').textContent = ev.unit;
-    unitRow.style.display = 'flex';
-  }else{
-    unitRow.style.display = 'none';
-  }
-
-  const priceEl = document.getElementById('eventPrice');
-  priceEl.textContent = ev.price || '票價未提供';
-  priceEl.className = ev.price === '免費' ? 'is-free' : (!ev.price ? 'is-unknown' : '');
-
-  document.getElementById('eventDescription').textContent = ev.description || '目前沒有更多介紹文字，詳情請參考官方頁面。';
-
-  const linkEl = document.getElementById('eventExternalLink');
-  if(ev.sourceUrl){
-    linkEl.href = ev.sourceUrl;
-    linkEl.style.display = 'inline-flex';
-  }else{
-    linkEl.style.display = 'none';
-  }
-
-  const favBtn = document.getElementById('eventFavBtn');
-  if(ev.sourceUrl){
-    favBtn.classList.toggle('active', isFavorite(ev.sourceUrl));
-    favBtn.onclick = () => {
-      toggleFavorite(ev.sourceUrl);
-      favBtn.classList.toggle('active', isFavorite(ev.sourceUrl));
-    };
-  }
-
-  const shareBtn = document.getElementById('eventShareBtn');
-  shareBtn.onclick = () => {
-    const shareUrl = `${location.origin}${location.pathname}?event=${encodeURIComponent(ev.sourceUrl || '')}`;
-    if(navigator.share){
-      navigator.share({ title: ev.title, url: shareUrl }).catch(() => {});
-    }else{
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        shareBtn.title = '連結已複製！';
-      }).catch(() => {});
-    }
-  };
-
-  renderEventNearby(ev);
-}
-
-function renderEventNearby(ev){
-  const hintEl = document.getElementById('eventNearbyHint');
-  const rowEl = document.getElementById('eventNearbyRow');
-  const promptEl = document.getElementById('eventNearbyPrompt');
-
-  if(!state.userLoc){
-    hintEl.textContent = '請允許定位，才能看到附近的展覽';
-    promptEl.style.display = 'block';
-    rowEl.innerHTML = '';
-    return;
-  }
-  promptEl.style.display = 'none';
-
-  const nearby = state.events
-    .filter(other => other.sourceUrl && other.sourceUrl !== ev.sourceUrl)
-    .map(other => {
-      const oLat = parseFloat(other.latitude);
-      const oLng = parseFloat(other.longitude);
-      if(isNaN(oLat) || isNaN(oLng)) return null;
-      return { ...other, _distance: haversine(state.userLoc.lat, state.userLoc.lng, oLat, oLng) };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a._distance - b._distance)
-    .slice(0, 8);
-
-  hintEl.textContent = nearby.length ? '依你目前位置，由近到遠排序' : '';
-  rowEl.innerHTML = nearby.length
-    ? nearby.map(other => cardMarkup(other, { showDistance: true })).join('')
-    : '<div class="empty">目前沒有活動提供座標資訊，暫時無法計算距離。</div>';
-}
-
-function renderDetail(pool){
-  const category = state.detailCategory;
-  const items = pool.filter(ev => Array.isArray(ev.categories) ? ev.categories.includes(category) : ev.category === category);
-
-  // 月曆的「哪幾天有展覽」要看這個分類全部的活動，不能只看目前已經被日期篩選過的清單
-  const allCategoryItems = state.events.filter(ev => ev.sourceUrl && (Array.isArray(ev.categories) ? ev.categories.includes(category) : ev.category === category));
-  renderMiniCalendar('detailCalendar', allCategoryItems);
-
-  renderDetailVenueSidebar(items);
-
-  let filteredItems = state.detailVenueFilter
-    ? items.filter(ev => (ev.locationName || ev.location) === state.detailVenueFilter)
-    : items;
-  filteredItems = sortRowItems(filteredItems, state.rowSort[category] || 'default');
-
-  document.getElementById('detailTitle').textContent = category;
-  document.getElementById('detailHint').textContent = `共 ${filteredItems.length} 檔`;
-  document.getElementById('detailSortControl').innerHTML = rowSortControlHtml(category);
-  document.querySelectorAll('#detailSortControl .row-sort-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.rowSort[category] = btn.dataset.sort;
-      render();
-    });
-  });
-
-  const grid = document.getElementById('detailGrid');
-  grid.innerHTML = filteredItems.length
-    ? filteredItems.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">目前這個分類、地點組合沒有符合條件的活動。</div>';
-}
-
-function renderMiniCalendar(containerId, items){
-  const container = document.getElementById(containerId);
-  if(!container) return;
-
-  const viewDate = state.calendarViewDate;
-  const year = viewDate.getFullYear();
-  const month = viewDate.getMonth();
-  const monthLabel = `${year} 年 ${month + 1} 月`;
-
-  const firstDay = new Date(year, month, 1);
-  const startWeekday = firstDay.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const monthStart = new Date(year, month, 1);
-  const monthEnd = new Date(year, month + 1, 0);
-
-  const eventDaySet = new Set();
-  items.forEach(ev => {
-    const start = parseDate(ev.startDate);
-    const end = parseDate(ev.endDate) || start;
-    if(!start) return;
-    const rangeStart = start < monthStart ? monthStart : start;
-    const rangeEnd = end > monthEnd ? monthEnd : end;
-    for(let d = new Date(rangeStart); d <= rangeEnd; d.setDate(d.getDate() + 1)){
-      if(d.getFullYear() === year && d.getMonth() === month) eventDaySet.add(d.getDate());
-    }
-  });
-
-  const selected = state.selectedDate ? parseDate(state.selectedDate.replace(/-/g, '/')) : null;
-  const isSelectedMonth = selected && selected.getFullYear() === year && selected.getMonth() === month;
-
-  const dowHtml = ['日','一','二','三','四','五','六'].map(d => `<div class="dow">${d}</div>`).join('');
-  let cells = '';
-  for(let i = 0; i < startWeekday; i++) cells += '<div class="day empty"></div>';
-  for(let d = 1; d <= daysInMonth; d++){
-    const hasEvent = eventDaySet.has(d);
-    const isSelected = isSelectedMonth && selected.getDate() === d;
-    cells += `<div class="day ${hasEvent ? 'has-event' : ''} ${isSelected ? 'selected' : ''}" data-day="${d}">${d}</div>`;
-  }
-
-  container.innerHTML = `
-    <div class="mini-calendar-head">
-      <button type="button" id="calPrevMonth" aria-label="上個月">‹</button>
-      <span class="month-label">${monthLabel}</span>
-      <button type="button" id="calNextMonth" aria-label="下個月">›</button>
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div>
+        <span class="brand-seal">展</span>
+        <h2>讓每一次出門，<br>都有值得期待的目的地。</h2>
+      </div>
+      <div class="footer-links">
+        <div><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展覽</a><a href="?view=favorites">我的收藏</a></div>
+        <div><strong>關於資料</strong><span id="footerUpdatedAt">每日自動更新</span><span id="footerRecordCount">載入中</span></div>
+      </div>
     </div>
-    <div class="mini-calendar-grid">${dowHtml}${cells}</div>
-    ${state.selectedDate ? '<button type="button" class="mini-calendar-clear" id="calClearDate">清除日期選擇</button>' : ''}
-  `;
+    <div class="footer-bottom"><span>TAIWAN EXHIBITION JOURNAL</span><span>Built with GitHub Pages</span></div>
+  </footer>
 
-  container.querySelector('#calPrevMonth').addEventListener('click', () => {
-    state.calendarViewDate = new Date(year, month - 1, 1);
-    render();
-  });
-  container.querySelector('#calNextMonth').addEventListener('click', () => {
-    state.calendarViewDate = new Date(year, month + 1, 1);
-    render();
-  });
-  container.querySelectorAll('.day:not(.empty)').forEach(cell => {
-    cell.addEventListener('click', () => {
-      const d = parseInt(cell.dataset.day, 10);
-      const picked = new Date(year, month, d);
-      const pad = n => String(n).padStart(2, '0');
-      state.selectedDate = `${picked.getFullYear()}-${pad(picked.getMonth() + 1)}-${pad(picked.getDate())}`;
-      render();
-    });
-  });
-  const clearBtn = container.querySelector('#calClearDate');
-  if(clearBtn) clearBtn.addEventListener('click', () => { state.selectedDate = null; render(); });
-}
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-function renderDetailVenueSidebar(items){
-  const counts = {};
-  items.forEach(ev => {
-    const v = ev.locationName || ev.location;
-    if(!v) return;
-    counts[v] = (counts[v] || 0) + 1;
-  });
-  const venues = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
-
-  const el = document.getElementById('detailVenueOptions');
-  el.innerHTML = `
-    <button class="venue-opt ${!state.detailVenueFilter ? 'active' : ''}" data-venue="">
-      全部地點<span class="c">${items.length}</span>
-    </button>
-    ${venues.map(v => `
-      <button class="venue-opt ${state.detailVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
-        ${escapeHtml(v)}<span class="c">${counts[v]}</span>
-      </button>
-    `).join('')}
-  `;
-  el.querySelectorAll('.venue-opt').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.detailVenueFilter = btn.dataset.venue || null;
-      render();
-    });
-  });
-}
-
-// ---------- 主渲染流程 ----------
-function render(){
-  const pool = getFilteredPool();
-  state.lastPool = pool;
-
-  const mode = state.viewMode;
-  document.getElementById('homepageRows').style.display = mode === 'home' ? 'block' : 'none';
-  document.getElementById('detailView').style.display = mode === 'detail' ? 'block' : 'none';
-  document.getElementById('venueDetailView').style.display = mode === 'venue' ? 'block' : 'none';
-  document.getElementById('regionDetailView').style.display = mode === 'region' ? 'block' : 'none';
-  document.getElementById('specialView').style.display = mode === 'special' ? 'block' : 'none';
-  document.getElementById('searchView').style.display = mode === 'search' ? 'block' : 'none';
-  document.getElementById('nearbyPageView').style.display = mode === 'nearby' ? 'block' : 'none';
-  document.getElementById('eventDetailView').style.display = mode === 'event' ? 'block' : 'none';
-  document.getElementById('favoritesView').style.display = mode === 'favorites' ? 'block' : 'none';
-  document.getElementById('nearbyPreviewSection').style.display = (mode === 'home') ? 'block' : 'none';
-
-  // 分類頁面(detail)、場館頁面(venue)、地區頁面(region)、即將開展/結束(special)、搜尋結果(search)不需要 Hero、精選展覽、展演空間
-  const hideTopSections = (mode === 'detail' || mode === 'venue' || mode === 'region' || mode === 'event' || mode === 'special' || mode === 'search');
-  document.querySelector('.hero').style.display = hideTopSections ? 'none' : 'block';
-  document.querySelectorAll('.featured-section').forEach(el => { el.style.display = hideTopSections ? 'none' : 'block'; });
-  document.querySelector('.calendar-picker').style.display = mode === 'detail' ? 'none' : 'flex';
-  document.querySelector('.filters-section').style.display = (mode === 'event' || mode === 'special' || mode === 'search') ? 'none' : 'block';
-
-  if(mode === 'detail'){
-    renderDetail(pool);
-  }else if(mode === 'venue'){
-    renderVenueDetail(pool);
-  }else if(mode === 'region'){
-    renderRegionDetail(pool);
-  }else if(mode === 'special'){
-    renderSpecialPage(pool);
-  }else if(mode === 'search'){
-    renderSearchPage(pool);
-  }else if(mode === 'nearby'){
-    renderNearbyPage(pool);
-  }else if(mode === 'event'){
-    renderEventDetail();
-  }else if(mode === 'favorites'){
-    renderFavorites();
-  }else{
-    renderHomepage(pool);
-    renderNearbyPreview(pool);
-  }
-}
-
-// ---------- 附近展覽（獨立頁面）----------
-function haversine(lat1, lon1, lat2, lon2){
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-function renderNearbyPage(pool){
-  const hint = document.getElementById('nearbyPageHint');
-  const prompt = document.getElementById('nearbyPagePrompt');
-  const grid = document.getElementById('nearbyPageGrid');
-  const mapEl = document.getElementById('nearbyMapContainer');
-
-  if(!state.userLoc){
-    hint.textContent = '請允許定位，才能依距離排序附近的展覽';
-    prompt.style.display = 'block';
-    grid.innerHTML = '';
-    mapEl.innerHTML = '';
-    return;
-  }
-  prompt.style.display = 'none';
-
-  const withCoords = pool
-    .map(ev => {
-      const lat = parseFloat(ev.latitude);
-      const lng = parseFloat(ev.longitude);
-      if(isNaN(lat) || isNaN(lng)) return null;
-      return { ...ev, _distance: haversine(state.userLoc.lat, state.userLoc.lng, lat, lng) };
-    })
-    .filter(Boolean)
-    .sort((a,b) => a._distance - b._distance);
-
-  hint.textContent = `共 ${withCoords.length} 檔，依距離由近到遠排序`;
-
-  grid.innerHTML = withCoords.length
-    ? withCoords.map(ev => cardMarkup(ev, { showDistance: true })).join('')
-    : '<div class="empty">目前沒有活動提供座標資訊，暫時無法計算距離。</div>';
-
-  renderNearbyMap(withCoords);
-}
-
-function initNearbyMapIfNeeded(){
-  if(state.nearbyMap) return;
-  state.nearbyMap = L.map('nearbyMapContainer').setView([23.7, 121.0], 7);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap 貢獻者 &copy; CARTO',
-    maxZoom: 19,
-    subdomains: 'abcd',
-  }).addTo(state.nearbyMap);
-  state.nearbyMarkerLayer = L.layerGroup().addTo(state.nearbyMap);
-}
-
-function renderNearbyMap(items){
-  initNearbyMapIfNeeded();
-  state.nearbyMarkerLayer.clearLayers();
-
-  if(state.userLoc){
-    const userMarker = L.circleMarker([state.userLoc.lat, state.userLoc.lng], {
-      radius: 8, color: '#C9962F', fillColor: '#C9962F', fillOpacity: 1,
-    }).bindPopup('你目前的位置');
-    state.nearbyMarkerLayer.addLayer(userMarker);
-  }
-
-  // 同一個座標常常有好幾檔活動疊在一起(例如同一個場館)，先分組成一個標記，
-  // 點開才不會每次都只看到「剛好疊在最上層」的那一檔、感覺像卡住了
-  const groups = {};
-  items.forEach(ev => {
-    const lat = parseFloat(ev.latitude);
-    const lng = parseFloat(ev.longitude);
-    const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
-    (groups[key] = groups[key] || { lat, lng, events: [] }).events.push(ev);
-  });
-
-  Object.values(groups).forEach(group => {
-    const marker = L.marker([group.lat, group.lng]);
-    const listHtml = group.events.slice(0, 6).map(ev => `
-      <div class="map-popup-item">
-        <a href="?event=${encodeURIComponent(ev.sourceUrl)}">${escapeHtml(ev.title)}</a>
-        <span>距離約 ${ev._distance.toFixed(1)} 公里</span>
-      </div>
-    `).join('');
-    const moreText = group.events.length > 6 ? `<p class="map-popup-more">還有 ${group.events.length - 6} 檔在這個地點…</p>` : '';
-    marker.bindPopup(`
-      <div class="map-popup">
-        <h4>${escapeHtml(group.events[0].locationName || group.events[0].location || '')}${group.events.length > 1 ? `（共 ${group.events.length} 檔）` : ''}</h4>
-        ${listHtml}
-        ${moreText}
-      </div>
-    `);
-    state.nearbyMarkerLayer.addLayer(marker);
-  });
-
-  const points = items.map(ev => [parseFloat(ev.latitude), parseFloat(ev.longitude)]);
-  if(state.userLoc) points.push([state.userLoc.lat, state.userLoc.lng]);
-  if(points.length > 0){
-    state.nearbyMap.fitBounds(L.latLngBounds(points), { padding:[30,30], maxZoom: 13 });
-  }
-  setTimeout(() => state.nearbyMap && state.nearbyMap.invalidateSize(), 60);
-}
-
-// ---------- 附近展覽預覽（首頁／分類頁底部，不含地圖）----------
-function renderNearbyPreview(pool){
-  const hint = document.getElementById('nearbyPreviewHint');
-  const prompt = document.getElementById('nearbyPreviewPrompt');
-  const row = document.getElementById('nearbyPreviewRow');
-
-  if(!state.userLoc){
-    hint.textContent = '請允許定位，才能看到附近的展覽';
-    prompt.style.display = 'block';
-    row.innerHTML = '<div class="empty">點擊上方「使用目前位置」，看看附近有什麼展覽。</div>';
-    return;
-  }
-  prompt.style.display = 'none';
-
-  const withCoords = pool
-    .map(ev => {
-      const lat = parseFloat(ev.latitude);
-      const lng = parseFloat(ev.longitude);
-      if(isNaN(lat) || isNaN(lng)) return null;
-      return { ...ev, _distance: haversine(state.userLoc.lat, state.userLoc.lng, lat, lng) };
-    })
-    .filter(Boolean)
-    .sort((a,b) => a._distance - b._distance)
-    .slice(0, 8);
-
-  hint.textContent = withCoords.length ? `依距離由近到遠` : '';
-  row.innerHTML = withCoords.length
-    ? withCoords.map(ev => cardMarkup(ev, { showDistance: true })).join('')
-    : '<div class="empty">目前沒有活動提供座標資訊，暫時無法計算距離。</div>';
-}
-
-function escapeHtml(str){
-  if(!str) return '';
-  return String(str).replace(/[&<>"']/g, s => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[s]));
-}
-function escapeAttr(str){ return escapeHtml(str); }
-
-// ---------- 事件綁定 ----------
-function setSearchQuery(q, sourceEl){
-  state.searchQuery = q;
-  ['searchInput', 'heroSearchInput', 'searchPageInput'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el && el !== sourceEl && el.value !== q) el.value = q;
-  });
-}
-
-function goToSearch(q){
-  const trimmed = (q || '').trim();
-  if(!trimmed) return;
-  location.href = `?q=${encodeURIComponent(trimmed)}`;
-}
-
-['searchInput', 'heroSearchInput', 'searchPageInput'].forEach(id => {
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.addEventListener('input', (e) => {
-    setSearchQuery(e.target.value, e.target);
-    if(state.viewMode === 'search') render();
-  });
-  el.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') goToSearch(e.target.value);
-  });
-});
-
-document.getElementById('datePicker').addEventListener('change', (e) => {
-  state.selectedDate = e.target.value || null;
-  render();
-});
-document.getElementById('clearDateBtn').addEventListener('click', () => {
-  document.getElementById('datePicker').value = '';
-  state.selectedDate = null;
-  render();
-});
-
-document.querySelectorAll('.status-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    state.statusFilter = btn.dataset.status;
-    syncStatusButtons();
-    render();
-  });
-});
-
-function requestUserLocation(btn){
-  if(!navigator.geolocation) return;
-  const originalHtml = btn ? btn.innerHTML : '';
-  if(btn) btn.textContent = '定位中…';
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      document.querySelectorAll('.locate-btn').forEach(b => {
-        b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> 已定位';
-        b.classList.add('active');
-      });
-      render();
-    },
-    () => { if(btn){ btn.innerHTML = originalHtml; btn.textContent = '定位失敗，重試'; } }
-  );
-}
-
-// 進站時自動嘗試定位一次，避免每次都要手動點「使用目前位置」按鈕
-// (瀏覽器還是會照樣跳出原生的定位授權詢問視窗，這是瀏覽器安全機制，無法略過)
-let autoLocationRequested = false;
-function autoRequestLocationOnce(){
-  if(autoLocationRequested || state.userLoc || !navigator.geolocation) return;
-  autoLocationRequested = true;
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      state.userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      document.querySelectorAll('.locate-btn').forEach(b => {
-        b.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> 已定位';
-        b.classList.add('active');
-      });
-      render();
-    },
-    () => { /* 使用者拒絕或定位失敗就算了，畫面上還是有按鈕可以手動重試 */ }
-  );
-}
-
-document.getElementById('nearbyLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
-document.getElementById('nearbyPreviewLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
-document.getElementById('eventNearbyLocateBtn').addEventListener('click', (e) => requestUserLocation(e.currentTarget));
-
-function setupDropdown(navBtnId, panelId){
-  const navBtn = document.getElementById(navBtnId);
-  const panel = document.getElementById(panelId);
-  navBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.dropdown-panel').forEach(p => { if(p !== panel) p.classList.remove('open'); });
-    panel.classList.toggle('open');
-  });
-  document.addEventListener('click', (e) => {
-    if(!panel.contains(e.target) && e.target !== navBtn) panel.classList.remove('open');
-  });
-}
-setupDropdown('regionNavBtn', 'regionPanel');
-setupDropdown('categoryNavBtn', 'categoryPanel');
-setupDropdown('venueNavBtn', 'venuePanel');
-
-// ---------- 精選展覽卡片輪播（Hero）----------
-// 優先挑「有官方圖片」的展覽，隨機排序後最多取 12 檔放進輪播；
-// 之後想固定指定某幾檔，只要改成自己組一份固定清單塞進 pickFeaturedEvents() 回傳值即可。
-function shuffleArray(arr){
-  const a = arr.slice();
-  for(let i = a.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function pickFeaturedEvents(){
-  const withImage = shuffleArray(state.events.filter(ev => ev.image));
-  const withoutImage = shuffleArray(state.events.filter(ev => !ev.image));
-  return withImage.concat(withoutImage).slice(0, 12);
-}
-
-function renderFeaturedCarousel(){
-  const el = document.getElementById('featuredCarousel');
-  if(!el) return;
-  const items = pickFeaturedEvents();
-  el.innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">目前沒有可顯示的精選展覽。</div>';
-}
-
-// ---------- 展演空間 ----------
-const VENUE_CARD_PALETTE = [
-  'linear-gradient(135deg,#E8A63B,#C9962F)',
-  'linear-gradient(135deg,#F472B6,#DB2777)',
-  'linear-gradient(135deg,#FBBF24,#EA580C)',
-  'linear-gradient(135deg,#34D399,#0D9488)',
-  'linear-gradient(135deg,#60A5FA,#2563EB)',
-  'linear-gradient(135deg,#D9A67A,#8B5A2B)',
-  'linear-gradient(135deg,#FB7185,#E11D48)',
-  'linear-gradient(135deg,#5EEAD4,#0891B2)',
-];
-
-const VENUE_ICON_RULES = [
-  { test: /美術館|藝術館|畫廊/, icon: 'M12 2a10 10 0 1 0 0 20c1.5 0 2-1 2-2s-.5-1.5-.5-2 1-1.5 2-1.5H17a4 4 0 0 0 4-4c0-5.5-4.5-10-9-10Z' },
-  { test: /劇場|歌劇院|音樂廳|兩廳院|演藝廳/, icon: 'M17 3a2 2 0 0 1 2 2c0 7-2.5 8-2.5 12a2.5 2.5 0 0 1-5 0M7 3a2 2 0 0 0-2 2c0 7 2.5 8 2.5 12a2.5 2.5 0 0 0 5 0' },
-  { test: /展覽館|會展|世貿/, icon: 'M3 21h18M4 21V9l8-6 8 6v12M9 21v-6h6v6' },
-  { test: /文創|園區|藝術特區/, icon: 'M3 21h18M4 21V9l8-6 8 6v12M9 21v-6h6v6' },
-];
-
-function venueIconPath(venue){
-  const rule = VENUE_ICON_RULES.find(r => r.test.test(venue));
-  return rule ? rule.icon : 'M3 21h18M4 21V9l8-6 8 6v12M9 21v-6h6v6';
-}
-
-function hashString(str){
-  let h = 0;
-  for(let i = 0; i < str.length; i++){ h = (h * 31 + str.charCodeAt(i)) >>> 0; }
-  return h;
-}
-
-function venueCardMarkup(venue, count){
-  const region = VENUE_REGION_MAP[venue] || '';
-  const gradient = VENUE_CARD_PALETTE[hashString(venue) % VENUE_CARD_PALETTE.length];
-  const iconPath = venueIconPath(venue);
-  const realImage = state.venueImages && state.venueImages[venue];
-  const media = realImage
-    ? `<img src="${escapeAttr(realImage)}" alt="" loading="lazy" onerror="var p=this.parentElement; this.remove(); p.style.background='${gradient}'; var fb=p.querySelector('.venue-fallback-icon'); if(fb) fb.style.display='flex';">
-       <div class="venue-fallback-icon" style="display:none;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="${iconPath}"/></svg></div>`
-    : `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="${iconPath}"/></svg>`;
-  return `
-    <a class="venue-card card-flat" href="?venue=${encodeURIComponent(venue)}">
-      <div class="venue-media" style="background:${realImage ? 'none' : gradient}">
-        ${media}
-      </div>
-      <div class="venue-body">
-        <div class="venue-name">${escapeHtml(venue)}</div>
-        <div class="venue-count">${region ? escapeHtml(region) + ' · ' : ''}${count} 檔進行中</div>
-      </div>
-    </a>
-  `;
-}
-
-function renderVenueCarousel(){
-  const el = document.getElementById('venueCarousel');
-  if(!el) return;
-  const counts = {};
-  state.events.forEach(ev => {
-    const v = ev.locationName || ev.location;
-    if(!v) return;
-    counts[v] = (counts[v] || 0) + 1;
-  });
-  const venues = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-  el.innerHTML = venues.length
-    ? venues.map(v => venueCardMarkup(v, counts[v])).join('')
-    : '<div class="empty">目前沒有可顯示的展演空間。</div>';
-}
-
-document.getElementById('venuePrev').addEventListener('click', () => {
-  const el = document.getElementById('venueCarousel');
-  el.scrollBy({ left: -el.clientWidth, behavior: 'smooth' });
-});
-document.getElementById('venueNext').addEventListener('click', () => {
-  const el = document.getElementById('venueCarousel');
-  el.scrollBy({ left: el.clientWidth, behavior: 'smooth' });
-});
-
-function renderVenueDetail(pool){
-  const venue = state.detailVenue;
-  const items = pool.filter(ev => (ev.locationName || ev.location) === venue);
-  document.getElementById('venueDetailTitle').textContent = venue;
-  document.getElementById('venueDetailHint').textContent = `共 ${items.length} 檔`;
-  document.getElementById('venueDetailGrid').innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">這個展演空間目前沒有符合篩選條件的活動。</div>';
-
-  const allVenueItems = state.events.filter(ev => ev.sourceUrl && (ev.locationName || ev.location) === venue);
-  renderMiniCalendar('venueCalendar', allVenueItems);
-  renderVenueSidebar(venue);
-}
-
-function renderVenueSidebar(currentVenue){
-  const counts = {};
-  const macroByVenue = {};
-  state.events.forEach(ev => {
-    const v = ev.locationName || ev.location;
-    if(!v) return;
-    counts[v] = (counts[v] || 0) + 1;
-    macroByVenue[v] = macroOf(ev.region);
-  });
-
-  const byMacro = {};
-  Object.keys(counts).forEach(v => {
-    const macro = macroByVenue[v];
-    (byMacro[macro] = byMacro[macro] || []).push(v);
-  });
-
-  const el = document.getElementById('venueSidebarOptions');
-  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
-    const venues = byMacro[macro].sort((a, b) => counts[b] - counts[a]);
-    return `
-      <div class="filter-title-static" style="margin-top:1rem;">${escapeHtml(macro)}</div>
-      ${venues.map(v => `
-        <a class="venue-opt ${v === currentVenue ? 'active' : ''}" href="?venue=${encodeURIComponent(v)}">
-          ${escapeHtml(v)}<span class="c">${counts[v]}</span>
-        </a>
-      `).join('')}
-    `;
-  }).join('');
-}
-
-function renderRegionDetail(pool){
-  const region = state.detailRegion;
-  const items = pool.filter(ev => ev.region === region);
-  document.getElementById('regionDetailTitle').textContent = region;
-  document.getElementById('regionDetailHint').textContent = `共 ${items.length} 檔`;
-  document.getElementById('regionDetailGrid').innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">這個地區目前沒有符合篩選條件的活動。</div>';
-
-  const allRegionItems = state.events.filter(ev => ev.sourceUrl && ev.region === region);
-  renderMiniCalendar('regionCalendar', allRegionItems);
-  renderRegionSidebar(region);
-}
-
-function renderRegionSidebar(currentRegion){
-  const counts = countBy(state.events, 'region');
-  const el = document.getElementById('regionSidebarOptions');
-
-  const byMacro = {};
-  Object.keys(counts).forEach(region => {
-    const macro = macroOf(region);
-    (byMacro[macro] = byMacro[macro] || []).push(region);
-  });
-
-  el.innerHTML = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
-    const regions = sortByRegionOrder(byMacro[macro]);
-    return `
-      <div class="filter-title-static" style="margin-top:1rem;">${escapeHtml(macro)}</div>
-      ${regions.map(region => `
-        <a class="venue-opt ${region === currentRegion ? 'active' : ''}" href="?region=${encodeURIComponent(region)}">
-          ${escapeHtml(region)}<span class="c">${counts[region]}</span>
-        </a>
-      `).join('')}
-    `;
-  }).join('');
-}
-
-function renderSpecialPage(pool){
-  let items, title;
-  if(state.specialType === 'upcoming'){
-    items = pool.filter(ev => isUpcoming(ev))
-      .sort((a, b) => (parseDate(a.startDate)?.getTime() ?? Infinity) - (parseDate(b.startDate)?.getTime() ?? Infinity));
-    title = '即將開展';
-  }else{
-    items = pool.filter(ev => isOngoing(ev) && computeBadge(ev) && computeBadge(ev).cls === 'closing')
-      .sort((a, b) => (parseDate(a.endDate)?.getTime() ?? Infinity) - (parseDate(b.endDate)?.getTime() ?? Infinity));
-    title = '即將結束';
-  }
-
-  const baseItems = items;
-
-  if(state.specialCategories.size){
-    items = items.filter(ev => Array.isArray(ev.categories)
-      ? ev.categories.some(c => state.specialCategories.has(c))
-      : state.specialCategories.has(ev.category));
-  }
-  if(state.specialVenueFilter){
-    items = items.filter(ev => (ev.locationName || ev.location) === state.specialVenueFilter);
-  }
-
-  document.getElementById('specialTitle').textContent = title;
-  document.getElementById('specialHint').textContent = `共 ${items.length} 檔`;
-  document.getElementById('specialGrid').innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : `<div class="empty">目前沒有符合篩選條件的「${title}」活動。</div>`;
-
-  renderMiniCalendar('specialCalendar', baseItems);
-  renderSpecialVenueSidebar(baseItems);
-  renderSpecialCategoryRow(baseItems);
-  syncStatusButtons();
-}
-
-function renderSpecialVenueSidebar(pool){
-  const counts = {};
-  const macroByVenue = {};
-  pool.forEach(ev => {
-    const v = ev.locationName || ev.location;
-    if(!v) return;
-    counts[v] = (counts[v] || 0) + 1;
-    macroByVenue[v] = macroOf(ev.region);
-  });
-  const byMacro = {};
-  Object.keys(counts).forEach(v => {
-    const macro = macroByVenue[v];
-    (byMacro[macro] = byMacro[macro] || []).push(v);
-  });
-
-  const el = document.getElementById('specialVenueOptions');
-  const allBtn = `
-    <button type="button" class="venue-opt ${!state.specialVenueFilter ? 'active' : ''}" data-venue="">
-      全部地點<span class="c">${pool.length}</span>
-    </button>
-  `;
-  const groupsHtml = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
-    const venues = byMacro[macro].sort((a, b) => counts[b] - counts[a]);
-    return `
-      <div class="filter-title-static" style="margin-top:.9rem;">${escapeHtml(macro)}</div>
-      ${venues.map(v => `
-        <button type="button" class="venue-opt ${state.specialVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
-          ${escapeHtml(v)}<span class="c">${counts[v]}</span>
-        </button>
-      `).join('')}
-    `;
-  }).join('');
-
-  el.innerHTML = allBtn + groupsHtml;
-  el.querySelectorAll('.venue-opt').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.specialVenueFilter = btn.dataset.venue || null;
-      render();
-    });
-  });
-}
-
-function renderSpecialCategoryRow(pool){
-  const counts = countByArrayField(pool, 'categories');
-  const cats = sortByCategoryOrder(Object.keys(counts));
-  const row = document.getElementById('specialCatRow');
-  row.innerHTML = cats.map(cat => `
-    <button type="button" class="cat-chip ${state.specialCategories.has(cat) ? 'active' : ''}" data-cat="${escapeAttr(cat)}">
-      <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
-      <span class="label">${escapeHtml(cat)}<span class="c">${counts[cat]}</span></span>
-    </button>
-  `).join('');
-  row.querySelectorAll('.cat-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.dataset.cat;
-      if(state.specialCategories.has(cat)) state.specialCategories.delete(cat);
-      else state.specialCategories.add(cat);
-      render();
-    });
-  });
-}
-
-// ---------- 搜尋結果頁 ----------
-function renderSearchPage(pool){
-  // pool 已經套用了搜尋關鍵字、舉辦狀態、日期篩選(共用同一套 getFilteredPool)
-  let items = pool;
-
-  if(state.searchCategories.size){
-    items = items.filter(ev => Array.isArray(ev.categories)
-      ? ev.categories.some(c => state.searchCategories.has(c))
-      : state.searchCategories.has(ev.category));
-  }
-  if(state.searchVenueFilter){
-    items = items.filter(ev => (ev.locationName || ev.location) === state.searchVenueFilter);
-  }
-
-  const query = state.searchQuery || '';
-  document.getElementById('searchHint').textContent = query
-    ? `「${escapeHtml(query)}」共 ${items.length} 檔結果`
-    : `共 ${items.length} 檔結果`;
-  document.getElementById('searchGrid').innerHTML = items.length
-    ? items.map(ev => cardMarkup(ev)).join('')
-    : '<div class="empty">沒有符合條件的活動，換個關鍵字或篩選條件看看？</div>';
-
-  renderMiniCalendar('searchCalendar', pool);
-  renderSearchVenueSidebar(pool);
-  renderSearchCategoryRow(pool);
-  syncStatusButtons();
-}
-
-function renderSearchVenueSidebar(pool){
-  const counts = {};
-  const macroByVenue = {};
-  pool.forEach(ev => {
-    const v = ev.locationName || ev.location;
-    if(!v) return;
-    counts[v] = (counts[v] || 0) + 1;
-    macroByVenue[v] = macroOf(ev.region);
-  });
-
-  const byMacro = {};
-  Object.keys(counts).forEach(v => {
-    const macro = macroByVenue[v];
-    (byMacro[macro] = byMacro[macro] || []).push(v);
-  });
-
-  const el = document.getElementById('searchVenueOptions');
-  const allBtn = `
-    <button type="button" class="venue-opt ${!state.searchVenueFilter ? 'active' : ''}" data-venue="">
-      全部地點<span class="c">${pool.length}</span>
-    </button>
-  `;
-  const groupsHtml = MACRO_ORDER.filter(m => byMacro[m]).map(macro => {
-    const venues = byMacro[macro].sort((a, b) => counts[b] - counts[a]);
-    return `
-      <div class="filter-title-static" style="margin-top:.9rem;">${escapeHtml(macro)}</div>
-      ${venues.map(v => `
-        <button type="button" class="venue-opt ${state.searchVenueFilter === v ? 'active' : ''}" data-venue="${escapeAttr(v)}">
-          ${escapeHtml(v)}<span class="c">${counts[v]}</span>
-        </button>
-      `).join('')}
-    `;
-  }).join('');
-
-  el.innerHTML = allBtn + groupsHtml;
-  el.querySelectorAll('.venue-opt').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.searchVenueFilter = btn.dataset.venue || null;
-      render();
-    });
-  });
-}
-
-function renderSearchCategoryRow(pool){
-  const counts = countByArrayField(pool, 'categories');
-  const cats = sortByCategoryOrder(Object.keys(counts));
-  const row = document.getElementById('searchCatRow');
-  row.innerHTML = cats.map(cat => `
-    <button type="button" class="cat-chip ${state.searchCategories.has(cat) ? 'active' : ''}" data-cat="${escapeAttr(cat)}">
-      <span class="icon-circle accent-${iconKeyFor(cat)}">${ICONS[iconKeyFor(cat)]}</span>
-      <span class="label">${escapeHtml(cat)}<span class="c">${counts[cat]}</span></span>
-    </button>
-  `).join('');
-  row.querySelectorAll('.cat-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.dataset.cat;
-      if(state.searchCategories.has(cat)) state.searchCategories.delete(cat);
-      else state.searchCategories.add(cat);
-      render();
-    });
-  });
-}
-
-
-document.getElementById('featuredPrev').addEventListener('click', () => {
-  const el = document.getElementById('featuredCarousel');
-  el.scrollBy({ left: -el.clientWidth, behavior: 'smooth' });
-});
-document.getElementById('featuredNext').addEventListener('click', () => {
-  const el = document.getElementById('featuredCarousel');
-  el.scrollBy({ left: el.clientWidth, behavior: 'smooth' });
-});
-
-document.getElementById('randomPickBtn').addEventListener('click', () => {
-  if(state.events.length === 0) return;
-  const pick = state.events[Math.floor(Math.random() * state.events.length)];
-  if(pick.sourceUrl) location.href = `?event=${encodeURIComponent(pick.sourceUrl)}`;
-});
-
-// ---------- Hero 影片背景 ----------
-function initHeroVideo(){
-  const video = document.getElementById('heroVideoEl');
-  if(!video) return;
-  video.addEventListener('error', () => {
-    console.error('Hero 影片載入失敗，請確認 assets/hero-video.mp4 是否已經正確上傳到 GitHub repo 裡');
-  });
-}
-
-initHeroVideo();
-loadData();
-</script>
-
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/app.js"></script>
 </body>
 </html>

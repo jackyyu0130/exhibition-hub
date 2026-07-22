@@ -1,120 +1,80 @@
-# 台灣展覽誌
+# 台灣展覽誌 V3
 
-自動蒐集全台展覽與藝文活動的網站。資料來自文化部開放資料，每天自動更新，完全免費上線，不需要自己顧伺服器。
+這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
 
-## 這個專案裡有什麼
+## 專案結構
 
-```
+```text
 exhibition-hub/
-├── index.html                    ← 網站本體（左側地區/類別篩選、RWD、卡片可點擊）
-├── data/exhibitions.json         ← 展覽資料（會被自動更新覆蓋）
-├── scripts/scraper.py            ← 抓資料的程式（文化部 API + 華山1914場館）
-├── requirements.txt              ← 抓資料程式需要的 Python 套件
-├── .github/workflows/update.yml  ← 排程：每天自動執行 scraper.py
-└── README.md                     ← 這份教學
+├── index.html
+├── assets/
+│   ├── app.js
+│   ├── styles.css
+│   ├── hero-art.svg
+│   └── hero-video.mp4        # 選用；可保留原本影片
+├── data/
+│   ├── README.md
+│   └── exhibitions.json      # 首次 Action 執行後自動產生
+├── scripts/
+│   └── scraper.py
+├── requirements.txt
+├── .nojekyll
+└── .github/workflows/
+    └── update-exhibitions.yml
 ```
 
-## 這次更新了什麼
+## 最省事的替換方式
 
-- **左側篩選欄**：可依「地區」（依活動地址自動判斷是哪個縣市）和「類別」多選篩選，兩者都會顯示各自的活動數量
-- **RWD**：手機瀏覽時，篩選欄會收合成一個「篩選」按鈕，點開會從右側滑出
-- **點擊活動卡片**：整張卡片可點擊，會在新分頁開啟該活動的官方介紹頁面（沒有官方連結的活動卡片則不可點擊）
-- **新增資料來源：華山1914文化創意產業園區**——因為華山沒有像文化部一樣的公開 API，`scraper.py` 改用網頁解析（scraping）的方式讀取華山官網的「找活動」頁面
+1. 下載並解壓縮 ZIP。
+2. 將 ZIP 內所有檔案上傳到 GitHub 儲存庫根目錄，選擇覆蓋同名檔案。
+3. 不需要手動修改 HTML、CSS 或 JavaScript。
+4. 上傳後，`Update data and deploy site` GitHub Action 會因 `push` 自動執行。
+5. 工作流程會產生或更新 `data/exhibitions.json`，接著直接部署 GitHub Pages。
 
-### 關於花博、世貿、三創——為什麼還沒加進去
+## 保留原本 Hero 影片
 
-我確認過這幾個場館的官網，它們都**沒有提供公開的資料 API**，只能用網頁解析的方式一個個場館去抓，而且每個網站的頁面結構都不一樣（跟華山完全不同的寫法），需要各自客製化解析規則，也比 API 更容易在對方網站改版後失效。
+新版預設附有 `assets/hero-art.svg`，即使沒有影片也能顯示完整 Hero。
+若要沿用原本影片，請保留或上傳：
 
-比較務實的做法是**一次加一個場館**，讓我抓真實網頁內容確認格式抓得準之後再加進 `scraper.py`，而不是一次寫四份沒驗證過的程式碼給你。你想先加哪一個場館，直接告訴我，我下一步就處理。
+```text
+assets/hero-video.mp4
+```
 
----
+## 自動資料更新
 
-## 你的網站已經上線了嗎？這樣更新就好
+- 每天台灣時間約 05:25 自動執行。
+- 也能到 GitHub 的 **Actions → Update data and deploy site → Run workflow** 手動更新。
+- `scraper.py` 會讀取文化部開放資料，並保留 `data/exhibitions.json` 中仍在有效日期內的既有自訂活動，避免覆蓋你原本額外收集的展覽。
 
-如果你已經照之前的教學把網站上線了，不用重新走一次五個步驟，只要：
+## 資料欄位
 
-1. 解壓縮這次的新版 `exhibition-hub.zip`
-2. 進入你原本的 repository 頁面（`https://github.com/你的帳號/exhibition-hub`）
-3. 點「Add file」→「Upload files」
-4. 這次**打開解壓縮後的資料夾，直接選取裡面所有檔案**（`index.html`、`data`、`scripts`、`.github`、`requirements.txt`、`README.md`）拖上去——重點一樣是拖「資料夾裡面的東西」，不要拖整個資料夾
-5. 下方寫提交訊息，例如「新增側邊欄篩選與RWD」，按「Commit changes」
-6. 因為這次新增了 `requirements.txt`（抓華山資料需要用到），第一次更新後建議手動測試一次排程：
-   - 進入「Actions」→「更新展覽資料」→「Run workflow」→ 按綠色按鈕
-   - 等它跑完，看是不是綠色勾勾（成功）
-7. 回到你的網站網址重新整理，就會看到新版介面
+前端支援以下欄位：
 
-如果 Actions 執行失敗（紅色叉叉），把錯誤訊息貼給我，我幫你看。
+```json
+{
+  "id": "活動識別碼",
+  "title": "展覽名稱",
+  "description": "介紹",
+  "sourceUrl": "官方網址",
+  "image": "圖片網址",
+  "categories": ["美術", "攝影"],
+  "startDate": "2026-07-01",
+  "endDate": "2026-09-30",
+  "locationName": "展演場館",
+  "address": "地址",
+  "region": "台北市",
+  "latitude": 25.0,
+  "longitude": 121.5,
+  "price": "免費"
+}
+```
 
----
+## 本機預覽
 
-## 從零開始的完整教學（第一次設定才需要看）
+直接雙擊 `index.html` 時，瀏覽器可能阻擋 JSON 載入。請在專案資料夾執行：
 
-## 第一步：申請 GitHub 帳號
+```bash
+python -m http.server 8000
+```
 
-1. 前往 https://github.com/signup
-2. 輸入你的 Email、設定密碼、取一個帳號名稱（例如 jacky-chen）
-3. 完成驗證步驟（會問幾個簡單問題、可能要驗證信箱），一路照畫面指示即可
-4. 完成後你會有一個像 `https://github.com/你的帳號` 的個人頁面
-
-免費帳號就足夠這個專案使用，不需要付費方案。
-
----
-
-## 第二步：建立一個新的 Repository（專案倉庫）
-
-1. 登入後，點右上角的「+」→「New repository」
-2. Repository name 填：`exhibition-hub`（或任何你喜歡的名字）
-3. 選擇「Public」（公開，這樣朋友才看得到網站）
-4. 不要勾選「Add a README file」（我們待會直接上傳整包）
-5. 按「Create repository」
-
----
-
-## 第三步：把這個專案上傳上去
-
-建立完 repository 後，GitHub 會顯示一個空專案的頁面，上面有「uploading an existing file」的連結：
-
-1. 點選那個連結（或是頁面上的「Add file」→「Upload files」）
-2. 把我準備好的整個資料夾（`exhibition-hub`）裡的**所有檔案和資料夾**拖進網頁裡
-   - 注意：`.github` 資料夾名稱前面有一個點，是隱藏資料夾，記得也要一起拖上去，缺了它排程就不會啟動
-3. 下方填寫一句提交訊息，例如「初始上傳」
-4. 按「Commit changes」
-
----
-
-## 第四步：開啟 GitHub Pages（讓網站正式上線）
-
-1. 進入你的 repository，點上方選單「Settings」
-2. 左側選單找到「Pages」
-3. 「Source」選擇「Deploy from a branch」
-4. Branch 選擇「main」，資料夾選「/ (root)」，按「Save」
-5. 等 1-2 分鐘，畫面會出現一個網址，長得像：
-   `https://你的帳號.github.io/exhibition-hub/`
-6. 打開這個網址，就能看到網站了（第一次看到的是我先放的範例資料）
-
----
-
-## 第五步：確認自動更新排程有啟動
-
-1. 進入 repository，點上方選單「Actions」
-2. 如果看到提示要你啟用 workflow，按下啟用
-3. 你會看到一個叫「更新展覽資料」的工作流程
-4. 想立刻測試，不用等到明天早上：點進去 →右邊「Run workflow」→ 再按一次綠色的「Run workflow」按鈕
-5. 等個 1 分鐘，重新整理，應該會看到一次成功執行（綠色勾勾）
-6. 回到你的網站網址重新整理，資料應該已經換成真實的展覽資訊了
-
-之後它會**每天台灣時間早上 9 點自動執行一次**，不用手動管理。
-
----
-
-## 地圖功能
-
-「地圖」檢視使用 OpenStreetMap，完全免費、不需要申請任何帳號或金鑰，上傳後就能直接使用。
-
-## 之後可以怎麼調整
-
-- **想加其他資料來源**（例如特定美術館的官網）：可以之後請我幫你在 `scraper.py` 裡加新的抓取邏輯，合併進同一份 JSON
-- **想改版面顏色或字體**：`index.html` 裡的 `<style>` 區塊都有註解可以調整，也可以直接告訴我想要的感覺，我幫你改
-- **想換執行時間**：修改 `.github/workflows/update.yml` 裡的 `cron` 設定
-
-有任何一步卡住，把看到的畫面或錯誤訊息告訴我，我可以直接告訴你下一步怎麼做。
+然後開啟 `http://localhost:8000`。

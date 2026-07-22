@@ -1,0 +1,4 @@
+Taiwan Exhibition Journal V3.0
+Generated: 2026-07-22
+Frontend: Vanilla HTML/CSS/JavaScript
+Data: Python scraper + GitHub Actions
