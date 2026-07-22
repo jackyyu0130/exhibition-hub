@@ -14,8 +14,9 @@ permissions:
   pages: write
   id-token: write
 
+# 防止「程式碼 Push、手動執行、每日排程」同時修改 main。
 concurrency:
-  group: pages
+  group: exhibition-hub-update-and-deploy
   cancel-in-progress: false
 
 jobs:
@@ -28,30 +29,71 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
 
+      # 一般程式碼 Push 只部署網站，不在同一時間再寫回資料檔。
+      # 資料更新只由每日排程或手動 Run workflow 執行。
       - name: Set up Python
+        if: github.event_name != 'push'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Install dependencies
+        if: github.event_name != 'push'
         run: pip install -r requirements.txt
 
       - name: Fetch and normalize exhibition data
+        if: github.event_name != 'push'
         run: python scripts/scraper.py
 
-      - name: Commit updated data
+      - name: Commit updated data safely
+        if: github.event_name != 'push'
+        shell: bash
         run: |
-          if [ -n "$(git status --porcelain -- data/exhibitions.json)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          set -euo pipefail
+
+          if git diff --quiet -- data/exhibitions.json; then
+            echo "No data changes"
+            exit 0
+          fi
+
+          # 暫存剛生成的資料。每次推送前都先同步遠端 main，
+          # 避免工作流程執行期間有人 Push 而造成 non-fast-forward。
+          cp data/exhibitions.json /tmp/exhibitions.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3; do
+            echo "Push attempt ${attempt}/3"
+
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/exhibitions.json data/exhibitions.json
+
+            if git diff --quiet -- data/exhibitions.json; then
+              echo "Remote already contains the latest exhibition data"
+              exit 0
+            fi
+
             git add data/exhibitions.json
             git commit -m "chore: update exhibition data"
-            git push
-          else
-            echo "No data changes"
-          fi
+
+            if git push origin HEAD:main; then
+              echo "Exhibition data pushed successfully"
+              exit 0
+            fi
+
+            echo "Remote changed during push; retrying from the newest main..."
+            sleep 5
+          done
+
+          echo "Unable to push exhibition data after 3 attempts"
+          exit 1
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
