@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths-ignore:
       - data/exhibitions.json
+      - data/geocode-cache.json
 
 permissions:
   contents: write
@@ -48,6 +49,10 @@ jobs:
 
       - name: Fetch and normalize exhibition data
         if: github.event_name != 'push'
+        env:
+          MAX_DETAIL_FETCHES: "250"
+          MAX_IMAGE_FETCHES: "300"
+          MAX_GEOCODES: "25"
         run: python scripts/scraper.py
 
       - name: Commit updated data safely
@@ -56,31 +61,38 @@ jobs:
         run: |
           set -euo pipefail
 
-          if git diff --quiet -- data/exhibitions.json; then
+          if [ -z "$(git status --porcelain -- data/exhibitions.json data/geocode-cache.json)" ]; then
             echo "No data changes"
             exit 0
           fi
 
-          # 暫存剛生成的資料。每次推送前都先同步遠端 main，
-          # 避免工作流程執行期間有人 Push 而造成 non-fast-forward。
           cp data/exhibitions.json /tmp/exhibitions.json
+          if [ -f data/geocode-cache.json ]; then
+            cp data/geocode-cache.json /tmp/geocode-cache.json
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           for attempt in 1 2 3; do
             echo "Push attempt ${attempt}/3"
-
             git fetch origin main
             git reset --hard origin/main
+            mkdir -p data
             cp /tmp/exhibitions.json data/exhibitions.json
+            if [ -f /tmp/geocode-cache.json ]; then
+              cp /tmp/geocode-cache.json data/geocode-cache.json
+            fi
 
-            if git diff --quiet -- data/exhibitions.json; then
+            if [ -z "$(git status --porcelain -- data/exhibitions.json data/geocode-cache.json)" ]; then
               echo "Remote already contains the latest exhibition data"
               exit 0
             fi
 
             git add data/exhibitions.json
+            if [ -f data/geocode-cache.json ]; then
+              git add data/geocode-cache.json
+            fi
             git commit -m "chore: update exhibition data"
 
             if git push origin HEAD:main; then

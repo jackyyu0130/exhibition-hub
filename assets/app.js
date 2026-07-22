@@ -1,9 +1,18 @@
 (() => {
   'use strict';
 
-  const CATEGORY_ORDER = ['快閃','美術','攝影','設計','動漫','音樂','表演','舞蹈','講座','市集','商展','電影','親子','其他'];
+  const CATEGORY_ORDER = ['快閃','美術','攝影','設計','動漫','音樂','表演','舞蹈','講座','市集','商展','電影','親子','競賽','徵選','研習','其他'];
   const CATEGORY_ICON = {
-    '快閃':'✦','美術':'◐','攝影':'□','設計':'◇','動漫':'★','音樂':'♪','表演':'◎','舞蹈':'↝','講座':'⌁','市集':'◌','商展':'▣','電影':'▷','親子':'☀','其他':'＋'
+    '快閃':'✦','美術':'◐','攝影':'▣','設計':'◇','動漫':'★','音樂':'♪','表演':'◎','舞蹈':'↝','講座':'⌁','市集':'◌','商展':'▦','電影':'▷','親子':'☀','競賽':'◆','徵選':'✓','研習':'✎','其他':'＋'
+  };
+  const CATEGORY_CODE_MAP = {
+    '1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'講座','8':'電影',
+    '11':'表演','13':'競賽','14':'徵選','15':'其他','17':'音樂','19':'研習'
+  };
+  const CATEGORY_ALIASES = {
+    '展覽':'美術','展覽資訊':'美術','藝術':'美術','戲劇':'表演','戲劇表演':'表演','綜藝':'表演','綜藝活動':'表演',
+    '音樂表演':'音樂','獨立音樂':'音樂','演唱會':'音樂','講座資訊':'講座','親子活動':'親子','電影欣賞':'電影',
+    '競賽活動':'競賽','徵選活動':'徵選','研習課程':'研習','其他藝文資訊':'其他'
   };
   const REGION_ORDER = ['台北市','新北市','基隆市','桃園市','新竹市','新竹縣','苗栗縣','台中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣','台南市','高雄市','屏東縣','宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣','其他地區'];
   const REGION_ALIASES = {'臺北市':'台北市','臺中市':'台中市','臺南市':'台南市','臺東縣':'台東縣'};
@@ -25,6 +34,9 @@
     userLocation: null,
     map: null,
     markers: null,
+    calendarMonth: null,
+    heroTimer: null,
+    heroCursor: 0,
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -63,18 +75,31 @@
   }
 
   function normalizeCategories(raw, title = '', description = '') {
-    let categories = Array.isArray(raw) ? raw : raw ? [raw] : [];
-    categories = categories.map(String).map(item => item.trim()).filter(Boolean);
+    const rawValues = Array.isArray(raw) ? raw : raw !== undefined && raw !== null ? [raw] : [];
+    const categories = [];
+    rawValues.flatMap(value => String(value).split(/[、,，/|;；]+/)).forEach(value => {
+      const text = value.trim();
+      if (!text) return;
+      const mapped = CATEGORY_CODE_MAP[text] || CATEGORY_ALIASES[text] || (CATEGORY_ORDER.includes(text) ? text : '');
+      if (mapped && !categories.includes(mapped)) categories.push(mapped);
+    });
+
     const text = `${title} ${description}`;
     const keywordRules = [
-      ['快閃', /快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像|photo/i], ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色/i],
-      ['設計', /設計|建築|工藝|時尚|design/i], ['舞蹈', /舞蹈|舞作|芭蕾/i], ['音樂', /音樂|演唱會|樂團|concert/i],
-      ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇/i], ['講座', /講座|論壇|工作坊|分享會/i], ['市集', /市集|祭典|嘉年華|文創攤位/i],
-      ['商展', /展售|博覽會|商展|產業展/i], ['電影', /電影|影展|放映/i], ['親子', /親子|兒童|家庭/i], ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏/i]
+      ['快閃', /快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像展|photo(graphy)?/i],
+      ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展/i], ['設計', /設計|建築|工藝|時尚|design/i],
+      ['舞蹈', /舞蹈|舞作|芭蕾/i], ['音樂', /音樂|演唱會|樂團|管弦|獨立音樂|concert/i],
+      ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i], ['講座', /講座|論壇|座談|分享會|演講/i],
+      ['研習', /研習|課程|工作坊|營隊/i], ['市集', /市集|祭典|嘉年華|文創攤位/i],
+      ['商展', /展售|博覽會|商展|產業展|商品展/i], ['電影', /電影|影展|放映/i],
+      ['親子', /親子|兒童|家庭|幼兒/i], ['競賽', /競賽|比賽|大賽|徵件比賽/i], ['徵選', /徵選|徵件|徵稿|招募/i],
+      ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術/i]
     ];
-    keywordRules.forEach(([cat, regex]) => { if (regex.test(text) && !categories.includes(cat)) categories.push(cat); });
-    if (!categories.length) categories = ['其他'];
-    return categories.filter((cat, index, arr) => arr.indexOf(cat) === index).slice(0, 3);
+    keywordRules.forEach(([category, regex]) => {
+      if (regex.test(text) && !categories.includes(category)) categories.unshift(category);
+    });
+    const cleaned = categories.filter(category => CATEGORY_ORDER.includes(category));
+    return (cleaned.length ? cleaned : ['其他']).filter((category, index, array) => array.indexOf(category) === index).slice(0, 3);
   }
 
   function flattenImageCandidates(raw) {
@@ -154,10 +179,14 @@
     const sourceUrl = firstValue(raw.sourceUrl, raw.sourceWebPromote, raw.webSales, raw.sourceWebSite, raw.url, raw.website);
     const id = String(firstValue(raw.id, raw.UID, raw.uid, sourceUrl, `${title}-${index}`));
     const rawCategories = firstValue(raw.categories, raw.categoryName, raw.category);
-    const image = normalizeImage(firstValue(
-      raw.image, raw.images, raw.imageURL, raw.imageUrl, raw.imageUrls,
-      raw.poster, raw.posterUrl, raw.picture, raw.pictureUrl, show.image, show.imageUrl, show.imageURL
-    ));
+    const imageCandidates = [
+      ...flattenImageCandidates(raw.images), ...flattenImageCandidates(raw.imageCandidates),
+      ...flattenImageCandidates(raw.image), ...flattenImageCandidates(raw.imageURL), ...flattenImageCandidates(raw.imageUrl),
+      ...flattenImageCandidates(raw.imageUrls), ...flattenImageCandidates(raw.poster), ...flattenImageCandidates(raw.posterUrl),
+      ...flattenImageCandidates(raw.picture), ...flattenImageCandidates(raw.pictureUrl), ...flattenImageCandidates(show.image),
+      ...flattenImageCandidates(show.imageUrl), ...flattenImageCandidates(show.imageURL)
+    ].map(safeUrl).filter(Boolean).filter((url, index, array) => array.indexOf(url) === index);
+    const image = imageCandidates[0] || '';
     const {latitude, longitude} = coordinatesFrom(show, raw);
     const region = normalizeRegion(firstValue(raw.region, address, venue));
     const price = firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : '');
@@ -165,7 +194,7 @@
     return {
       id, title: String(title).trim(), description: stripHtml(description),
       sourceUrl: safeUrl(sourceUrl), image,
-      images: Array.isArray(raw.images) ? raw.images.map(normalizeImage).filter(Boolean) : image ? [image] : [],
+      images: imageCandidates,
       categories, category: categories[0],
       startDate: firstValue(raw.startDate, raw.start, show.time, show.startTime),
       endDate: firstValue(raw.endDate, raw.end, raw.endTime, show.endTime, raw.startDate),
@@ -194,6 +223,19 @@
 
   function dateOnly(date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  function localDateKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  }
+
+  function eventOccursOn(event, selectedDate) {
+    const selected = selectedDate instanceof Date ? dateOnly(selectedDate) : parseDate(`${selectedDate}T00:00:00`);
+    if (!selected) return false;
+    const start = parseDate(event.startDate);
+    const end = parseDate(event.endDate) || start;
+    if (!start && !end) return false;
+    return (!start || dateOnly(start) <= selected) && (!end || dateOnly(end) >= selected);
   }
 
   function isOngoing(event) {
@@ -266,9 +308,27 @@
   }
 
   function imageMarkup(event, className = '') {
-    if (!event.image) return `<div class="${className || 'card-placeholder'}">${escapeHtml(CATEGORY_ICON[event.category] || '展')}</div>`;
-    return `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'${className || 'card-placeholder'}',textContent:'${escapeHtml(CATEGORY_ICON[event.category] || '展')}'}))">`;
+    const candidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(Boolean);
+    if (!candidates.length) return `<div class="${className || 'card-placeholder'}">${escapeHtml(CATEGORY_ICON[event.category] || '展')}</div>`;
+    const serialized = escapeHtml(JSON.stringify(candidates));
+    return `<img src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-placeholder-text="${escapeHtml(CATEGORY_ICON[event.category] || '展')}" alt="${escapeHtml(event.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="window.__exhibitionImageFallback(this)">`;
   }
+
+  window.__exhibitionImageFallback = image => {
+    try {
+      const candidates = JSON.parse(image.dataset.images || '[]');
+      const nextIndex = Number(image.dataset.imageIndex || 0) + 1;
+      if (candidates[nextIndex]) {
+        image.dataset.imageIndex = String(nextIndex);
+        image.src = candidates[nextIndex];
+        return;
+      }
+    } catch {}
+    const placeholder = document.createElement('div');
+    placeholder.className = image.dataset.placeholderClass || 'card-placeholder';
+    placeholder.textContent = image.dataset.placeholderText || '展';
+    image.replaceWith(placeholder);
+  };
 
   function cardBadge(event) {
     if (isEnding(event)) return '即將結束';
@@ -325,6 +385,8 @@
     state.venue = params.get('venue') || null;
     state.status = params.get('status') || 'all';
     state.date = params.get('date') || null;
+    const calendarAnchor = state.date ? parseDate(`${state.date}T00:00:00`) : new Date();
+    state.calendarMonth = new Date(calendarAnchor.getFullYear(), calendarAnchor.getMonth(), 1);
     if (params.has('event')) state.view = 'detail';
     else if (params.get('view') === 'nearby') state.view = 'nearby';
     else if (params.get('view') === 'favorites') state.view = 'favorites';
@@ -332,7 +394,8 @@
     else state.view = 'home';
   }
 
-  function filterEvents(items = state.events) {
+  function filterEvents(items = state.events, options = {}) {
+    const {includeDate = true} = options;
     const query = state.query.trim().toLowerCase();
     return items.filter(event => {
       if (query) {
@@ -346,13 +409,7 @@
       if (state.status === 'upcoming' && !isUpcoming(event)) return false;
       if (state.status === 'ending' && !isEnding(event, 30)) return false;
       if (state.status === 'free' && !isFree(event)) return false;
-      if (state.date) {
-        const selected = dateOnly(new Date(`${state.date}T00:00:00`));
-        const start = parseDate(event.startDate);
-        const end = parseDate(event.endDate);
-        if (start && selected < dateOnly(start)) return false;
-        if (end && selected > dateOnly(end)) return false;
-      }
+      if (includeDate && state.date && !eventOccursOn(event, state.date)) return false;
       return true;
     });
   }
@@ -382,24 +439,87 @@
     return [...withImages, ...sorted.filter(event => !event.image)].filter((event, index, arr) => arr.findIndex(other => eventKey(other) === eventKey(event)) === index).slice(0, count);
   }
 
+  function heroTicketMarkup(event, slot) {
+    const label = slot === 0 ? '今日推薦' : slot === 1 ? '編輯精選' : '下一站靈感';
+    return `<a class="hero-ticket-card hero-ticket-slot-${slot + 1}" href="${eventHref(event)}" aria-label="查看展覽：${escapeHtml(event.title)}">
+      <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
+      <div class="ticket-main">
+        <span class="ticket-index">${String(slot + 1).padStart(2,'0')}</span>
+        <div><small>${label} · ${escapeHtml(event.categories[0] || '展覽')}</small><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(dateRange(event))} · ${escapeHtml(event.locationName)}</p></div>
+      </div>
+      <div class="ticket-footer"><span>EXHIBITION JOURNAL</span><span class="barcode">|||| ||| ||||</span></div>
+    </a>`;
+  }
+
+  function renderHeroTickets({animate = true} = {}) {
+    const stack = $('#heroTicketStack');
+    if (!stack) return;
+    const base = state.events.filter(event => isOngoing(event) || isUpcoming(event));
+    const pool = selectFeatured(base.length ? base : state.events, Math.min(36, state.events.length));
+    if (!pool.length) return;
+    const picks = [];
+    for (let index = 0; index < Math.min(3, pool.length); index += 1) {
+      const candidate = pool[(state.heroCursor + index * 7) % pool.length];
+      if (candidate && !picks.some(item => eventKey(item) === eventKey(candidate))) picks.push(candidate);
+    }
+    while (picks.length < Math.min(3, pool.length)) {
+      const candidate = pool[(state.heroCursor + picks.length) % pool.length];
+      if (!picks.some(item => eventKey(item) === eventKey(candidate))) picks.push(candidate);
+      else break;
+    }
+    const apply = () => {
+      stack.innerHTML = picks.map(heroTicketMarkup).join('');
+      stack.classList.remove('is-changing');
+      requestAnimationFrame(() => stack.classList.add('is-entering'));
+      setTimeout(() => stack.classList.remove('is-entering'), 900);
+    };
+    if (animate && stack.children.length) {
+      stack.classList.add('is-changing');
+      setTimeout(apply, 260);
+    } else apply();
+    state.heroCursor = (state.heroCursor + 3) % pool.length;
+  }
+
+  function ensureHeroRotation() {
+    if (state.heroTimer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    state.heroTimer = window.setInterval(() => {
+      if (state.view === 'home' && !document.hidden) renderHeroTickets();
+    }, 8000);
+  }
+
+  function renderDateResults(items) {
+    const section = $('#dateResultsSection');
+    if (!state.date) {
+      section.hidden = true;
+      return;
+    }
+    section.hidden = false;
+    const selected = parseDate(`${state.date}T00:00:00`);
+    const formatted = selected ? selected.toLocaleDateString('zh-TW', {month:'long',day:'numeric',weekday:'long'}) : state.date;
+    $('#dateResultsTitle').textContent = `${formatted}有展出的展覽`;
+    $('#dateResultsDescription').textContent = items.length ? `共找到 ${items.length.toLocaleString('zh-TW')} 檔，向右滑動查看更多。` : '目前沒有符合條件的展覽，可以改選附近日期。';
+    $('#dateResultsRail').innerHTML = items.length ? selectFeatured(items, 14).map(cardMarkup).join('') : emptyInline('這一天目前沒有符合條件的展覽');
+    const params = new URLSearchParams({view:'all', date:state.date});
+    if (state.status !== 'all') params.set('status', state.status);
+    if (state.category) params.set('category', state.category);
+    $('#dateResultsMore').href = `?${params.toString()}`;
+  }
+
   function renderHome() {
-    const pool = filterEvents();
+    const basePool = filterEvents(state.events, {includeDate:false});
     const ongoing = state.events.filter(isOngoing);
-    const featured = selectFeatured(pool.length ? pool : ongoing, 9);
-    const upcoming = state.events.filter(isUpcoming).sort((a,b) => (parseDate(a.startDate) || Infinity) - (parseDate(b.startDate) || Infinity)).slice(0, 4);
-    const ending = state.events.filter(event => isEnding(event, 30)).sort((a,b) => (parseDate(a.endDate) || Infinity) - (parseDate(b.endDate) || Infinity)).slice(0, 4);
+    const featured = selectFeatured(basePool.length ? basePool : ongoing, 9);
+    const dateItems = state.date ? basePool.filter(event => eventOccursOn(event, state.date)) : [];
+    const upcoming = state.events.filter(isUpcoming).sort((a,b) => (parseDate(a.startDate)?.getTime() || Infinity) - (parseDate(b.startDate)?.getTime() || Infinity)).slice(0, 4);
+    const ending = state.events.filter(event => isEnding(event, 30)).sort((a,b) => (parseDate(a.endDate)?.getTime() || Infinity) - (parseDate(b.endDate)?.getTime() || Infinity)).slice(0, 4);
 
     $('#heroEventCount').textContent = state.events.length.toLocaleString('zh-TW');
     $('#heroVenueCount').textContent = new Set(state.events.map(event => event.locationName).filter(Boolean)).size.toLocaleString('zh-TW');
-
-    const heroPick = featured[0] || state.events[0];
-    if (heroPick) {
-      $('#heroTicketTitle').textContent = heroPick.title;
-      $('#heroTicketMeta').textContent = `${dateRange(heroPick)} · ${heroPick.locationName}`;
-      $('#heroTicket').onclick = () => location.href = eventHref(heroPick);
-    }
+    if (!$('#heroTicketStack').children.length) renderHeroTickets({animate:false});
+    ensureHeroRotation();
 
     renderCategoryStrip();
+    renderDateResults(dateItems);
     $('#featuredRail').innerHTML = featured.length ? featured.map(cardMarkup).join('') : emptyInline('目前沒有符合篩選的展覽');
     $('#upcomingList').innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
     $('#endingList').innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
@@ -446,7 +566,7 @@
   }
 
   function renderListing() {
-    let items = sortEvents(filterEvents());
+    const items = sortEvents(filterEvents());
     const titleParts = [];
     if (state.query) titleParts.push(`「${state.query}」`);
     if (state.category) titleParts.push(state.category);
@@ -454,23 +574,67 @@
     if (state.venue) titleParts.push(state.venue);
     $('#listingTitle').textContent = titleParts.length ? titleParts.join(' · ') : '探索全台展覽';
     $('#listingEyebrow').textContent = state.query ? 'SEARCH RESULTS' : 'EXPLORE EXHIBITIONS';
-    $('#listingDescription').textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '依分類、地區、日期與舉辦狀態，找到適合你的展覽。';
+    $('#listingDescription').textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '先選分類與日期，再從縣市展開對應的展覽場所。';
     $('#listingCount').textContent = `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
     $('#listingGrid').innerHTML = items.map(cardMarkup).join('');
     $('#listingEmpty').hidden = items.length !== 0;
-    $('#listingDatePicker').value = state.date || '';
     $('#sortSelect').value = state.sort;
     renderSidebarOptions();
+    renderListingCalendar();
     renderActiveFilters();
   }
 
   function renderSidebarOptions() {
     const statusOptions = [['all','全部展覽'],['ongoing','目前舉辦'],['upcoming','即將舉辦'],['ending','即將結束'],['free','免費展覽']];
-    $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="vertical-option ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}"><span>${label}</span><span></span></button>`).join('');
+    $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="status-filter-button ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}" type="button">${label}</button>`).join('');
+
     const categoryCounts = countBy(state.events, event => event.categories);
-    $('#listingCategoryOptions').innerHTML = Object.keys(categoryCounts).sort((a,b) => (CATEGORY_ORDER.indexOf(a)+1 || 99) - (CATEGORY_ORDER.indexOf(b)+1 || 99)).map(category => `<button class="vertical-option ${state.category === category ? 'active' : ''}" data-set-filter="category" data-value="${escapeHtml(category)}"><span>${escapeHtml(category)}</span><span>${categoryCounts[category]}</span></button>`).join('');
-    const regionCounts = countBy(state.events, event => event.region);
-    $('#listingRegionOptions').innerHTML = REGION_ORDER.filter(region => regionCounts[region]).map(region => `<button class="vertical-option ${state.region === region ? 'active' : ''}" data-set-filter="region" data-value="${escapeHtml(region)}"><span>${escapeHtml(region)}</span><span>${regionCounts[region]}</span></button>`).join('');
+    const categories = Object.keys(categoryCounts).filter(category => CATEGORY_ORDER.includes(category)).sort((a,b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b));
+    $('#listingCategoryOptions').innerHTML = categories.map(category => `<button class="listing-category-option ${state.category === category ? 'active' : ''}" data-set-filter="category" data-value="${escapeHtml(category)}" type="button"><span class="category-icon">${CATEGORY_ICON[category] || '＋'}</span><strong>${escapeHtml(category)}</strong><small>${categoryCounts[category].toLocaleString('zh-TW')} 檔</small></button>`).join('');
+
+    const regionGroups = REGION_ORDER.map(region => {
+      const regionEvents = state.events.filter(event => event.region === region);
+      if (!regionEvents.length) return '';
+      const venueCounts = countBy(regionEvents, event => event.locationName);
+      const venues = Object.keys(venueCounts).filter(venue => venue && venue !== '地點待確認').sort((a,b) => venueCounts[b] - venueCounts[a]);
+      const isOpen = state.region === region || (state.venue && venues.includes(state.venue));
+      return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" ${isOpen ? 'open' : ''}>
+        <summary><span>${escapeHtml(region)}</span><small>${regionEvents.length.toLocaleString('zh-TW')} 檔</small><i>⌄</i></summary>
+        <div class="region-venues">
+          <button class="venue-filter-option ${state.region === region && !state.venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter=""><span>全部 ${escapeHtml(region)}</span><small>${regionEvents.length}</small></button>
+          ${venues.map(venue => `<button class="venue-filter-option ${state.venue === venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter="${escapeHtml(venue)}"><span>${escapeHtml(venue)}</span><small>${venueCounts[venue]}</small></button>`).join('')}
+        </div>
+      </details>`;
+    }).join('');
+    $('#listingLocationAccordion').innerHTML = regionGroups || emptyInline('目前沒有地點資料');
+  }
+
+  function renderListingCalendar() {
+    const month = state.calendarMonth || new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const year = month.getFullYear();
+    const monthIndex = month.getMonth();
+    $('#calendarMonthLabel').textContent = `${year} 年 ${monthIndex + 1} 月`;
+    const firstWeekday = new Date(year, monthIndex, 1).getDay();
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+    const todayKey = localDateKey(new Date());
+    const baseItems = filterEvents(state.events, {includeDate:false});
+    const cells = [];
+    for (let index = 0; index < firstWeekday; index += 1) cells.push('<span class="calendar-day empty" aria-hidden="true"></span>');
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const key = localDateKey(new Date(year, monthIndex, day));
+      const count = baseItems.reduce((total, event) => total + (eventOccursOn(event, key) ? 1 : 0), 0);
+      const classes = ['calendar-day'];
+      if (key === state.date) classes.push('selected');
+      if (key === todayKey) classes.push('today');
+      if (count) classes.push('has-events');
+      cells.push(`<button type="button" class="${classes.join(' ')}" data-calendar-date="${key}" aria-label="${year}年${monthIndex+1}月${day}日，${count}檔展覽"><span>${day}</span>${count ? `<small>${count > 99 ? '99+' : count}</small>` : ''}</button>`);
+    }
+    $('#listingCalendarGrid').innerHTML = cells.join('');
+    if (state.date) {
+      const selected = parseDate(`${state.date}T00:00:00`);
+      const count = filterEvents().length;
+      $('#calendarSelectionText').textContent = `${selected?.toLocaleDateString('zh-TW',{month:'long',day:'numeric',weekday:'short'}) || state.date} · ${count} 檔`;
+    } else $('#calendarSelectionText').textContent = '尚未選擇日期';
   }
 
   function renderActiveFilters() {
@@ -505,17 +669,16 @@
     $('#detailContent').innerHTML = `
       <div class="detail-breadcrumb"><a href="./">首頁</a> / <a href="${categoryHref(event.category)}">${escapeHtml(event.category)}</a> / ${escapeHtml(event.title)}</div>
       <div class="detail-grid">
-        <div class="detail-poster">${event.image ? `<img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.title)}" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'detail-poster-placeholder',textContent:'${CATEGORY_ICON[event.category] || '展'}'}))">` : `<div class="detail-poster-placeholder">${CATEGORY_ICON[event.category] || '展'}</div>`}</div>
+        <div class="detail-poster">${imageMarkup(event, 'detail-poster-placeholder')}</div>
         <article class="detail-info">
           <div class="detail-category">${escapeHtml(event.categories.join(' · '))} / ${escapeHtml(event.region)}</div>
           <h1>${escapeHtml(event.title)}</h1>
-          <p class="detail-summary">${escapeHtml(summaryText(event.description) || `${event.locationName}舉辦中的展覽，詳細資訊請見活動官方頁面。`)}</p>
           <div class="detail-meta">
             ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.locationName)}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', event.price)}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
           </div>
           <div class="detail-actions">
-            <a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener">查看官方資訊 ↗</a>
-            <a href="${escapeHtml(googleMapsUrl(event))}" target="_blank" rel="noopener">地圖導航</a>
+            <a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener"><span>查看官方資訊</span><span aria-hidden="true">↗</span></a>
+            <a href="${escapeHtml(googleMapsUrl(event))}" target="_blank" rel="noopener"><span>地圖導航</span></a>
             <button type="button" data-detail-favorite="${escapeHtml(eventKey(event))}">${isFavorite(event) ? '♥ 已收藏' : '♡ 加入收藏'}</button>
             <button type="button" data-share-event="${escapeHtml(eventKey(event))}">分享展覽</button>
           </div>
@@ -643,6 +806,7 @@
     $('#heroSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#heroSearchInput'));});
 
     $('#datePicker').addEventListener('change', event => {state.date = event.target.value || null; renderHome();});
+    $('#dateResultsClear').addEventListener('click', () => {state.date = null; renderHome(); $('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
     $('#clearFiltersButton').addEventListener('click', () => {state.status='all';state.date=null;state.category=null;renderHome();});
     $('#statusPills').addEventListener('click', event => {const button=event.target.closest('[data-status]');if(!button)return;state.status=button.dataset.status;renderHome();});
 
@@ -664,16 +828,29 @@
         const item = state.events.find(eventItem => eventKey(eventItem) === shareButton.dataset.shareEvent);
         if (item) shareEvent(item);
       }
+      const calendarButton = event.target.closest('[data-calendar-date]');
+      if (calendarButton) updateUrl({date:calendarButton.dataset.calendarDate});
+
+      const locationButton = event.target.closest('[data-region-filter]');
+      if (locationButton) updateUrl({region:locationButton.dataset.regionFilter || null, venue:locationButton.dataset.venueFilter || null});
+
       const filterButton = event.target.closest('[data-set-filter]');
       if (filterButton) updateUrl({[filterButton.dataset.setFilter]:filterButton.dataset.value});
       const clearButton = event.target.closest('[data-clear-filter]');
-      if (clearButton) updateUrl({[clearButton.dataset.clearFilter]:null});
+      if (clearButton) {
+        const key = clearButton.dataset.clearFilter;
+        if (key === 'region') updateUrl({region:null,venue:null});
+        else updateUrl({[key]:null});
+      }
     });
 
-    $('#listingDatePicker').addEventListener('change', event => updateUrl({date:event.target.value || null}));
     $('#sidebarClearDate').addEventListener('click', () => updateUrl({date:null}));
+    $('#calendarPrevButton').addEventListener('click', () => {state.calendarMonth = new Date(state.calendarMonth.getFullYear(),state.calendarMonth.getMonth()-1,1);renderListingCalendar();});
+    $('#calendarNextButton').addEventListener('click', () => {state.calendarMonth = new Date(state.calendarMonth.getFullYear(),state.calendarMonth.getMonth()+1,1);renderListingCalendar();});
+    $('#calendarTodayButton').addEventListener('click', () => updateUrl({date:localDateKey(new Date())}));
     $('#sortSelect').addEventListener('change', event => {state.sort=event.target.value;renderListing();});
-    $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.toggle('open'));
+    $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.add('open'));
+    $('#filterCloseButton').addEventListener('click', () => $('#filterSidebar').classList.remove('open'));
     $('#homeLocationButton').addEventListener('click', requestLocation);
     $('#nearbyLocationButton').addEventListener('click', requestLocation);
   }
