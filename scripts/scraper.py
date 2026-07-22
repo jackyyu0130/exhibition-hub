@@ -33,7 +33,7 @@ TAIPEI_TZ = timezone(timedelta(hours=8))
 
 CATEGORY_RULES = [
     ("動漫", re.compile(
-        r"動漫|動畫|漫畫|公仔|coser|cosplay|角色扮演|二次元|模型|figure|快閃店|POP.?UP|"
+        r"動漫|動畫|漫畫|公仔|coser|cosplay|角色扮演|二次元|模型|figure|"
         r"史努比|SNOOPY|Chiikawa|吉伊卡哇|Sanrio|三麗鷗|Hello ?Kitty|凱蒂貓|"
         r"寶可夢|Pokemon|航海王|One Piece|鬼滅之刃|進擊的巨人|鏈鋸人|SPY.{0,3}FAMILY|間諜家家酒|"
         r"迪士尼|Disney|皮克斯|Pixar|哆啦A夢|多啦A夢|蠟筆小新|櫻桃小丸子|吉卜力|Ghibli|龍貓|"
@@ -41,6 +41,7 @@ CATEGORY_RULES = [
         r"憤怒鳥|Angry ?Birds|迷你兵團|Minions|樂高|LEGO",
         re.IGNORECASE,
     )),
+    ("快閃店", re.compile(r"快閃店|期間限定店|概念店|限定店|POP.?UP", re.IGNORECASE)),
     ("音樂", re.compile(r"音樂|演唱|演奏|樂團|交響|爵士|歌唱")),
     ("美術", re.compile(r"美術|畫展|畫作|藝術(?!家)|雕塑|策展|插畫|水彩|油畫|版畫|書法")),
     ("表演", re.compile(r"戲劇|劇場|歌劇|舞台劇|表演藝術|展演活動|音樂劇|馬戲")),
