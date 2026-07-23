@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=4.5">
+  <link rel="stylesheet" href="assets/styles.css?v=4.6">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -142,12 +142,14 @@
             <span class="paper-tape tape-two"></span>
           </div>
           <div class="hero-counter-overlay" aria-hidden="true"></div>
-          <button class="hero-shuffle-button" id="heroShuffleButton" type="button">
-            <span class="shuffle-icon" aria-hidden="true">↻</span>
-            <span id="heroShuffleText">從右側抽出今天的觀展靈感</span>
-          </button>
-          <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-label="隨機推薦三檔展覽"></div>
-          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 15 秒換一組推薦・懸浮即暫停</div>
+          <div class="hero-ticket-stage">
+            <button class="hero-shuffle-button" id="heroShuffleButton" type="button">
+              <span class="shuffle-icon" aria-hidden="true">↻</span>
+              <span id="heroShuffleText">從右側抽出今天的觀展靈感</span>
+            </button>
+            <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-label="隨機推薦三檔展覽"></div>
+            <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 15 秒換一組推薦・懸浮即暫停</div>
+          </div>
         </div>
       </section>
 
@@ -273,7 +275,7 @@
 
     <section class="listing-view app-view" id="listingView" hidden>
       <div class="view-hero compact-view-hero listing-view-hero">
-        <div class="listing-heading-column">
+        <div class="listing-heading-column listing-tone-block" style="--listing-block-index:0">
           <div class="view-title-row">
             <span class="view-title-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5M10 6v8M6 10h8"></path></svg>
@@ -292,7 +294,7 @@
           </section>
         </div>
 
-        <section class="listing-category-panel" aria-labelledby="listingCategoryTitle">
+        <section class="listing-category-panel listing-tone-block" style="--listing-block-index:1" aria-labelledby="listingCategoryTitle">
           <div class="filter-panel-heading compact">
             <div><small>CATEGORY</small><h2 id="listingCategoryTitle">展覽分類</h2></div>
             <button class="text-button" type="button" data-clear-filter="category">清除分類</button>
@@ -303,7 +305,7 @@
 
       <div class="listing-layout">
         <aside class="filter-sidebar" id="filterSidebar">
-          <section class="sidebar-calendar-panel" aria-labelledby="listingCalendarTitle">
+          <section class="sidebar-calendar-panel listing-tone-block" style="--listing-block-index:2" aria-labelledby="listingCalendarTitle">
             <div class="filter-panel-heading compact sidebar-panel-heading">
               <div><small>DATE</small><h2 id="listingCalendarTitle">觀展日期</h2></div>
               <button class="text-button" type="button" id="sidebarClearDate">清除</button>
@@ -322,7 +324,7 @@
               </div>
             </div>
           </section>
-          <div class="location-filter-panel">
+          <div class="location-filter-panel listing-tone-block" style="--listing-block-index:3">
             <div class="filter-sidebar-head">
               <div><small>LOCATION</small><h2>依縣市與場館篩選</h2></div>
               <button class="filter-close-button" id="filterCloseButton" type="button" aria-label="關閉篩選">×</button>
@@ -332,7 +334,7 @@
           </div>
         </aside>
 
-        <div class="listing-content">
+        <div class="listing-content listing-tone-block" style="--listing-block-index:4">
           <div class="listing-toolbar">
             <div>
               <button class="filter-drawer-button" id="filterDrawerButton" type="button">日期與地點篩選</button>
@@ -449,6 +451,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=4.5"></script>
+  <script src="assets/app.js?v=4.6"></script>
 </body>
 </html>

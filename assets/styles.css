@@ -1706,6 +1706,215 @@ img, video, svg { display: block; max-width: 100%; }
   }
 }
 
+/* ==========================================================================
+   Exhibition Hub V4.6
+   ========================================================================== */
+
+/* Restore the warm paper cast that was lost when pure-white surfaces occupied
+   more of the viewport. */
+:root {
+  --bg: #f3eee6;
+  --surface: #fffaf3;
+  --surface-soft: #ece5db;
+  --line: #d8cfc3;
+}
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(255,255,255,.42), transparent 28%),
+    linear-gradient(rgba(115,91,65,.018) 1px, transparent 1px);
+  background-size: auto, 28px 28px;
+}
+.site-header { background: rgba(243,238,230,.94); }
+
+/* The copy aligns with the main navigation. The collage becomes the complete
+   right side of the Hero, while a smaller ticket stage sits farther right. */
+.hero {
+  min-height: 584px;
+  padding-top: 0;
+  padding-left: max(32px, calc((100vw - 1248px) / 2 + 44px));
+  padding-bottom: 0;
+  align-items: stretch;
+}
+.hero-copy {
+  min-height: 584px;
+  padding-top: 54px;
+  padding-right: 58px;
+  padding-bottom: 60px;
+}
+.hero-visual,
+.hero-paper-collage {
+  height: auto;
+  min-height: 584px;
+  align-self: stretch;
+  border: 0;
+}
+.hero-ticket-stage {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  right: clamp(22px,3.2vw,52px);
+  width: min(700px,calc(100% - 42px));
+  height: 450px;
+  transform: translateY(-50%);
+}
+.hero-ticket-stage .hero-ticket-stack {
+  right: 0;
+  width: auto;
+}
+.hero-ticket-stage .hero-shuffle-button,
+.hero-ticket-stage .hero-ticket-hint { z-index: 8; }
+
+/* Explore uses related low-chroma paper colours instead of five white boxes. */
+.listing-view { --listing-panel-border: rgba(116,94,70,.15); }
+.listing-heading-column {
+  border-color: var(--listing-panel-border);
+  background: #e8ded1;
+}
+.listing-view-hero .listing-category-panel {
+  border-color: var(--listing-panel-border);
+  background: #e1e4da;
+}
+.listing-view-hero .listing-status-panel { background: transparent; }
+.sidebar-calendar-panel {
+  border-color: var(--listing-panel-border);
+  background: #eee1cf;
+}
+.location-filter-panel {
+  border-color: var(--listing-panel-border);
+  background: #e8dcd6;
+}
+.listing-content {
+  padding: 18px;
+  border: 1px solid var(--listing-panel-border);
+  border-radius: 18px;
+  background: #e7e1d8;
+}
+.listing-content .listing-toolbar select,
+.listing-content .filter-drawer-button { background: #fffaf3; }
+.listing-view .exhibition-card {
+  border-color: rgba(118,94,69,.14);
+  background: #fffaf3;
+}
+.listing-view .listing-category-option:hover { background: rgba(255,250,243,.56); }
+.listing-view .listing-category-option.active .category-icon { background: #f3dfd1; }
+.listing-view .calendar-day:not(.empty) { background: rgba(255,250,243,.56); }
+.listing-view .region-accordion summary { background: rgba(255,250,243,.68); }
+.listing-view .region-accordion[open] summary { background: rgba(246,238,228,.88); }
+
+/* Major panels arrive one after another, brightening slowly from a deeper
+   paper tone into their final colour. */
+.listing-tone-block {
+  opacity: 0;
+  filter: brightness(.78) saturate(.82);
+  transform: translate3d(0,20px,0);
+  transition:
+    opacity 1.25s calc(var(--listing-block-index,0) * 180ms + 70ms) cubic-bezier(.2,.7,.2,1),
+    filter 1.65s calc(var(--listing-block-index,0) * 180ms + 70ms) ease,
+    transform 1.45s calc(var(--listing-block-index,0) * 180ms + 70ms) cubic-bezier(.18,.72,.2,1);
+  will-change: opacity, filter, transform;
+}
+.listing-view.is-animated-in .listing-tone-block {
+  opacity: 1;
+  filter: brightness(1) saturate(1);
+  transform: translate3d(0,0,0);
+}
+
+/* Rebuilding the result grid on every filter/sort change creates fresh nodes,
+   so this quiet stagger restarts for every new selection. */
+.listing-reveal-card {
+  opacity: 0;
+  filter: brightness(.72) saturate(.82);
+  transform: translate3d(0,24px,0);
+  animation:
+    listing-card-reveal-v46 1.35s
+    calc(var(--listing-card-index,0) * 120ms + 160ms)
+    cubic-bezier(.18,.72,.2,1) both;
+  will-change: opacity, filter, transform;
+}
+@keyframes listing-card-reveal-v46 {
+  0% {
+    opacity: 0;
+    filter: brightness(.72) saturate(.82);
+    transform: translate3d(0,24px,0);
+  }
+  38% { opacity: .42; }
+  100% {
+    opacity: 1;
+    filter: brightness(1) saturate(1);
+    transform: translate3d(0,0,0);
+  }
+}
+
+@media (max-width: 1120px) {
+  .hero {
+    min-height: 566px;
+    padding-top: 0;
+    padding-left: 28px;
+    padding-bottom: 0;
+  }
+  .hero-copy {
+    min-height: 566px;
+    padding-top: 50px;
+    padding-right: 44px;
+    padding-bottom: 56px;
+  }
+  .hero-visual,
+  .hero-paper-collage { min-height: 566px; }
+  .hero-ticket-stage {
+    right: 24px;
+    width: min(660px,calc(100% - 36px));
+  }
+}
+
+@media (max-width: 820px) {
+  .hero {
+    min-height: 0;
+    padding: 44px 18px 0;
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .hero-copy {
+    min-height: 0;
+    padding: 0;
+  }
+  .hero-visual,
+  .hero-paper-collage {
+    min-height: 500px;
+    margin-right: -18px;
+    margin-left: -18px;
+  }
+  .hero-ticket-stage {
+    right: 18px;
+    width: calc(100% - 36px);
+    height: 440px;
+  }
+  .listing-content { padding: 15px; }
+}
+
+@media (max-width: 600px) {
+  .hero { padding-top: 36px; }
+  .hero-visual,
+  .hero-paper-collage { min-height: 470px; }
+  .hero-ticket-stage {
+    right: 10px;
+    width: calc(100% - 20px);
+    height: 420px;
+  }
+  .listing-content { padding: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .listing-tone-block,
+  .listing-reveal-card {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
 /* ========================================================================== */
 /* V3.7 — unified filters, reliable hero controls and editorial image frames  */
 /* ========================================================================== */

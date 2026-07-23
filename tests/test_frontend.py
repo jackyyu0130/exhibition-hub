@@ -57,9 +57,9 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v45_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.5", self.html)
-        self.assertIn("assets/app.js?v=4.5", self.html)
+    def test_v46_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.6", self.html)
+        self.assertIn("assets/app.js?v=4.6", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -133,7 +133,7 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn(".venue-section.is-in-view .venue-tile:hover", self.css)
         self.assertIn(".featured-block .motion-card", self.css)
         self.assertIn("clip-path: inset(0 0 12% 0 round 16px)", self.css)
-        self.assertIn("cardMarkup(event,{wholeCardLink:true})", self.app)
+        self.assertIn("cardMarkup(event,{wholeCardLink:true,listingIndex:index})", self.app)
         self.assertIn("is-whole-card-link", self.app)
         self.assertIn("data-card-href", self.app)
         self.assertIn("event.target !== wholeCard", self.app)
@@ -159,6 +159,20 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("if (previousView !== 'home') resetHomeAnimations();", self.app)
         self.assertIn("if (event.persisted) replayHomeAnimations();", self.app)
         self.assertIn("ticketStack.classList.remove('is-changing','is-entering')", self.app)
+
+    def test_v46_warm_palette_full_hero_and_listing_motion(self):
+        self.assertIn("--bg: #f3eee6;", self.css)
+        self.assertIn("--surface: #fffaf3;", self.css)
+        self.assertIn('class="hero-ticket-stage"', self.html)
+        self.assertIn("min-height: 584px;", self.css)
+        self.assertIn("width: min(700px,calc(100% - 42px));", self.css)
+        self.assertIn("border: 0;", self.css)
+        self.assertIn("listing-tone-block", self.html)
+        self.assertIn(".listing-view.is-animated-in .listing-tone-block", self.css)
+        self.assertIn("listing-card-reveal-v46", self.css)
+        self.assertIn("listingIndex:index", self.app)
+        self.assertIn("function replayListingBlockAnimations()", self.app)
+        self.assertIn("if (previousView !== 'listing') replayListingBlockAnimations();", self.app)
 
     def test_v43_ticket_perforation_back_to_top_and_image_guard(self):
         self.assertIn("ticket-perforation", self.app)
