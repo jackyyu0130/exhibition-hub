@@ -57,7 +57,7 @@ DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/4.3 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/4.3.1 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -505,9 +505,13 @@ def strip_facebook_references(value: Any) -> str:
 
 
 def sanitize_facebook_record(record: dict[str, Any]) -> dict[str, Any]:
-    """Strip Facebook URLs, share images, and copy from an otherwise valid event."""
+    """Strip social, loading, logo, icon, and placeholder media before publishing."""
     cleaned = dict(record)
-    images = unique_urls([*(record.get("images") or []), record.get("image")])
+    images = [
+        url
+        for url in unique_urls([*(record.get("images") or []), record.get("image")])
+        if probable_content_image(url)
+    ]
     cleaned["images"] = images[:10]
     cleaned["image"] = images[0] if images else ""
     for key in ("description", "price", "unit", "transitInfo", "parkingInfo", "comment", "source"):

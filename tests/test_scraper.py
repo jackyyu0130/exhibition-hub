@@ -83,6 +83,20 @@ class ScraperPolicyTests(unittest.TestCase):
         self.assertTrue(all(not scraper.probable_content_image(url) for url in bad))
         self.assertTrue(scraper.probable_content_image("https://example.com/poster/exhibition-main.webp"))
 
+    def test_final_publish_sanitizer_cannot_reintroduce_interface_images(self):
+        interface_images = [
+            "https://ws.th.gov.tw/002/TH/6/sites/pagebackimage/index_toplogo.png",
+            "https://event.culture.tw/mocweb/template/NTCRI/images/top_icon_2.png",
+            "https://s3.resource.opentix.life/default/sharelogo.png",
+        ]
+        cleaned = scraper.sanitize_facebook_record({
+            "title": "測試展覽",
+            "image": interface_images[0],
+            "images": interface_images[1:],
+        })
+        self.assertEqual(cleaned["images"], [])
+        self.assertEqual(cleaned["image"], "")
+
     def test_opentix_visible_programme_copy_is_extracted(self):
         page = """
         <section><h2>節目介紹</h2>
