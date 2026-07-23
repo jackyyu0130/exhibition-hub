@@ -683,6 +683,7 @@
   function heroTicketMarkup(event, slot) {
     const label = slot === 0 ? '觀展靈感' : slot === 1 ? '編輯精選' : '下一站推薦';
     return `<a class="hero-ticket-card hero-ticket-slot-${slot + 1}" href="${eventHref(event)}" aria-label="查看展覽：${escapeHtml(event.title)}">
+      <span class="ticket-watermark" aria-hidden="true"><b>展</b><i>TEJ</i></span>
       <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
       <div class="ticket-main">
         <span class="ticket-index">${String(slot + 1).padStart(2,'0')}</span>
@@ -924,10 +925,19 @@
     const items = sortEvents(filterEvents());
     const titleParts = [];
     if (state.query) titleParts.push(`「${state.query}」`);
-    if (state.categories.size) titleParts.push([...state.categories].join('＋'));
+    if (state.categories.size) titleParts.push([...state.categories].join('、'));
     if (state.region) titleParts.push(state.region);
     if (state.venue) titleParts.push(state.venue);
-    $('#listingTitle').textContent = titleParts.length ? titleParts.join(' · ') : '探索全台展覽';
+    const listingTitle = $('#listingTitle');
+    if (titleParts.length) {
+      listingTitle.innerHTML = titleParts
+        .map(part => `<span class="listing-title-filter">${escapeHtml(part)}</span>`)
+        .join('<span class="listing-title-separator" aria-hidden="true">／</span>');
+      listingTitle.setAttribute('aria-label', titleParts.join('，'));
+    } else {
+      listingTitle.textContent = '探索全台展覽';
+      listingTitle.removeAttribute('aria-label');
+    }
     $('#listingEyebrow').textContent = state.query ? 'SEARCH RESULTS' : 'EXPLORE EXHIBITIONS';
     const listingDescription = $('#listingDescription');
     if (listingDescription) listingDescription.textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '';
@@ -1355,7 +1365,13 @@
     $('#datePicker').addEventListener('change', event => {state.date = event.target.value || null; renderHome();});
     $('#filterResultsClear').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();$('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
     $('#clearFiltersButton').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();});
-    $('#statusPills').addEventListener('click', event => {const button=event.target.closest('[data-status]');if(!button)return;state.status=button.dataset.status;renderHome();});
+    $('#statusPills').addEventListener('click', event => {
+      const button = event.target.closest('[data-status]');
+      if (!button) return;
+      const selectedStatus = button.dataset.status;
+      state.status = selectedStatus !== 'all' && state.status === selectedStatus ? 'all' : selectedStatus;
+      renderHome();
+    });
 
     document.addEventListener('click', event => {
       const internalLink = event.target.closest('a[href]');

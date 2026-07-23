@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=4.0">
+  <link rel="stylesheet" href="assets/styles.css?v=4.1">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -25,7 +25,7 @@
     <div class="nav-shell">
       <a class="brand" href="./" aria-label="台灣展覽誌首頁">
         <span class="brand-logo-frame" aria-hidden="true">
-          <img src="assets/taiwan-exhibition-journal-logo-v7.png" alt="">
+          <img src="assets/taiwan-exhibition-journal-logo-v8.png" alt="">
         </span>
       </a>
 
@@ -96,9 +96,6 @@
                     <stop offset="0" stop-color="#b9d4d3"></stop>
                     <stop offset="1" stop-color="#7da9ad"></stop>
                   </linearGradient>
-                  <filter id="cityShadow" x="-30%" y="-30%" width="160%" height="180%">
-                    <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#594735" flood-opacity=".2"></feDropShadow>
-                  </filter>
                 </defs>
                 <rect width="420" height="250" rx="8" fill="#f3ecdc"></rect>
                 <path class="city-river" d="M-18 205C58 150 92 219 163 171s122-32 179-80c34-29 67-18 101-25"></path>
@@ -113,17 +110,18 @@
                   <path d="m334 118 54 23-25 40-51-27Z" fill="#d3b56f"></path>
                   <path d="m196 145 50 24-26 37-52-25Z" fill="#c68a71"></path>
                 </g>
-                <g class="city-buildings" filter="url(#cityShadow)">
-                  <g transform="translate(62 40)">
-                    <path d="m0 28 24-14 31 15-25 15Z" fill="#fff9ed"></path><path d="m0 28 30 16v35L0 63Z" fill="#c67954"></path><path d="m30 44 25-15v35L30 79Z" fill="#9a553d"></path>
-                    <path d="M9 42v10m10-5v10m20-10v10" stroke="#f7dfbd" stroke-width="4"></path>
+                <g class="city-landmarks">
+                  <g transform="translate(56 42)">
+                    <rect width="58" height="50" rx="5" fill="#c98263"></rect>
+                    <path d="M10 14h38M10 25h38M10 36h24M20 7v36M39 7v36"></path>
                   </g>
-                  <g transform="translate(267 76)">
-                    <path d="m0 24 27-15 36 18-28 16Z" fill="#fff8e8"></path><path d="m0 24 35 19v47L0 71Z" fill="#607b76"></path><path d="m35 43 28-16v47L35 90Z" fill="#405d59"></path>
-                    <path d="M10 40v10m11-5v11m25-10v11" stroke="#c9d9cc" stroke-width="4"></path>
+                  <g transform="translate(268 72)">
+                    <rect width="67" height="61" rx="7" fill="#607d78"></rect>
+                    <path d="M12 13h43v35H12zM22 13v35M44 13v35M12 29h43"></path>
                   </g>
-                  <g transform="translate(144 103)">
-                    <path d="m0 22 20-12 28 14-21 12Z" fill="#fff9ed"></path><path d="m0 22 27 14v33L0 55Z" fill="#d4aa63"></path><path d="m27 36 21-12v33L27 69Z" fill="#a67f42"></path>
+                  <g transform="translate(150 111)">
+                    <circle cx="28" cy="28" r="28" fill="#d2aa61"></circle>
+                    <path d="M12 29h32M28 12v32M17 18l22 22M39 18 17 40"></path>
                   </g>
                 </g>
                 <g class="city-trees">
@@ -223,7 +221,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">PLAN YOUR WEEK</p>
-            <h2>依照時間，安排你的觀展清單</h2>
+            <h2>循著展期，安排下一場相遇</h2>
           </div>
         </div>
         <div class="time-grid" data-split-reveal>
@@ -248,7 +246,7 @@
         <div class="nearby-copy">
           <p class="eyebrow">AROUND YOU</p>
           <h2>從現在的位置，<br>找到下一個目的地。</h2>
-          <p>允許定位後，依距離排序附近展覽。也可以直接打開地圖，安排一段城市散步。</p>
+          <p>讓所在的位置成為起點，沿著距離慢慢拾起城市裡的展覽風景。</p>
           <button class="location-button" id="homeLocationButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
             使用目前位置
@@ -262,7 +260,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">VENUE GUIDE</p>
-            <h2>從喜歡的場館開始探索</h2>
+            <h2>從一座場館，展開城市漫遊</h2>
           </div>
           <div class="section-controls venue-controls">
             <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="-1" aria-label="向左瀏覽場館">←</button>
@@ -444,6 +442,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=4.0"></script>
+  <script src="assets/app.js?v=4.1"></script>
 </body>
 </html>

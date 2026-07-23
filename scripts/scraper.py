@@ -57,7 +57,7 @@ DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/4.0 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/4.1 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -431,7 +431,7 @@ def title_match_score(event_title: Any, page_title: Any, page_text: Any = "") ->
 
 
 def is_excluded_record(record: dict[str, Any]) -> bool:
-    """Apply V4.0's exhibition-first editorial policy before publication."""
+    """Apply V4.1's exhibition-first editorial policy before publication."""
     source = first_value(record.get("sourceUrl"), record.get("url"), record.get("website"))
     if is_facebook_url(source):
         return True

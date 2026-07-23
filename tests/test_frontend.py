@@ -45,15 +45,18 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn('class="venue-section-footer"', self.html)
         self.assertIn("window.__venueImageFallback", self.app)
         self.assertNotIn('venue-placeholder-mark" aria-hidden="true">館', self.app)
+        self.assertIn("clip-path: inset(0 0 0 100% round 15px)", self.css)
 
     def test_city_map_replaces_simple_map_fragment(self):
         self.assertIn('class="paper-city-map"', self.html)
         self.assertIn("CITY ART WALK", self.html)
         self.assertNotIn('class="paper-map-fragment"', self.html)
+        self.assertIn('class="city-landmarks"', self.html)
+        self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v40_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.0", self.html)
-        self.assertIn("assets/app.js?v=4.0", self.html)
+    def test_v41_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.1", self.html)
+        self.assertIn("assets/app.js?v=4.1", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -84,21 +87,34 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("affinity:", self.app)
 
     def test_supplied_brand_and_generated_fallback_art_are_used(self):
-        self.assertIn("assets/taiwan-exhibition-journal-logo-v7.png", self.html)
+        self.assertIn("assets/taiwan-exhibition-journal-logo-v8.png", self.html)
         self.assertIn("exhibition-fallback-sprite-v40.png", self.css)
         self.assertIn("fallbackMarkup(event", self.app)
 
     def test_upcoming_time_dot_is_green(self):
         self.assertIn(".time-dot.upcoming { background: #3f8a62;", self.css)
 
-    def test_v40_editorial_layout_and_copy(self):
+    def test_v41_editorial_layout_and_copy(self):
         self.assertIn(".brand-logo-frame {\n  width: 210px;", self.css)
         self.assertIn("background-color: #eee8de;", self.css)
         self.assertIn("aspect-ratio: 16 / 10;", self.css)
         self.assertIn("height: 470px;", self.css)
         self.assertIn('class="discover-all-button"', self.html)
         self.assertIn("沿著收藏，遇見下一場", self.html)
+        self.assertIn("循著展期，安排下一場相遇", self.html)
+        self.assertIn("從一座場館，展開城市漫遊", self.html)
+        self.assertIn("讓所在的位置成為起點", self.html)
         self.assertNotIn("關於資料", self.html)
+
+    def test_v41_ticket_details_status_toggle_and_listing_title(self):
+        self.assertIn("ticket-watermark", self.app)
+        self.assertIn("border: 3px double", self.css)
+        self.assertIn(".hero-ticket-card .barcode", self.css)
+        self.assertIn("top: 108px;", self.css)
+        self.assertIn("state.status === selectedStatus ? 'all' : selectedStatus", self.app)
+        self.assertIn("listing-title-separator", self.app)
+        self.assertNotIn("state.categories].join('＋')", self.app)
+        self.assertIn("font-size: clamp(21px,2.15vw,29px)", self.css)
 
 
 if __name__ == "__main__":
