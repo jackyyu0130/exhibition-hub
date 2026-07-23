@@ -3142,3 +3142,118 @@ img, video, svg { display: block; max-width: 100%; }
   }
   .venue-section { padding-top: 32px; padding-bottom: 42px; }
 }
+
+/* ==========================================================================
+   Exhibition Hub V4.5
+   ========================================================================== */
+
+/* Restore the more relaxed V4.3 proportions while allowing the collage to
+   become the entire right half of the opening band, all the way to the edge. */
+.hero {
+  padding-top: 54px;
+  padding-right: 0;
+  padding-bottom: 60px;
+  grid-template-columns: minmax(350px,430px) minmax(0,1fr);
+}
+.hero-copy {
+  min-height: 470px;
+  padding-right: 48px;
+}
+.hero-visual,
+.hero-paper-collage {
+  height: 470px;
+  min-height: 470px;
+}
+.hero-ticket-stack {
+  right: auto;
+  width: min(760px,100%);
+}
+.hero-lead br { display: block; }
+
+/* Date and status results are now a continuation of the same filter frame,
+   placed immediately beneath its controls rather than after the categories. */
+.filter-workbench {
+  overflow: clip;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.filter-workbench .quick-filters {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.filter-workbench .filter-results-section {
+  max-width: none;
+  margin-right: 0;
+  margin-left: 0;
+  padding-right: 18px;
+  padding-left: 18px;
+  border-right: 0;
+  border-left: 0;
+  background:
+    linear-gradient(90deg, rgba(180,111,69,.06), transparent 58%),
+    #fcfaf7;
+}
+.filter-workbench .filter-results-section.is-visible {
+  margin-bottom: 0;
+  padding-top: 27px;
+  padding-bottom: 27px;
+  border-top-color: var(--line);
+  border-bottom-color: transparent;
+}
+.filter-workbench + .category-strip { margin-top: 18px; }
+
+@media (max-width: 1120px) {
+  .hero {
+    padding-top: 50px;
+    padding-right: 0;
+    padding-bottom: 56px;
+  }
+  .hero-copy {
+    min-height: 460px;
+    padding-right: 36px;
+  }
+  .hero-visual,
+  .hero-paper-collage {
+    height: 460px;
+    min-height: 460px;
+  }
+}
+
+@media (max-width: 820px) {
+  .hero {
+    padding: 44px 18px 52px;
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+  .hero-copy {
+    min-height: 0;
+    padding-right: 0;
+  }
+  .hero-visual,
+  .hero-paper-collage {
+    height: auto;
+    min-height: 440px;
+  }
+  .hero-ticket-stack {
+    right: 0;
+    width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero { padding-top: 36px; padding-bottom: 44px; }
+  .hero-visual,
+  .hero-paper-collage { min-height: 420px; }
+  .filter-workbench .filter-results-section {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+  .filter-workbench .filter-results-section.is-visible {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+}

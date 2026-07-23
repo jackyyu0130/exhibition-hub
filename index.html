@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=4.4">
+  <link rel="stylesheet" href="assets/styles.css?v=4.5">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -62,7 +62,7 @@
         <div class="hero-copy">
           <p class="eyebrow">CURATED ACROSS TAIWAN</p>
           <h1>展覽<br>是城市寫給你的信</h1>
-          <p class="hero-lead">收錄全台展覽與演出。拆封前，先聽聽城市想說些什麼。</p>
+          <p class="hero-lead">收錄全台展覽與演出。<br>拆封前，先聽聽城市想說些什麼。</p>
 
           <form class="hero-search" id="heroSearchForm" role="search">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
@@ -159,44 +159,46 @@
           </div>
         </div>
 
-        <div class="quick-filters reveal-sequence" data-reveal-sequence>
-          <div class="date-field">
-            <label for="datePicker">選擇日期</label>
-            <input type="date" id="datePicker">
+        <div class="filter-workbench">
+          <div class="quick-filters reveal-sequence" data-reveal-sequence>
+            <div class="date-field">
+              <label for="datePicker">選擇日期</label>
+              <input type="date" id="datePicker">
+            </div>
+            <div class="status-pills" id="statusPills">
+              <button type="button" class="active" data-status="all">全部</button>
+              <button type="button" data-status="ongoing">目前舉辦</button>
+              <button type="button" data-status="upcoming">即將舉辦</button>
+              <button type="button" data-status="ending">即將結束</button>
+              <button type="button" data-status="free">免費展覽</button>
+            </div>
+            <button class="clear-filter" id="clearFiltersButton" type="button">清除篩選</button>
+            <a href="?view=all" class="discover-all-button">查看全部展覽 <span>↗</span></a>
           </div>
-          <div class="status-pills" id="statusPills">
-            <button type="button" class="active" data-status="all">全部</button>
-            <button type="button" data-status="ongoing">目前舉辦</button>
-            <button type="button" data-status="upcoming">即將舉辦</button>
-            <button type="button" data-status="ending">即將結束</button>
-            <button type="button" data-status="free">免費展覽</button>
-          </div>
-          <button class="clear-filter" id="clearFiltersButton" type="button">清除篩選</button>
-          <a href="?view=all" class="discover-all-button">查看全部展覽 <span>↗</span></a>
+
+          <section class="filter-results-section" id="filterResultsSection" hidden aria-live="polite">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" id="filterResultsEyebrow">FILTERED EXHIBITIONS</p>
+                <h2 id="filterResultsTitle">符合條件的展覽</h2>
+                <p class="section-description" id="filterResultsDescription"></p>
+              </div>
+              <div class="section-controls">
+                <button class="icon-button" type="button" data-scroll-target="filterResultsRail" data-dir="-1" aria-label="向左捲動">←</button>
+                <button class="icon-button" type="button" data-scroll-target="filterResultsRail" data-dir="1" aria-label="向右捲動">→</button>
+              </div>
+            </div>
+            <div class="featured-rail motion-card-rail" id="filterResultsRail"></div>
+            <div class="filter-results-footer">
+              <a class="primary-link" id="filterResultsMore" href="?view=all">查看更多展覽</a>
+              <button class="text-button" id="filterResultsClear" type="button">清除目前篩選</button>
+            </div>
+          </section>
         </div>
 
         <div class="category-strip reveal-sequence" id="categoryStrip" data-reveal-sequence aria-label="展覽分類"></div>
       </section>
 
-
-      <section class="editorial-section filter-results-section" id="filterResultsSection" hidden aria-live="polite">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow" id="filterResultsEyebrow">FILTERED EXHIBITIONS</p>
-            <h2 id="filterResultsTitle">符合條件的展覽</h2>
-            <p class="section-description" id="filterResultsDescription"></p>
-          </div>
-          <div class="section-controls">
-            <button class="icon-button" type="button" data-scroll-target="filterResultsRail" data-dir="-1" aria-label="向左捲動">←</button>
-            <button class="icon-button" type="button" data-scroll-target="filterResultsRail" data-dir="1" aria-label="向右捲動">→</button>
-          </div>
-        </div>
-        <div class="featured-rail motion-card-rail" id="filterResultsRail"></div>
-        <div class="filter-results-footer">
-          <a class="primary-link" id="filterResultsMore" href="?view=all">查看更多展覽</a>
-          <button class="text-button" id="filterResultsClear" type="button">清除目前篩選</button>
-        </div>
-      </section>
 
       <section class="editorial-section featured-block motion-section" data-motion-group>
         <div class="section-heading">
@@ -447,6 +449,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=4.4"></script>
+  <script src="assets/app.js?v=4.5"></script>
 </body>
 </html>

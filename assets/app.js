@@ -95,6 +95,7 @@
     filterResultsTimer: null,
     lastHomeFilterKey: '',
     revealObserver: null,
+    lastRenderedView: null,
     locationRequested: false,
     locationRequestPending: false,
   };
@@ -1241,10 +1242,14 @@
   }
 
   function renderCurrentView() {
+    const previousView = state.lastRenderedView;
     const views = {home:$('#homeView'),listing:$('#listingView'),nearby:$('#nearbyView'),detail:$('#detailView'),favorites:$('#favoritesView')};
     Object.entries(views).forEach(([name,element]) => element.hidden = name !== state.view);
     if (state.view !== 'detail') updatePageMetadata();
-    if (state.view === 'home') renderHome();
+    if (state.view === 'home') {
+      if (previousView !== 'home') resetHomeAnimations();
+      renderHome();
+    }
     if (state.view === 'listing') renderListing();
     if (state.view === 'nearby') {
       renderNearby();
@@ -1252,6 +1257,7 @@
     }
     if (state.view === 'detail') renderDetail();
     if (state.view === 'favorites') renderFavorites();
+    state.lastRenderedView = state.view;
     $('#loadingView').hidden = true;
     updateFooter();
   }
@@ -1340,6 +1346,36 @@
     });
   }
 
+  function resetHomeAnimations() {
+    const home = $('#homeView');
+    if (!home) return;
+    if (state.revealObserver) {
+      state.revealObserver.disconnect();
+      state.revealObserver = null;
+    }
+    $$('[data-reveal-sequence], [data-motion-group], [data-split-reveal], [data-fade-reveal]', home)
+      .forEach(group => group.classList.remove('is-in-view'));
+    const ticketStack = $('#heroTicketStack');
+    if (ticketStack?.children.length) {
+      window.clearTimeout(state.heroTransitionTimer);
+      ticketStack.classList.remove('is-changing','is-entering');
+      void ticketStack.offsetWidth;
+      requestAnimationFrame(() => ticketStack.classList.add('is-entering'));
+      state.heroTransitionTimer = window.setTimeout(() => ticketStack.classList.remove('is-entering'), 2350);
+    }
+    if (!document.hidden) {
+      state.heroPaused = state.heroPointerInside || state.heroFocusInside;
+      resetHeroRotation();
+    }
+    void home.offsetWidth;
+  }
+
+  function replayHomeAnimations() {
+    if (state.view !== 'home' || $('#homeView')?.hidden) return;
+    resetHomeAnimations();
+    requestAnimationFrame(() => setupScrollReveal());
+  }
+
   function bindEvents() {
     const updateScrollControls = () => {
       $('#siteHeader')?.classList.toggle('scrolled', scrollY > 12);
@@ -1369,7 +1405,13 @@
     });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) pauseHeroRotation();
-      else resumeHeroRotation();
+      else {
+        resumeHeroRotation();
+        replayHomeAnimations();
+      }
+    });
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) replayHomeAnimations();
     });
     $('#mobileMenuButton').addEventListener('click', () => {
       const open = $('#mobileMenuButton').getAttribute('aria-expanded') === 'true';

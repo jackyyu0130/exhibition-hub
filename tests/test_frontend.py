@@ -57,9 +57,9 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v44_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.4", self.html)
-        self.assertIn("assets/app.js?v=4.4", self.html)
+    def test_v45_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.5", self.html)
+        self.assertIn("assets/app.js?v=4.5", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -119,9 +119,9 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn("state.categories].join('＋')", self.app)
         self.assertIn("font-size: clamp(21px,2.15vw,29px)", self.css)
 
-    def test_v44_copy_footer_hover_motion_and_whole_card_link(self):
+    def test_v45_copy_footer_hover_motion_and_whole_card_link(self):
         self.assertIn("展覽<br>是城市寫給你的信", self.html)
-        self.assertIn("收錄全台展覽與演出。拆封前，先聽聽城市想說些什麼。", self.html)
+        self.assertIn("收錄全台展覽與演出。<br>拆封前，先聽聽城市想說些什麼。", self.html)
         self.assertIn("循著今日心緒，遇見一場展覽", self.html)
         self.assertIn("離你不遠，<br>還有這些選擇。", self.html)
         self.assertIn('id="footerRecordCount"', self.html)
@@ -146,6 +146,19 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn(".split-feature { padding-bottom: 22px;", self.css)
         self.assertIn("padding-top: 42px;", self.css)
         self.assertIn("padding-bottom: 42px;", self.css)
+
+    def test_v45_full_width_hero_filter_workbench_and_animation_reset(self):
+        self.assertIn("height: 470px;", self.css)
+        self.assertIn("padding-right: 0;", self.css)
+        self.assertIn("width: min(760px,100%);", self.css)
+        self.assertIn('class="filter-workbench"', self.html)
+        self.assertLess(self.html.index('id="filterResultsSection"'), self.html.index('id="categoryStrip"'))
+        self.assertIn(".filter-workbench .filter-results-section.is-visible", self.css)
+        self.assertIn("function resetHomeAnimations()", self.app)
+        self.assertIn("function replayHomeAnimations()", self.app)
+        self.assertIn("if (previousView !== 'home') resetHomeAnimations();", self.app)
+        self.assertIn("if (event.persisted) replayHomeAnimations();", self.app)
+        self.assertIn("ticketStack.classList.remove('is-changing','is-entering')", self.app)
 
     def test_v43_ticket_perforation_back_to_top_and_image_guard(self):
         self.assertIn("ticket-perforation", self.app)
