@@ -57,7 +57,7 @@ DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/4.2 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/4.3 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -130,7 +130,10 @@ IMG_SRC_PATTERN = re.compile(r'<img[^>]+(?:src|data-src|data-original|data-lazy-
 IMG_SRCSET_PATTERN = re.compile(r'<(?:img|source)[^>]+(?:srcset|data-srcset)=["\']([^"\']+)', re.I)
 JSON_IMAGE_PATTERN = re.compile(r'["\'](?:image|imageUrl|imageURL|images|thumbnailUrl|contentUrl|bannerUrl|bannerURL|coverImage|coverUrl|mainImage|posterUrl|originalImage)["\']\s*:\s*["\']([^"\']+)', re.I)
 BACKGROUND_IMAGE_PATTERN = re.compile(r'background(?:-image)?\s*:\s*url\(["\']?([^"\')]+)', re.I)
-BAD_IMAGE_HINTS = re.compile(r"(?:favicon|logo|icon|avatar|spacer|blank|loading|pixel|sprite|qr[_-]?code)", re.I)
+BAD_IMAGE_HINTS = re.compile(
+    r"(?:favicon|logo|icon|avatar|spacer|blank|loading|loader|spinner|progress|preload|placeholder|pixel|sprite|qr[_-]?code)",
+    re.I,
+)
 LD_JSON_PATTERN = re.compile(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.I | re.S)
 HTML_ADDRESS_PATTERN = re.compile(r'(?:\d{3,6}\s*)?(?:臺|台|新北|桃園|新竹|苗栗|彰化|南投|雲林|嘉義|高雄|屏東|宜蘭|花蓮|臺東|台東|澎湖|金門|連江)[^<\n]{0,55}?(?:路|街|大道|巷|弄)[^<\n]{0,28}?號(?:之\d+)?(?:\d+樓)?')
 COORDINATE_PATTERNS = [
@@ -309,6 +312,12 @@ def normalize_url(value: Any, *, base_url: str = CULTURE_BASE_URL) -> str:
     duplicated_scheme = re.match(r"^https?://[^/?#]+(?P<url>https?://.+)$", text, re.I)
     if duplicated_scheme:
         text = duplicated_scheme.group("url")
+    # Malformed CMS fields sometimes contain a quoted metadata fragment and a
+    # second, real image URL. Prefer that final absolute URL.
+    nested_schemes = [match.start() for match in re.finditer(r"https?://", text, re.I)]
+    if len(nested_schemes) > 1 and re.search(r"(?:\\?&q;|\\?&quot;|[\"'<>])", text[:nested_schemes[-1]], re.I):
+        text = text[nested_schemes[-1]:]
+        text = re.split(r"(?:\\?&q;|\\?&quot;|[\"'<>\s])", text, maxsplit=1, flags=re.I)[0]
     if re.match(r"^https?%3A", text, re.I):
         text = unquote(text)
     if text.startswith("//"):
@@ -331,6 +340,13 @@ def normalize_url(value: Any, *, base_url: str = CULTURE_BASE_URL) -> str:
         return ""
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return ""
+    host = parsed.netloc.lower().split(":")[0]
+    # OPENTIX program routes currently resolve to a generic shell, while the
+    # matching event route exposes full copy, JSON-LD and key art.
+    if re.fullmatch(r"(?:www\.)?opentix\.life", host) and re.fullmatch(r"/program/\d+/?", parsed.path):
+        event_path = re.sub(r"^/program/", "/event/", parsed.path)
+        parsed = parsed._replace(path=event_path)
+        text = parsed.geturl()
     return text
 
 
@@ -431,7 +447,7 @@ def title_match_score(event_title: Any, page_title: Any, page_text: Any = "") ->
 
 
 def is_excluded_record(record: dict[str, Any]) -> bool:
-    """Apply V4.2's exhibition-first editorial policy before publication."""
+    """Apply V4.3's exhibition-first editorial policy before publication."""
     source = first_value(record.get("sourceUrl"), record.get("url"), record.get("website"))
     if is_facebook_url(source):
         return True
@@ -702,7 +718,7 @@ def source_url(raw: dict[str, Any]) -> str:
 def collect_image_urls(raw: dict[str, Any], show: dict[str, Any] | None = None, *, page_base: str = CULTURE_BASE_URL) -> list[str]:
     urls = unique_urls(image_field_values(raw, show), base_url=page_base)
     urls.extend(url for url in image_from_html(first_value(raw.get("descriptionFilterHtml"), raw.get("description")), base_url=page_base) if url not in urls)
-    return urls[:8]
+    return [url for url in urls if probable_content_image(url)][:8]
 
 
 def probable_content_image(url: str) -> bool:
@@ -710,12 +726,46 @@ def probable_content_image(url: str) -> bool:
     path = unquote(parsed.path).lower()
     if BAD_IMAGE_HINTS.search(path):
         return False
+    filename = path.rsplit("/", 1)[-1]
+    if re.search(r"(?:^|[-_])default(?:[-_.]|$)|programinfodefault", filename):
+        return False
     if path.endswith((".svg", ".gif", ".ico")):
         return False
     # Tiny CMS thumbnails and tracking endpoints are rarely exhibition key art.
     if re.search(r"(?:^|[/_-])(16x16|32x32|50x50|64x64|80x80|100x100)(?:[/_.-]|$)", path):
         return False
     return True
+
+
+def extract_opentix_description(page: str) -> str:
+    """Extract OPENTIX's visible programme copy when metadata is abbreviated."""
+    start_heading = r"節目介紹|活動介紹|展演介紹|作品介紹"
+    end_heading = r"折扣方案|異動公告|展演須知|購取票須知|退換須知|注意事項"
+    # Prefer the actual content heading, not the same words in a sticky tab bar.
+    heading = re.search(
+        rf"<h[1-6][^>]*>(?:\s|<[^>]+>)*(?:{start_heading})(?:\s|<[^>]+>)*</h[1-6]>",
+        page,
+        re.I | re.S,
+    )
+    search_from = heading.end() if heading else 0
+    match = re.search(
+        rf"(?P<body>.*?)(?=(?:<h[1-6][^>]*>(?:\s|<[^>]+>)*(?:{end_heading}))|$)",
+        page[search_from:],
+        re.I | re.S,
+    )
+    if not heading:
+        match = re.search(
+            rf"(?:{start_heading})(?P<body>.*?)(?=(?:{end_heading})|$)",
+            page,
+            re.I | re.S,
+        )
+    if not match:
+        return ""
+    description = clean_text(match.group("body"))
+    description = re.sub(r"^(?:[：:\s]|&nbsp;)+", "", description)
+    if len(description) < 40:
+        return ""
+    return description[:5000]
 
 
 def image_url_responds(url: str, *, timeout: int = 12) -> bool:
@@ -906,6 +956,10 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         title_tokens = [token.lower() for token in re.split(r"[\s：:、,，/|()（）【】]+", title) if len(token) >= 2]
         page_haystack = f"{page_title} {clean_text(page[:180000])}".lower()
         host = urlparse(response.url).netloc.lower()
+        if "opentix.life" in host:
+            opentix_description = extract_opentix_description(page)
+            if opentix_description:
+                descriptions.append(opentix_description)
         match_score = title_match_score(title, page_title, page_haystack) if title else 1.0
         title_matched = not title or match_score >= 0.42
         # Ticket and social platforms frequently redirect to a generic listing,
@@ -1177,7 +1231,11 @@ def merge_two_records(old: dict[str, Any], new: dict[str, Any]) -> dict[str, Any
         for key in ("sourceUrl", "sourceUrlVerified", "sourceUrlMatchScore", "sourceUrlRejected", "pageMetadataCheckedAt"):
             if key in preferred_source:
                 merged[key] = preferred_source.get(key)
-    merged["images"] = merge_list_values(old.get("images"), new.get("images"))[:10]
+    merged["images"] = [
+        url
+        for value in merge_list_values(old.get("images"), new.get("images"))
+        if (url := valid_http_url(value)) and not is_facebook_url(url) and probable_content_image(url)
+    ][:10]
     if merged["images"]:
         merged["image"] = merged["images"][0]
     merged["categories"] = [item for item in merge_list_values(new.get("categories"), old.get("categories")) if item in ALLOWED_CATEGORIES][:3] or ["其他"]
@@ -1453,13 +1511,16 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
     now = datetime.now(TAIPEI_TZ)
     candidates: list[dict[str, Any]] = []
     for event in events:
-        if not valid_http_url(event.get("sourceUrl")):
+        canonical_source = valid_http_url(event.get("sourceUrl"))
+        if not canonical_source:
             continue
+        event["sourceUrl"] = canonical_source
         checked = parse_date(event.get("pageMetadataCheckedAt"))
         missing_image = not event.get("images")
+        opentix_missing_copy = "opentix.life" in url_host(canonical_source) and len(clean_text(event.get("description"))) < 120
         source_needs_verification = not bool(event.get("sourceUrlVerified")) or source_url_requires_title_validation(event.get("sourceUrl"))
         retry_days = 4 if missing_image or source_needs_verification else 21
-        recently_checked = checked is not None and checked >= (now.date() - timedelta(days=retry_days))
+        recently_checked = not opentix_missing_copy and checked is not None and checked >= (now.date() - timedelta(days=retry_days))
         needs_data = (
             missing_image
             or event.get("latitude") is None
@@ -1473,6 +1534,7 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
             candidates.append(event)
     candidates.sort(
         key=lambda event: (
+            "opentix.life" in url_host(event.get("sourceUrl")) and len(clean_text(event.get("description"))) < 120,
             source_url_requires_title_validation(event.get("sourceUrl")),
             not bool(event.get("sourceUrlVerified")),
             not bool(event.get("images")),
@@ -1580,7 +1642,10 @@ def venue_images(
     result: dict[str, str] = {
         clean_place_text(name): valid_http_url(url)
         for name, url in (existing or {}).items()
-        if clean_place_text(name) in active_venues and valid_http_url(url) and not is_facebook_url(url)
+        if clean_place_text(name) in active_venues
+        and valid_http_url(url)
+        and not is_facebook_url(url)
+        and probable_content_image(valid_http_url(url))
     }
     if allow_fetch:
         for profile in VENUE_PROFILES:
@@ -1678,6 +1743,21 @@ def fetch_all_json(config: SourceConfig) -> list[dict[str, Any]]:
     return records
 
 
+def fetch_records_with_fallback(existing: list[dict[str, Any]], config: SourceConfig) -> tuple[list[dict[str, Any]], bool]:
+    """Keep the last good catalogue when every Culture Ministry feed times out."""
+    try:
+        return fetch_all_json(config), False
+    except RuntimeError:
+        if not existing:
+            raise
+        print(
+            "[warning] Culture Ministry feeds are temporarily unavailable; "
+            "continuing with the last published catalogue and official-page enrichment.",
+            file=sys.stderr,
+        )
+        return [], True
+
+
 def read_input_file(path: Path) -> list[dict[str, Any]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(payload, dict):
@@ -1698,7 +1778,10 @@ def read_venue_image_map(path: Path | None) -> dict[str, str]:
     return {
         clean_place_text(name): valid_http_url(url)
         for name, url in venue_map.items()
-        if clean_place_text(name) and valid_http_url(url) and not is_facebook_url(url)
+        if clean_place_text(name)
+        and valid_http_url(url)
+        and not is_facebook_url(url)
+        and probable_content_image(valid_http_url(url))
     } if isinstance(venue_map, dict) else {}
 
 
@@ -1754,7 +1837,7 @@ def main() -> int:
     args = parser.parse_args()
 
     existing = [] if args.no_preserve_existing else load_existing(args.output)
-    raw_records = read_input_file(args.input_file) if args.input_file else fetch_all_json(SourceConfig())
+    raw_records = read_input_file(args.input_file) if args.input_file else fetch_records_with_fallback(existing, SourceConfig())[0]
     venue_image_map = read_venue_image_map(args.input_file or (args.output if args.output.exists() else None))
     normalized = [record for index, raw in enumerate(raw_records) if (record := normalize_record(raw, index))]
     events = merge_records(normalized, existing)

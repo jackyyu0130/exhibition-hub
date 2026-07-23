@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=4.2">
+  <link rel="stylesheet" href="assets/styles.css?v=4.3">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -25,7 +25,7 @@
     <div class="nav-shell">
       <a class="brand" href="./" aria-label="台灣展覽誌首頁">
         <span class="brand-logo-frame" aria-hidden="true">
-          <img src="assets/taiwan-exhibition-journal-logo-v9.png" alt="">
+          <img src="assets/taiwan-exhibition-journal-logo-v10.png" alt="">
         </span>
       </a>
 
@@ -61,8 +61,8 @@
       <section class="hero" id="top">
         <div class="hero-copy">
           <p class="eyebrow">CURATED ACROSS TAIWAN</p>
-          <h1>讓一場展覽，<br>成為日常裡的風景。</h1>
-          <p class="hero-lead">循著城市的光影與展館的門扉，遇見正在發生、即將展開，也離你最近的文化風景。</p>
+          <h1>找一場展覽，<br>安排今天的去處。</h1>
+          <p class="hero-lead">整理全台正在展出、即將開展與你附近的活動，讓查找與安排更簡單。</p>
 
           <form class="hero-search" id="heroSearchForm" role="search">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
@@ -91,29 +91,46 @@
             <span class="paper-sheet paper-sheet-grid"></span>
             <span class="paper-city-map">
               <svg viewBox="0 0 420 250" aria-hidden="true">
-                <rect width="420" height="250" rx="8" fill="#f3ecdc"></rect>
-                <path class="city-river" d="M-20 194C48 157 98 205 158 168s108-22 154-63c35-31 72-36 130-45"></path>
-                <g class="city-routes">
-                  <path d="M24 72C102 43 165 55 235 102s112 58 166 34"></path>
-                  <path d="M72 224C104 175 137 142 193 116s111-41 173-91"></path>
-                  <path d="M33 125C97 111 142 112 190 133"></path>
+                <rect width="420" height="250" rx="8" fill="#f1eadf"></rect>
+                <g class="city-contours">
+                  <path d="M-18 39C53 8 118 14 172 43s121 35 177 8 83-28 103-16"></path>
+                  <path d="M-25 217c53-35 98-41 145-21s88 25 137 5 111-37 184-18"></path>
+                  <path d="M14 88c54-31 112-28 157-2s85 37 135 23 78-34 126-31"></path>
                 </g>
-                <g class="city-parks">
-                  <path d="M31 27h77v42H31z"></path>
-                  <path d="M293 154h91v48h-91z"></path>
+                <g class="city-districts">
+                  <path class="district-sage" d="M25 29 106 21l29 48-44 42-73-13Z"></path>
+                  <path class="district-clay" d="m139 27 81 9 24 57-49 38-64-27Z"></path>
+                  <path class="district-sand" d="m266 24 114 9 18 62-48 34-78-24-23-43Z"></path>
+                  <path class="district-rose" d="m34 137 93-18 48 45-19 63-115-5-24-48Z"></path>
+                  <path class="district-olive" d="m190 142 73-32 61 32-14 78-106 10-28-48Z"></path>
+                  <path class="district-blue" d="m329 127 76-15 27 94-91 25-20-53Z"></path>
+                </g>
+                <path class="city-river" d="M-18 184C45 151 91 197 151 165s105-14 153-53c39-31 77-39 139-52"></path>
+                <g class="city-routes">
+                  <path d="M28 62C103 42 161 57 224 99s113 61 170 37"></path>
+                  <path d="M70 229C105 176 139 145 192 118s108-45 174-96"></path>
+                  <path d="M20 126C85 110 139 111 190 134s94 32 143 24"></path>
+                  <path d="M118 18c9 47 26 85 65 117s54 61 63 104"></path>
+                </g>
+                <g class="city-nodes">
+                  <circle cx="73" cy="54" r="4"></circle><circle cx="135" cy="58" r="4"></circle>
+                  <circle cx="191" cy="118" r="4"></circle><circle cx="262" cy="152" r="4"></circle>
+                  <circle cx="340" cy="139" r="4"></circle><circle cx="366" cy="53" r="4"></circle>
                 </g>
                 <g class="city-landmarks">
-                  <g transform="translate(54 39)">
-                    <path d="M0 31 27 10l27 21v25H0Z"></path>
-                    <path d="M12 31v25M28 31v25M42 31v25"></path>
+                  <g transform="translate(42 35)">
+                    <path d="m0 27 30-17 30 17M6 29h48v31H6zM15 29v31M30 29v31M45 29v31M2 63h56"></path>
                   </g>
-                  <g transform="translate(302 158)">
-                    <path d="M0 0h57v36H0zM10 9h37M10 19h37M19 0v36M39 0v36"></path>
+                  <g transform="translate(159 149)">
+                    <path d="M0 52V14L17 4l18 10 17-10 18 10v38M0 52h70M13 24h11v11H13zM46 24h11v11H46z"></path>
+                  </g>
+                  <g transform="translate(323 153)">
+                    <path d="M0 52 8 5h36l9 47M4 35h45M7 20h39M17 5v47M35 5v47M-4 52h62"></path>
                   </g>
                 </g>
-                <g class="city-pin" transform="translate(218 97)">
-                  <path d="M0-22c-12 0-21 9-21 20 0 15 21 34 21 34S21 13 21-2C21-13 12-22 0-22Z"></path>
-                  <circle cy="-2" r="7"></circle>
+                <g class="city-pin" transform="translate(274 79)">
+                  <path d="M0-19c-11 0-19 8-19 18 0 14 19 31 19 31S19 13 19-1C19-11 11-19 0-19Z"></path>
+                  <circle cy="-1" r="6"></circle>
                 </g>
                 <text class="city-map-title" x="20" y="230">CITY ART WALK · 城市展覽散步</text>
               </svg>
@@ -130,7 +147,7 @@
             <span id="heroShuffleText">從右側抽出今天的觀展靈感</span>
           </button>
           <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-label="隨機推薦三檔展覽"></div>
-          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 15 秒換一組推薦・停留即暫停</div>
+          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 15 秒換一組推薦・懸浮即暫停</div>
         </div>
       </section>
 
@@ -223,7 +240,7 @@
       <section class="nearby-home editorial-section" data-fade-reveal>
         <div class="nearby-copy">
           <p class="eyebrow">AROUND YOU</p>
-          <h2>從此刻所在，<br>走向城市裡的一場相遇。</h2>
+          <h2>看看附近，<br>今天有哪些展覽。</h2>
           <p>讓所在的位置成為起點，沿著距離慢慢拾起城市裡的展覽風景。</p>
           <button class="location-button" id="homeLocationButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
@@ -422,9 +439,14 @@
     <div class="footer-bottom"><span>TAIWAN EXHIBITION JOURNAL</span><span>Built with GitHub Pages</span></div>
   </footer>
 
+  <button class="back-to-top-ticket" id="backToTopButton" type="button" aria-label="回到頁面最上方">
+    <span aria-hidden="true">↑</span>
+    <small>TOP</small>
+  </button>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=4.2"></script>
+  <script src="assets/app.js?v=4.3"></script>
 </body>
 </html>

@@ -171,6 +171,18 @@
     } catch { return false; }
   }
 
+  function isUsableImageUrl(value = '') {
+    const url = safeUrl(value);
+    if (!url || isFacebookUrl(url)) return false;
+    try {
+      const path = decodeURIComponent(new URL(url).pathname).toLowerCase();
+      if (/\.(?:gif|svg|ico)$/.test(path)) return false;
+      const filename = path.split('/').pop() || '';
+      if (/(?:^|[-_])default(?:[-_.]|$)|programinfodefault/i.test(filename)) return false;
+      return !/(?:^|[/_.-])(?:ajax[-_]?loader|loader|loading|spinner|progress|preload|placeholder|blank|spacer|pixel|sprite|favicon|avatar|qr[-_]?code)(?:[/_.-]|$)/i.test(path);
+    } catch { return false; }
+  }
+
   function stripFacebookReferences(value = '') {
     return String(value || '').split(/\r?\n/).filter(line => !/(?:facebook|臉書|粉絲專頁)/i.test(line)).join('\n').trim();
   }
@@ -352,7 +364,7 @@
       ...flattenImageCandidates(raw.imageUrls), ...flattenImageCandidates(raw.poster), ...flattenImageCandidates(raw.posterUrl),
       ...flattenImageCandidates(raw.picture), ...flattenImageCandidates(raw.pictureUrl), ...flattenImageCandidates(show.image),
       ...flattenImageCandidates(show.imageUrl), ...flattenImageCandidates(show.imageURL)
-    ].map(safeUrl).filter(url => url && !isFacebookUrl(url)).filter((url, index, array) => array.indexOf(url) === index);
+    ].map(safeUrl).filter(isUsableImageUrl).filter((url, index, array) => array.indexOf(url) === index);
     const image = imageCandidates[0] || '';
     const {latitude, longitude} = coordinatesFrom(show, raw);
     const region = normalizeRegion(firstValue(raw.region, address, venueGroup, rawVenue));
@@ -502,10 +514,10 @@
   }
 
   function imageMarkup(event, className = '') {
-    const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(url => url && !isFacebookUrl(url));
+    const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(isUsableImageUrl);
     const allowVenueFallback = !String(className).startsWith('detail-poster');
     const venueCandidate = allowVenueFallback ? safeUrl(state.venueImages[event.venueGroup || event.locationName] || '') : '';
-    const venueImage = venueCandidate && !isFacebookUrl(venueCandidate) ? venueCandidate : '';
+    const venueImage = isUsableImageUrl(venueCandidate) ? venueCandidate : '';
     const candidates = eventCandidates.length ? eventCandidates : venueImage ? [venueImage] : [];
     const mediaKind = eventCandidates.length ? 'event' : venueImage ? 'venue' : 'placeholder';
     if (!candidates.length) return fallbackMarkup(event, className);
@@ -513,7 +525,7 @@
     const alt = mediaKind === 'venue' ? `${event.venueGroup || event.locationName}場館示意` : event.title;
     return `<span class="smart-image-frame ${escapeHtml(className)}" data-media-kind="${mediaKind}">
       <img class="smart-image-blur" src="${escapeHtml(candidates[0])}" alt="" aria-hidden="true" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true">
-      <img class="smart-image-foreground" src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-media-kind="${mediaKind}" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-fallback-category="${escapeHtml(event.category || '其他')}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="window.__exhibitionImageFallback(this)">
+      <img class="smart-image-foreground" src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-media-kind="${mediaKind}" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-fallback-category="${escapeHtml(event.category || '其他')}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="window.__validateExhibitionImage(this)" onerror="window.__exhibitionImageFallback(this)">
     </span>`;
   }
 
@@ -535,6 +547,11 @@
     );
     placeholder.classList.add(image.dataset.placeholderClass || 'card-placeholder');
     (image.closest('.smart-image-frame') || image).replaceWith(placeholder);
+  };
+
+  window.__validateExhibitionImage = image => {
+    if (!image?.isConnected || !image.complete) return;
+    if (image.naturalWidth < 120 || image.naturalHeight < 80) window.__exhibitionImageFallback(image);
   };
 
   function isRecentlyAdded(event, days = 7) {
@@ -688,6 +705,7 @@
     const label = slot === 0 ? '觀展靈感' : slot === 1 ? '編輯精選' : '下一站推薦';
     return `<a class="hero-ticket-card hero-ticket-slot-${slot + 1}" href="${eventHref(event)}" aria-label="查看展覽：${escapeHtml(event.title)}">
       <span class="ticket-watermark" aria-hidden="true"><b>展</b><i>TEJ</i></span>
+      <span class="ticket-perforation" aria-hidden="true"></span>
       <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
       <div class="ticket-main">
         <span class="ticket-index">${String(slot + 1).padStart(2,'0')}</span>
@@ -878,18 +896,18 @@
       const eventImages = venueEvents
         .flatMap(event => event.images?.length ? event.images : event.image ? [event.image] : [])
         .map(safeUrl)
-        .filter((url, imageIndex, all) => url && !isFacebookUrl(url) && all.indexOf(url) === imageIndex);
+        .filter((url, imageIndex, all) => isUsableImageUrl(url) && all.indexOf(url) === imageIndex);
       const candidates = [
-        ...(venueImage && !isFacebookUrl(venueImage) ? [venueImage] : []),
+        ...(isUsableImageUrl(venueImage) ? [venueImage] : []),
         ...eventImages,
       ].filter((url, imageIndex, all) => all.indexOf(url) === imageIndex);
       const category = venueEvents.flatMap(event => event.categories || [event.category]).find(Boolean) || '美術';
       const fallback = fallbackPosition(category);
-      const imageKind = venueImage && !isFacebookUrl(venueImage) ? '場館影像' : eventImages.length ? '展覽主視覺' : '編輯選圖';
+      const imageKind = isUsableImageUrl(venueImage) ? '場館影像' : eventImages.length ? '展覽主視覺' : '編輯選圖';
       const serialized = escapeHtml(JSON.stringify(candidates));
       return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${index}" href="${venueHref(venue)}">
         <span class="venue-fallback-art fallback-art" style="--fallback-x:${fallback.x};--fallback-y:${fallback.y}" aria-hidden="true"><span class="fallback-art-label">場館選集</span></span>
-        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="window.__venueImageFallback(this)">` : ''}
+        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
         <div class="venue-tile-content">
           <small>VENUE ${String(index+1).padStart(2,'0')}${imageKind ? ` · ${imageKind}` : ''}</small>
           <h3>${escapeHtml(venue)}</h3><p>${counts[venue]} 檔展覽</p>
@@ -910,6 +928,11 @@
     } catch {}
     image.closest('.venue-tile')?.classList.add('venue-placeholder');
     image.remove();
+  };
+
+  window.__validateVenueImage = image => {
+    if (!image?.isConnected || !image.complete) return;
+    if (image.naturalWidth < 120 || image.naturalHeight < 80) window.__venueImageFallback(image);
   };
 
   function renderHomeNearby() {
@@ -1318,7 +1341,13 @@
   }
 
   function bindEvents() {
-    window.addEventListener('scroll', () => $('#siteHeader').classList.toggle('scrolled', scrollY > 12), {passive:true});
+    const updateScrollControls = () => {
+      $('#siteHeader')?.classList.toggle('scrolled', scrollY > 12);
+      $('#backToTopButton')?.classList.toggle('is-visible', scrollY > Math.max(520, innerHeight * .72));
+    };
+    window.addEventListener('scroll', updateScrollControls, {passive:true});
+    updateScrollControls();
+    $('#backToTopButton')?.addEventListener('click', () => window.scrollTo({top:0,left:0,behavior:'smooth'}));
     window.addEventListener('popstate', () => { readParams(); renderCurrentView(); window.scrollTo({top:0,left:0,behavior:'auto'}); });
     const heroVisual = $('.hero-visual');
     heroVisual?.addEventListener('pointerenter', () => {
@@ -1505,7 +1534,7 @@
     try {
       const {payload, rawEvents, local} = await fetchEventPayload();
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
-      state.venueImages = Object.fromEntries(Object.entries(payload.venueImages || {}).map(([venue, image]) => [venue, safeUrl(image)]).filter(([, image]) => image && !isFacebookUrl(image)));
+      state.venueImages = Object.fromEntries(Object.entries(payload.venueImages || {}).map(([venue, image]) => [venue, safeUrl(image)]).filter(([, image]) => isUsableImageUrl(image)));
       state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
       if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
       renderCurrentView();

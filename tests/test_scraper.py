@@ -67,6 +67,45 @@ class ScraperPolicyTests(unittest.TestCase):
         self.assertEqual(scraper.normalize_url(malformed), "https://lib.miaoli.gov.tw")
         self.assertEqual(scraper.normalize_url("https://example.com／錯誤說明：請洽承辦人"), "https://example.com")
 
+    def test_opentix_program_route_is_canonicalized_to_event(self):
+        self.assertEqual(
+            scraper.normalize_url("https://www.opentix.life/program/1997861121855938561"),
+            "https://www.opentix.life/event/1997861121855938561",
+        )
+
+    def test_loading_and_placeholder_images_are_rejected(self):
+        bad = [
+            "https://www.ricecastle.com.tw/images/ajax-loader.gif",
+            "https://example.com/images/loading-spinner.png",
+            "https://example.com/assets/programInfoDefault.png",
+            "https://example.com/img/placeholder.webp",
+        ]
+        self.assertTrue(all(not scraper.probable_content_image(url) for url in bad))
+        self.assertTrue(scraper.probable_content_image("https://example.com/poster/exhibition-main.webp"))
+
+    def test_opentix_visible_programme_copy_is_extracted(self):
+        page = """
+        <section><h2>節目介紹</h2>
+        <p>這是一段完整的節目介紹，說明創作背景、演出內容、策展概念與觀眾可以期待的現場體驗。</p>
+        <p>第二段補充藝術家與作品脈絡，讓活動詳細頁不再只顯示預設提示。</p>
+        <h2>折扣方案</h2><p>會員九折</p></section>
+        """
+        result = scraper.extract_opentix_description(page)
+        self.assertIn("創作背景", result)
+        self.assertNotIn("會員九折", result)
+
+    @patch.object(scraper, "fetch_all_json", side_effect=RuntimeError("temporary outage"))
+    def test_api_failure_uses_last_published_catalogue(self, _fetch):
+        existing = [{"id": "cached-event", "title": "既有展覽"}]
+        records, used_fallback = scraper.fetch_records_with_fallback(existing, scraper.SourceConfig())
+        self.assertEqual(records, [])
+        self.assertTrue(used_fallback)
+
+    @patch.object(scraper, "fetch_all_json", side_effect=RuntimeError("temporary outage"))
+    def test_api_failure_without_cache_still_fails(self, _fetch):
+        with self.assertRaises(RuntimeError):
+            scraper.fetch_records_with_fallback([], scraper.SourceConfig())
+
     def test_invalid_netloc_returns_empty_instead_of_raising(self):
         self.assertEqual(scraper.normalize_url("https://：完全錯誤的網址"), "")
 
@@ -239,6 +278,15 @@ class PublishedDataTests(unittest.TestCase):
             for event in self.payload["events"]
             for url in event.get("images", [])
             if "https://cloud.culture.twhttps://" in url
+        ]
+        self.assertEqual(offenders, [])
+
+    def test_published_images_exclude_loaders_and_placeholders(self):
+        offenders = [
+            (event.get("title"), url)
+            for event in self.payload["events"]
+            for url in event.get("images", [])
+            if not scraper.probable_content_image(url)
         ]
         self.assertEqual(offenders, [])
 
