@@ -54,9 +54,10 @@ API_TEMPLATE = CULTURE_BASE_URL + "frontsite/trans/SearchShowAction.do?method={m
 API_METHODS = ("doFindTypeJ", "doFindTypeJOpenApi")
 DEFAULT_OUTPUT = Path("data/exhibitions.json")
 DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
+DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.8 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.9 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -139,6 +140,7 @@ COORDINATE_PATTERNS = [
 ]
 VENUE_LABEL_PATTERN = re.compile(r'(?:活動地點|展演地點|展覽地點|場地|地點)\s*[：:]\s*([^<\n]{2,80})', re.I)
 ABSOLUTE_IMAGE_PATTERN = re.compile(r'https?://[^\s"\'<>]+?\.(?:jpe?g|png|webp|avif)(?:\?[^\s"\'<>]*)?', re.I)
+ABSOLUTE_URL_PATTERN = re.compile(r'https?://[^\s<>"\'）)\]}]+', re.I)
 RELATED_LINK_PATTERN = re.compile(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', re.I | re.S)
 CANONICAL_LINK_PATTERN = re.compile(r'<link[^>]+rel=["\'](?:canonical|alternate)["\'][^>]+href=["\']([^"\']+)', re.I)
 PAGE_TITLE_PATTERN = re.compile(r'<title[^>]*>(.*?)</title>', re.I | re.S)
@@ -298,6 +300,11 @@ def normalize_url(value: Any, *, base_url: str = CULTURE_BASE_URL) -> str:
     if not text or text.startswith("data:"):
         return ""
     text = text.replace("\\/", "/")
+    # Some Culture Cloud records accidentally concatenate the host twice:
+    # https://cloud.culture.twhttps://cloud.culture.tw/path/to/poster.jpg
+    duplicated_scheme = re.match(r"^https?://[^/?#]+(?P<url>https?://.+)$", text, re.I)
+    if duplicated_scheme:
+        text = duplicated_scheme.group("url")
     if re.match(r"^https?%3A", text, re.I):
         text = unquote(text)
     if text.startswith("//"):
@@ -625,6 +632,21 @@ def source_url(raw: dict[str, Any]) -> str:
     ):
         url = normalize_url(candidate)
         if url and not is_generic_ticketing_url(url) and not is_facebook_url(url):
+            return url
+    # Official feeds often leave the source field empty but place the exhibition
+    # page in the description. Recover only stable, non-image, non-Facebook URLs.
+    source_text = " ".join(
+        clean_text(first_value(raw.get(key)))
+        for key in ("description", "descriptionFilterHtml", "comment", "transitInfo")
+    )
+    for match in ABSOLUTE_URL_PATTERN.finditer(source_text):
+        url = normalize_url(match.group(0).rstrip("。，、；;:"))
+        if (
+            url
+            and not is_facebook_url(url)
+            and not is_generic_ticketing_url(url)
+            and not re.search(r"\.(?:jpe?g|png|gif|webp|avif)(?:$|\?)", url, re.I)
+        ):
             return url
     return ""
 
@@ -1049,6 +1071,36 @@ def dedupe_key(record: dict[str, Any]) -> str:
     return "text:" + stable_id(record.get("title"), record.get("startDate"), record.get("locationName"))
 
 
+def semantic_dedupe_key(record: dict[str, Any]) -> str:
+    """Merge the same exhibition imported with different provider IDs."""
+    title = _compact_title(record.get("title"))
+    start = date_string(record.get("startDate"))
+    end = date_string(record.get("endDate"))
+    if not title or not start:
+        return ""
+    return f"{title}|{start}|{end or start}"
+
+
+def source_record_quality(record: dict[str, Any]) -> tuple[int, float, int]:
+    url = valid_http_url(record.get("sourceUrl"))
+    if not url or is_facebook_url(url) or is_generic_ticketing_url(url):
+        return (-999, 0.0, 0)
+    parsed = urlparse(url)
+    path = parsed.path.rstrip("/")
+    score = 10
+    if path:
+        score += 14 + min(path.count("/"), 5)
+    if record.get("sourceUrlVerified"):
+        score += 75
+    if OFFICIAL_DATA_HOST_PATTERN.search(parsed.netloc):
+        score += 24
+    if is_ticketing_url(url):
+        score += 18
+    if any(host in parsed.netloc.lower() for host in ("artemperor.tw", "artgalleryapollo.com")):
+        score += 22
+    return score, float(record.get("sourceUrlMatchScore") or 0), len(path)
+
+
 def merge_list_values(old: Any, new: Any) -> list[Any]:
     result: list[Any] = []
     for value in [*(old if isinstance(old, list) else []), *(new if isinstance(new, list) else [])]:
@@ -1072,6 +1124,11 @@ def merge_two_records(old: dict[str, Any], new: dict[str, Any]) -> dict[str, Any
         if key in {"locationName", "location", "venueGroup"} and poor_venue(value) and not poor_venue(old_value):
             continue
         merged[key] = value
+    preferred_source = max((old, new), key=source_record_quality)
+    if valid_http_url(preferred_source.get("sourceUrl")):
+        for key in ("sourceUrl", "sourceUrlVerified", "sourceUrlMatchScore", "sourceUrlRejected", "pageMetadataCheckedAt"):
+            if key in preferred_source:
+                merged[key] = preferred_source.get(key)
     merged["images"] = merge_list_values(old.get("images"), new.get("images"))[:10]
     if merged["images"]:
         merged["image"] = merged["images"][0]
@@ -1109,7 +1166,27 @@ def merge_records(primary: Iterable[dict[str, Any]], existing: Iterable[dict[str
     def sort_key(item: dict[str, Any]) -> tuple[date, str]:
         return parse_date(item.get("startDate")) or date.max, clean_text(item.get("title"))
 
-    return sorted(merged.values(), key=sort_key)
+    # Provider IDs are not globally stable. A second title/date pass merges
+    # duplicates such as one Culture Cloud record plus one gallery record.
+    semantic: dict[str, dict[str, Any]] = {}
+    unkeyed: list[dict[str, Any]] = []
+    for record in merged.values():
+        key = semantic_dedupe_key(record)
+        if not key:
+            unkeyed.append(record)
+            continue
+        if key in semantic:
+            first_seen = min(
+                (clean_text(value) for value in (semantic[key].get("firstSeenAt"), record.get("firstSeenAt")) if clean_text(value)),
+                default=now,
+            )
+            semantic[key] = merge_two_records(semantic[key], record)
+            semantic[key]["firstSeenAt"] = first_seen
+            semantic[key]["lastSeenAt"] = now
+        else:
+            semantic[key] = record
+
+    return sorted([*semantic.values(), *unkeyed], key=sort_key)
 
 
 def place_key(record: dict[str, Any], *, address_first: bool) -> str:
@@ -1160,6 +1237,41 @@ def load_json_object(path: Path) -> dict[str, Any]:
         return payload if isinstance(payload, dict) else {}
     except (OSError, json.JSONDecodeError):
         return {}
+
+
+def apply_curated_overrides(events: list[dict[str, Any]], path: Path = DEFAULT_CURATED_OVERRIDES) -> int:
+    payload = load_json_object(path)
+    overrides = payload.get("overrides") if isinstance(payload, dict) else []
+    if not isinstance(overrides, list):
+        return 0
+    applied = 0
+    for override in overrides:
+        if not isinstance(override, dict):
+            continue
+        expected_title = _compact_title(override.get("title"))
+        expected_start = date_string(override.get("startDate"))
+        expected_end = date_string(override.get("endDate"))
+        values = override.get("set")
+        if not expected_title or not isinstance(values, dict):
+            continue
+        for event in events:
+            if _compact_title(event.get("title")) != expected_title:
+                continue
+            if expected_start and date_string(event.get("startDate")) != expected_start:
+                continue
+            if expected_end and date_string(event.get("endDate")) != expected_end:
+                continue
+            clean_values = dict(values)
+            if "sourceUrl" in clean_values:
+                clean_values["sourceUrl"] = valid_http_url(clean_values["sourceUrl"])
+                if not clean_values["sourceUrl"] or is_facebook_url(clean_values["sourceUrl"]):
+                    clean_values.pop("sourceUrl", None)
+            if isinstance(clean_values.get("images"), list):
+                clean_values["images"] = unique_urls(clean_values["images"])[:18]
+                clean_values["image"] = clean_values["images"][0] if clean_values["images"] else event.get("image", "")
+            event.update({key: value for key, value in clean_values.items() if value not in (None, "")})
+            applied += 1
+    return applied
 
 
 def normalize_geocode_key(event: dict[str, Any]) -> str:
@@ -1413,24 +1525,49 @@ def venue_images(
     existing: dict[str, str] | None = None,
     allow_fetch: bool = True,
 ) -> dict[str, str]:
-    # Venue cards use official venue-homepage imagery only. Event posters are not
-    # recycled as venue photos because that gives a misleading visual cue.
-    active_venues = {clean_place_text(event.get("venueGroup") or event.get("locationName")) for event in events}
+    # Prefer official venue imagery. When a venue has no usable official image,
+    # use a current exhibition's key art as the explicitly labelled fallback.
+    event_list = list(events)
+    active_venues = {clean_place_text(event.get("venueGroup") or event.get("locationName")) for event in event_list}
     result: dict[str, str] = {
         clean_place_text(name): valid_http_url(url)
         for name, url in (existing or {}).items()
         if clean_place_text(name) in active_venues and valid_http_url(url) and not is_facebook_url(url)
     }
-    if not allow_fetch:
-        return result
-    for profile in VENUE_PROFILES:
-        name = clean_place_text(profile.get("name"))
-        homepage = valid_http_url(profile.get("homepage"))
-        if not name or name not in active_venues or not homepage or name in result:
+    if allow_fetch:
+        for profile in VENUE_PROFILES:
+            name = clean_place_text(profile.get("name"))
+            homepage = valid_http_url(profile.get("homepage"))
+            if not name or name not in active_venues or not homepage or name in result:
+                continue
+            images = [item for item in discover_page_images(homepage, timeout=18) if image_url_responds(item)]
+            if images:
+                result[name] = images[0]
+
+    def exhibition_image_rank(event: dict[str, Any]) -> tuple[int, date, int]:
+        today = datetime.now(TAIPEI_TZ).date()
+        start = parse_date(event.get("startDate")) or date.max
+        end = parse_date(event.get("endDate")) or start
+        active = int(start <= today <= end)
+        upcoming = int(start > today)
+        return active * 2 + upcoming, start, int(event.get("hitRate") or 0)
+
+    for event in sorted(event_list, key=exhibition_image_rank, reverse=True):
+        venue = clean_place_text(event.get("venueGroup") or event.get("locationName"))
+        if not venue or venue in result or poor_venue(venue):
             continue
-        images = [item for item in discover_page_images(homepage, timeout=18) if image_url_responds(item)]
-        if images:
-            result[name] = images[0]
+        image = next(
+            (
+                valid_http_url(candidate)
+                for candidate in [*(event.get("images") or []), event.get("image")]
+                if valid_http_url(candidate)
+                and not is_facebook_url(candidate)
+                and probable_content_image(valid_http_url(candidate))
+            ),
+            "",
+        )
+        if image:
+            result[venue] = image
     return result
 
 
@@ -1565,6 +1702,7 @@ def main() -> int:
     parser.add_argument("--max-image-fetches", type=int, default=int(os.environ.get("MAX_IMAGE_FETCHES", "450")))
     parser.add_argument("--max-geocodes", type=int, default=int(os.environ.get("MAX_GEOCODES", "25")))
     parser.add_argument("--geocode-cache", type=Path, default=DEFAULT_GEOCODE_CACHE)
+    parser.add_argument("--curated-overrides", type=Path, default=DEFAULT_CURATED_OVERRIDES)
     args = parser.parse_args()
 
     existing = [] if args.no_preserve_existing else load_existing(args.output)
@@ -1572,6 +1710,7 @@ def main() -> int:
     venue_image_map = read_venue_image_map(args.input_file or (args.output if args.output.exists() else None))
     normalized = [record for index, raw in enumerate(raw_records) if (record := normalize_record(raw, index))]
     events = merge_records(normalized, existing)
+    curated_overrides = apply_curated_overrides(events, args.curated_overrides)
 
     detail_enriched = 0
     if not args.input_file and args.max_detail_fetches > 0:
@@ -1580,6 +1719,8 @@ def main() -> int:
     enriched_images = 0
     if not args.no_image_enrichment and not args.input_file and args.max_image_fetches > 0:
         enriched_images = enrich_source_pages(events, max_fetches=args.max_image_fetches)
+    # Curated corrections win if an upstream page later changes or redirects.
+    apply_curated_overrides(events, args.curated_overrides)
 
     rejected_coordinates = validate_all_coordinates(events)
     inherited_coordinates = fill_coordinates_from_matching_places(events)
@@ -1601,7 +1742,8 @@ def main() -> int:
     print(
         f"Wrote {len(events)} events to {args.output}; official-details enriched={detail_enriched}; images={image_count} "
         f"(source-page metadata enriched {enriched_images}); coordinates={coordinate_count} "
-        f"(matched {inherited_coordinates}, geocoded {geocoded}, rejected mismatches {rejected_coordinates})"
+        f"(matched {inherited_coordinates}, geocoded {geocoded}, rejected mismatches {rejected_coordinates}); "
+        f"curated overrides={curated_overrides}"
     )
     return 0
 

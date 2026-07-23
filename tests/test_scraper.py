@@ -55,6 +55,61 @@ class ScraperPolicyTests(unittest.TestCase):
         self.assertIn("https://www.opentix.life/event/real-show", result)
         self.assertFalse(any(scraper.is_facebook_url(url) for url in result))
 
+    def test_concatenated_culture_cloud_image_url_is_repaired(self):
+        broken = "https://cloud.culture.twhttps://cloud.culture.tw/e_new_upload/poster.jpg"
+        self.assertEqual(
+            scraper.normalize_url(broken),
+            "https://cloud.culture.tw/e_new_upload/poster.jpg",
+        )
+
+    def test_source_url_can_be_recovered_from_description(self):
+        result = scraper.source_url({
+            "description": "完整介紹：https://artemperor.tw/tidbits/19988",
+        })
+        self.assertEqual(result, "https://artemperor.tw/tidbits/19988")
+
+    def test_semantic_dedupe_merges_different_provider_ids(self):
+        first = {
+            "id": "culture-a",
+            "title": "《吟遊於母星之間》曾詩涵個展",
+            "startDate": "2026-06-20",
+            "endDate": "2026-08-01",
+            "locationName": "活動名稱誤作場館",
+            "venueGroup": "活動名稱誤作場館",
+            "sourceUrl": "",
+            "images": [],
+            "categories": ["美術"],
+            "category": "美術",
+            "description": "較短介紹",
+            "firstSeenAt": "2026-07-01T00:00:00+08:00",
+        }
+        second = {
+            **first,
+            "id": "gallery-b",
+            "locationName": "阿波羅畫廊",
+            "venueGroup": "阿波羅畫廊",
+            "sourceUrl": "https://artemperor.tw/tidbits/19988",
+            "sourceUrlVerified": True,
+            "sourceUrlMatchScore": 1.0,
+            "description": "完整展覽介紹" * 30,
+        }
+        merged = scraper.merge_records([first, second], [])
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["sourceUrl"], second["sourceUrl"])
+        self.assertEqual(merged[0]["venueGroup"], "阿波羅畫廊")
+
+    def test_venue_image_falls_back_to_current_exhibition_art(self):
+        event = {
+            "title": "展覽",
+            "venueGroup": "測試美術館",
+            "startDate": "2026-01-01",
+            "endDate": "2030-12-31",
+            "images": ["https://example.com/current-exhibition.jpg"],
+            "image": "https://example.com/current-exhibition.jpg",
+        }
+        result = scraper.venue_images([event], existing={}, allow_fetch=False)
+        self.assertEqual(result["測試美術館"], event["image"])
+
     @patch.object(scraper.requests, "get")
     def test_facebook_page_is_not_requested(self, mock_get):
         self.assertEqual(scraper.discover_page_metadata("https://www.facebook.com/events/123"), {})
@@ -137,6 +192,24 @@ class PublishedDataTests(unittest.TestCase):
             name for name, url in self.payload.get("venueImages", {}).items()
             if scraper.is_facebook_url(url)
         )
+        self.assertEqual(offenders, [])
+
+    def test_curated_source_and_semantic_duplicate_cleanup(self):
+        matches = [
+            event for event in self.payload["events"]
+            if "吟遊於母星之間" in event.get("title", "")
+        ]
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["sourceUrl"], "https://artemperor.tw/tidbits/19988")
+        self.assertEqual(matches[0]["venueGroup"], "阿波羅畫廊")
+
+    def test_published_images_have_no_concatenated_scheme(self):
+        offenders = [
+            url
+            for event in self.payload["events"]
+            for url in event.get("images", [])
+            if "https://cloud.culture.twhttps://" in url
+        ]
         self.assertEqual(offenders, [])
 
 

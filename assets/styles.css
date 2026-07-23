@@ -1710,8 +1710,8 @@ img, video, svg { display: block; max-width: 100%; }
 /* V3.7 — unified filters, reliable hero controls and editorial image frames  */
 /* ========================================================================== */
 
-/* The redraw control always stays above the ticket stack. Hovering the hero
-   never pauses the ten-second rotation. */
+/* The redraw control always stays above the ticket stack. JavaScript pauses
+   the fifteen-second countdown while the pointer or keyboard focus is inside. */
 .hero-ticket-stack { z-index: 4; }
 .hero-shuffle-button {
   z-index: 8;
@@ -2004,4 +2004,179 @@ img, video, svg { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .venue-section .motion-card { opacity: 1; transform: none; transition: none; }
   .venue-tile img { transition: none; }
+}
+
+/* ==========================================================================
+   Exhibition Hub V3.9
+   ========================================================================== */
+
+/* The supplied balanced journal signature replaces the compact seal/wordmark. */
+.brand-logo-frame {
+  position: relative;
+  display: block;
+  width: 314px;
+  height: 58px;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.brand-logo-frame img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 508px;
+  max-width: none;
+  height: auto;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: multiply;
+}
+
+/* Generated category artwork is only shown after every real image candidate fails. */
+.fallback-art {
+  position: relative;
+  overflow: hidden;
+  background-color: #d9cdbd;
+  background-image: url("exhibition-fallback-sprite-v39.png");
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  background-position: var(--fallback-x, 100%) var(--fallback-y, 100%);
+  color: #fff;
+  isolation: isolate;
+}
+.fallback-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(to top, rgba(24,19,15,.52), transparent 58%),
+    linear-gradient(120deg, rgba(255,255,255,.08), transparent 42%);
+}
+.fallback-art-label {
+  position: absolute;
+  left: 13px;
+  bottom: 11px;
+  z-index: 1;
+  padding: 5px 9px;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 999px;
+  background: rgba(28,23,19,.38);
+  color: #fff;
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-shadow: 0 1px 4px rgba(0,0,0,.34);
+  backdrop-filter: blur(5px);
+}
+
+/* Home filters use one non-conflicting animation, avoiding opacity/transform flashes. */
+.filter-results-section.is-changing { opacity: 1; transform: translateY(0); }
+.filter-results-section .date-reveal-card {
+  opacity: 0;
+  transform: translate3d(0,16px,0);
+  animation: filter-card-reveal-v39 1.05s calc(var(--reveal-index, 0) * 90ms + 90ms) cubic-bezier(.19,.72,.22,1) both;
+  will-change: opacity, transform;
+}
+@keyframes filter-card-reveal-v39 {
+  0% { opacity: 0; transform: translate3d(0,16px,0); }
+  30% { opacity: .28; }
+  100% { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+/* Upcoming is visually distinct from the terracotta "ending soon" state. */
+.time-dot.upcoming { background: #3f8a62; box-shadow: 0 0 0 5px rgba(63,138,98,.12); }
+
+/* Favorites: four square cards, slow bottom-up reveal, and a swipeable affinity rail. */
+.favorites-grid {
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 18px;
+}
+.favorites-shell .favorites-grid .card-image { aspect-ratio: 1 / 1; }
+.favorite-reveal-card {
+  opacity: 0;
+  transform: translate3d(0,34px,0);
+  animation: favorite-card-rise-v39 1.25s calc(var(--favorite-index, 0) * 125ms + 120ms) cubic-bezier(.18,.72,.2,1) both;
+  will-change: opacity, transform;
+}
+@keyframes favorite-card-rise-v39 {
+  from { opacity: 0; transform: translate3d(0,34px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+.favorites-recommendations {
+  margin-top: 76px;
+  padding-top: 42px;
+  border-top: 1px solid var(--line);
+}
+.favorites-recommendations .section-description { max-width: 620px; }
+.favorites-recommendation-rail {
+  grid-auto-columns: minmax(232px,270px);
+  scroll-snap-type: x proximity;
+}
+.favorites-recommendation-rail .card-image { aspect-ratio: 1 / 1; }
+
+/* Nearby cards expose distance as a colored datum and keep external navigation separate. */
+.nearby-result-card {
+  position: relative;
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.nearby-result-main {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 14px;
+  padding-right: 76px;
+}
+.nearby-result-copy { min-width: 0; }
+.distance-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #dcece5;
+  color: #24654b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .05em;
+}
+.nearby-map-link {
+  position: absolute;
+  right: 0;
+  bottom: 16px;
+  color: #2e6f84;
+  font-size: 10px;
+  font-weight: 750;
+}
+.nearby-map-link:hover { color: #174f62; }
+.map-popup-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.map-popup-actions a:last-child { color: #2e6f84; }
+
+@media (max-width: 1120px) {
+  .brand-logo-frame { width: 250px; }
+  .brand-logo-frame img { width: 405px; }
+  .nav-shell { gap: 20px; }
+  .desktop-nav { margin-left: 2px; gap: 18px; }
+  .favorites-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+
+@media (max-width: 820px) {
+  .brand-logo-frame { width: 220px; height: 52px; }
+  .brand-logo-frame img { width: 356px; }
+  .favorites-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .nearby-result-main { grid-template-columns: 82px 1fr; }
+}
+
+@media (max-width: 520px) {
+  .brand-logo-frame { width: 190px; height: 48px; }
+  .brand-logo-frame img { width: 308px; }
+  .favorites-grid { grid-template-columns: 1fr; }
+  .favorites-recommendations { margin-top: 54px; padding-top: 32px; }
+  .nearby-result-main { padding-right: 0; }
+  .nearby-map-link { position: static; display: inline-block; margin: 8px 0 0 96px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-results-section .date-reveal-card,
+  .favorite-reveal-card { opacity: 1; transform: none; animation: none; }
 }

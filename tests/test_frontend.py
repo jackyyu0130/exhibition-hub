@@ -46,9 +46,45 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("CITY ART WALK", self.html)
         self.assertNotIn('class="paper-map-fragment"', self.html)
 
-    def test_v38_cache_busting(self):
-        self.assertIn("assets/styles.css?v=3.8", self.html)
-        self.assertIn("assets/app.js?v=3.8", self.html)
+    def test_v39_cache_busting(self):
+        self.assertIn("assets/styles.css?v=3.9", self.html)
+        self.assertIn("assets/app.js?v=3.9", self.html)
+
+    def test_filtered_cards_use_one_stable_animation(self):
+        self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
+        self.assertNotIn("cardMarkup(event,{motionIndex:index,revealIndex:index})", self.app)
+        self.assertIn("filter-card-reveal-v39", self.css)
+
+    def test_hero_pauses_on_hover_and_rotates_every_fifteen_seconds(self):
+        self.assertIn("const HERO_ROTATION_MS = 15000", self.app)
+        self.assertIn("pointerenter", self.app)
+        self.assertIn("pauseHeroRotation", self.app)
+        self.assertIn("resumeHeroRotation", self.app)
+        self.assertIn("每 15 秒換一組推薦・停留即暫停", self.html)
+
+    def test_nearby_auto_location_radius_distance_and_external_map(self):
+        self.assertIn("const NEARBY_RADIUS_KM = 20", self.app)
+        self.assertIn("requestLocation({automatic:true})", self.app)
+        self.assertIn("distance-badge", self.app)
+        self.assertIn("googleMapsDirectionsUrl", self.app)
+        self.assertIn("你附近 20 公里", self.html)
+
+    def test_favorites_are_four_square_cards_with_recommendations(self):
+        self.assertIn('id="favoritesRecommendations"', self.html)
+        self.assertIn('id="favoritesRecommendationRail"', self.html)
+        self.assertIn(".favorites-grid {", self.css)
+        self.assertIn("grid-template-columns: repeat(4", self.css)
+        self.assertIn(".favorites-shell .favorites-grid .card-image { aspect-ratio: 1 / 1; }", self.css)
+        self.assertIn("favorite-card-rise-v39", self.css)
+        self.assertIn("affinity:", self.app)
+
+    def test_supplied_brand_and_generated_fallback_art_are_used(self):
+        self.assertIn("assets/taiwan-exhibition-journal-logo-v7.png", self.html)
+        self.assertIn("exhibition-fallback-sprite-v39.png", self.css)
+        self.assertIn("fallbackMarkup(event", self.app)
+
+    def test_upcoming_time_dot_is_green(self):
+        self.assertIn(".time-dot.upcoming { background: #3f8a62;", self.css)
 
 
 if __name__ == "__main__":

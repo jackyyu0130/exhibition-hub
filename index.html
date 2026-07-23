@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=3.8">
+  <link rel="stylesheet" href="assets/styles.css?v=3.9">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -24,10 +24,8 @@
   <header class="site-header" id="siteHeader">
     <div class="nav-shell">
       <a class="brand" href="./" aria-label="台灣展覽誌首頁">
-        <span class="brand-seal">展</span>
-        <span class="brand-copy">
-          <strong>台灣展覽誌</strong>
-          <small>TAIWAN EXHIBITION JOURNAL</small>
+        <span class="brand-logo-frame" aria-hidden="true">
+          <img src="assets/taiwan-exhibition-journal-logo-v7.png" alt="">
         </span>
       </a>
 
@@ -156,7 +154,7 @@
             <span id="heroShuffleText">從右側抽出今天的觀展靈感</span>
           </button>
           <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-label="隨機推薦三檔展覽"></div>
-          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 10 秒換一組推薦</div>
+          <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 15 秒換一組推薦・停留即暫停</div>
         </div>
       </section>
 
@@ -366,14 +364,14 @@
         <div>
           <p class="eyebrow">NEARBY EXHIBITIONS</p>
           <h1>附近展覽</h1>
-          <p id="nearbyStatusText">允許定位後，依距離由近到遠顯示展覽。</p>
+          <p id="nearbyStatusText">允許定位後，顯示 20 公里內展覽並依距離排序。</p>
         </div>
         <button class="location-button light" id="nearbyLocationButton" type="button">重新取得位置</button>
       </div>
       <div class="nearby-layout">
         <div class="nearby-map" id="nearbyMap"></div>
         <div class="nearby-results">
-          <div class="nearby-results-head"><h2>距離你最近</h2><span id="nearbyCount"></span></div>
+          <div class="nearby-results-head"><h2>你附近 20 公里</h2><span id="nearbyCount"></span></div>
           <div class="nearby-result-list" id="nearbyResultList"></div>
         </div>
       </div>
@@ -391,13 +389,27 @@
       </div>
       <div class="favorites-shell">
         <div class="listing-toolbar"><span id="favoritesCount"></span></div>
-        <div class="exhibition-grid" id="favoritesGrid"></div>
+        <div class="exhibition-grid favorites-grid" id="favoritesGrid"></div>
         <div class="empty-state" id="favoritesEmpty" hidden>
           <span>♡</span>
           <h3>還沒有收藏任何展覽</h3>
           <p>點選卡片上的愛心，就能加入你的觀展清單。</p>
           <a class="primary-link" href="?view=all">開始探索</a>
         </div>
+        <section class="favorites-recommendations" id="favoritesRecommendations" hidden>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">BECAUSE YOU SAVED</p>
+              <h2>依照你的收藏，推薦這些展覽</h2>
+              <p class="section-description" id="favoritesRecommendationCopy"></p>
+            </div>
+            <div class="section-controls">
+              <button class="icon-button" type="button" data-scroll-target="favoritesRecommendationRail" data-dir="-1" aria-label="向左瀏覽推薦">←</button>
+              <button class="icon-button" type="button" data-scroll-target="favoritesRecommendationRail" data-dir="1" aria-label="向右瀏覽推薦">→</button>
+            </div>
+          </div>
+          <div class="featured-rail favorites-recommendation-rail" id="favoritesRecommendationRail"></div>
+        </section>
       </div>
     </section>
 
@@ -431,6 +443,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=3.8"></script>
+  <script src="assets/app.js?v=3.9"></script>
 </body>
 </html>

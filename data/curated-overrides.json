@@ -1,0 +1,21 @@
+{
+  "overrides": [
+    {
+      "title": "《吟遊於母星之間》曾詩涵個展",
+      "startDate": "2026-06-20",
+      "endDate": "2026-08-01",
+      "set": {
+        "sourceUrl": "https://artemperor.tw/tidbits/19988",
+        "sourceUrlVerified": true,
+        "sourceUrlMatchScore": 1.0,
+        "locationName": "阿波羅畫廊",
+        "location": "阿波羅畫廊",
+        "venueGroup": "阿波羅畫廊",
+        "venueDetail": "",
+        "address": "臺北市大安區忠孝東路四段218-6號2樓",
+        "region": "台北市",
+        "unit": "阿波羅畫廊"
+      }
+    }
+  ]
+}
