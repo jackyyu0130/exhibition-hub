@@ -309,8 +309,22 @@ def normalize_url(value: Any, *, base_url: str = CULTURE_BASE_URL) -> str:
         text = unquote(text)
     if text.startswith("//"):
         text = "https:" + text
-    text = urljoin(base_url, text)
-    parsed = urlparse(text)
+    # A few upstream fields append prose directly after the hostname, for
+    # example "https://lib.miaoli.gov.tw網站查詢，或洽...". Keep only the
+    # valid ASCII authority so one malformed record cannot abort the full run.
+    authority_match = re.match(r"^(https?://)([^/?#\s]+)(.*)$", text, re.I)
+    if authority_match:
+        authority = authority_match.group(2)
+        if re.search(r"[^A-Za-z0-9.\-:\[\]]", authority):
+            safe_authority = re.match(r"[A-Za-z0-9.-]+(?::\d+)?", authority)
+            if not safe_authority:
+                return ""
+            text = f"{authority_match.group(1)}{safe_authority.group(0)}"
+    try:
+        text = urljoin(base_url, text)
+        parsed = urlparse(text)
+    except ValueError:
+        return ""
     if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return ""
     return text
