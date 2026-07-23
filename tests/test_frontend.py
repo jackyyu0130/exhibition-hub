@@ -57,9 +57,9 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v46_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.6", self.html)
-        self.assertIn("assets/app.js?v=4.6", self.html)
+    def test_v47_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.7", self.html)
+        self.assertIn("assets/app.js?v=4.7", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -133,7 +133,7 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn(".venue-section.is-in-view .venue-tile:hover", self.css)
         self.assertIn(".featured-block .motion-card", self.css)
         self.assertIn("clip-path: inset(0 0 12% 0 round 16px)", self.css)
-        self.assertIn("cardMarkup(event,{wholeCardLink:true,listingIndex:index})", self.app)
+        self.assertIn("cardMarkup(event,{wholeCardLink:true})", self.app)
         self.assertIn("is-whole-card-link", self.app)
         self.assertIn("data-card-href", self.app)
         self.assertIn("event.target !== wholeCard", self.app)
@@ -147,10 +147,7 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("padding-top: 42px;", self.css)
         self.assertIn("padding-bottom: 42px;", self.css)
 
-    def test_v45_full_width_hero_filter_workbench_and_animation_reset(self):
-        self.assertIn("height: 470px;", self.css)
-        self.assertIn("padding-right: 0;", self.css)
-        self.assertIn("width: min(760px,100%);", self.css)
+    def test_v45_filter_workbench_and_home_animation_reset(self):
         self.assertIn('class="filter-workbench"', self.html)
         self.assertLess(self.html.index('id="filterResultsSection"'), self.html.index('id="categoryStrip"'))
         self.assertIn(".filter-workbench .filter-results-section.is-visible", self.css)
@@ -160,19 +157,19 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("if (event.persisted) replayHomeAnimations();", self.app)
         self.assertIn("ticketStack.classList.remove('is-changing','is-entering')", self.app)
 
-    def test_v46_warm_palette_full_hero_and_listing_motion(self):
-        self.assertIn("--bg: #f3eee6;", self.css)
-        self.assertIn("--surface: #fffaf3;", self.css)
+    def test_v47_milk_tea_palette_compact_hero_and_static_listing(self):
+        self.assertIn("--bg: #f2e7d9;", self.css)
+        self.assertIn("--surface: #fcf7ef;", self.css)
         self.assertIn('class="hero-ticket-stage"', self.html)
-        self.assertIn("min-height: 584px;", self.css)
-        self.assertIn("width: min(700px,calc(100% - 42px));", self.css)
-        self.assertIn("border: 0;", self.css)
-        self.assertIn("listing-tone-block", self.html)
-        self.assertIn(".listing-view.is-animated-in .listing-tone-block", self.css)
-        self.assertIn("listing-card-reveal-v46", self.css)
-        self.assertIn("listingIndex:index", self.app)
-        self.assertIn("function replayListingBlockAnimations()", self.app)
-        self.assertIn("if (previousView !== 'listing') replayListingBlockAnimations();", self.app)
+        self.assertIn("padding: 36px 24px 44px;", self.css)
+        self.assertIn("height: 438px;", self.css)
+        self.assertIn("border-radius: 24px;", self.css)
+        self.assertIn("linear-gradient(90deg, #faf5ed 0%, #ead8c4 57%, #d4b99f 100%);", self.css)
+        self.assertIn("background: linear-gradient(132deg, #e7d8c8 0%, #dfcbb7 58%, #d8bea5 100%);", self.css)
+        self.assertIn("background: #eee1d3;", self.css)
+        self.assertNotIn("listing-tone-block", self.html)
+        self.assertNotIn("listingIndex", self.app)
+        self.assertNotIn("replayListingBlockAnimations", self.app)
 
     def test_v43_ticket_perforation_back_to_top_and_image_guard(self):
         self.assertIn("ticket-perforation", self.app)

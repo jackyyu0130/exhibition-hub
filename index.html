@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f4efe6">
+  <meta name="theme-color" content="#f2e7d9">
   <meta id="metaDescription" name="description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
   <meta property="og:type" content="website">
   <meta id="metaOgTitle" property="og:title" content="台灣展覽誌｜探索全台藝文展覽">
@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=4.6">
+  <link rel="stylesheet" href="assets/styles.css?v=4.7">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -275,7 +275,7 @@
 
     <section class="listing-view app-view" id="listingView" hidden>
       <div class="view-hero compact-view-hero listing-view-hero">
-        <div class="listing-heading-column listing-tone-block" style="--listing-block-index:0">
+        <div class="listing-heading-column">
           <div class="view-title-row">
             <span class="view-title-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5M10 6v8M6 10h8"></path></svg>
@@ -294,7 +294,7 @@
           </section>
         </div>
 
-        <section class="listing-category-panel listing-tone-block" style="--listing-block-index:1" aria-labelledby="listingCategoryTitle">
+        <section class="listing-category-panel" aria-labelledby="listingCategoryTitle">
           <div class="filter-panel-heading compact">
             <div><small>CATEGORY</small><h2 id="listingCategoryTitle">展覽分類</h2></div>
             <button class="text-button" type="button" data-clear-filter="category">清除分類</button>
@@ -305,7 +305,7 @@
 
       <div class="listing-layout">
         <aside class="filter-sidebar" id="filterSidebar">
-          <section class="sidebar-calendar-panel listing-tone-block" style="--listing-block-index:2" aria-labelledby="listingCalendarTitle">
+          <section class="sidebar-calendar-panel" aria-labelledby="listingCalendarTitle">
             <div class="filter-panel-heading compact sidebar-panel-heading">
               <div><small>DATE</small><h2 id="listingCalendarTitle">觀展日期</h2></div>
               <button class="text-button" type="button" id="sidebarClearDate">清除</button>
@@ -324,7 +324,7 @@
               </div>
             </div>
           </section>
-          <div class="location-filter-panel listing-tone-block" style="--listing-block-index:3">
+          <div class="location-filter-panel">
             <div class="filter-sidebar-head">
               <div><small>LOCATION</small><h2>依縣市與場館篩選</h2></div>
               <button class="filter-close-button" id="filterCloseButton" type="button" aria-label="關閉篩選">×</button>
@@ -334,7 +334,7 @@
           </div>
         </aside>
 
-        <div class="listing-content listing-tone-block" style="--listing-block-index:4">
+        <div class="listing-content">
           <div class="listing-toolbar">
             <div>
               <button class="filter-drawer-button" id="filterDrawerButton" type="button">日期與地點篩選</button>
@@ -451,6 +451,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=4.6"></script>
+  <script src="assets/app.js?v=4.7"></script>
 </body>
 </html>

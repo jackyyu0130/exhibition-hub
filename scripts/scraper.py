@@ -57,7 +57,7 @@ DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/4.6 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/4.7 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately

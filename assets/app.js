@@ -578,22 +578,19 @@
     const isDateReveal = Number.isInteger(options.revealIndex);
     const isMotionReveal = Number.isInteger(options.motionIndex);
     const isFavoriteReveal = Number.isInteger(options.favoriteIndex);
-    const isListingReveal = Number.isInteger(options.listingIndex);
     const styleParts = [];
     if (isDateReveal) styleParts.push(`--reveal-index:${options.revealIndex}`);
     if (isMotionReveal) styleParts.push(`--motion-index:${options.motionIndex}`);
     if (isFavoriteReveal) styleParts.push(`--favorite-index:${options.favoriteIndex}`);
-    if (isListingReveal) styleParts.push(`--listing-card-index:${Math.min(options.listingIndex,11)}`);
     const inlineStyle = styleParts.length ? ` style="${styleParts.join(';')}"` : '';
     const motionClass = isMotionReveal ? ' motion-card motion-from-right' : '';
     const favoriteClass = isFavoriteReveal ? ' favorite-reveal-card' : '';
-    const listingClass = isListingReveal ? ' listing-reveal-card' : '';
     const wholeCardClass = options.wholeCardLink ? ' is-whole-card-link' : '';
     const wholeCardAttrs = options.wholeCardLink
       ? ` data-card-href="${escapeHtml(eventHref(event))}" role="link" tabindex="0" aria-label="查看${escapeHtml(event.title)}詳細資訊"`
       : '';
     return `
-      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${listingClass}${wholeCardClass}"${inlineStyle}${wholeCardAttrs}>
+      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}"${inlineStyle}${wholeCardAttrs}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
           ${!(event.images?.length || event.image) && state.venueImages[event.venueGroup || event.locationName] ? '<span class="venue-image-label">場館示意</span>' : ''}
@@ -973,7 +970,7 @@
     const listingDescription = $('#listingDescription');
     if (listingDescription) listingDescription.textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '';
     $('#listingCount').textContent = `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
-    $('#listingGrid').innerHTML = items.map((event,index) => cardMarkup(event,{wholeCardLink:true,listingIndex:index})).join('');
+    $('#listingGrid').innerHTML = items.map(event => cardMarkup(event,{wholeCardLink:true})).join('');
     $('#listingEmpty').hidden = items.length !== 0;
     $('#sortSelect').value = state.sort;
     renderSidebarOptions();
@@ -1255,7 +1252,6 @@
     }
     if (state.view === 'listing') {
       renderListing();
-      if (previousView !== 'listing') replayListingBlockAnimations();
     }
     if (state.view === 'nearby') {
       renderNearby();
@@ -1380,14 +1376,6 @@
     if (state.view !== 'home' || $('#homeView')?.hidden) return;
     resetHomeAnimations();
     requestAnimationFrame(() => setupScrollReveal());
-  }
-
-  function replayListingBlockAnimations() {
-    const listing = $('#listingView');
-    if (!listing || listing.hidden) return;
-    listing.classList.remove('is-animated-in');
-    void listing.offsetWidth;
-    requestAnimationFrame(() => listing.classList.add('is-animated-in'));
   }
 
   function bindEvents() {
