@@ -1705,3 +1705,141 @@ img, video, svg { display: block; max-width: 100%; }
     transition: none !important;
   }
 }
+
+/* ========================================================================== */
+/* V3.7 — unified filters, reliable hero controls and editorial image frames  */
+/* ========================================================================== */
+
+/* The redraw control always stays above the ticket stack. Hovering the hero
+   never pauses the ten-second rotation. */
+.hero-ticket-stack { z-index: 4; }
+.hero-shuffle-button {
+  z-index: 8;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+.hero-shuffle-button[aria-busy="true"] .shuffle-icon { animation: v37-spin .72s ease both; }
+@keyframes v37-spin { to { transform: rotate(-360deg); } }
+
+/* Date and status now share one result area. Every change fades the previous
+   result out, replaces its content, then replays the card entrance motion. */
+.filter-results-section {
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: clip;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  background: linear-gradient(90deg, rgba(180,111,69,.055), transparent 55%);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .62s ease, transform .72s cubic-bezier(.2,.72,.2,1), max-height .72s ease, margin .72s ease, padding .72s ease, border-color .5s ease;
+}
+.filter-results-section.is-visible {
+  max-height: 1080px;
+  margin-bottom: 68px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+  border-color: var(--line);
+  opacity: 1;
+  transform: translateY(0);
+}
+.filter-results-section.is-changing,
+.filter-results-section.is-leaving { opacity: 0; transform: translateY(-9px); }
+.filter-results-section.is-visible .motion-card { opacity: 1; transform: translate3d(0,0,0); }
+.filter-results-footer { margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+
+.quick-filters .clear-filter { order: 99; margin-left: auto; white-space: nowrap; }
+.quick-filters .clear-filter[hidden] { display: none; }
+.active-filters { align-items: center; }
+.clear-all-filters {
+  margin-left: auto;
+  min-height: 34px;
+  padding: 0 13px;
+  border: 1px solid #c8b8aa;
+  border-radius: 999px;
+  background: #fffaf5;
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.clear-all-filters:hover { border-color: var(--accent); background: #fff3e9; }
+
+/* One county can be open at a time; all counties are collapsed initially. */
+.region-accordion:not([open]) .region-venues { display: none; }
+.region-accordion summary { cursor: pointer; }
+
+/* A clear, uncropped poster sits over a soft duplicate of the same image.
+   This keeps mixed portrait/landscape sources legible without empty bars. */
+.smart-image-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  background: #ded5c8;
+}
+.smart-image-frame > img {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0;
+}
+.smart-image-blur {
+  z-index: 0;
+  object-fit: cover !important;
+  filter: blur(20px) saturate(.88);
+  opacity: .72;
+  transform: scale(1.14);
+}
+.smart-image-foreground {
+  z-index: 1;
+  object-fit: contain !important;
+  filter: drop-shadow(0 3px 12px rgba(31,24,18,.14));
+  transition: transform .35s ease;
+}
+.exhibition-card:hover .smart-image-blur { transform: scale(1.14); }
+.exhibition-card:hover .smart-image-foreground { transform: scale(1.018); }
+.nearby-mini-card .smart-image-frame,
+.nearby-result-card .smart-image-frame { flex: 0 0 auto; border-radius: 12px; }
+.nearby-mini-card .smart-image-frame { width: 112px; height: 112px; }
+.nearby-result-card .smart-image-frame { width: 92px; height: 92px; }
+.detail-poster > .smart-image-frame { width: 100%; aspect-ratio: 4 / 5; height: auto; }
+.detail-poster .smart-image-frame > img { aspect-ratio: auto; }
+
+/* Smaller type makes Explore and Detail easier to scan on desktop. */
+.listing-view-hero h1 { font-size: clamp(25px,2.7vw,34px); line-height: 1.28; }
+.listing-view-hero .filter-panel-heading h2 { font-size: 14px; }
+.listing-view-hero .filter-panel-heading small { font-size: 9px; }
+.listing-view-hero .listing-category-option { min-height: 58px; }
+.listing-view-hero .listing-category-option .category-icon { width: 36px; height: 36px; }
+.listing-view-hero .listing-category-option strong { font-size: 10px; }
+.listing-view-hero .status-filter-button { min-height: 31px; padding-inline: 10px; font-size: 10px; }
+.listing-toolbar, #listingCount { font-size: 12px; }
+.listing-content .card-title { font-size: 16px; line-height: 1.55; }
+.detail-info h1 { font-size: clamp(23px,2.2vw,30px); line-height: 1.42; }
+.detail-meta-row small { font-size: 10px; }
+.detail-meta-row strong { font-size: 13.5px; line-height: 1.65; }
+.detail-description h2, .detail-related h2 { font-size: 20px; }
+.detail-description p { font-size: 14px; line-height: 1.9; }
+
+@media (max-width: 600px) {
+  .filter-results-section.is-visible { margin-bottom: 50px; padding-top: 27px; padding-bottom: 27px; }
+  .quick-filters .clear-filter { width: 100%; margin-left: 0; text-align: right; }
+  .clear-all-filters { width: 100%; margin-left: 0; }
+  .nearby-mini-card .smart-image-frame { width: 92px; height: 100%; }
+  .nearby-result-card .smart-image-frame { width: 82px; height: 82px; }
+  .detail-info h1 { font-size: 21px; }
+  .detail-description h2, .detail-related h2 { font-size: 18px; }
+  .detail-description p { font-size: 13.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-results-section { transition: none !important; }
+  .filter-results-section.is-visible { opacity: 1 !important; transform: none !important; }
+  .hero-shuffle-button[aria-busy="true"] .shuffle-icon { animation: none; }
+}

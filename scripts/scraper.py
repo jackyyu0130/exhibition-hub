@@ -10,6 +10,7 @@ pages, and geocodes a small cached batch of missing addresses each run.
 from __future__ import annotations
 
 import argparse
+from difflib import SequenceMatcher
 import hashlib
 import html
 import json
@@ -25,7 +26,28 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator
 from urllib.parse import unquote, urljoin, urlparse
 
-import requests
+try:
+    import requests
+except ModuleNotFoundError:  # Offline maintenance still works before dependencies are installed.
+    class _RequestsFallback:
+        class RequestException(RuntimeError):
+            pass
+
+        class Response:
+            pass
+
+        @staticmethod
+        def get(*_args, **_kwargs):
+            raise _RequestsFallback.RequestException("Install requirements.txt for network updates")
+
+        class Session:
+            def __init__(self):
+                self.headers = {}
+
+            def get(self, *_args, **_kwargs):
+                raise _RequestsFallback.RequestException("Install requirements.txt for network updates")
+
+    requests = _RequestsFallback()
 
 CULTURE_BASE_URL = "https://cloud.culture.tw/"
 API_TEMPLATE = CULTURE_BASE_URL + "frontsite/trans/SearchShowAction.do?method={method}&category={category}"
@@ -34,28 +56,28 @@ DEFAULT_OUTPUT = Path("data/exhibitions.json")
 DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.6 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.7 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
 # omit 「徵選」 and 「商展」; those records are reclassified from their content.
 CATEGORY_CODE_MAP = {
     "1": "音樂", "2": "表演", "3": "舞蹈", "4": "親子", "5": "音樂",
-    "6": "美術", "7": "講座", "8": "電影", "11": "表演", "13": "競賽",
-    "14": "其他", "15": "其他", "17": "音樂", "19": "研習",
+    "6": "美術", "7": "其他", "8": "電影", "11": "表演", "13": "競賽",
+    "14": "其他", "15": "其他", "17": "音樂", "19": "其他",
 }
 CATEGORY_FEEDS = tuple(CATEGORY_CODE_MAP)
 ALLOWED_CATEGORIES = (
     "快閃", "美術", "攝影", "設計", "動漫", "歷史文化", "自然科學", "親子",
-    "音樂", "表演", "舞蹈", "電影", "講座", "研習", "市集", "競賽", "科技", "其他",
+    "音樂", "表演", "舞蹈", "電影", "市集", "競賽", "科技", "其他",
 )
 CATEGORY_ALIASES = {
     "展覽": "美術", "展覽資訊": "美術", "藝術": "美術", "視覺藝術": "美術",
     "戲劇": "表演", "戲劇表演": "表演", "綜藝": "表演", "綜藝活動": "表演",
     "音樂表演": "音樂", "獨立音樂": "音樂", "演唱會": "音樂",
-    "講座資訊": "講座", "親子活動": "親子", "電影欣賞": "電影",
+    "講座資訊": "其他", "親子活動": "親子", "電影欣賞": "電影",
     "競賽活動": "競賽", "徵選活動": "其他", "徵選": "其他", "商展": "其他",
-    "研習課程": "研習", "其他藝文資訊": "其他",
+    "研習課程": "其他", "其他藝文資訊": "其他",
 }
 
 REGION_ALIASES = {"臺北市": "台北市", "臺中市": "台中市", "臺南市": "台南市", "臺東縣": "台東縣"}
@@ -90,8 +112,6 @@ KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("音樂", re.compile(r"音樂|演唱會|樂團|管弦|獨立音樂|concert", re.I)),
     ("表演", re.compile(r"戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲", re.I)),
     ("電影", re.compile(r"電影|(?<!攝)影展|放映", re.I)),
-    ("講座", re.compile(r"講座|論壇|座談|分享會|演講", re.I)),
-    ("研習", re.compile(r"研習|課程|工作坊|營隊", re.I)),
     ("市集", re.compile(r"市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位", re.I)),
     ("親子", re.compile(r"親子|兒童|家庭|幼兒", re.I)),
     ("競賽", re.compile(r"競賽|比賽|大賽|徵件比賽", re.I)),
@@ -107,7 +127,7 @@ IMAGE_META_PATTERNS = [
 ]
 IMG_SRC_PATTERN = re.compile(r'<img[^>]+(?:src|data-src|data-original|data-lazy-src|data-original-src|data-flickity-lazyload|data-echo)=["\']([^"\']+)', re.I)
 IMG_SRCSET_PATTERN = re.compile(r'<(?:img|source)[^>]+(?:srcset|data-srcset)=["\']([^"\']+)', re.I)
-JSON_IMAGE_PATTERN = re.compile(r'["\'](?:image|imageUrl|imageURL|thumbnailUrl|contentUrl)["\']\s*:\s*["\']([^"\']+)', re.I)
+JSON_IMAGE_PATTERN = re.compile(r'["\'](?:image|imageUrl|imageURL|images|thumbnailUrl|contentUrl|bannerUrl|bannerURL|coverImage|coverUrl|mainImage|posterUrl|originalImage)["\']\s*:\s*["\']([^"\']+)', re.I)
 BACKGROUND_IMAGE_PATTERN = re.compile(r'background(?:-image)?\s*:\s*url\(["\']?([^"\')]+)', re.I)
 BAD_IMAGE_HINTS = re.compile(r"(?:favicon|logo|icon|avatar|spacer|blank|loading|pixel|sprite|qr[_-]?code)", re.I)
 LD_JSON_PATTERN = re.compile(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.I | re.S)
@@ -124,6 +144,37 @@ CANONICAL_LINK_PATTERN = re.compile(r'<link[^>]+rel=["\'](?:canonical|alternate)
 PAGE_TITLE_PATTERN = re.compile(r'<title[^>]*>(.*?)</title>', re.I | re.S)
 OG_TITLE_PATTERN = re.compile(r'<meta[^>]+(?:property|name)=["\'](?:og:title|twitter:title)["\'][^>]+content=["\']([^"\']+)', re.I)
 SOCIAL_HOST_PATTERN = re.compile(r'(?:^|\.)(?:facebook\.com|fb\.me|instagram\.com)$', re.I)
+TICKETING_HOST_PATTERN = re.compile(
+    r'(?:^|\.)(?:opentix\.life|kktix\.com|tixcraft\.com|accupass\.com|udnfunlife\.com|ticketplus\.com\.tw|'
+    r'ibon\.com\.tw|famiticket\.com\.tw|ticketscloud\.org|artsticket\.com\.tw)$',
+    re.I,
+)
+OFFICIAL_DATA_HOST_PATTERN = re.compile(r'(?:^|\.)(?:culture\.tw|gov\.tw)$', re.I)
+EXCLUDED_CONTENT_PATTERN = re.compile(
+    r'講座|講習|研習|研討會|論壇|座談|分享會|演講|課程|工作坊|營隊|訓練班|培訓班|讀書會',
+    re.I,
+)
+EXCLUDED_CATEGORY_PATTERN = re.compile(r'講座|講習|研習|課程|工作坊|營隊', re.I)
+LOCAL_COMMUNITY_PATTERN = re.compile(
+    r'社區發展協會|里辦公處|里民活動|地方社團|地方性社團|同好會|居民活動|社區小聚|社團例會',
+    re.I,
+)
+SMALL_LOCAL_ACTIVITY_PATTERN = re.compile(
+    r'外展服務|繪本說故事|故事時間|故事媽媽|親子共讀|社區共讀|'
+    r'假日電影院|(?:圖書館|分館|鄉|鎮|區|里).{0,12}電影欣賞|'
+    r'文化走讀|深度走讀|城市走讀|導覽活動|'
+    r'DIY|手作(?:活動|體驗|課)|(?:體驗|觀察|藝術|繪畫|書法|舞蹈|音樂|攝影)課|'
+    r'(?:夏令|冬令|成長|親子|藝術|科學)營|交流會|同樂會',
+    re.I,
+)
+LOCAL_ORGANIZATION_PATTERN = re.compile(r'(?:縣|市|鄉|鎮|區|里).{0,14}(?:協會|學會|社團|團委會)', re.I)
+PUBLIC_SHOW_PATTERN = re.compile(r'展覽|特展|聯展|個展|書展|攝影展|美術展|展演|音樂會|演出|藝術節|電影節|博覽會|劇場|戲劇|舞蹈', re.I)
+LARGE_OR_OFFICIAL_EVENT_PATTERN = re.compile(r'國際|全國|博覽會|美術館|博物館|文化局|文化中心|文化處', re.I)
+DESCRIPTION_META_PATTERNS = [
+    re.compile(r'<meta[^>]+(?:property|name)=["\'](?:og:description|twitter:description|description)["\'][^>]+content=["\']([^"\']+)', re.I),
+    re.compile(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\'](?:og:description|twitter:description|description)["\']', re.I),
+]
+JSON_DESCRIPTION_PATTERN = re.compile(r'["\'](?:description|eventDescription|introduction|summary)["\']\s*:\s*["\']((?:\\.|[^"\'])+)', re.I)
 IMAGE_VALIDATION_CACHE: dict[str, bool] = {}
 
 
@@ -264,6 +315,94 @@ def unique_urls(values: Iterable[Any], *, base_url: str = CULTURE_BASE_URL) -> l
 
 def valid_http_url(value: Any) -> str:
     return normalize_url(value)
+
+
+def url_host(value: Any) -> str:
+    return urlparse(valid_http_url(value)).netloc.lower().split(":")[0]
+
+
+def is_facebook_group_url(value: Any) -> bool:
+    url = valid_http_url(value)
+    if not url:
+        return False
+    parsed = urlparse(url)
+    return bool(re.search(r"(?:^|\.)facebook\.com$", parsed.netloc.lower())) and "/groups/" in parsed.path.lower()
+
+
+def is_ticketing_url(value: Any) -> bool:
+    return bool(TICKETING_HOST_PATTERN.search(url_host(value)))
+
+
+def is_generic_ticketing_url(value: Any) -> bool:
+    url = valid_http_url(value)
+    if not url or not is_ticketing_url(url):
+        return False
+    parsed = urlparse(url)
+    return parsed.path.rstrip("/") == "" and not parsed.query and not parsed.fragment
+
+
+def source_url_requires_title_validation(value: Any) -> bool:
+    host = url_host(value)
+    return bool(TICKETING_HOST_PATTERN.search(host) or SOCIAL_HOST_PATTERN.search(host))
+
+
+def _compact_title(value: Any) -> str:
+    text = clean_text(value).lower()
+    text = re.sub(r"https?://\S+", "", text)
+    text = re.sub(r"(?:opentix|kktix|tixcraft|accupass|udn售票|寬宏售票|年代售票|facebook)", "", text, flags=re.I)
+    return re.sub(r"[^0-9a-z\u3400-\u9fff]+", "", text)
+
+
+def title_match_score(event_title: Any, page_title: Any, page_text: Any = "") -> float:
+    """Return a conservative 0..1 score that the page belongs to the event."""
+    expected = _compact_title(event_title)
+    candidate = _compact_title(page_title)
+    if not expected:
+        return 0.0
+    scores: list[float] = []
+    if candidate:
+        scores.append(SequenceMatcher(None, expected, candidate).ratio())
+        if expected in candidate:
+            scores.append(0.98)
+        elif len(candidate) >= 6 and candidate in expected:
+            scores.append(0.88)
+        expected_pairs = {expected[index:index + 2] for index in range(max(0, len(expected) - 1))}
+        candidate_pairs = {candidate[index:index + 2] for index in range(max(0, len(candidate) - 1))}
+        if expected_pairs:
+            scores.append(len(expected_pairs & candidate_pairs) / len(expected_pairs))
+
+    plain_page = _compact_title(str(page_text)[:240_000])
+    if plain_page:
+        if expected in plain_page:
+            scores.append(0.92)
+        meaningful = [
+            _compact_title(token)
+            for token in re.split(r"[\s：:、,，/|()（）【】《》\-—]+", clean_text(event_title))
+            if len(_compact_title(token)) >= 2 and _compact_title(token) not in {"展覽", "活動", "特展", "台灣", "臺灣"}
+        ]
+        if meaningful:
+            coverage = sum(token in plain_page for token in meaningful) / len(meaningful)
+            scores.append(coverage * 0.82)
+    return round(max(scores, default=0.0), 4)
+
+
+def is_excluded_record(record: dict[str, Any]) -> bool:
+    """Apply V3.7's editorial exclusion policy before publication."""
+    source = first_value(record.get("sourceUrl"), record.get("url"), record.get("website"))
+    if is_facebook_group_url(source):
+        return True
+    title = clean_text(first_value(record.get("title"), record.get("name"), record.get("actName")))
+    categories = " ".join(clean_text(value) for value in flatten_values(first_value(record.get("categories"), record.get("category"), record.get("categoryName"))))
+    feed_category = clean_text(record.get("_feedCategory"))
+    if EXCLUDED_CONTENT_PATTERN.search(title) or SMALL_LOCAL_ACTIVITY_PATTERN.search(title) or EXCLUDED_CATEGORY_PATTERN.search(categories) or feed_category in {"7", "19"}:
+        return True
+    organizer = clean_text(first_value(record.get("unit"), record.get("organizer"), record.get("showUnit"), record.get("masterUnit"), record.get("org")))
+    community_text = f"{title} {organizer}"
+    if LOCAL_COMMUNITY_PATTERN.search(community_text) and not LARGE_OR_OFFICIAL_EVENT_PATTERN.search(community_text):
+        return True
+    if LOCAL_ORGANIZATION_PATTERN.search(community_text) and not PUBLIC_SHOW_PATTERN.search(title) and not LARGE_OR_OFFICIAL_EVENT_PATTERN.search(community_text):
+        return True
+    return False
 
 
 def parse_date(value: Any) -> date | None:
@@ -436,7 +575,7 @@ def source_url(raw: dict[str, Any]) -> str:
         raw.get("url"), raw.get("webSales"),
     ):
         url = normalize_url(candidate)
-        if url:
+        if url and not is_generic_ticketing_url(url) and not is_facebook_group_url(url):
             return url
     return ""
 
@@ -493,7 +632,7 @@ def related_page_urls(page: str, base_url: str) -> list[str]:
 
     def add(candidate: Any, score: int) -> None:
         url = normalize_url(candidate, base_url=base_url)
-        if not url or url == base_url:
+        if not url or url == base_url or is_facebook_group_url(url):
             return
         parsed = urlparse(url)
         host = parsed.netloc.lower().split(":")[0]
@@ -501,11 +640,15 @@ def related_page_urls(page: str, base_url: str) -> list[str]:
         if not host or any(token in path for token in ("/share", "/sharer", "/login", "/dialog/")):
             return
         if SOCIAL_HOST_PATTERN.search(host):
-            score += 70
+            score += 15
             if "/events/" in path:
                 score += 45
-        if any(domain in host for domain in ("accupass.com", "opentix.life", "kktix.com", "tixcraft.com", "udnfunlife.com")):
+        if TICKETING_HOST_PATTERN.search(host):
+            score += 75
+        if "opentix.life" in host:
             score += 35
+        if OFFICIAL_DATA_HOST_PATTERN.search(host):
+            score += 30
         candidates[url] = max(candidates.get(url, -999), score)
 
     for match in CANONICAL_LINK_PATTERN.finditer(page):
@@ -556,6 +699,7 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         title_match = OG_TITLE_PATTERN.search(page) or PAGE_TITLE_PATTERN.search(page)
         page_title = clean_text(title_match.group(1)) if title_match else ""
         images: list[str] = []
+        descriptions: list[str] = []
         venue = ""
         address = ""
         latitude: float | None = None
@@ -564,6 +708,8 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         # Prefer social metadata and structured data over arbitrary inline images.
         for pattern in IMAGE_META_PATTERNS:
             images.extend(match.group(1) for match in pattern.finditer(page))
+        for pattern in DESCRIPTION_META_PATTERNS:
+            descriptions.extend(clean_text(match.group(1)) for match in pattern.finditer(page))
 
         for match in LD_JSON_PATTERN.finditer(page):
             raw = html.unescape(match.group(1)).strip()
@@ -575,6 +721,8 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
                 node_type = clean_text(node.get("@type")).lower()
                 if "image" in node:
                     images.extend(flatten_values(node.get("image")))
+                if node_type == "event" and node.get("description"):
+                    descriptions.append(clean_text(node.get("description")))
                 if node_type in {"event", "place", "civicstructure", "performingartstheater", "museum"}:
                     location = node.get("location")
                     if isinstance(location, dict):
@@ -606,6 +754,13 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         images.extend(match.group(1) for match in JSON_IMAGE_PATTERN.finditer(page))
         images.extend(match.group(1) for match in BACKGROUND_IMAGE_PATTERN.finditer(page))
         images.extend(match.group(0) for match in ABSOLUTE_IMAGE_PATTERN.finditer(page))
+        for match in JSON_DESCRIPTION_PATTERN.finditer(page):
+            raw_description = match.group(1)
+            try:
+                raw_description = json.loads(f'"{raw_description}"')
+            except json.JSONDecodeError:
+                raw_description = raw_description.replace(r"\n", "\n").replace(r'\"', '"')
+            descriptions.append(clean_text(raw_description))
 
         plain = clean_text(page)
         if not address:
@@ -631,10 +786,13 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         title_tokens = [token.lower() for token in re.split(r"[\s：:、,，/|()（）【】]+", title) if len(token) >= 2]
         page_haystack = f"{page_title} {clean_text(page[:180000])}".lower()
         host = urlparse(response.url).netloc.lower()
-        # Facebook sometimes returns a generic login/share page. Do not accept its
-        # generic image unless the event title is represented in the page.
-        if SOCIAL_HOST_PATTERN.search(host) and title_tokens and not any(token in page_haystack for token in title_tokens):
+        match_score = title_match_score(title, page_title, page_haystack) if title else 1.0
+        title_matched = not title or match_score >= 0.42
+        # Ticket and social platforms frequently redirect to a generic listing,
+        # login, or unrelated event. Never reuse media or copy from such pages.
+        if title and not title_matched:
             normalized_images = []
+            descriptions = []
 
         def image_score(item: str, index: int) -> tuple[int, int]:
             decoded = unquote(item).lower()
@@ -652,9 +810,14 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         normalized_images = [item for _, item in sorted(enumerate(normalized_images), key=lambda pair: image_score(pair[1], pair[0]))]
         validated = [item for item in normalized_images[:24] if image_url_responds(item)]
         normalized_images = list(dict.fromkeys([*validated, *normalized_images]))[:18]
+        normalized_descriptions = list(dict.fromkeys(item for item in descriptions if len(item) >= 24))
+        description = max(normalized_descriptions, key=len, default="")[:5000]
         return {
             "images": normalized_images,
+            "description": description,
             "pageTitle": page_title,
+            "titleMatchScore": match_score,
+            "titleMatched": title_matched,
             "venue": venue,
             "address": address,
             "latitude": latitude,
@@ -671,20 +834,53 @@ def discover_page_images(url: str, *, timeout: int = 16) -> list[str]:
 
 
 def discover_event_metadata(url: str, title: str, *, timeout: int = 18) -> dict[str, Any]:
-    """Read the source page and up to two likely official/detail links."""
+    """Read and cross-check the source plus likely official/ticket detail pages."""
     primary = discover_page_metadata(url, title=title, timeout=timeout)
     if not primary:
         return {}
-    combined = dict(primary)
-    combined["images"] = list(primary.get("images") or [])
+    pages = [primary]
     for related in (primary.get("relatedUrls") or [])[:4]:
         child = discover_page_metadata(related, title=title, timeout=timeout)
-        if not child:
-            continue
-        combined["images"] = merge_list_values(combined.get("images"), child.get("images"))[:20]
-        for key in ("venue", "address", "latitude", "longitude"):
-            if combined.get(key) in (None, "") and child.get(key) not in (None, ""):
-                combined[key] = child[key]
+        if child:
+            pages.append(child)
+
+    accepted = [page for page in pages if page.get("titleMatched")]
+    if not accepted:
+        return {
+            "images": [],
+            "sourceUrlVerified": False,
+            "sourceUrlMatchScore": primary.get("titleMatchScore", 0),
+            "sourceUrlRejected": valid_http_url(url),
+        }
+
+    def source_rank(page: dict[str, Any]) -> tuple[float, int]:
+        checked_url = clean_text(page.get("checkedUrl"))
+        host = url_host(checked_url)
+        bonus = 0
+        if "opentix.life" in host:
+            bonus += 55
+        elif TICKETING_HOST_PATTERN.search(host):
+            bonus += 38
+        if OFFICIAL_DATA_HOST_PATTERN.search(host):
+            bonus += 30
+        if checked_url.rstrip("/") == valid_http_url(url).rstrip("/"):
+            bonus += 12
+        return bonus, float(page.get("titleMatchScore") or 0)
+
+    accepted.sort(key=source_rank, reverse=True)
+    combined = dict(accepted[0])
+    combined["images"] = []
+    for page in accepted:
+        combined["images"] = merge_list_values(combined.get("images"), page.get("images"))[:20]
+    descriptions = [clean_text(page.get("description")) for page in accepted if clean_text(page.get("description"))]
+    combined["description"] = max(descriptions, key=len, default="")
+    for key in ("venue", "address", "latitude", "longitude"):
+        combined[key] = next((page.get(key) for page in accepted if page.get(key) not in (None, "")), None)
+    combined["bestSourceUrl"] = clean_text(accepted[0].get("checkedUrl"))
+    combined["sourceUrlVerified"] = bool(primary.get("titleMatched"))
+    combined["sourceUrlMatchScore"] = float(primary.get("titleMatchScore") or 0)
+    if not primary.get("titleMatched"):
+        combined["sourceUrlRejected"] = valid_http_url(url)
     return combined
 
 
@@ -697,6 +893,8 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
     show = best_show(raw)
     title = clean_text(first_value(raw.get("title"), raw.get("titile"), raw.get("name"), raw.get("actName")))
     if not title:
+        return None
+    if is_excluded_record(raw):
         return None
 
     raw_description = first_value(raw.get("description"), raw.get("descriptionFilterHtml"), raw.get("comment"))
@@ -758,6 +956,9 @@ def normalize_record(raw: dict[str, Any], index: int) -> dict[str, Any] | None:
         "firstSeenAt": clean_text(first_value(raw.get("firstSeenAt"), raw.get("first_seen_at"))),
         "lastSeenAt": clean_text(first_value(raw.get("lastSeenAt"), raw.get("last_seen_at"))),
         "pageMetadataCheckedAt": clean_text(raw.get("pageMetadataCheckedAt")),
+        "sourceUrlVerified": bool(raw.get("sourceUrlVerified")),
+        "sourceUrlMatchScore": float(raw.get("sourceUrlMatchScore") or 0) if re.fullmatch(r"\d+(?:\.\d+)?", str(raw.get("sourceUrlMatchScore") or "0")) else 0.0,
+        "sourceUrlRejected": clean_text(raw.get("sourceUrlRejected")),
     }
 
 
@@ -834,13 +1035,13 @@ def merge_records(primary: Iterable[dict[str, Any]], existing: Iterable[dict[str
     merged: dict[str, dict[str, Any]] = {}
     now = datetime.now(TAIPEI_TZ).isoformat(timespec="seconds")
     for record in existing:
-        if not is_demo_record(record) and not is_recruitment_only(record) and is_still_relevant(record):
+        if not is_demo_record(record) and not is_recruitment_only(record) and not is_excluded_record(record) and is_still_relevant(record):
             record = dict(record)
             record["firstSeenAt"] = clean_text(record.get("firstSeenAt")) or now
             record["lastSeenAt"] = clean_text(record.get("lastSeenAt")) or record["firstSeenAt"]
             merged[dedupe_key(record)] = record
     for record in primary:
-        if is_recruitment_only(record) or not is_still_relevant(record):
+        if is_recruitment_only(record) or is_excluded_record(record) or not is_still_relevant(record):
             continue
         key = dedupe_key(record)
         if key in merged:
@@ -1046,7 +1247,8 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
             continue
         checked = parse_date(event.get("pageMetadataCheckedAt"))
         missing_image = not event.get("images")
-        retry_days = 4 if missing_image else 21
+        source_needs_verification = not bool(event.get("sourceUrlVerified")) or source_url_requires_title_validation(event.get("sourceUrl"))
+        retry_days = 4 if missing_image or source_needs_verification else 21
         recently_checked = checked is not None and checked >= (now.date() - timedelta(days=retry_days))
         needs_data = (
             missing_image
@@ -1054,10 +1256,22 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
             or event.get("longitude") is None
             or not clean_place_text(event.get("address"))
             or poor_venue(event.get("venueGroup") or event.get("locationName"))
+            or len(clean_text(event.get("description"))) < 120
+            or source_needs_verification
         )
         if needs_data and not recently_checked:
             candidates.append(event)
-    candidates.sort(key=lambda event: (not bool(event.get("images")), poor_venue(event.get("venueGroup") or event.get("locationName")), int(event.get("hitRate") or 0)), reverse=True)
+    candidates.sort(
+        key=lambda event: (
+            source_url_requires_title_validation(event.get("sourceUrl")),
+            not bool(event.get("sourceUrlVerified")),
+            not bool(event.get("images")),
+            len(clean_text(event.get("description"))) < 120,
+            poor_venue(event.get("venueGroup") or event.get("locationName")),
+            int(event.get("hitRate") or 0),
+        ),
+        reverse=True,
+    )
     candidates = candidates[:max_fetches]
     if not candidates:
         return 0
@@ -1076,10 +1290,29 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
             if not metadata:
                 continue
             changed = False
+            event["sourceUrlVerified"] = bool(metadata.get("sourceUrlVerified"))
+            event["sourceUrlMatchScore"] = float(metadata.get("sourceUrlMatchScore") or 0)
+            rejected_url = clean_text(metadata.get("sourceUrlRejected"))
+            best_source_url = valid_http_url(metadata.get("bestSourceUrl"))
+            if rejected_url:
+                event["sourceUrlRejected"] = rejected_url
+                if best_source_url:
+                    event["sourceUrl"] = best_source_url
+                    event["sourceUrlVerified"] = True
+                else:
+                    event["sourceUrl"] = ""
+                changed = True
+            elif best_source_url and best_source_url != valid_http_url(event.get("sourceUrl")):
+                event["sourceUrl"] = best_source_url
+                changed = True
             images = metadata.get("images") or []
             if images:
                 event["images"] = merge_list_values(event.get("images"), images)[:18]
                 event["image"] = event["images"][0]
+                changed = True
+            discovered_description = clean_text(metadata.get("description"))
+            if len(discovered_description) > len(clean_text(event.get("description"))):
+                event["description"] = discovered_description
                 changed = True
             if metadata.get("address") and not clean_place_text(event.get("address")):
                 event["address"] = clean_place_text(metadata["address"])
@@ -1124,15 +1357,26 @@ def validate_all_coordinates(events: list[dict[str, Any]]) -> int:
     return cleared
 
 
-def venue_images(events: Iterable[dict[str, Any]]) -> dict[str, str]:
+def venue_images(
+    events: Iterable[dict[str, Any]],
+    *,
+    existing: dict[str, str] | None = None,
+    allow_fetch: bool = True,
+) -> dict[str, str]:
     # Venue cards use official venue-homepage imagery only. Event posters are not
     # recycled as venue photos because that gives a misleading visual cue.
     active_venues = {clean_place_text(event.get("venueGroup") or event.get("locationName")) for event in events}
-    result: dict[str, str] = {}
+    result: dict[str, str] = {
+        clean_place_text(name): valid_http_url(url)
+        for name, url in (existing or {}).items()
+        if clean_place_text(name) in active_venues and valid_http_url(url)
+    }
+    if not allow_fetch:
+        return result
     for profile in VENUE_PROFILES:
         name = clean_place_text(profile.get("name"))
         homepage = valid_http_url(profile.get("homepage"))
-        if not name or name not in active_venues or not homepage:
+        if not name or name not in active_venues or not homepage or name in result:
             continue
         images = [item for item in discover_page_images(homepage, timeout=18) if image_url_responds(item)]
         if images:
@@ -1208,7 +1452,24 @@ def read_input_file(path: Path) -> list[dict[str, Any]]:
     return [item for item in payload if isinstance(item, dict)]
 
 
-def write_output(path: Path, events: list[dict[str, Any]]) -> None:
+def read_venue_image_map(path: Path | None) -> dict[str, str]:
+    if not path or not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    venue_map = payload.get("venueImages", {}) if isinstance(payload, dict) else {}
+    return {clean_place_text(name): valid_http_url(url) for name, url in venue_map.items() if clean_place_text(name) and valid_http_url(url)} if isinstance(venue_map, dict) else {}
+
+
+def write_output(
+    path: Path,
+    events: list[dict[str, Any]],
+    *,
+    venue_image_map: dict[str, str] | None = None,
+    refresh_venue_images: bool = True,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     image_count = sum(1 for event in events if valid_http_url(event.get("image")))
     multi_image_count = sum(1 for event in events if len(event.get("images") or []) > 1)
@@ -1231,7 +1492,7 @@ def write_output(path: Path, events: list[dict[str, Any]]) -> None:
             "categoryCounts": category_counts,
         },
         "events": events,
-        "venueImages": venue_images(events),
+        "venueImages": venue_images(events, existing=venue_image_map, allow_fetch=refresh_venue_images),
     }
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -1244,6 +1505,7 @@ def main() -> int:
     parser.add_argument("--input-file", type=Path, help="Read records from local JSON instead of official APIs")
     parser.add_argument("--no-preserve-existing", action="store_true")
     parser.add_argument("--no-image-enrichment", action="store_true")
+    parser.add_argument("--no-venue-image-enrichment", action="store_true")
     parser.add_argument("--no-geocoding", action="store_true")
     parser.add_argument("--max-detail-fetches", type=int, default=int(os.environ.get("MAX_DETAIL_FETCHES", "250")))
     parser.add_argument("--max-image-fetches", type=int, default=int(os.environ.get("MAX_IMAGE_FETCHES", "450")))
@@ -1253,6 +1515,7 @@ def main() -> int:
 
     existing = [] if args.no_preserve_existing else load_existing(args.output)
     raw_records = read_input_file(args.input_file) if args.input_file else fetch_all_json(SourceConfig())
+    venue_image_map = read_venue_image_map(args.input_file or (args.output if args.output.exists() else None))
     normalized = [record for index, raw in enumerate(raw_records) if (record := normalize_record(raw, index))]
     events = merge_records(normalized, existing)
 
@@ -1272,7 +1535,13 @@ def main() -> int:
     # Validate the inherited/geocoded results one more time before publishing.
     rejected_coordinates += validate_all_coordinates(events)
 
-    write_output(args.output, events)
+    events = [event for event in events if not is_excluded_record(event)]
+    write_output(
+        args.output,
+        events,
+        venue_image_map=venue_image_map,
+        refresh_venue_images=not args.no_venue_image_enrichment and not bool(args.input_file),
+    )
     image_count = sum(1 for event in events if valid_http_url(event.get("image")))
     coordinate_count = sum(1 for event in events if event.get("latitude") is not None and event.get("longitude") is not None)
     print(

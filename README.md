@@ -1,4 +1,4 @@
-# 台灣展覽誌 V3
+# Exhibition Hub V3.7／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
 
@@ -23,13 +23,14 @@ exhibition-hub/
     └── update-exhibitions.yml
 ```
 
-## 最省事的替換方式
+## 完整替換
 
-1. 下載並解壓縮 ZIP。
-2. 將 ZIP 內所有檔案上傳到 GitHub 儲存庫根目錄，選擇覆蓋同名檔案。
-3. 不需要手動修改 HTML、CSS 或 JavaScript。
-4. 上傳後，`Update data and deploy site` GitHub Action 會因 `push` 自動執行。
-5. 工作流程會產生或更新 `data/exhibitions.json`，接著直接部署 GitHub Pages。
+完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
+[`REPLACEMENT_GUIDE_V3.7_ZH-TW.md`](REPLACEMENT_GUIDE_V3.7_ZH-TW.md)。
+
+最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
+儲存庫根目錄並覆蓋同名檔案，提交到 `main`，再執行
+**Actions → Update data and deploy site → Run workflow**。
 
 ## 保留原本 Hero 影片
 
@@ -44,7 +45,9 @@ assets/hero-video.mp4
 
 - 每天台灣時間約 05:25 自動執行。
 - 也能到 GitHub 的 **Actions → Update data and deploy site → Run workflow** 手動更新。
-- `scraper.py` 會讀取文化部開放資料，並保留 `data/exhibitions.json` 中仍在有效日期內的既有自訂活動，避免覆蓋你原本額外收集的展覽。
+- `scraper.py` 會讀取文化部開放資料，補抓 OPENTIX、活動官方頁與主要售票頁的圖片／介紹。
+- 售票及官方網址會以活動名稱交叉比對；不相符時改用已驗證的相關頁，找不到正確頁時清除錯誤連結。
+- 發布前排除 Facebook 社團、地方小型社團活動，以及講座、講習、研習、課程、工作坊、營隊。
 
 ## 資料欄位
 
@@ -78,3 +81,9 @@ python -m http.server 8000
 ```
 
 然後開啟 `http://localhost:8000`。
+
+## 測試
+
+```bash
+python -m unittest discover -s tests -v
+```

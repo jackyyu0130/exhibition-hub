@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=3.6">
+  <link rel="stylesheet" href="assets/styles.css?v=3.7">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -138,40 +138,22 @@
       </section>
 
 
-      <section class="editorial-section status-results-section" id="statusResultsSection" hidden>
+      <section class="editorial-section filter-results-section" id="filterResultsSection" hidden aria-live="polite">
         <div class="section-heading">
           <div>
-            <p class="eyebrow" id="statusResultsEyebrow">FILTERED EXHIBITIONS</p>
-            <h2 id="statusResultsTitle">符合條件的展覽</h2>
-            <p class="section-description" id="statusResultsDescription"></p>
+            <p class="eyebrow" id="filterResultsEyebrow">FILTERED EXHIBITIONS</p>
+            <h2 id="filterResultsTitle">符合條件的展覽</h2>
+            <p class="section-description" id="filterResultsDescription"></p>
           </div>
           <div class="section-controls">
-            <button class="icon-button" type="button" data-scroll-target="statusResultsRail" data-dir="-1" aria-label="向左捲動">←</button>
-            <button class="icon-button" type="button" data-scroll-target="statusResultsRail" data-dir="1" aria-label="向右捲動">→</button>
+            <button class="icon-button" type="button" data-scroll-target="filterResultsRail" data-dir="-1" aria-label="向左捲動">←</button>
+            <button class="icon-button" type="button" data-scroll-target="filterResultsRail" data-dir="1" aria-label="向右捲動">→</button>
           </div>
         </div>
-        <div class="featured-rail motion-card-rail" id="statusResultsRail"></div>
-        <div class="status-results-footer">
-          <a class="primary-link" id="statusResultsMore" href="?view=all">查看更多展覽</a>
-        </div>
-      </section>
-
-      <section class="editorial-section date-results-section" id="dateResultsSection" hidden>
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">EXHIBITIONS ON YOUR DATE</p>
-            <h2 id="dateResultsTitle">這一天有哪些展覽？</h2>
-            <p class="section-description" id="dateResultsDescription"></p>
-          </div>
-          <div class="section-controls">
-            <button class="icon-button" type="button" data-scroll-target="dateResultsRail" data-dir="-1" aria-label="向左捲動">←</button>
-            <button class="icon-button" type="button" data-scroll-target="dateResultsRail" data-dir="1" aria-label="向右捲動">→</button>
-          </div>
-        </div>
-        <div class="featured-rail" id="dateResultsRail"></div>
-        <div class="date-results-footer">
-          <a class="primary-link" id="dateResultsMore" href="?view=all">查看更多展覽</a>
-          <button class="text-button" id="dateResultsClear" type="button">清除日期</button>
+        <div class="featured-rail motion-card-rail" id="filterResultsRail"></div>
+        <div class="filter-results-footer">
+          <a class="primary-link" id="filterResultsMore" href="?view=all">查看更多展覽</a>
+          <button class="text-button" id="filterResultsClear" type="button">清除目前篩選</button>
         </div>
       </section>
 
@@ -395,6 +377,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=3.6"></script>
+  <script src="assets/app.js?v=3.7"></script>
 </body>
 </html>

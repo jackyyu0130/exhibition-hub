@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const CATEGORY_ORDER = ['快閃','美術','攝影','設計','動漫','歷史文化','自然科學','親子','音樂','表演','舞蹈','電影','講座','研習','市集','競賽','科技','其他'];
+  const CATEGORY_ORDER = ['快閃','美術','攝影','設計','動漫','歷史文化','自然科學','親子','音樂','表演','舞蹈','電影','市集','競賽','科技','其他'];
   const iconSvg = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
   const CATEGORY_ICON = {
     '快閃': iconSvg('<path d="M4 9h16l-1.2-4H5.2L4 9Z"></path><path d="M5 9v10h14V9M9 19v-5h6v5"></path><path d="M4 9c0 1.3 1 2.3 2.3 2.3S8.7 10.3 8.7 9c0 1.3 1 2.3 2.3 2.3s2.3-1 2.3-2.3c0 1.3 1 2.3 2.3 2.3S18 10.3 18 9"></path>'),
@@ -24,11 +24,11 @@
     '其他': iconSvg('<circle cx="7" cy="7" r="2"></circle><circle cx="17" cy="7" r="2"></circle><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle>')
   };
   const CATEGORY_SYMBOL = {'快閃':'閃','美術':'藝','攝影':'影','設計':'設','動漫':'漫','歷史文化':'史','自然科學':'科','親子':'親','音樂':'樂','表演':'演','舞蹈':'舞','電影':'映','講座':'講','研習':'學','市集':'集','競賽':'賽','科技':'技','其他':'展'};
-  const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'講座','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'研習'};
+  const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'其他','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'其他'};
   const CATEGORY_ALIASES = {
     '展覽':'美術','展覽資訊':'美術','藝術':'美術','戲劇':'表演','戲劇表演':'表演','綜藝':'表演','綜藝活動':'表演',
-    '音樂表演':'音樂','獨立音樂':'音樂','演唱會':'音樂','講座資訊':'講座','親子活動':'親子','電影欣賞':'電影',
-    '競賽活動':'競賽','徵選活動':'其他','徵選':'其他','商展':'其他','研習課程':'研習','其他藝文資訊':'其他'
+    '音樂表演':'音樂','獨立音樂':'音樂','演唱會':'音樂','講座資訊':'其他','親子活動':'親子','電影欣賞':'電影',
+    '競賽活動':'競賽','徵選活動':'其他','徵選':'其他','商展':'其他','研習課程':'其他','其他藝文資訊':'其他'
   };
   const VENUE_ALIAS_RULES = [
     [/華山(?:1914)?(?:文化創意產業園區|文創園區)?/i,'華山1914文化創意產業園區'],
@@ -78,6 +78,9 @@
     heroLastKeys: [],
     heroHasShuffled: false,
     lastRenderedDate: null,
+    heroTransitionTimer: null,
+    filterResultsTimer: null,
+    lastHomeFilterKey: '',
     revealObserver: null,
   };
 
@@ -176,8 +179,7 @@
       ['自然科學', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
       ['設計', /設計|建築|工藝|時尚|家居|文具|design/i], ['舞蹈', /舞蹈|舞作|芭蕾/i],
       ['音樂', /音樂|演唱會|樂團|管弦|獨立音樂|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
-      ['電影', /電影|(?<!攝)影展|放映/i], ['講座', /講座|論壇|座談|分享會|演講/i],
-      ['研習', /研習|課程|工作坊|營隊/i], ['市集', /市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
+      ['電影', /電影|(?<!攝)影展|放映/i], ['市集', /市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
       ['親子', /親子|兒童|家庭|幼兒/i], ['競賽', /競賽|比賽|大賽|徵件比賽/i],
       ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會/i]
     ];
@@ -186,6 +188,25 @@
     });
     const cleaned = categories.filter(category => CATEGORY_ORDER.includes(category));
     return (cleaned.length ? cleaned : ['其他']).filter((category, index, array) => array.indexOf(category) === index).slice(0, 3);
+  }
+
+  const EXCLUDED_CONTENT_PATTERN = /講座|講習|研習|研討會|論壇|座談|分享會|演講|課程|工作坊|營隊|訓練班|培訓班|讀書會/i;
+  const LOCAL_COMMUNITY_PATTERN = /社區發展協會|里辦公處|里民活動|地方社團|同好會|讀書會|居民活動|社區小聚|社團例會/i;
+  const SMALL_LOCAL_ACTIVITY_PATTERN = /外展服務|繪本說故事|故事時間|故事媽媽|親子共讀|社區共讀|假日電影院|(?:圖書館|分館|鄉|鎮|區|里).{0,12}電影欣賞|文化走讀|深度走讀|城市走讀|導覽活動|\bDIY\b|手作(?:活動|體驗|課)|(?:體驗|觀察|藝術|繪畫|書法|舞蹈|音樂|攝影)課|(?:夏令|冬令|成長|親子|藝術|科學)營|交流會|同樂會/i;
+  const LOCAL_ORGANIZATION_PATTERN = /(?:縣|市|鄉|鎮|區|里).{0,14}(?:協會|學會|社團|團委會)/i;
+  const PUBLIC_SHOW_PATTERN = /展覽|特展|聯展|個展|書展|攝影展|美術展|展演|音樂會|演出|藝術節|電影節|博覽會|劇場|戲劇|舞蹈/i;
+  const LARGE_OR_OFFICIAL_EVENT_PATTERN = /國際|全國|博覽會|美術館|博物館|文化局|文化中心|文化處/i;
+
+  function isExcludedEvent(event) {
+    const title = String(event.title || '');
+    const sourceUrl = String(event.sourceUrl || '');
+    const organizer = String(event.unit || '');
+    if (/facebook\.com\/groups\//i.test(sourceUrl)) return true;
+    if (EXCLUDED_CONTENT_PATTERN.test(title) || SMALL_LOCAL_ACTIVITY_PATTERN.test(title)) return true;
+    if ((event.categories || []).some(category => category === '講座' || category === '研習')) return true;
+    const communityText = `${title} ${organizer}`;
+    if (LOCAL_COMMUNITY_PATTERN.test(communityText) && !LARGE_OR_OFFICIAL_EVENT_PATTERN.test(communityText)) return true;
+    return LOCAL_ORGANIZATION_PATTERN.test(communityText) && !PUBLIC_SHOW_PATTERN.test(title) && !LARGE_OR_OFFICIAL_EVENT_PATTERN.test(communityText);
   }
 
   function cleanPlaceText(value = '') {
@@ -433,7 +454,10 @@
     if (!candidates.length) return `<div class="${className || 'card-placeholder'}" data-media-kind="placeholder">${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}</div>`;
     const serialized = escapeHtml(JSON.stringify(candidates));
     const alt = mediaKind === 'venue' ? `${event.venueGroup || event.locationName}場館示意` : event.title;
-    return `<img src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-media-kind="${mediaKind}" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-placeholder-text="${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="window.__exhibitionImageFallback(this)">`;
+    return `<span class="smart-image-frame ${escapeHtml(className)}" data-media-kind="${mediaKind}">
+      <img class="smart-image-blur" src="${escapeHtml(candidates[0])}" alt="" aria-hidden="true" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true">
+      <img class="smart-image-foreground" src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-media-kind="${mediaKind}" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-placeholder-text="${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="window.__exhibitionImageFallback(this)">
+    </span>`;
   }
 
   window.__exhibitionImageFallback = image => {
@@ -443,13 +467,15 @@
       if (candidates[nextIndex]) {
         image.dataset.imageIndex = String(nextIndex);
         image.src = candidates[nextIndex];
+        const backdrop = image.closest('.smart-image-frame')?.querySelector('.smart-image-blur');
+        if (backdrop) { backdrop.hidden = false; backdrop.src = candidates[nextIndex]; }
         return;
       }
     } catch {}
     const placeholder = document.createElement('div');
     placeholder.className = image.dataset.placeholderClass || 'card-placeholder';
     placeholder.textContent = image.dataset.placeholderText || '展';
-    image.replaceWith(placeholder);
+    (image.closest('.smart-image-frame') || image).replaceWith(placeholder);
   };
 
   function isRecentlyAdded(event, days = 7) {
@@ -612,6 +638,7 @@
   function renderHeroTickets({animate = true} = {}) {
     const stack = $('#heroTicketStack');
     if (!stack) return;
+    window.clearTimeout(state.heroTransitionTimer);
     const base = state.events.filter(event => isOngoing(event) || isUpcoming(event));
     const pool = selectFeatured(base.length ? base : state.events, Math.min(48, state.events.length));
     if (!pool.length) return;
@@ -620,11 +647,11 @@
       stack.innerHTML = picks.map(heroTicketMarkup).join('');
       stack.classList.remove('is-changing');
       requestAnimationFrame(() => stack.classList.add('is-entering'));
-      setTimeout(() => stack.classList.remove('is-entering'), 2350);
+      state.heroTransitionTimer = window.setTimeout(() => stack.classList.remove('is-entering'), 2350);
     };
     if (animate && stack.children.length) {
       stack.classList.add('is-changing');
-      setTimeout(apply, 720);
+      state.heroTransitionTimer = window.setTimeout(apply, 720);
     } else apply();
   }
 
@@ -648,79 +675,66 @@
     free: {eyebrow:'FREE ADMISSION', title:'免費入場的展覽'},
   };
 
-  function renderStatusResults(items) {
-    const section = $('#statusResultsSection');
-    const copy = HOME_STATUS_COPY[state.status];
-    if (!copy || state.status === 'all') {
-      section.classList.remove('is-visible');
+  function renderHomeFilterResults(items) {
+    const section = $('#filterResultsSection');
+    const active = Boolean(state.date || state.status !== 'all');
+    window.clearTimeout(state.filterResultsTimer);
+    if (!active) {
+      state.lastHomeFilterKey = '';
+      section.classList.remove('is-visible','is-changing');
       section.classList.add('is-leaving');
-      window.setTimeout(() => {
-        if (state.status === 'all') {
+      state.filterResultsTimer = window.setTimeout(() => {
+        if (!state.date && state.status === 'all') {
           section.hidden = true;
           section.classList.remove('is-leaving');
-          $('#statusResultsRail').innerHTML = '';
+          $('#filterResultsRail').innerHTML = '';
         }
-      }, 900);
+      }, 620);
       return;
     }
 
-    section.hidden = false;
-    section.classList.remove('is-visible','is-leaving');
-    $('#statusResultsEyebrow').textContent = copy.eyebrow;
-    $('#statusResultsTitle').textContent = copy.title;
-    $('#statusResultsDescription').textContent = items.length
-      ? `共找到 ${items.length.toLocaleString('zh-TW')} 檔，向右滑動查看更多。`
-      : '目前沒有符合這個狀態的展覽。';
-    $('#statusResultsRail').innerHTML = items.length
-      ? selectFeatured(items, 14).map((event,index) => cardMarkup(event,{motionIndex:index})).join('')
-      : emptyInline('目前沒有符合條件的展覽');
-    const params = new URLSearchParams({view:'all', status:state.status});
-    $('#statusResultsMore').href = `?${params.toString()}`;
-    void section.offsetWidth;
-    requestAnimationFrame(() => requestAnimationFrame(() => section.classList.add('is-visible')));
-  }
-
-  function renderDateResults(items) {
-    const section = $('#dateResultsSection');
-    if (!state.date) {
-      state.lastRenderedDate = null;
-      if (!section.hidden) {
-        section.classList.remove('is-visible');
-        section.classList.add('is-leaving');
-        window.setTimeout(() => {
-          if (!state.date) {
-            section.hidden = true;
-            section.classList.remove('is-leaving');
-            $('#dateResultsRail').innerHTML = '';
-          }
-        }, 920);
-      } else section.hidden = true;
-      return;
-    }
-
-    const selected = parseDate(`${state.date}T00:00:00`);
-    const formatted = selected ? `${selected.getFullYear()} 年 ${selected.getMonth()+1} 月 ${selected.getDate()} 日` : state.date;
-    $('#dateResultsTitle').textContent = `${formatted}有展出的展覽`;
-    $('#dateResultsDescription').textContent = items.length ? `共找到 ${items.length.toLocaleString('zh-TW')} 檔，向右滑動查看更多。` : '目前沒有符合條件的展覽，可以改選附近日期。';
-    $('#dateResultsRail').innerHTML = items.length
-      ? selectFeatured(items, 14).map((event,index) => cardMarkup(event,{revealIndex:index})).join('')
-      : emptyInline('這一天目前沒有符合條件的展覽');
-    const params = new URLSearchParams({view:'all', date:state.date});
+    const statusCopy = HOME_STATUS_COPY[state.status];
+    const selected = state.date ? parseDate(`${state.date}T00:00:00`) : null;
+    const formattedDate = selected ? `${selected.getFullYear()} 年 ${selected.getMonth()+1} 月 ${selected.getDate()} 日` : state.date;
+    const title = state.date
+      ? `${formattedDate}${statusCopy ? `符合「${statusCopy.title.replace(/的展覽$/, '')}」條件` : '有展出'}的展覽`
+      : statusCopy.title;
+    const eyebrow = state.date ? 'EXHIBITIONS ON YOUR DATE' : statusCopy.eyebrow;
+    const filterKey = [state.date || '', state.status, [...state.categories].sort().join('|')].join('::');
+    const params = new URLSearchParams({view:'all'});
+    if (state.date) params.set('date', state.date);
     if (state.status !== 'all') params.set('status', state.status);
     state.categories.forEach(category => params.append('category', category));
-    $('#dateResultsMore').href = `?${params.toString()}`;
 
-    section.hidden = false;
-    section.classList.remove('is-leaving');
-    requestAnimationFrame(() => requestAnimationFrame(() => section.classList.add('is-visible')));
-    state.lastRenderedDate = state.date;
+    const applyContent = () => {
+      $('#filterResultsEyebrow').textContent = eyebrow;
+      $('#filterResultsTitle').textContent = title;
+      $('#filterResultsDescription').textContent = items.length
+        ? `共找到 ${items.length.toLocaleString('zh-TW')} 檔，向右滑動查看更多。`
+        : '目前沒有符合條件的展覽，可以改選其他日期或狀態。';
+      $('#filterResultsRail').innerHTML = items.length
+        ? selectFeatured(items, 14).map((event,index) => cardMarkup(event,{motionIndex:index,revealIndex:index})).join('')
+        : emptyInline('目前沒有符合條件的展覽');
+      $('#filterResultsMore').href = `?${params.toString()}`;
+      section.hidden = false;
+      section.classList.remove('is-changing','is-leaving');
+      void section.offsetWidth;
+      requestAnimationFrame(() => requestAnimationFrame(() => section.classList.add('is-visible')));
+      state.lastHomeFilterKey = filterKey;
+    };
+
+    if (!section.hidden && state.lastHomeFilterKey && state.lastHomeFilterKey !== filterKey) {
+      section.classList.remove('is-visible');
+      section.classList.add('is-changing');
+      state.filterResultsTimer = window.setTimeout(applyContent, 260);
+    } else applyContent();
   }
 
   function renderHome() {
     const ongoing = state.events.filter(isOngoing);
     const featured = selectFeatured(ongoing.length ? ongoing : state.events, 9);
     const filteredPool = filterEvents(state.events, {includeDate:false});
-    const dateItems = state.date ? filteredPool.filter(event => eventOccursOn(event, state.date)) : [];
+    const homeFilterItems = state.date ? filteredPool.filter(event => eventOccursOn(event, state.date)) : filteredPool;
     const upcoming = state.events.filter(isUpcoming).sort((a,b) => (parseDate(a.startDate)?.getTime() || Infinity) - (parseDate(b.startDate)?.getTime() || Infinity)).slice(0, 4);
     const ending = state.events.filter(event => isEnding(event, 30)).sort((a,b) => (parseDate(a.endDate)?.getTime() || Infinity) - (parseDate(b.endDate)?.getTime() || Infinity)).slice(0, 4);
 
@@ -741,8 +755,7 @@
     ensureHeroRotation();
 
     renderCategoryStrip();
-    renderStatusResults(filteredPool);
-    renderDateResults(dateItems);
+    renderHomeFilterResults(homeFilterItems);
     $('#featuredRail').innerHTML = featured.length ? featured.map((event,index) => cardMarkup(event,{curated:index < 3,motionIndex:index})).join('') : emptyInline('目前沒有符合篩選的展覽');
     $('#upcomingList').innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
     $('#endingList').innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
@@ -787,6 +800,7 @@
   function syncHomeFilters() {
     $('#datePicker').value = state.date || '';
     $$('#statusPills button').forEach(button => button.classList.toggle('active', button.dataset.status === state.status));
+    $('#clearFiltersButton').hidden = !(state.date || state.status !== 'all' || state.categories.size);
   }
 
   function renderListing() {
@@ -830,7 +844,7 @@
       if (!regionEvents.length) return '';
       const venueCounts = countBy(regionEvents, event => displayableVenueName(event.venueGroup || event.locationName));
       const venues = Object.keys(venueCounts).filter(Boolean).sort((a,b) => venueCounts[b] - venueCounts[a] || a.localeCompare(b, 'zh-Hant'));
-      return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" open>
+      return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" data-region-accordion="${escapeHtml(region)}" ${state.region === region ? 'open' : ''}>
         <summary><span class="region-name">${escapeHtml(region)}</span><small>${regionEvents.length.toLocaleString('zh-TW')} 檔</small><i aria-hidden="true">⌄</i></summary>
         <div class="region-venues">
           <button class="venue-filter-option ${state.region === region && !state.venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter=""><span>全部 ${escapeHtml(region)}</span><small>${regionEvents.length}</small></button>
@@ -880,6 +894,7 @@
       parts.push(`<span class="active-filter">${escapeHtml(label)}<button type="button" data-clear-filter="status" aria-label="移除狀態">×</button></span>`);
     }
     if (state.date) parts.push(`<span class="active-filter">${escapeHtml(state.date)}<button type="button" data-clear-filter="date" aria-label="移除日期">×</button></span>`);
+    if (parts.length) parts.push('<button class="clear-all-filters" type="button" data-clear-all-filters>清除全部篩選</button>');
     $('#activeFilters').innerHTML = parts.join('');
   }
 
@@ -1118,19 +1133,22 @@
     $('#navSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#navSearchInput'));});
     $('#mobileSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#mobileSearchInput'));});
     $('#heroSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#heroSearchInput'));});
-    $('#heroShuffleButton').addEventListener('click', () => {
+    $('#heroShuffleButton').addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
       const button = $('#heroShuffleButton');
       if (button.disabled) return;
       button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
       state.heroHasShuffled = true;
       $('#heroShuffleText').textContent = '再抽一組觀展靈感';
-      renderHeroTickets({animate:true, manual:true});
+      renderHeroTickets({animate:true});
       resetHeroRotation();
-      setTimeout(() => { button.disabled = false; }, 1900);
+      setTimeout(() => { button.disabled = false; button.removeAttribute('aria-busy'); }, 820);
     });
 
     $('#datePicker').addEventListener('change', event => {state.date = event.target.value || null; renderHome();});
-    $('#dateResultsClear').addEventListener('click', () => {state.date = null; renderHome(); $('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
+    $('#filterResultsClear').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();$('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
     $('#clearFiltersButton').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();});
     $('#statusPills').addEventListener('click', event => {const button=event.target.closest('[data-status]');if(!button)return;state.status=button.dataset.status;renderHome();});
 
@@ -1183,7 +1201,18 @@
         else if (key === 'category') updateUrl({category:null});
         else updateUrl({[key]:null});
       }
+      if (event.target.closest('[data-clear-all-filters]')) {
+        updateUrl({q:null,category:null,region:null,venue:null,status:null,date:null});
+      }
     });
+
+    $('#listingLocationAccordion').addEventListener('toggle', event => {
+      const opened = event.target.closest('details.region-accordion');
+      if (!opened?.open) return;
+      $$('details.region-accordion', $('#listingLocationAccordion')).forEach(details => {
+        if (details !== opened) details.open = false;
+      });
+    }, true);
 
     $('#sidebarClearDate').addEventListener('click', () => updateUrl({date:null}));
     $('#calendarPrevButton').addEventListener('click', () => {state.calendarMonth = new Date(state.calendarMonth.getFullYear(),state.calendarMonth.getMonth()-1,1);renderListingCalendar();});
@@ -1234,7 +1263,7 @@
       const {payload, rawEvents, local} = await fetchEventPayload();
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.venueImages = payload.venueImages || {};
-      state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event));
+      state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
       if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
       renderCurrentView();
     } catch (error) {

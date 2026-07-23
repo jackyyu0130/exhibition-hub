@@ -38,7 +38,6 @@ jobs:
       # 一般程式碼 Push 只部署網站，不在同一時間再寫回資料檔。
       # 資料更新只由每日排程或手動 Run workflow 執行。
       - name: Set up Python
-        if: github.event_name != 'push'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -52,9 +51,12 @@ jobs:
         if: github.event_name != 'push'
         env:
           MAX_DETAIL_FETCHES: "800"
-          MAX_IMAGE_FETCHES: "1100"
+          MAX_IMAGE_FETCHES: "1400"
           MAX_GEOCODES: "90"
         run: python scripts/scraper.py
+
+      - name: Validate frontend, scraper rules, and published data
+        run: python -m unittest discover -s tests -v
 
       - name: Commit updated data safely
         if: github.event_name != 'push'

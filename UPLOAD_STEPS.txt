@@ -1,13 +1,15 @@
-台灣展覽誌 V3｜整包替換方式
+Exhibition Hub V3.7｜完整替換最短流程
 
-1. 解壓縮 exhibition-hub-v3-full-replacement.zip。
-2. 將解壓縮後的所有檔案與資料夾，上傳到 GitHub 儲存庫 main 分支的根目錄。
-3. 覆蓋 index.html、scripts/scraper.py 與其他同名檔案。
-4. 原本的 data/exhibitions.json 可以保留；新版可直接相容。
-5. 若你已刪除 data/exhibitions.json，上傳後 GitHub Actions 會自動重新建立。
-6. 原本的 assets/hero-video.mp4 可以保留；若沒有影片，新版會使用 hero-art.svg。
+1. 先到 GitHub 專案首頁，點 Code → Download ZIP，保存舊版備份。
+2. 解壓縮 Exhibition-Hub-V3.7-full-replacement.zip。
+3. 複製 ZIP 內全部內容到儲存庫根目錄（與 index.html 同一層），覆蓋同名檔案。
+4. 保留你原有的 CNAME 與 assets/hero-video.mp4（替換包不會覆蓋這兩個檔案）。
+5. 提交到 main 分支；若用 GitHub Desktop，點 Commit to main → Push origin。
+6. GitHub 網頁點 Settings → Pages → Source: GitHub Actions。
+7. 點 Actions → Update data and deploy site → Run workflow → Branch: main → Run workflow。
+8. 等待綠色勾勾，再開啟網站並按 Ctrl+F5（Mac：Cmd+Shift+R）強制更新。
 
-不需要手動搜尋或刪除任何程式碼段落。
+不需要手動修改任何 HTML、CSS 或 JavaScript。
 
-7. 到 Settings → Pages，將 Source 設定為 GitHub Actions。
-8. 到 Actions → Update data and deploy site → Run workflow，手動執行一次。
+所有點擊位置、替換路徑、核對清單與復原方式：
+REPLACEMENT_GUIDE_V3.7_ZH-TW.md
