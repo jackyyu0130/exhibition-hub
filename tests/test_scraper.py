@@ -36,10 +36,29 @@ class ScraperPolicyTests(unittest.TestCase):
         score = scraper.title_match_score("台灣設計展", "KKTIX 活動報名平台")
         self.assertLess(score, 0.42)
 
-    def test_facebook_groups_and_generic_ticket_home_are_rejected(self):
+    def test_all_facebook_hosts_and_generic_ticket_home_are_rejected(self):
         self.assertTrue(scraper.is_facebook_group_url("https://www.facebook.com/groups/12345"))
+        self.assertTrue(scraper.is_facebook_url("https://www.facebook.com/events/12345"))
+        self.assertTrue(scraper.is_facebook_url("https://scontent-tpe1-1.xx.fbcdn.net/poster.jpg"))
+        self.assertTrue(scraper.is_facebook_url("https://fb.me/example"))
+        self.assertFalse(scraper.is_facebook_url("https://www.opentix.life/event/example"))
         self.assertTrue(scraper.is_generic_ticketing_url("https://kktix.com/"))
         self.assertFalse(scraper.is_generic_ticketing_url("https://demo.kktix.cc/events/real-event"))
+
+    def test_related_pages_never_return_facebook(self):
+        page = """
+        <a href="https://www.facebook.com/events/123">Facebook 活動</a>
+        <a href="https://fb.me/example">臉書</a>
+        <a href="https://www.opentix.life/event/real-show">購票</a>
+        """
+        result = scraper.related_page_urls(page, "https://cloud.culture.tw/event/1")
+        self.assertIn("https://www.opentix.life/event/real-show", result)
+        self.assertFalse(any(scraper.is_facebook_url(url) for url in result))
+
+    @patch.object(scraper.requests, "get")
+    def test_facebook_page_is_not_requested(self, mock_get):
+        self.assertEqual(scraper.discover_page_metadata("https://www.facebook.com/events/123"), {})
+        mock_get.assert_not_called()
 
     def test_editorial_exclusions(self):
         excluded = [
@@ -106,6 +125,18 @@ class PublishedDataTests(unittest.TestCase):
 
     def test_published_data_has_no_generic_ticket_home(self):
         offenders = [event.get("sourceUrl") for event in self.payload["events"] if scraper.is_generic_ticketing_url(event.get("sourceUrl"))]
+        self.assertEqual(offenders, [])
+
+    def test_published_data_contains_no_facebook_urls(self):
+        offenders = []
+        for event in self.payload["events"]:
+            urls = [event.get("sourceUrl"), event.get("image"), *(event.get("images") or [])]
+            if any(scraper.is_facebook_url(url) for url in urls if url):
+                offenders.append(event.get("title"))
+        offenders.extend(
+            name for name, url in self.payload.get("venueImages", {}).items()
+            if scraper.is_facebook_url(url)
+        )
         self.assertEqual(offenders, [])
 
 

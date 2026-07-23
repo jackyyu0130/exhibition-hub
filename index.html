@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=3.7">
+  <link rel="stylesheet" href="assets/styles.css?v=3.8">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -91,8 +91,58 @@
           <div class="paper-collage-layer" aria-hidden="true">
             <span class="paper-sheet paper-sheet-main"></span>
             <span class="paper-sheet paper-sheet-grid"></span>
-            <span class="paper-map-fragment">
-              <svg viewBox="0 0 260 150" aria-hidden="true"><path d="M10 118c26-34 51-18 77-48 25-29 45-51 78-29 23 16 34 4 75-23"></path><path d="M16 62c28 7 43 31 72 25 23-5 37-30 62-28 29 2 46 27 91 25"></path><path d="M42 20v118M98 8v132M156 12v127M214 6v134"></path></svg>
+            <span class="paper-city-map">
+              <svg viewBox="0 0 420 250" aria-hidden="true">
+                <defs>
+                  <linearGradient id="cityRiver" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#b9d4d3"></stop>
+                    <stop offset="1" stop-color="#7da9ad"></stop>
+                  </linearGradient>
+                  <filter id="cityShadow" x="-30%" y="-30%" width="160%" height="180%">
+                    <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#594735" flood-opacity=".2"></feDropShadow>
+                  </filter>
+                </defs>
+                <rect width="420" height="250" rx="8" fill="#f3ecdc"></rect>
+                <path class="city-river" d="M-18 205C58 150 92 219 163 171s122-32 179-80c34-29 67-18 101-25"></path>
+                <g class="city-streets">
+                  <path d="M20 36 397 214M76 5l238 244M12 122 352 20M103 234 409 110"></path>
+                  <path d="M39 84h336M125 18v214M246 9v216M345 28v181"></path>
+                </g>
+                <g class="city-blocks">
+                  <path d="m27 46 44 20-27 31L7 78Z" fill="#dca98a"></path>
+                  <path d="m95 72 50 24-22 31-49-22Z" fill="#dfccb0"></path>
+                  <path d="m276 39 48 22-20 32-52-24Z" fill="#a9b5a0"></path>
+                  <path d="m334 118 54 23-25 40-51-27Z" fill="#d3b56f"></path>
+                  <path d="m196 145 50 24-26 37-52-25Z" fill="#c68a71"></path>
+                </g>
+                <g class="city-buildings" filter="url(#cityShadow)">
+                  <g transform="translate(62 40)">
+                    <path d="m0 28 24-14 31 15-25 15Z" fill="#fff9ed"></path><path d="m0 28 30 16v35L0 63Z" fill="#c67954"></path><path d="m30 44 25-15v35L30 79Z" fill="#9a553d"></path>
+                    <path d="M9 42v10m10-5v10m20-10v10" stroke="#f7dfbd" stroke-width="4"></path>
+                  </g>
+                  <g transform="translate(267 76)">
+                    <path d="m0 24 27-15 36 18-28 16Z" fill="#fff8e8"></path><path d="m0 24 35 19v47L0 71Z" fill="#607b76"></path><path d="m35 43 28-16v47L35 90Z" fill="#405d59"></path>
+                    <path d="M10 40v10m11-5v11m25-10v11" stroke="#c9d9cc" stroke-width="4"></path>
+                  </g>
+                  <g transform="translate(144 103)">
+                    <path d="m0 22 20-12 28 14-21 12Z" fill="#fff9ed"></path><path d="m0 22 27 14v33L0 55Z" fill="#d4aa63"></path><path d="m27 36 21-12v33L27 69Z" fill="#a67f42"></path>
+                  </g>
+                </g>
+                <g class="city-trees">
+                  <g transform="translate(30 162)"><circle r="11"></circle><path d="M0 8v18"></path></g>
+                  <g transform="translate(83 182)"><circle r="9"></circle><path d="M0 7v16"></path></g>
+                  <g transform="translate(371 55)"><circle r="10"></circle><path d="M0 8v17"></path></g>
+                  <g transform="translate(232 67)"><circle r="8"></circle><path d="M0 6v14"></path></g>
+                </g>
+                <g class="city-pin" transform="translate(218 97)">
+                  <path d="M0-24c-14 0-24 10-24 23 0 17 24 39 24 39S24 16 24-1C24-14 14-24 0-24Z"></path>
+                  <circle cy="-2" r="8"></circle>
+                </g>
+                <g class="city-compass" transform="translate(382 211)">
+                  <circle r="22"></circle><path d="m0-15 6 15-6 15-6-15Z"></path><text y="-27">N</text>
+                </g>
+                <text class="city-map-title" x="20" y="230">CITY ART WALK · 城市展覽散步</text>
+              </svg>
             </span>
             <span class="paper-stamp">TAIWAN<br><b>EXHIBITION</b><small>CURATED DAILY</small></span>
             <span class="paper-date" id="heroPaperDate">2026.07</span>
@@ -210,15 +260,19 @@
         <div class="nearby-stack" id="nearbyHomeList"></div>
       </section>
 
-      <section class="editorial-section venue-section">
+      <section class="editorial-section venue-section" data-motion-group>
         <div class="section-heading">
           <div>
             <p class="eyebrow">VENUE GUIDE</p>
             <h2>從喜歡的場館開始探索</h2>
           </div>
-          <a href="?view=all" class="section-link">瀏覽所有場館 <span>↗</span></a>
+          <div class="section-controls venue-controls">
+            <a href="?view=all" class="section-link">瀏覽所有場館 <span>↗</span></a>
+            <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="-1" aria-label="向左瀏覽場館">←</button>
+            <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="1" aria-label="向右瀏覽場館">→</button>
+          </div>
         </div>
-        <div class="venue-grid" id="venueGrid"></div>
+        <div class="venue-grid" id="venueGrid" aria-label="熱門場館，可左右滑動"></div>
       </section>
     </section>
 
@@ -377,6 +431,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=3.7"></script>
+  <script src="assets/app.js?v=3.8"></script>
 </body>
 </html>

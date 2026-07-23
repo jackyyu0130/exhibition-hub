@@ -144,6 +144,20 @@
     } catch { return ''; }
   }
 
+  function isFacebookUrl(value = '') {
+    const url = safeUrl(value);
+    if (!url) return false;
+    try {
+      const parsed = new URL(url);
+      return /(?:^|\.)(?:facebook\.com|fb\.me|fbcdn\.net|facebookusercontent\.com)$/i.test(parsed.hostname)
+        || /(?:^|[/_.-])facebook(?:[/_.-]|$)/i.test(decodeURIComponent(parsed.pathname));
+    } catch { return false; }
+  }
+
+  function stripFacebookReferences(value = '') {
+    return String(value || '').split(/\r?\n/).filter(line => !/(?:facebook|臉書|粉絲專頁)/i.test(line)).join('\n').trim();
+  }
+
   function firstValue(...values) {
     return values.find(value => value !== undefined && value !== null && String(value).trim() !== '') || '';
   }
@@ -201,7 +215,7 @@
     const title = String(event.title || '');
     const sourceUrl = String(event.sourceUrl || '');
     const organizer = String(event.unit || '');
-    if (/facebook\.com\/groups\//i.test(sourceUrl)) return true;
+    if (isFacebookUrl(sourceUrl)) return true;
     if (EXCLUDED_CONTENT_PATTERN.test(title) || SMALL_LOCAL_ACTIVITY_PATTERN.test(title)) return true;
     if ((event.categories || []).some(category => category === '講座' || category === '研習')) return true;
     const communityText = `${title} ${organizer}`;
@@ -256,7 +270,7 @@
   }
 
   function normalizeImage(raw) {
-    return flattenImageCandidates(raw).map(safeUrl).find(Boolean) || '';
+    return flattenImageCandidates(raw).map(safeUrl).find(url => url && !isFacebookUrl(url)) || '';
   }
 
   function getShowEntries(raw) {
@@ -308,7 +322,7 @@
   function normalizeEvent(raw, index) {
     const show = bestShow(raw);
     const title = firstValue(raw.title, raw.titile, raw.name, '未命名展覽');
-    const description = firstValue(raw.description, raw.descriptionFilterHtml, raw.comment);
+    const description = stripFacebookReferences(firstValue(raw.description, raw.descriptionFilterHtml, raw.comment));
     const address = cleanPlaceText(firstValue(raw.address, raw.location, show.location, show.address));
     const rawVenue = cleanPlaceText(firstValue(raw.locationName, raw.venue, show.locationName, show.venue, address));
     const {venueGroup, venueDetail} = venueParts(rawVenue, address, raw.venueGroup, raw.venueDetail);
@@ -321,11 +335,11 @@
       ...flattenImageCandidates(raw.imageUrls), ...flattenImageCandidates(raw.poster), ...flattenImageCandidates(raw.posterUrl),
       ...flattenImageCandidates(raw.picture), ...flattenImageCandidates(raw.pictureUrl), ...flattenImageCandidates(show.image),
       ...flattenImageCandidates(show.imageUrl), ...flattenImageCandidates(show.imageURL)
-    ].map(safeUrl).filter(Boolean).filter((url, index, array) => array.indexOf(url) === index);
+    ].map(safeUrl).filter(url => url && !isFacebookUrl(url)).filter((url, index, array) => array.indexOf(url) === index);
     const image = imageCandidates[0] || '';
     const {latitude, longitude} = coordinatesFrom(show, raw);
     const region = normalizeRegion(firstValue(raw.region, address, venueGroup, rawVenue));
-    const price = firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : '');
+    const price = stripFacebookReferences(firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : ''));
     const categories = normalizeCategories(rawCategories, title, description);
     return {
       id, title: String(title).trim(), description: stripHtml(description),
@@ -338,8 +352,8 @@
       location: String(venueGroup || '地點待確認').trim(), venueGroup, venueDetail, address: String(address || '').trim(), region,
       latitude, longitude, coordinateSource: firstValue(raw.coordinateSource, raw.coordinate_source),
       price: String(price || '票價請見活動頁面').trim(),
-      unit: Array.isArray(raw.masterUnit) ? raw.masterUnit.join('、') : firstValue(raw.unit, raw.organizer, raw.showUnit, raw.masterUnit),
-      transitInfo: firstValue(raw.transitInfo, raw.transit),
+      unit: stripFacebookReferences(Array.isArray(raw.masterUnit) ? raw.masterUnit.join('、') : firstValue(raw.unit, raw.organizer, raw.showUnit, raw.masterUnit)),
+      transitInfo: stripFacebookReferences(firstValue(raw.transitInfo, raw.transit)),
       hitRate: Number(raw.hitRate || 0),
       firstSeenAt: firstValue(raw.firstSeenAt, raw.first_seen_at),
       lastSeenAt: firstValue(raw.lastSeenAt, raw.last_seen_at),
@@ -446,9 +460,10 @@
   }
 
   function imageMarkup(event, className = '') {
-    const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(Boolean);
+    const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(url => url && !isFacebookUrl(url));
     const allowVenueFallback = !String(className).startsWith('detail-poster');
-    const venueImage = allowVenueFallback ? safeUrl(state.venueImages[event.venueGroup || event.locationName] || '') : '';
+    const venueCandidate = allowVenueFallback ? safeUrl(state.venueImages[event.venueGroup || event.locationName] || '') : '';
+    const venueImage = venueCandidate && !isFacebookUrl(venueCandidate) ? venueCandidate : '';
     const candidates = eventCandidates.length ? eventCandidates : venueImage ? [venueImage] : [];
     const mediaKind = eventCandidates.length ? 'event' : venueImage ? 'venue' : 'placeholder';
     if (!candidates.length) return `<div class="${className || 'card-placeholder'}" data-media-kind="placeholder">${escapeHtml(CATEGORY_SYMBOL[event.category] || '展')}</div>`;
@@ -780,12 +795,24 @@
 
   function renderVenueGrid() {
     const counts = countBy(state.events, event => event.venueGroup || event.locationName);
-    const venues = Object.keys(counts).filter(venue => venue && !/資料整理中|地點待確認/.test(venue)).sort((a,b) => counts[b] - counts[a]).slice(0, 8);
+    const venues = Object.keys(counts).filter(venue => venue && !/資料整理中|地點待確認/.test(venue)).sort((a,b) => counts[b] - counts[a]).slice(0, 14);
     $('#venueGrid').innerHTML = venues.map((venue, index) => {
-      const image = state.venueImages[venue] || '';
-      return `<a class="venue-tile ${image ? 'has-image' : 'venue-placeholder'}" href="${venueHref(venue)}">
+      const venueImage = safeUrl(state.venueImages[venue] || '');
+      const venueEvents = state.events
+        .filter(event => (event.venueGroup || event.locationName) === venue)
+        .sort((a, b) => Number(isOngoing(b)) - Number(isOngoing(a)) || recommendationScore(b) - recommendationScore(a));
+      const eventImage = venueEvents
+        .flatMap(event => event.images?.length ? event.images : event.image ? [event.image] : [])
+        .map(safeUrl)
+        .find(url => url && !isFacebookUrl(url)) || '';
+      const image = venueImage && !isFacebookUrl(venueImage) ? venueImage : eventImage;
+      const imageKind = venueImage && !isFacebookUrl(venueImage) ? '場館影像' : eventImage ? '展覽主視覺' : '';
+      return `<a class="venue-tile motion-card motion-from-right ${image ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${index}" href="${venueHref(venue)}">
         ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(venue)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.venue-tile').classList.add('venue-placeholder');this.remove()">` : `<span class="venue-placeholder-mark" aria-hidden="true">館</span>`}
-        <div class="venue-tile-content"><small>VENUE ${String(index+1).padStart(2,'0')}</small><h3>${escapeHtml(venue)}</h3><p>${counts[venue]} 檔展覽</p></div>
+        <div class="venue-tile-content">
+          <small>VENUE ${String(index+1).padStart(2,'0')}${imageKind ? ` · ${imageKind}` : ''}</small>
+          <h3>${escapeHtml(venue)}</h3><p>${counts[venue]} 檔展覽</p>
+        </div>
       </a>`;
     }).join('') || emptyInline('目前沒有場館資料');
   }
@@ -1262,7 +1289,7 @@
     try {
       const {payload, rawEvents, local} = await fetchEventPayload();
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
-      state.venueImages = payload.venueImages || {};
+      state.venueImages = Object.fromEntries(Object.entries(payload.venueImages || {}).map(([venue, image]) => [venue, safeUrl(image)]).filter(([, image]) => image && !isFacebookUrl(image)));
       state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
       if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
       renderCurrentView();

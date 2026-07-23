@@ -27,9 +27,28 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("smart-image-foreground", self.app)
         self.assertIn("filter: blur", self.css)
 
-    def test_v37_cache_busting(self):
-        self.assertIn("assets/styles.css?v=3.7", self.html)
-        self.assertIn("assets/app.js?v=3.7", self.html)
+    def test_facebook_is_rejected_in_frontend(self):
+        self.assertIn("function isFacebookUrl", self.app)
+        self.assertIn("isFacebookUrl(sourceUrl)", self.app)
+
+    def test_home_cards_are_square(self):
+        self.assertIn(".home-view .exhibition-card .card-image { aspect-ratio: 1 / 1; }", self.css)
+
+    def test_venue_cards_use_horizontal_motion_rail(self):
+        self.assertIn('data-scroll-target="venueGrid"', self.html)
+        self.assertIn('class="venue-grid" id="venueGrid"', self.html)
+        self.assertIn("eventImage", self.app)
+        self.assertIn("venue-tile motion-card motion-from-right", self.app)
+        self.assertIn("grid-auto-flow: column", self.css)
+
+    def test_city_map_replaces_simple_map_fragment(self):
+        self.assertIn('class="paper-city-map"', self.html)
+        self.assertIn("CITY ART WALK", self.html)
+        self.assertNotIn('class="paper-map-fragment"', self.html)
+
+    def test_v38_cache_busting(self):
+        self.assertIn("assets/styles.css?v=3.8", self.html)
+        self.assertIn("assets/app.js?v=3.8", self.html)
 
 
 if __name__ == "__main__":

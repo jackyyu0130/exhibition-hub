@@ -1,4 +1,4 @@
-# Exhibition Hub V3.7／台灣展覽誌
+# Exhibition Hub V3.8／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
 
@@ -26,7 +26,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V3.7_ZH-TW.md`](REPLACEMENT_GUIDE_V3.7_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V3.8_ZH-TW.md`](REPLACEMENT_GUIDE_V3.8_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，提交到 `main`，再執行
@@ -47,7 +47,9 @@ assets/hero-video.mp4
 - 也能到 GitHub 的 **Actions → Update data and deploy site → Run workflow** 手動更新。
 - `scraper.py` 會讀取文化部開放資料，補抓 OPENTIX、活動官方頁與主要售票頁的圖片／介紹。
 - 售票及官方網址會以活動名稱交叉比對；不相符時改用已驗證的相關頁，找不到正確頁時清除錯誤連結。
-- 發布前排除 Facebook 社團、地方小型社團活動，以及講座、講習、研習、課程、工作坊、營隊。
+- 發布前排除所有 Facebook 頁面、社團、短網址與圖片主機；也排除地方小型社團活動，以及講座、講習、研習、課程、工作坊、營隊。
+- 首頁 Hero 使用精緻城市插畫地圖與紙張拼貼背景，首頁展覽卡統一為 1:1。
+- 場館探索列會優先使用官方場館影像，否則使用該場館目前展覽主視覺；支援橫向滑動與由右至左的依序進場動畫。
 
 ## 資料欄位
 

@@ -56,7 +56,7 @@ DEFAULT_OUTPUT = Path("data/exhibitions.json")
 DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.7 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.8 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -143,7 +143,12 @@ RELATED_LINK_PATTERN = re.compile(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</
 CANONICAL_LINK_PATTERN = re.compile(r'<link[^>]+rel=["\'](?:canonical|alternate)["\'][^>]+href=["\']([^"\']+)', re.I)
 PAGE_TITLE_PATTERN = re.compile(r'<title[^>]*>(.*?)</title>', re.I | re.S)
 OG_TITLE_PATTERN = re.compile(r'<meta[^>]+(?:property|name)=["\'](?:og:title|twitter:title)["\'][^>]+content=["\']([^"\']+)', re.I)
-SOCIAL_HOST_PATTERN = re.compile(r'(?:^|\.)(?:facebook\.com|fb\.me|instagram\.com)$', re.I)
+FACEBOOK_HOST_PATTERN = re.compile(
+    r'(?:^|\.)(?:facebook\.com|fb\.me|fbcdn\.net|facebookusercontent\.com)$',
+    re.I,
+)
+FACEBOOK_REFERENCE_PATTERN = re.compile(r'(?:facebook|臉書|粉絲專頁)', re.I)
+SOCIAL_HOST_PATTERN = re.compile(r'(?:^|\.)instagram\.com$', re.I)
 TICKETING_HOST_PATTERN = re.compile(
     r'(?:^|\.)(?:opentix\.life|kktix\.com|tixcraft\.com|accupass\.com|udnfunlife\.com|ticketplus\.com\.tw|'
     r'ibon\.com\.tw|famiticket\.com\.tw|ticketscloud\.org|artsticket\.com\.tw)$',
@@ -308,7 +313,7 @@ def unique_urls(values: Iterable[Any], *, base_url: str = CULTURE_BASE_URL) -> l
     result: list[str] = []
     for raw in values:
         url = normalize_url(raw, base_url=base_url)
-        if url and url not in result:
+        if url and not is_facebook_url(url) and url not in result:
             result.append(url)
     return result
 
@@ -321,12 +326,26 @@ def url_host(value: Any) -> str:
     return urlparse(valid_http_url(value)).netloc.lower().split(":")[0]
 
 
+def is_facebook_url(value: Any) -> bool:
+    """Reject every Facebook-owned page and image host, not only groups."""
+    url = valid_http_url(value)
+    if not url:
+        return False
+    parsed = urlparse(url)
+    host = parsed.netloc.lower().split(":")[0]
+    path = unquote(parsed.path).lower()
+    return bool(
+        FACEBOOK_HOST_PATTERN.search(host)
+        or re.search(r"(?:^|[/_.-])facebook(?:[/_.-]|$)", path)
+    )
+
+
 def is_facebook_group_url(value: Any) -> bool:
     url = valid_http_url(value)
     if not url:
         return False
     parsed = urlparse(url)
-    return bool(re.search(r"(?:^|\.)facebook\.com$", parsed.netloc.lower())) and "/groups/" in parsed.path.lower()
+    return is_facebook_url(url) and "/groups/" in parsed.path.lower()
 
 
 def is_ticketing_url(value: Any) -> bool:
@@ -387,9 +406,9 @@ def title_match_score(event_title: Any, page_title: Any, page_text: Any = "") ->
 
 
 def is_excluded_record(record: dict[str, Any]) -> bool:
-    """Apply V3.7's editorial exclusion policy before publication."""
+    """Apply V3.8's editorial exclusion policy before publication."""
     source = first_value(record.get("sourceUrl"), record.get("url"), record.get("website"))
-    if is_facebook_group_url(source):
+    if is_facebook_url(source):
         return True
     title = clean_text(first_value(record.get("title"), record.get("name"), record.get("actName")))
     categories = " ".join(clean_text(value) for value in flatten_values(first_value(record.get("categories"), record.get("category"), record.get("categoryName"))))
@@ -403,6 +422,36 @@ def is_excluded_record(record: dict[str, Any]) -> bool:
     if LOCAL_ORGANIZATION_PATTERN.search(community_text) and not PUBLIC_SHOW_PATTERN.search(title) and not LARGE_OR_OFFICIAL_EVENT_PATTERN.search(community_text):
         return True
     return False
+
+
+def strip_facebook_references(value: Any) -> str:
+    """Remove imported lines that direct visitors to Facebook."""
+    text = clean_text(value)
+    if not text:
+        return ""
+    kept = [line.strip() for line in text.splitlines() if not FACEBOOK_REFERENCE_PATTERN.search(line)]
+    return "\n".join(line for line in kept if line).strip()
+
+
+def sanitize_facebook_record(record: dict[str, Any]) -> dict[str, Any]:
+    """Strip Facebook URLs, share images, and copy from an otherwise valid event."""
+    cleaned = dict(record)
+    images = unique_urls([*(record.get("images") or []), record.get("image")])
+    cleaned["images"] = images[:10]
+    cleaned["image"] = images[0] if images else ""
+    for key in ("description", "price", "unit", "transitInfo", "parkingInfo", "comment", "source"):
+        cleaned[key] = strip_facebook_references(record.get(key))
+    if is_facebook_url(record.get("sourceUrlRejected")):
+        cleaned["sourceUrlRejected"] = ""
+    sessions: list[dict[str, Any]] = []
+    for session in record.get("sessions") or []:
+        if not isinstance(session, dict):
+            continue
+        item = dict(session)
+        item["price"] = strip_facebook_references(item.get("price"))
+        sessions.append(item)
+    cleaned["sessions"] = sessions
+    return cleaned
 
 
 def parse_date(value: Any) -> date | None:
@@ -575,7 +624,7 @@ def source_url(raw: dict[str, Any]) -> str:
         raw.get("url"), raw.get("webSales"),
     ):
         url = normalize_url(candidate)
-        if url and not is_generic_ticketing_url(url) and not is_facebook_group_url(url):
+        if url and not is_generic_ticketing_url(url) and not is_facebook_url(url):
             return url
     return ""
 
@@ -600,6 +649,8 @@ def probable_content_image(url: str) -> bool:
 
 
 def image_url_responds(url: str, *, timeout: int = 12) -> bool:
+    if is_facebook_url(url):
+        return False
     if url in IMAGE_VALIDATION_CACHE:
         return IMAGE_VALIDATION_CACHE[url]
     result = False
@@ -623,16 +674,17 @@ def image_url_responds(url: str, *, timeout: int = 12) -> bool:
 
 
 def related_page_urls(page: str, base_url: str) -> list[str]:
-    """Find likely official, ticketing, and Facebook event/detail pages.
+    """Find likely official, ticketing, Instagram, and event/detail pages.
 
     Search-engine image hotlinks are intentionally not used: they expire often,
     can point to unrelated copies, and are unsuitable for a daily automated feed.
+    Facebook pages, groups, short links, and image hosts are never imported.
     """
     candidates: dict[str, int] = {}
 
     def add(candidate: Any, score: int) -> None:
         url = normalize_url(candidate, base_url=base_url)
-        if not url or url == base_url or is_facebook_group_url(url):
+        if not url or url == base_url or is_facebook_url(url):
             return
         parsed = urlparse(url)
         host = parsed.netloc.lower().split(":")[0]
@@ -654,7 +706,7 @@ def related_page_urls(page: str, base_url: str) -> list[str]:
     for match in CANONICAL_LINK_PATTERN.finditer(page):
         add(match.group(1), 65)
 
-    keywords = re.compile(r"官方|活動官網|詳細資訊|活動頁|售票|購票|主辦|facebook|臉書|粉絲專頁|event|detail|ticket", re.I)
+    keywords = re.compile(r"官方|活動官網|詳細資訊|活動頁|售票|購票|主辦|instagram|event|detail|ticket", re.I)
     for match in RELATED_LINK_PATTERN.finditer(page):
         label = clean_text(match.group(2))
         href = match.group(1)
@@ -663,10 +715,6 @@ def related_page_urls(page: str, base_url: str) -> list[str]:
         social = bool(SOCIAL_HOST_PATTERN.search(host))
         if keywords.search(label + " " + href) or social:
             add(href, 80 if keywords.search(label) else 45)
-
-    # Some CMS pages expose Facebook URLs in JSON or scripts instead of anchors.
-    for match in re.finditer(r'https?://(?:www\.)?(?:facebook\.com|fb\.me)/[^\s"\'<>]+', page, re.I):
-        add(html.unescape(match.group(0)), 55)
 
     return [url for url, _ in sorted(candidates.items(), key=lambda item: item[1], reverse=True)[:8]]
 
@@ -682,7 +730,7 @@ def _walk_jsonld(value: Any) -> Iterator[dict[str, Any]]:
 
 
 def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> dict[str, Any]:
-    if not url:
+    if not url or is_facebook_url(url):
         return {}
     try:
         response = requests.get(
@@ -692,6 +740,8 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
             headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"},
         )
         response.raise_for_status()
+        if is_facebook_url(response.url):
+            return {}
         content_type = response.headers.get("content-type", "").lower()
         if "html" not in content_type and not response.text.lstrip().startswith("<"):
             return {}
@@ -801,7 +851,7 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
                 score += 80
             if re.search(r"poster|banner|cover|event|activity|exhibition|主視覺|海報", decoded, re.I):
                 score += 30
-            if any(domain in decoded for domain in ("fbcdn.net", "facebook.com", "cloudfront.net")):
+            if "cloudfront.net" in decoded:
                 score += 12
             if re.search(r"thumb|thumbnail|small|avatar|profile", decoded, re.I):
                 score -= 25
@@ -1369,7 +1419,7 @@ def venue_images(
     result: dict[str, str] = {
         clean_place_text(name): valid_http_url(url)
         for name, url in (existing or {}).items()
-        if clean_place_text(name) in active_venues and valid_http_url(url)
+        if clean_place_text(name) in active_venues and valid_http_url(url) and not is_facebook_url(url)
     }
     if not allow_fetch:
         return result
@@ -1460,7 +1510,11 @@ def read_venue_image_map(path: Path | None) -> dict[str, str]:
     except (OSError, json.JSONDecodeError):
         return {}
     venue_map = payload.get("venueImages", {}) if isinstance(payload, dict) else {}
-    return {clean_place_text(name): valid_http_url(url) for name, url in venue_map.items() if clean_place_text(name) and valid_http_url(url)} if isinstance(venue_map, dict) else {}
+    return {
+        clean_place_text(name): valid_http_url(url)
+        for name, url in venue_map.items()
+        if clean_place_text(name) and valid_http_url(url) and not is_facebook_url(url)
+    } if isinstance(venue_map, dict) else {}
 
 
 def write_output(
@@ -1535,7 +1589,7 @@ def main() -> int:
     # Validate the inherited/geocoded results one more time before publishing.
     rejected_coordinates += validate_all_coordinates(events)
 
-    events = [event for event in events if not is_excluded_record(event)]
+    events = [sanitize_facebook_record(event) for event in events if not is_excluded_record(event)]
     write_output(
         args.output,
         events,

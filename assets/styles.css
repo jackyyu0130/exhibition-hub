@@ -1843,3 +1843,165 @@ img, video, svg { display: block; max-width: 100%; }
   .filter-results-section.is-visible { opacity: 1 !important; transform: none !important; }
   .hero-shuffle-button[aria-busy="true"] .shuffle-icon { animation: none; }
 }
+
+/* ========================================================================== */
+/* V3.8 — illustrated city hero, square home cards and animated venue rail     */
+/* ========================================================================== */
+
+/* A denser editorial collage gives the ticket counter a crafted print feel. */
+.hero-paper-collage {
+  background:
+    radial-gradient(circle at 16% 14%, rgba(255,255,255,.88), transparent 23%),
+    radial-gradient(circle at 88% 82%, rgba(117,74,48,.17), transparent 32%),
+    repeating-linear-gradient(117deg, rgba(78,67,56,.025) 0 1px, transparent 1px 7px),
+    #e7ddce;
+}
+.hero-paper-collage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.42), inset 0 -42px 80px rgba(79,57,37,.07);
+  mix-blend-mode: multiply;
+}
+.paper-collage-layer::before {
+  content: "";
+  position: absolute;
+  width: 178px;
+  height: 178px;
+  right: 2%;
+  top: 27%;
+  border: 34px solid rgba(54,82,78,.12);
+  border-radius: 50%;
+  transform: rotate(11deg);
+}
+.paper-collage-layer::after {
+  content: "";
+  position: absolute;
+  width: 126px;
+  height: 88px;
+  left: 38%;
+  bottom: 4%;
+  border-radius: 46% 54% 58% 42%;
+  background: rgba(184,91,56,.13);
+  transform: rotate(-14deg);
+}
+.paper-sheet-main {
+  background:
+    radial-gradient(circle, rgba(89,75,60,.075) 0 1px, transparent 1.3px) 0 0 / 13px 13px,
+    linear-gradient(145deg, #fbf4e7 0%, #efe1cd 100%);
+}
+.paper-sheet-grid {
+  background:
+    linear-gradient(32deg, transparent 47%, rgba(83,91,87,.07) 48% 50%, transparent 51%) 0 0 / 24px 24px,
+    linear-gradient(rgba(82,88,85,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82,88,85,.07) 1px, transparent 1px),
+    #e4ddd0;
+  background-size: 24px 24px, 20px 20px, 20px 20px, auto;
+}
+.paper-city-map {
+  position: absolute;
+  left: 5%;
+  top: 14%;
+  width: 59%;
+  aspect-ratio: 420 / 250;
+  overflow: hidden;
+  border: 1px solid rgba(83,72,61,.24);
+  border-radius: 7px;
+  background: #f3ecdc;
+  box-shadow: 0 18px 36px rgba(62,45,30,.16), 0 2px 0 rgba(255,255,255,.72) inset;
+  transform: rotate(-5deg);
+}
+.paper-city-map::after {
+  content: "TAIWAN CITY EDITION  /  03";
+  position: absolute;
+  right: 8px;
+  top: 7px;
+  padding: 4px 7px;
+  border: 1px solid rgba(72,66,58,.23);
+  border-radius: 999px;
+  background: rgba(250,245,235,.82);
+  color: rgba(52,49,45,.68);
+  font-size: 5px;
+  font-weight: 750;
+  letter-spacing: .12em;
+}
+.paper-city-map svg { display: block; width: 100%; height: 100%; }
+.city-river { fill: none; stroke: url(#cityRiver); stroke-width: 26; stroke-linecap: round; opacity: .82; }
+.city-streets path { fill: none; stroke: #fffaf0; stroke-width: 8; stroke-linecap: round; opacity: .9; }
+.city-streets path:nth-child(2) { stroke-width: 5; opacity: .7; }
+.city-blocks path { stroke: rgba(91,72,52,.16); stroke-width: 1; }
+.city-trees circle { fill: #6f8c70; stroke: #f3ecdc; stroke-width: 3; }
+.city-trees path { stroke: #67523b; stroke-width: 3; stroke-linecap: round; }
+.city-pin path { fill: #b7583b; stroke: #fff5e7; stroke-width: 3; }
+.city-pin circle { fill: #fff5e7; }
+.city-compass circle { fill: rgba(250,244,232,.9); stroke: #6c756b; stroke-width: 2; }
+.city-compass path { fill: #6c756b; }
+.city-compass text { fill: #5a6259; font-family: serif; font-size: 10px; text-anchor: middle; font-weight: 700; }
+.city-map-title { fill: #51483e; font-family: "Noto Serif TC", serif; font-size: 11px; font-weight: 700; letter-spacing: 1.1px; }
+.paper-stamp {
+  border-color: rgba(153,81,51,.7);
+  color: rgba(143,72,45,.82);
+  background: rgba(241,226,207,.3);
+  box-shadow: 0 9px 22px rgba(76,48,31,.07);
+}
+
+/* Every exhibition card on the homepage uses the same square image rhythm. */
+.home-view .exhibition-card .card-image { aspect-ratio: 1 / 1; }
+
+/* Venue cards become a swipeable editorial rail with venue/exhibition imagery. */
+.venue-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(250px, 306px);
+  grid-template-columns: none;
+  gap: 18px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 3px 3px 18px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: #c1b4a6 transparent;
+}
+.venue-tile {
+  min-height: 286px;
+  scroll-snap-align: start;
+  border: 1px solid rgba(75,63,50,.16);
+  box-shadow: 0 15px 34px rgba(43,33,23,.1);
+}
+.venue-tile img {
+  filter: saturate(.9) contrast(1.02);
+  transform: scale(1.015);
+  transition: transform .9s cubic-bezier(.2,.7,.2,1), filter .9s ease;
+}
+.venue-tile:hover img { transform: scale(1.055); filter: saturate(1) contrast(1.04); }
+.venue-tile::after {
+  background:
+    linear-gradient(to top, rgba(18,15,12,.84), rgba(18,15,12,.17) 63%, rgba(18,15,12,.03)),
+    linear-gradient(120deg, rgba(177,94,56,.12), transparent 50%);
+}
+.venue-tile-content small { display: block; color: rgba(255,255,255,.76); line-height: 1.45; }
+.venue-controls { align-items: center; }
+.venue-controls .section-link { margin-right: 6px; }
+.venue-section .motion-card {
+  transform: translate3d(96px, 8px, 0);
+  transition:
+    opacity 1.5s calc(var(--motion-index, 0) * 165ms + 100ms) cubic-bezier(.18,.72,.2,1),
+    transform 1.7s calc(var(--motion-index, 0) * 165ms + 100ms) cubic-bezier(.18,.72,.2,1);
+}
+.venue-section.is-in-view .motion-card { opacity: 1; transform: translate3d(0,0,0); }
+
+@media (max-width: 680px) {
+  .paper-city-map { left: 4%; top: 16%; width: 67%; }
+  .paper-city-map::after { display: none; }
+  .venue-grid { grid-template-columns: none; grid-auto-columns: minmax(225px, 82vw); }
+  .venue-tile { min-height: 250px; }
+  .venue-controls .section-link { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venue-section .motion-card { opacity: 1; transform: none; transition: none; }
+  .venue-tile img { transition: none; }
+}
