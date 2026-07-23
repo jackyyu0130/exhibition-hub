@@ -1,4 +1,4 @@
-# Exhibition Hub V4.1／台灣展覽誌
+# Exhibition Hub V4.2／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
 
@@ -10,7 +10,7 @@ exhibition-hub/
 ├── assets/
 │   ├── app.js
 │   ├── styles.css
-│   ├── taiwan-exhibition-journal-logo-v8.png
+│   ├── taiwan-exhibition-journal-logo-v9.png
 │   ├── exhibition-fallback-sprite-v40.png
 │   ├── hero-art.svg
 │   └── hero-video.mp4        # 選用；可保留原本影片
@@ -29,7 +29,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V4.1_ZH-TW.md`](REPLACEMENT_GUIDE_V4.1_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V4.2_ZH-TW.md`](REPLACEMENT_GUIDE_V4.2_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，提交到 `main`，再執行
@@ -53,7 +53,9 @@ assets/hero-video.mp4
 - 售票及官方網址會以活動名稱交叉比對；不相符時改用已驗證的相關頁，找不到正確頁時清除錯誤連結。
 - 發布前排除所有 Facebook 頁面、社團、短網址與圖片主機；也排除地方小型社團活動、各級公所活動、純競賽場次，以及講座、講習、研習、課程、工作坊、營隊。
 - 漫畫／寵物／商業博覽會、漫才、音樂會與比賽得獎作品展等實質展演內容仍會保留。
-- 首頁 Hero 使用暖灰米色滿版紙張底區、平面城市插畫地圖與約 16:10 橫向票券拼貼；票券加入雙線類型框、深色條碼及淡色圓章浮水印，首頁展覽卡統一為 1:1。
+- 首頁 Hero 使用暖灰米色滿版紙張底區、簡約平面城市插畫與約 16:10 橫向票券拼貼；票券加入雙線類型框、深色條碼及淡色圓章浮水印，首頁展覽卡統一為 1:1。
+- 左上角 Logo 只有奶黃色票券保留底色；探索頁整張圖卡皆可用滑鼠或鍵盤開啟詳情。
+- 頁尾會同步顯示收錄展覽、展演場地及最後更新時間。
 - 場館探索列一次呈現三列、每列四張矮版卡片；優先使用場館影像，再依序嘗試館內展覽主視覺，全部失效才顯示精緻分類圖，並支援橫向滑動。
 - 活動圖片全部失效時，使用依分類生成的日式藝文誌主視覺；不會冒用其他活動圖片。
 - Hero 每 15 秒更換推薦，滑鼠或鍵盤焦點停留在 Hero／票券時暫停剩餘倒數。

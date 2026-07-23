@@ -52,11 +52,14 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("CITY ART WALK", self.html)
         self.assertNotIn('class="paper-map-fragment"', self.html)
         self.assertIn('class="city-landmarks"', self.html)
+        self.assertIn('class="city-routes"', self.html)
+        self.assertNotIn('class="city-blocks"', self.html)
+        self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v41_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.1", self.html)
-        self.assertIn("assets/app.js?v=4.1", self.html)
+    def test_v42_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.2", self.html)
+        self.assertIn("assets/app.js?v=4.2", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -87,7 +90,7 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("affinity:", self.app)
 
     def test_supplied_brand_and_generated_fallback_art_are_used(self):
-        self.assertIn("assets/taiwan-exhibition-journal-logo-v8.png", self.html)
+        self.assertIn("assets/taiwan-exhibition-journal-logo-v9.png", self.html)
         self.assertIn("exhibition-fallback-sprite-v40.png", self.css)
         self.assertIn("fallbackMarkup(event", self.app)
 
@@ -115,6 +118,25 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("listing-title-separator", self.app)
         self.assertNotIn("state.categories].join('＋')", self.app)
         self.assertIn("font-size: clamp(21px,2.15vw,29px)", self.css)
+
+    def test_v42_copy_footer_hover_motion_and_whole_card_link(self):
+        self.assertIn("讓一場展覽，", self.html)
+        self.assertIn("成為日常裡的風景。", self.html)
+        self.assertIn("循著今日心緒，遇見一場展覽", self.html)
+        self.assertIn("從此刻所在，", self.html)
+        self.assertIn('id="footerRecordCount"', self.html)
+        self.assertIn('id="footerVenueCount"', self.html)
+        self.assertIn('id="footerUpdatedAt"', self.html)
+        self.assertIn(".footer-metric {", self.css)
+        self.assertIn("white-space: nowrap;", self.css)
+        self.assertIn(".status-pills button:not(.active):hover", self.css)
+        self.assertIn(".venue-section.is-in-view .venue-tile:hover", self.css)
+        self.assertIn(".featured-block .motion-card", self.css)
+        self.assertIn("clip-path: inset(0 0 12% 0 round 16px)", self.css)
+        self.assertIn("cardMarkup(event,{wholeCardLink:true})", self.app)
+        self.assertIn("is-whole-card-link", self.app)
+        self.assertIn("data-card-href", self.app)
+        self.assertIn("event.target !== wholeCard", self.app)
 
 
 if __name__ == "__main__":

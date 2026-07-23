@@ -567,8 +567,12 @@
     const inlineStyle = styleParts.length ? ` style="${styleParts.join(';')}"` : '';
     const motionClass = isMotionReveal ? ' motion-card motion-from-right' : '';
     const favoriteClass = isFavoriteReveal ? ' favorite-reveal-card' : '';
+    const wholeCardClass = options.wholeCardLink ? ' is-whole-card-link' : '';
+    const wholeCardAttrs = options.wholeCardLink
+      ? ` data-card-href="${escapeHtml(eventHref(event))}" role="link" tabindex="0" aria-label="查看${escapeHtml(event.title)}詳細資訊"`
+      : '';
     return `
-      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}"${inlineStyle}>
+      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}"${inlineStyle}${wholeCardAttrs}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
           ${!(event.images?.length || event.image) && state.venueImages[event.venueGroup || event.locationName] ? '<span class="venue-image-label">場館示意</span>' : ''}
@@ -942,7 +946,7 @@
     const listingDescription = $('#listingDescription');
     if (listingDescription) listingDescription.textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '';
     $('#listingCount').textContent = `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
-    $('#listingGrid').innerHTML = items.map(cardMarkup).join('');
+    $('#listingGrid').innerHTML = items.map(event => cardMarkup(event,{wholeCardLink:true})).join('');
     $('#listingEmpty').hidden = items.length !== 0;
     $('#sortSelect').value = state.sort;
     renderSidebarOptions();
@@ -1231,10 +1235,14 @@
 
   function updateFooter() {
     const recordCount = $('#footerRecordCount');
-    if (recordCount) recordCount.textContent = `目前收錄 ${state.events.length.toLocaleString('zh-TW')} 檔活動`;
+    if (recordCount) recordCount.textContent = `${state.events.length.toLocaleString('zh-TW')} 檔`;
+    const venueCount = $('#footerVenueCount');
+    if (venueCount) venueCount.textContent = `${new Set(state.events.map(event => event.venueGroup || event.locationName).filter(Boolean)).size.toLocaleString('zh-TW')} 處`;
     const updated = parseDate(state.updatedAt);
     const updatedAt = $('#footerUpdatedAt');
-    if (updatedAt) updatedAt.textContent = updated ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日 ${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分` : '每日自動更新';
+    if (updatedAt) updatedAt.textContent = updated
+      ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')} ${String(updated.getHours()).padStart(2,'0')}:${String(updated.getMinutes()).padStart(2,'0')}`
+      : '每日自動更新';
   }
 
   function navigateTo(target, {replace = false, preserveScroll = false} = {}) {
@@ -1384,6 +1392,12 @@
           return;
         }
       }
+      const wholeCard = event.target.closest('.exhibition-card.is-whole-card-link');
+      if (wholeCard && !event.target.closest('a,button,input,select,textarea')) {
+        event.preventDefault();
+        navigateTo(wholeCard.dataset.cardHref);
+        return;
+      }
       const scrollButton = event.target.closest('[data-scroll-target]');
       if (scrollButton) {
         const target = document.getElementById(scrollButton.dataset.scrollTarget);
@@ -1425,6 +1439,14 @@
       if (event.target.closest('[data-clear-all-filters]')) {
         updateUrl({q:null,category:null,region:null,venue:null,status:null,date:null});
       }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (!['Enter',' '].includes(event.key)) return;
+      const wholeCard = event.target.closest('.exhibition-card.is-whole-card-link');
+      if (!wholeCard || event.target !== wholeCard) return;
+      event.preventDefault();
+      navigateTo(wholeCard.dataset.cardHref);
     });
 
     $('#listingLocationAccordion').addEventListener('toggle', event => {
