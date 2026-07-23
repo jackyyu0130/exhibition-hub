@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=3.9">
+  <link rel="stylesheet" href="assets/styles.css?v=4.0">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -164,7 +164,6 @@
             <p class="eyebrow">EXPLORE BY MOOD</p>
             <h2>今天想看什麼？</h2>
           </div>
-          <a href="?view=all" class="section-link">查看全部展覽 <span>↗</span></a>
         </div>
 
         <div class="quick-filters reveal-sequence" data-reveal-sequence>
@@ -180,6 +179,7 @@
             <button type="button" data-status="free">免費展覽</button>
           </div>
           <button class="clear-filter" id="clearFiltersButton" type="button">清除篩選</button>
+          <a href="?view=all" class="discover-all-button">查看全部展覽 <span>↗</span></a>
         </div>
 
         <div class="category-strip reveal-sequence" id="categoryStrip" data-reveal-sequence aria-label="展覽分類"></div>
@@ -265,12 +265,14 @@
             <h2>從喜歡的場館開始探索</h2>
           </div>
           <div class="section-controls venue-controls">
-            <a href="?view=all" class="section-link">瀏覽所有場館 <span>↗</span></a>
             <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="-1" aria-label="向左瀏覽場館">←</button>
             <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="1" aria-label="向右瀏覽場館">→</button>
           </div>
         </div>
         <div class="venue-grid" id="venueGrid" aria-label="熱門場館，可左右滑動"></div>
+        <div class="venue-section-footer">
+          <a href="?view=all" class="venue-all-button">瀏覽所有場館 <span>↗</span></a>
+        </div>
       </section>
     </section>
 
@@ -400,7 +402,7 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">BECAUSE YOU SAVED</p>
-              <h2>依照你的收藏，推薦這些展覽</h2>
+              <h2>沿著收藏，遇見下一場</h2>
               <p class="section-description" id="favoritesRecommendationCopy"></p>
             </div>
             <div class="section-controls">
@@ -434,7 +436,6 @@
       </div>
       <div class="footer-links">
         <div><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展覽</a><a href="?view=favorites">我的收藏</a></div>
-        <div><strong>關於資料</strong><span class="footer-update-block"><small>最後更新</small><span id="footerUpdatedAt">每日自動更新</span></span><span id="footerRecordCount">載入中</span></div>
       </div>
     </div>
     <div class="footer-bottom"><span>TAIWAN EXHIBITION JOURNAL</span><span>Built with GitHub Pages</span></div>
@@ -443,6 +444,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=3.9"></script>
+  <script src="assets/app.js?v=4.0"></script>
 </body>
 </html>

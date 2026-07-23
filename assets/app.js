@@ -864,20 +864,27 @@
 
   function renderVenueGrid() {
     const counts = countBy(state.events, event => event.venueGroup || event.locationName);
-    const venues = Object.keys(counts).filter(venue => venue && !/資料整理中|地點待確認/.test(venue)).sort((a,b) => counts[b] - counts[a]).slice(0, 14);
+    const venues = Object.keys(counts).filter(venue => venue && !/資料整理中|地點待確認/.test(venue)).sort((a,b) => counts[b] - counts[a]).slice(0, 36);
     $('#venueGrid').innerHTML = venues.map((venue, index) => {
       const venueImage = safeUrl(state.venueImages[venue] || '');
       const venueEvents = state.events
         .filter(event => (event.venueGroup || event.locationName) === venue)
         .sort((a, b) => Number(isOngoing(b)) - Number(isOngoing(a)) || recommendationScore(b) - recommendationScore(a));
-      const eventImage = venueEvents
+      const eventImages = venueEvents
         .flatMap(event => event.images?.length ? event.images : event.image ? [event.image] : [])
         .map(safeUrl)
-        .find(url => url && !isFacebookUrl(url)) || '';
-      const image = venueImage && !isFacebookUrl(venueImage) ? venueImage : eventImage;
-      const imageKind = venueImage && !isFacebookUrl(venueImage) ? '場館影像' : eventImage ? '展覽主視覺' : '';
-      return `<a class="venue-tile motion-card motion-from-right ${image ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${index}" href="${venueHref(venue)}">
-        ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(venue)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.venue-tile').classList.add('venue-placeholder');this.remove()">` : `<span class="venue-placeholder-mark" aria-hidden="true">館</span>`}
+        .filter((url, imageIndex, all) => url && !isFacebookUrl(url) && all.indexOf(url) === imageIndex);
+      const candidates = [
+        ...(venueImage && !isFacebookUrl(venueImage) ? [venueImage] : []),
+        ...eventImages,
+      ].filter((url, imageIndex, all) => all.indexOf(url) === imageIndex);
+      const category = venueEvents.flatMap(event => event.categories || [event.category]).find(Boolean) || '美術';
+      const fallback = fallbackPosition(category);
+      const imageKind = venueImage && !isFacebookUrl(venueImage) ? '場館影像' : eventImages.length ? '展覽主視覺' : '編輯選圖';
+      const serialized = escapeHtml(JSON.stringify(candidates));
+      return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${index}" href="${venueHref(venue)}">
+        <span class="venue-fallback-art fallback-art" style="--fallback-x:${fallback.x};--fallback-y:${fallback.y}" aria-hidden="true"><span class="fallback-art-label">場館選集</span></span>
+        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="window.__venueImageFallback(this)">` : ''}
         <div class="venue-tile-content">
           <small>VENUE ${String(index+1).padStart(2,'0')}${imageKind ? ` · ${imageKind}` : ''}</small>
           <h3>${escapeHtml(venue)}</h3><p>${counts[venue]} 檔展覽</p>
@@ -885,6 +892,20 @@
       </a>`;
     }).join('') || emptyInline('目前沒有場館資料');
   }
+
+  window.__venueImageFallback = image => {
+    try {
+      const candidates = JSON.parse(image.dataset.venueImages || '[]');
+      const nextIndex = Number(image.dataset.venueImageIndex || 0) + 1;
+      if (candidates[nextIndex]) {
+        image.dataset.venueImageIndex = String(nextIndex);
+        image.src = candidates[nextIndex];
+        return;
+      }
+    } catch {}
+    image.closest('.venue-tile')?.classList.add('venue-placeholder');
+    image.remove();
+  };
 
   function renderHomeNearby() {
     let items = state.events.filter(hasCoordinates).slice(0, 3);
@@ -1028,8 +1049,8 @@
       .slice(0, 3)
       .map(([category]) => category);
     $('#favoritesRecommendationCopy').textContent = favoriteCategories.length
-      ? `依照你收藏的「${favoriteCategories.join('、')}」類型挑選，可向右滑動查看更多。`
-      : '依照你的收藏內容挑選，可向右滑動查看更多。';
+      ? `收藏裡常出現「${favoriteCategories.join('、')}」，沿著這些線索再延伸幾個方向，可向右慢慢瀏覽。`
+      : '沿著你留下的收藏線索，繼續發現氣質相近的展覽。';
     $('#favoritesRecommendationRail').innerHTML = recommendations.map(cardMarkup).join('') || emptyInline('目前沒有可推薦的相似展覽');
     recommendationSection.hidden = recommendations.length === 0;
   }
@@ -1199,9 +1220,11 @@
   }
 
   function updateFooter() {
-    $('#footerRecordCount').textContent = `目前收錄 ${state.events.length.toLocaleString('zh-TW')} 檔活動`;
+    const recordCount = $('#footerRecordCount');
+    if (recordCount) recordCount.textContent = `目前收錄 ${state.events.length.toLocaleString('zh-TW')} 檔活動`;
     const updated = parseDate(state.updatedAt);
-    $('#footerUpdatedAt').textContent = updated ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日 ${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分` : '每日自動更新';
+    const updatedAt = $('#footerUpdatedAt');
+    if (updatedAt) updatedAt.textContent = updated ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日 ${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分` : '每日自動更新';
   }
 
   function navigateTo(target, {replace = false, preserveScroll = false} = {}) {

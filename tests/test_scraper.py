@@ -62,6 +62,14 @@ class ScraperPolicyTests(unittest.TestCase):
             "https://cloud.culture.tw/e_new_upload/poster.jpg",
         )
 
+    def test_url_with_prose_appended_to_hostname_does_not_abort_update(self):
+        malformed = "https://lib.miaoli.gov.tw網站查詢，或洽本案聯絡人教育處圖資科丁小姐，電話：037-338227"
+        self.assertEqual(scraper.normalize_url(malformed), "https://lib.miaoli.gov.tw")
+        self.assertEqual(scraper.normalize_url("https://example.com／錯誤說明：請洽承辦人"), "https://example.com")
+
+    def test_invalid_netloc_returns_empty_instead_of_raising(self):
+        self.assertEqual(scraper.normalize_url("https://：完全錯誤的網址"), "")
+
     def test_source_url_can_be_recovered_from_description(self):
         result = scraper.source_url({
             "description": "完整介紹：https://artemperor.tw/tidbits/19988",
@@ -124,9 +132,25 @@ class ScraperPolicyTests(unittest.TestCase):
             {"title": "親子館外展服務：繪本說故事"},
             {"title": "員林市立圖書館昆蟲觀察課"},
             {"title": "南投縣藝池藝術協會－自然與人文對話"},
+            {"title": "115年度頭份市客語說故事活動（115年7月-2場次）", "unit": "頭份市公所"},
+            {"title": "全國學生南北管音樂比賽－初賽與複賽", "category": "競賽"},
+            {"title": "地方藝文成果活動", "unit": "梧棲區公所"},
+            {"title": "幸福社區學員成果展", "unit": "幸福社區發展協會"},
         ]
         self.assertTrue(all(scraper.is_excluded_record(item) for item in excluded))
         self.assertFalse(scraper.is_excluded_record({"title": "國際藝術博覽會", "unit": "文化局"}))
+        self.assertFalse(scraper.is_excluded_record({"title": "漫畫博覽會", "unit": "中華動漫出版同業協進會"}))
+        self.assertFalse(scraper.is_excluded_record({"title": "台北國際寵物用品博覽會", "unit": "展昭國際企業"}))
+        self.assertFalse(scraper.is_excluded_record({"title": "今夜漫才大舞台", "unit": "卡米地喜劇俱樂部"}))
+        self.assertFalse(scraper.is_excluded_record({"title": "世界合唱比賽行前音樂會", "category": "音樂"}))
+        self.assertFalse(scraper.is_excluded_record({"title": "科博館《古代人說故事》南屯遺址文物展", "unit": "國立自然科學博物館"}))
+        self.assertFalse(scraper.is_excluded_record({"title": "琴韻飄鄉巡迴音樂會（社區活動中心）", "unit": "閩聲愛樂協會"}))
+        relabeled = scraper.editorialize_categories({
+            "title": "寫生比賽得獎作品展",
+            "categories": ["競賽", "美術"],
+        })
+        self.assertEqual(relabeled["category"], "美術")
+        self.assertNotIn("競賽", relabeled["categories"])
 
     @patch.object(scraper, "image_url_responds", return_value=True)
     @patch.object(scraper.requests, "get")
@@ -177,6 +201,12 @@ class PublishedDataTests(unittest.TestCase):
     def test_published_data_respects_exclusions(self):
         offenders = [event.get("title") for event in self.payload["events"] if scraper.is_excluded_record(event)]
         self.assertEqual(offenders, [])
+        competition_labels = [
+            event.get("title")
+            for event in self.payload["events"]
+            if event.get("category") == "競賽" or "競賽" in (event.get("categories") or [])
+        ]
+        self.assertEqual(competition_labels, [])
 
     def test_published_data_has_no_generic_ticket_home(self):
         offenders = [event.get("sourceUrl") for event in self.payload["events"] if scraper.is_generic_ticketing_url(event.get("sourceUrl"))]

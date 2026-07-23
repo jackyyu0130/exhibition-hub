@@ -57,7 +57,7 @@ DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.9 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/4.0 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -167,15 +167,19 @@ LOCAL_COMMUNITY_PATTERN = re.compile(
     re.I,
 )
 SMALL_LOCAL_ACTIVITY_PATTERN = re.compile(
-    r'外展服務|繪本說故事|故事時間|故事媽媽|親子共讀|社區共讀|'
+    r'外展服務|繪本說故事|客語說故事|(?:親子|圖書館|故事媽媽).{0,8}說故事|說故事(?:活動|時間|場次)|故事時間|故事媽媽|親子共讀|社區共讀|'
     r'假日電影院|(?:圖書館|分館|鄉|鎮|區|里).{0,12}電影欣賞|'
-    r'文化走讀|深度走讀|城市走讀|導覽活動|'
+    r'文化走讀|深度走讀|城市走讀|導覽活動|借閱活動|閱讀推廣活動|'
     r'DIY|手作(?:活動|體驗|課)|(?:體驗|觀察|藝術|繪畫|書法|舞蹈|音樂|攝影)課|'
     r'(?:夏令|冬令|成長|親子|藝術|科學)營|交流會|同樂會',
     re.I,
 )
 LOCAL_ORGANIZATION_PATTERN = re.compile(r'(?:縣|市|鄉|鎮|區|里).{0,14}(?:協會|學會|社團|團委會)', re.I)
-PUBLIC_SHOW_PATTERN = re.compile(r'展覽|特展|聯展|個展|書展|攝影展|美術展|展演|音樂會|演出|藝術節|電影節|博覽會|劇場|戲劇|舞蹈', re.I)
+LOCAL_GOVERNMENT_PATTERN = re.compile(r'(?:市|區|鄉|鎮)公所', re.I)
+LOCAL_SMALL_SHOW_PATTERN = re.compile(r'(?:社區|社團|學員|班級|志工|里民).{0,10}(?:成果展|聯展|展演|成果活動)', re.I)
+COMPETITION_ACTIVITY_PATTERN = re.compile(r'競賽|比賽|大賽|初賽|複賽|決賽|徵件|徵選', re.I)
+COMPETITION_SHOW_EXCEPTION_PATTERN = re.compile(r'得獎作品展|首獎典藏作品展|成果展|展覽|特展|音樂會|演唱會|公演|藝術節', re.I)
+PUBLIC_SHOW_PATTERN = re.compile(r'展覽|特展|常設展|作品展|成果展|聯展|個展|書展|攝影展|美術展|展演|音樂會|演唱會|演出|藝術節|電影節|博覽會|劇場|戲劇|舞蹈', re.I)
 LARGE_OR_OFFICIAL_EVENT_PATTERN = re.compile(r'國際|全國|博覽會|美術館|博物館|文化局|文化中心|文化處', re.I)
 DESCRIPTION_META_PATTERNS = [
     re.compile(r'<meta[^>]+(?:property|name)=["\'](?:og:description|twitter:description|description)["\'][^>]+content=["\']([^"\']+)', re.I),
@@ -427,7 +431,7 @@ def title_match_score(event_title: Any, page_title: Any, page_text: Any = "") ->
 
 
 def is_excluded_record(record: dict[str, Any]) -> bool:
-    """Apply V3.8's editorial exclusion policy before publication."""
+    """Apply V4.0's exhibition-first editorial policy before publication."""
     source = first_value(record.get("sourceUrl"), record.get("url"), record.get("website"))
     if is_facebook_url(source):
         return True
@@ -438,11 +442,41 @@ def is_excluded_record(record: dict[str, Any]) -> bool:
         return True
     organizer = clean_text(first_value(record.get("unit"), record.get("organizer"), record.get("showUnit"), record.get("masterUnit"), record.get("org")))
     community_text = f"{title} {organizer}"
+    if LOCAL_GOVERNMENT_PATTERN.search(community_text):
+        return True
+    if LOCAL_SMALL_SHOW_PATTERN.search(community_text):
+        return True
+    if COMPETITION_ACTIVITY_PATTERN.search(title) and not COMPETITION_SHOW_EXCEPTION_PATTERN.search(title):
+        return True
     if LOCAL_COMMUNITY_PATTERN.search(community_text) and not LARGE_OR_OFFICIAL_EVENT_PATTERN.search(community_text):
         return True
     if LOCAL_ORGANIZATION_PATTERN.search(community_text) and not PUBLIC_SHOW_PATTERN.search(title) and not LARGE_OR_OFFICIAL_EVENT_PATTERN.search(community_text):
         return True
     return False
+
+
+def editorialize_categories(record: dict[str, Any]) -> dict[str, Any]:
+    """Keep award exhibitions/shows while removing the misleading competition label."""
+    cleaned = dict(record)
+    categories = [
+        category
+        for category in flatten_values(first_value(record.get("categories"), record.get("category")))
+        if clean_text(category) in ALLOWED_CATEGORIES and clean_text(category) != "競賽"
+    ]
+    categories = [clean_text(category) for category in categories]
+    if not categories:
+        categories = [
+            category
+            for category in normalize_categories(
+                "",
+                clean_text(record.get("title")),
+                clean_text(record.get("description")),
+            )
+            if category != "競賽"
+        ]
+    cleaned["categories"] = list(dict.fromkeys(categories))[:3] or ["其他"]
+    cleaned["category"] = cleaned["categories"][0]
+    return cleaned
 
 
 def strip_facebook_references(value: Any) -> str:
@@ -1744,7 +1778,11 @@ def main() -> int:
     # Validate the inherited/geocoded results one more time before publishing.
     rejected_coordinates += validate_all_coordinates(events)
 
-    events = [sanitize_facebook_record(event) for event in events if not is_excluded_record(event)]
+    events = [
+        editorialize_categories(sanitize_facebook_record(event))
+        for event in events
+        if not is_excluded_record(event)
+    ]
     write_output(
         args.output,
         events,

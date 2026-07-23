@@ -40,15 +40,20 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("eventImage", self.app)
         self.assertIn("venue-tile motion-card motion-from-right", self.app)
         self.assertIn("grid-auto-flow: column", self.css)
+        self.assertIn("grid-template-rows: repeat(3,142px)", self.css)
+        self.assertIn(".slice(0, 36)", self.app)
+        self.assertIn('class="venue-section-footer"', self.html)
+        self.assertIn("window.__venueImageFallback", self.app)
+        self.assertNotIn('venue-placeholder-mark" aria-hidden="true">館', self.app)
 
     def test_city_map_replaces_simple_map_fragment(self):
         self.assertIn('class="paper-city-map"', self.html)
         self.assertIn("CITY ART WALK", self.html)
         self.assertNotIn('class="paper-map-fragment"', self.html)
 
-    def test_v39_cache_busting(self):
-        self.assertIn("assets/styles.css?v=3.9", self.html)
-        self.assertIn("assets/app.js?v=3.9", self.html)
+    def test_v40_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.0", self.html)
+        self.assertIn("assets/app.js?v=4.0", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -80,11 +85,20 @@ class FrontendContractTests(unittest.TestCase):
 
     def test_supplied_brand_and_generated_fallback_art_are_used(self):
         self.assertIn("assets/taiwan-exhibition-journal-logo-v7.png", self.html)
-        self.assertIn("exhibition-fallback-sprite-v39.png", self.css)
+        self.assertIn("exhibition-fallback-sprite-v40.png", self.css)
         self.assertIn("fallbackMarkup(event", self.app)
 
     def test_upcoming_time_dot_is_green(self):
         self.assertIn(".time-dot.upcoming { background: #3f8a62;", self.css)
+
+    def test_v40_editorial_layout_and_copy(self):
+        self.assertIn(".brand-logo-frame {\n  width: 210px;", self.css)
+        self.assertIn("background-color: #eee8de;", self.css)
+        self.assertIn("aspect-ratio: 16 / 10;", self.css)
+        self.assertIn("height: 470px;", self.css)
+        self.assertIn('class="discover-all-button"', self.html)
+        self.assertIn("沿著收藏，遇見下一場", self.html)
+        self.assertNotIn("關於資料", self.html)
 
 
 if __name__ == "__main__":

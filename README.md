@@ -1,4 +1,4 @@
-# Exhibition Hub V3.9／台灣展覽誌
+# Exhibition Hub V4.0／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
 
@@ -11,7 +11,7 @@ exhibition-hub/
 │   ├── app.js
 │   ├── styles.css
 │   ├── taiwan-exhibition-journal-logo-v7.png
-│   ├── exhibition-fallback-sprite-v39.png
+│   ├── exhibition-fallback-sprite-v40.png
 │   ├── hero-art.svg
 │   └── hero-video.mp4        # 選用；可保留原本影片
 ├── data/
@@ -29,7 +29,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V3.9_ZH-TW.md`](REPLACEMENT_GUIDE_V3.9_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V4.0_ZH-TW.md`](REPLACEMENT_GUIDE_V4.0_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，提交到 `main`，再執行
@@ -51,9 +51,10 @@ assets/hero-video.mp4
 - `scraper.py` 會讀取文化部開放資料，補抓 OPENTIX、活動官方頁與主要售票頁的圖片／介紹。
 - 同名同展期活動會跨資料來源合併，`data/curated-overrides.json` 可保存人工核實過的網址與場館校正。
 - 售票及官方網址會以活動名稱交叉比對；不相符時改用已驗證的相關頁，找不到正確頁時清除錯誤連結。
-- 發布前排除所有 Facebook 頁面、社團、短網址與圖片主機；也排除地方小型社團活動，以及講座、講習、研習、課程、工作坊、營隊。
-- 首頁 Hero 使用精緻城市插畫地圖與紙張拼貼背景，首頁展覽卡統一為 1:1。
-- 場館探索列會優先使用官方場館影像，否則使用該場館目前展覽主視覺；支援橫向滑動與由右至左的依序進場動畫。
+- 發布前排除所有 Facebook 頁面、社團、短網址與圖片主機；也排除地方小型社團活動、各級公所活動、純競賽場次，以及講座、講習、研習、課程、工作坊、營隊。
+- 漫畫／寵物／商業博覽會、漫才、音樂會與比賽得獎作品展等實質展演內容仍會保留。
+- 首頁 Hero 使用暖灰米色滿版紙張底區、精緻城市插畫地圖與約 16:10 橫向票券拼貼，首頁展覽卡統一為 1:1。
+- 場館探索列一次呈現三列、每列四張矮版卡片；優先使用場館影像，再依序嘗試館內展覽主視覺，全部失效才顯示精緻分類圖，並支援橫向滑動。
 - 活動圖片全部失效時，使用依分類生成的日式藝文誌主視覺；不會冒用其他活動圖片。
 - Hero 每 15 秒更換推薦，滑鼠或鍵盤焦點停留在 Hero／票券時暫停剩餘倒數。
 - 附近展覽進頁自動請求定位，只列出 20 公里內活動並提供距離與 Google Maps 導航。
