@@ -57,9 +57,9 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v47_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.7", self.html)
-        self.assertIn("assets/app.js?v=4.7", self.html)
+    def test_v48_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.8", self.html)
+        self.assertIn("assets/app.js?v=4.8", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -157,16 +157,21 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("if (event.persisted) replayHomeAnimations();", self.app)
         self.assertIn("ticketStack.classList.remove('is-changing','is-entering')", self.app)
 
-    def test_v47_milk_tea_palette_compact_hero_and_static_listing(self):
-        self.assertIn("--bg: #f2e7d9;", self.css)
-        self.assertIn("--surface: #fcf7ef;", self.css)
+    def test_v48_pale_palette_centered_hero_and_distinct_listing_papers(self):
+        self.assertIn("--bg: #f7f1e9;", self.css)
+        self.assertIn("--surface: #fffaf4;", self.css)
         self.assertIn('class="hero-ticket-stage"', self.html)
+        self.assertIn("max-width: var(--max);", self.css)
         self.assertIn("padding: 36px 24px 44px;", self.css)
-        self.assertIn("height: 438px;", self.css)
-        self.assertIn("border-radius: 24px;", self.css)
-        self.assertIn("linear-gradient(90deg, #faf5ed 0%, #ead8c4 57%, #d4b99f 100%);", self.css)
-        self.assertIn("background: linear-gradient(132deg, #e7d8c8 0%, #dfcbb7 58%, #d8bea5 100%);", self.css)
-        self.assertIn("background: #eee1d3;", self.css)
+        self.assertIn("grid-template-columns: minmax(340px,400px) minmax(0,680px);", self.css)
+        self.assertIn("padding: 18px 0 18px 12px;", self.css)
+        self.assertIn("max-width: 680px;", self.css)
+        self.assertIn("height: 432px;", self.css)
+        self.assertIn("width: min(590px,calc(100% - 44px));", self.css)
+        self.assertIn("linear-gradient(90deg, #fdfaf5 0%, #f4ebe1 58%, #e8d7c7 100%);", self.css)
+        self.assertIn("background: linear-gradient(132deg, #f5ede4 0%, #eee2d6 58%, #e8d8c8 100%);", self.css)
+        for colour in ("#f2e7db", "#f7efe3", "#f3e6dc", "#efe4df", "#f4ede4"):
+            self.assertIn(f"background: {colour};", self.css)
         self.assertNotIn("listing-tone-block", self.html)
         self.assertNotIn("listingIndex", self.app)
         self.assertNotIn("replayListingBlockAnimations", self.app)

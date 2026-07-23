@@ -3656,3 +3656,166 @@ body {
     height: 382px;
   }
 }
+
+/* ==========================================================================
+   Exhibition Hub V4.8
+   ========================================================================== */
+
+/* Reduce saturation and brightness contrast for long, comfortable browsing.
+   The page remains warm, but reads as pale milk-tea paper rather than brown. */
+:root {
+  --bg: #f7f1e9;
+  --surface: #fffaf4;
+  --surface-soft: #f1e8de;
+  --line: #ded2c5;
+}
+body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 4%, rgba(255,253,249,.72), transparent 31%),
+    linear-gradient(rgba(107,80,55,.014) 1px, transparent 1px);
+  background-size: auto, 30px 30px;
+}
+.site-header { background: rgba(247,241,233,.95); }
+
+/* Match the Hero to the same centred 1200px rhythm used by the sections
+   below. Both sides regain generous breathing room, while the ticket panel
+   and ticket stack are deliberately shorter. */
+.hero {
+  width: 100%;
+  max-width: var(--max);
+  min-height: 0;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 36px 24px 44px;
+  grid-template-columns: minmax(340px,400px) minmax(0,680px);
+  justify-content: space-between;
+  gap: 48px;
+}
+.hero-copy {
+  min-height: 0;
+  padding: 18px 0 18px 12px;
+}
+.hero-visual,
+.hero-paper-collage {
+  width: 100%;
+  max-width: 680px;
+  height: 432px;
+  min-height: 432px;
+  justify-self: end;
+  background:
+    linear-gradient(rgba(100,75,51,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100,75,51,.035) 1px, transparent 1px),
+    linear-gradient(90deg, #fdfaf5 0%, #f4ebe1 58%, #e8d7c7 100%);
+  background-size: 30px 30px, 30px 30px, auto;
+  border-color: rgba(112,82,56,.13);
+  box-shadow: 0 18px 46px rgba(74,52,34,.075);
+}
+.hero-paper-collage::before {
+  background:
+    radial-gradient(circle at 9% 14%, rgba(255,255,255,.7), transparent 28%),
+    radial-gradient(circle at 90% 86%, rgba(119,77,45,.07), transparent 35%);
+}
+.hero-ticket-stage {
+  right: 22px;
+  width: min(590px,calc(100% - 44px));
+  height: 400px;
+}
+
+/* Nearby remains distinct from the page but no longer forms a saturated
+   brown band. */
+.nearby-home {
+  background: linear-gradient(132deg, #f5ede4 0%, #eee2d6 58%, #e8d8c8 100%);
+}
+.nearby-mini-card {
+  border-color: rgba(112,82,56,.13);
+  background: #fffaf4;
+}
+
+/* Five related but visibly different pale papers for the Explore page. */
+.listing-heading-column {
+  border-color: rgba(116,86,58,.12);
+  background: #f2e7db;
+}
+.listing-view-hero .listing-category-panel {
+  border-color: rgba(116,86,58,.12);
+  background: #f7efe3;
+}
+.sidebar-calendar-panel {
+  border-color: rgba(116,86,58,.12);
+  background: #f3e6dc;
+}
+.location-filter-panel {
+  border-color: rgba(116,86,58,.12);
+  background: #efe4df;
+}
+.listing-content {
+  border-color: rgba(116,86,58,.12);
+  background: #f4ede4;
+}
+.listing-content .listing-toolbar select,
+.listing-content .filter-drawer-button,
+.listing-view .exhibition-card {
+  background: #fffaf4;
+}
+.listing-view .listing-category-option:hover {
+  background: rgba(255,250,244,.76);
+}
+.listing-view .listing-category-option.active .category-icon {
+  background: #ecd9c7;
+}
+
+@media (max-width: 1120px) {
+  .hero {
+    width: 100%;
+    max-width: var(--max);
+    padding: 34px 24px 42px;
+    grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr);
+    justify-content: normal;
+    gap: 32px;
+  }
+  .hero-copy { padding: 14px 0 14px 8px; }
+  .hero-visual,
+  .hero-paper-collage {
+    max-width: none;
+    height: 422px;
+    min-height: 422px;
+  }
+  .hero-ticket-stage {
+    right: 18px;
+    width: min(570px,calc(100% - 36px));
+    height: 394px;
+  }
+}
+
+@media (max-width: 820px) {
+  .hero {
+    padding: 32px 18px 40px;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .hero-copy { padding: 0 6px; }
+  .hero-visual,
+  .hero-paper-collage {
+    max-width: none;
+    height: auto;
+    min-height: 414px;
+  }
+  .hero-ticket-stage {
+    right: 14px;
+    width: calc(100% - 28px);
+    height: 388px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 28px 16px 36px; }
+  .hero-copy { padding-right: 4px; padding-left: 4px; }
+  .hero-visual,
+  .hero-paper-collage { min-height: 400px; }
+  .hero-ticket-stage {
+    right: 10px;
+    width: calc(100% - 20px);
+    height: 376px;
+  }
+}
