@@ -1,3 +1,15 @@
-Exhibition Hub V3.5
-2026-07-23
-Paper Collage Hero / Media & Location Reliability / Motion Refinement / Custom Domain Guide
+Taiwan Exhibition Journal V3.6
+
+更新重點：
+- 首頁狀態篩選新增「即將結束」，結果改為獨立區塊
+- 本週精選卡片由右向左慢速進場
+- 時間雙欄由左右兩側慢速進場
+- 附近展覽區塊慢速淡入
+- 探索頁分類／狀態重新編排
+- 縣市場館全部展開且取消獨立捲動條
+- 地圖導航只使用場館、地址或可信座標
+- 詳情頁標題再縮小
+- 圖片爬取加強官方頁、售票頁與 Facebook 公開頁 metadata
+- 頁尾更新時間改為固定兩行
+- 站內導覽改為 History API，修復先閃現首頁的問題
+- 加入動態 Event 結構化資料與社群分享 metadata

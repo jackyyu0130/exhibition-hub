@@ -4,17 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f4efe6">
-  <meta name="description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
+  <meta id="metaDescription" name="description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="台灣展覽誌｜探索全台藝文展覽">
-  <meta property="og:description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
+  <meta id="metaOgTitle" property="og:title" content="台灣展覽誌｜探索全台藝文展覽">
+  <meta id="metaOgDescription" property="og:description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
+  <meta id="metaOgImage" property="og:image" content="">
   <link rel="canonical" href="./">
   <title>台灣展覽誌｜探索全台藝文展覽</title>
+  <script id="structuredData" type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"台灣展覽誌"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=3.5">
+  <link rel="stylesheet" href="assets/styles.css?v=3.6">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -57,7 +59,7 @@
   </header>
 
   <main id="app">
-    <section class="home-view" id="homeView">
+    <section class="home-view" id="homeView" hidden>
       <section class="hero" id="top">
         <div class="hero-copy">
           <p class="eyebrow">CURATED ACROSS TAIWAN</p>
@@ -126,12 +128,32 @@
             <button type="button" class="active" data-status="all">全部</button>
             <button type="button" data-status="ongoing">目前舉辦</button>
             <button type="button" data-status="upcoming">即將舉辦</button>
+            <button type="button" data-status="ending">即將結束</button>
             <button type="button" data-status="free">免費展覽</button>
           </div>
           <button class="clear-filter" id="clearFiltersButton" type="button">清除篩選</button>
         </div>
 
         <div class="category-strip reveal-sequence" id="categoryStrip" data-reveal-sequence aria-label="展覽分類"></div>
+      </section>
+
+
+      <section class="editorial-section status-results-section" id="statusResultsSection" hidden>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow" id="statusResultsEyebrow">FILTERED EXHIBITIONS</p>
+            <h2 id="statusResultsTitle">符合條件的展覽</h2>
+            <p class="section-description" id="statusResultsDescription"></p>
+          </div>
+          <div class="section-controls">
+            <button class="icon-button" type="button" data-scroll-target="statusResultsRail" data-dir="-1" aria-label="向左捲動">←</button>
+            <button class="icon-button" type="button" data-scroll-target="statusResultsRail" data-dir="1" aria-label="向右捲動">→</button>
+          </div>
+        </div>
+        <div class="featured-rail motion-card-rail" id="statusResultsRail"></div>
+        <div class="status-results-footer">
+          <a class="primary-link" id="statusResultsMore" href="?view=all">查看更多展覽</a>
+        </div>
       </section>
 
       <section class="editorial-section date-results-section" id="dateResultsSection" hidden>
@@ -153,7 +175,7 @@
         </div>
       </section>
 
-      <section class="editorial-section featured-block">
+      <section class="editorial-section featured-block motion-section" data-motion-group>
         <div class="section-heading">
           <div>
             <p class="eyebrow">EDITOR'S SELECTION</p>
@@ -164,7 +186,7 @@
             <button class="icon-button" type="button" data-scroll-target="featuredRail" data-dir="1" aria-label="向右捲動">→</button>
           </div>
         </div>
-        <div class="featured-rail" id="featuredRail"></div>
+        <div class="featured-rail motion-card-rail" id="featuredRail"></div>
       </section>
 
       <section class="editorial-section split-feature">
@@ -174,7 +196,7 @@
             <h2>依照時間，安排你的觀展清單</h2>
           </div>
         </div>
-        <div class="time-grid">
+        <div class="time-grid" data-split-reveal>
           <article class="time-column">
             <div class="time-column-head">
               <div><span class="time-dot upcoming"></span><h3>即將開展</h3></div>
@@ -192,7 +214,7 @@
         </div>
       </section>
 
-      <section class="nearby-home editorial-section">
+      <section class="nearby-home editorial-section" data-fade-reveal>
         <div class="nearby-copy">
           <p class="eyebrow">AROUND YOU</p>
           <h2>從現在的位置，<br>找到下一個目的地。</h2>
@@ -220,32 +242,31 @@
 
     <section class="listing-view app-view" id="listingView" hidden>
       <div class="view-hero compact-view-hero listing-view-hero">
-        <div class="view-title-row">
-          <span class="view-title-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5M10 6v8M6 10h8"></path></svg>
-          </span>
-          <div>
-            <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
-            <h1 id="listingTitle">探索全台展覽</h1>
+        <div class="listing-heading-column">
+          <div class="view-title-row">
+            <span class="view-title-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5M10 6v8M6 10h8"></path></svg>
+            </span>
+            <div>
+              <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
+              <h1 id="listingTitle">探索全台展覽</h1>
+            </div>
           </div>
-        </div>
-        <p id="listingDescription">依分類、日期與場館，找到適合你的下一場展覽。</p>
-      </div>
 
-      <div class="listing-filter-hub">
+          <section class="listing-status-panel" aria-labelledby="listingStatusTitle">
+            <div class="filter-panel-heading compact">
+              <div><small>STATUS</small><h2 id="listingStatusTitle">舉辦狀態</h2></div>
+            </div>
+            <div class="listing-status-options" id="listingStatusOptions"></div>
+          </section>
+        </div>
+
         <section class="listing-category-panel" aria-labelledby="listingCategoryTitle">
           <div class="filter-panel-heading compact">
             <div><small>CATEGORY</small><h2 id="listingCategoryTitle">展覽分類</h2></div>
             <button class="text-button" type="button" data-clear-filter="category">清除分類</button>
           </div>
           <div class="listing-category-grid" id="listingCategoryOptions"></div>
-        </section>
-
-        <section class="listing-status-panel" aria-labelledby="listingStatusTitle">
-          <div class="filter-panel-heading compact">
-            <div><small>STATUS</small><h2 id="listingStatusTitle">舉辦狀態</h2></div>
-          </div>
-          <div class="listing-status-options" id="listingStatusOptions"></div>
         </section>
       </div>
 
@@ -365,7 +386,7 @@
       </div>
       <div class="footer-links">
         <div><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展覽</a><a href="?view=favorites">我的收藏</a></div>
-        <div><strong>關於資料</strong><span id="footerUpdatedAt">每日自動更新</span><span id="footerRecordCount">載入中</span></div>
+        <div><strong>關於資料</strong><span class="footer-update-block"><small>最後更新</small><span id="footerUpdatedAt">每日自動更新</span></span><span id="footerRecordCount">載入中</span></div>
       </div>
     </div>
     <div class="footer-bottom"><span>TAIWAN EXHIBITION JOURNAL</span><span>Built with GitHub Pages</span></div>
@@ -374,6 +395,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=3.5"></script>
+  <script src="assets/app.js?v=3.6"></script>
 </body>
 </html>

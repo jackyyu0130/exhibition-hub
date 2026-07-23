@@ -23,7 +23,7 @@ concurrency:
 jobs:
   update-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 60
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -51,9 +51,9 @@ jobs:
       - name: Fetch and normalize exhibition data
         if: github.event_name != 'push'
         env:
-          MAX_DETAIL_FETCHES: "600"
-          MAX_IMAGE_FETCHES: "750"
-          MAX_GEOCODES: "70"
+          MAX_DETAIL_FETCHES: "800"
+          MAX_IMAGE_FETCHES: "1100"
+          MAX_GEOCODES: "90"
         run: python scripts/scraper.py
 
       - name: Commit updated data safely

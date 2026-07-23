@@ -34,7 +34,7 @@ DEFAULT_OUTPUT = Path("data/exhibitions.json")
 DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/3.5 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/3.6 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -121,6 +121,9 @@ VENUE_LABEL_PATTERN = re.compile(r'(?:活動地點|展演地點|展覽地點|場
 ABSOLUTE_IMAGE_PATTERN = re.compile(r'https?://[^\s"\'<>]+?\.(?:jpe?g|png|webp|avif)(?:\?[^\s"\'<>]*)?', re.I)
 RELATED_LINK_PATTERN = re.compile(r'<a[^>]+href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', re.I | re.S)
 CANONICAL_LINK_PATTERN = re.compile(r'<link[^>]+rel=["\'](?:canonical|alternate)["\'][^>]+href=["\']([^"\']+)', re.I)
+PAGE_TITLE_PATTERN = re.compile(r'<title[^>]*>(.*?)</title>', re.I | re.S)
+OG_TITLE_PATTERN = re.compile(r'<meta[^>]+(?:property|name)=["\'](?:og:title|twitter:title)["\'][^>]+content=["\']([^"\']+)', re.I)
+SOCIAL_HOST_PATTERN = re.compile(r'(?:^|\.)(?:facebook\.com|fb\.me|instagram\.com)$', re.I)
 IMAGE_VALIDATION_CACHE: dict[str, bool] = {}
 
 
@@ -481,22 +484,48 @@ def image_url_responds(url: str, *, timeout: int = 12) -> bool:
 
 
 def related_page_urls(page: str, base_url: str) -> list[str]:
-    result: list[str] = []
+    """Find likely official, ticketing, and Facebook event/detail pages.
+
+    Search-engine image hotlinks are intentionally not used: they expire often,
+    can point to unrelated copies, and are unsuitable for a daily automated feed.
+    """
+    candidates: dict[str, int] = {}
+
+    def add(candidate: Any, score: int) -> None:
+        url = normalize_url(candidate, base_url=base_url)
+        if not url or url == base_url:
+            return
+        parsed = urlparse(url)
+        host = parsed.netloc.lower().split(":")[0]
+        path = parsed.path.lower()
+        if not host or any(token in path for token in ("/share", "/sharer", "/login", "/dialog/")):
+            return
+        if SOCIAL_HOST_PATTERN.search(host):
+            score += 70
+            if "/events/" in path:
+                score += 45
+        if any(domain in host for domain in ("accupass.com", "opentix.life", "kktix.com", "tixcraft.com", "udnfunlife.com")):
+            score += 35
+        candidates[url] = max(candidates.get(url, -999), score)
+
     for match in CANONICAL_LINK_PATTERN.finditer(page):
-        url = normalize_url(match.group(1), base_url=base_url)
-        if url and url != base_url and url not in result:
-            result.append(url)
-    keywords = re.compile(r"官方|活動官網|詳細資訊|售票|購票|主辦|event|detail|ticket", re.I)
+        add(match.group(1), 65)
+
+    keywords = re.compile(r"官方|活動官網|詳細資訊|活動頁|售票|購票|主辦|facebook|臉書|粉絲專頁|event|detail|ticket", re.I)
     for match in RELATED_LINK_PATTERN.finditer(page):
         label = clean_text(match.group(2))
-        href = normalize_url(match.group(1), base_url=base_url)
-        if not href or href == base_url or not keywords.search(label + " " + href):
-            continue
-        if urlparse(href).netloc and href not in result:
-            result.append(href)
-        if len(result) >= 5:
-            break
-    return result
+        href = match.group(1)
+        normalized = normalize_url(href, base_url=base_url)
+        host = urlparse(normalized).netloc.lower() if normalized else ""
+        social = bool(SOCIAL_HOST_PATTERN.search(host))
+        if keywords.search(label + " " + href) or social:
+            add(href, 80 if keywords.search(label) else 45)
+
+    # Some CMS pages expose Facebook URLs in JSON or scripts instead of anchors.
+    for match in re.finditer(r'https?://(?:www\.)?(?:facebook\.com|fb\.me)/[^\s"\'<>]+', page, re.I):
+        add(html.unescape(match.group(0)), 55)
+
+    return [url for url, _ in sorted(candidates.items(), key=lambda item: item[1], reverse=True)[:8]]
 
 
 def _walk_jsonld(value: Any) -> Iterator[dict[str, Any]]:
@@ -524,6 +553,8 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         if "html" not in content_type and not response.text.lstrip().startswith("<"):
             return {}
         page = response.text[:1_600_000]
+        title_match = OG_TITLE_PATTERN.search(page) or PAGE_TITLE_PATTERN.search(page)
+        page_title = clean_text(title_match.group(1)) if title_match else ""
         images: list[str] = []
         venue = ""
         address = ""
@@ -597,14 +628,33 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
                     break
 
         normalized_images = [item for item in unique_urls(images, base_url=response.url) if probable_content_image(item)]
-        # Keep official/social metadata first, but move URLs that contain title tokens upward.
         title_tokens = [token.lower() for token in re.split(r"[\s：:、,，/|()（）【】]+", title) if len(token) >= 2]
-        original_order = {item: index for index, item in enumerate(normalized_images)}
-        normalized_images.sort(key=lambda item: (0 if any(token in unquote(item).lower() for token in title_tokens) else 1, original_order[item]))
-        validated = [item for item in normalized_images[:18] if image_url_responds(item)]
-        normalized_images = list(dict.fromkeys([*validated, *normalized_images]))[:14]
+        page_haystack = f"{page_title} {clean_text(page[:180000])}".lower()
+        host = urlparse(response.url).netloc.lower()
+        # Facebook sometimes returns a generic login/share page. Do not accept its
+        # generic image unless the event title is represented in the page.
+        if SOCIAL_HOST_PATTERN.search(host) and title_tokens and not any(token in page_haystack for token in title_tokens):
+            normalized_images = []
+
+        def image_score(item: str, index: int) -> tuple[int, int]:
+            decoded = unquote(item).lower()
+            score = 0
+            if any(token in decoded for token in title_tokens):
+                score += 80
+            if re.search(r"poster|banner|cover|event|activity|exhibition|主視覺|海報", decoded, re.I):
+                score += 30
+            if any(domain in decoded for domain in ("fbcdn.net", "facebook.com", "cloudfront.net")):
+                score += 12
+            if re.search(r"thumb|thumbnail|small|avatar|profile", decoded, re.I):
+                score -= 25
+            return (-score, index)
+
+        normalized_images = [item for _, item in sorted(enumerate(normalized_images), key=lambda pair: image_score(pair[1], pair[0]))]
+        validated = [item for item in normalized_images[:24] if image_url_responds(item)]
+        normalized_images = list(dict.fromkeys([*validated, *normalized_images]))[:18]
         return {
             "images": normalized_images,
+            "pageTitle": page_title,
             "venue": venue,
             "address": address,
             "latitude": latitude,
@@ -627,11 +677,11 @@ def discover_event_metadata(url: str, title: str, *, timeout: int = 18) -> dict[
         return {}
     combined = dict(primary)
     combined["images"] = list(primary.get("images") or [])
-    for related in (primary.get("relatedUrls") or [])[:2]:
+    for related in (primary.get("relatedUrls") or [])[:4]:
         child = discover_page_metadata(related, title=title, timeout=timeout)
         if not child:
             continue
-        combined["images"] = merge_list_values(combined.get("images"), child.get("images"))[:16]
+        combined["images"] = merge_list_values(combined.get("images"), child.get("images"))[:20]
         for key in ("venue", "address", "latitude", "longitude"):
             if combined.get(key) in (None, "") and child.get(key) not in (None, ""):
                 combined[key] = child[key]
@@ -995,9 +1045,11 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
         if not valid_http_url(event.get("sourceUrl")):
             continue
         checked = parse_date(event.get("pageMetadataCheckedAt"))
-        recently_checked = checked is not None and checked >= (now.date() - timedelta(days=21))
+        missing_image = not event.get("images")
+        retry_days = 4 if missing_image else 21
+        recently_checked = checked is not None and checked >= (now.date() - timedelta(days=retry_days))
         needs_data = (
-            not event.get("images")
+            missing_image
             or event.get("latitude") is None
             or event.get("longitude") is None
             or not clean_place_text(event.get("address"))
@@ -1026,7 +1078,7 @@ def enrich_source_pages(events: list[dict[str, Any]], *, max_fetches: int = 450,
             changed = False
             images = metadata.get("images") or []
             if images:
-                event["images"] = merge_list_values(event.get("images"), images)[:12]
+                event["images"] = merge_list_values(event.get("images"), images)[:18]
                 event["image"] = event["images"][0]
                 changed = True
             if metadata.get("address") and not clean_place_text(event.get("address")):

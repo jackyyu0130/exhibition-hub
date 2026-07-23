@@ -88,6 +88,49 @@
     return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   }
 
+  const DEFAULT_PAGE_TITLE = '台灣展覽誌｜探索全台藝文展覽';
+  const DEFAULT_PAGE_DESCRIPTION = '探索全台正在舉辦、即將開展與你附近的藝文展覽。';
+
+  function setMetaContent(selector, content) {
+    const node = $(selector);
+    if (node) node.setAttribute('content', content || '');
+  }
+
+  function updatePageMetadata(event = null) {
+    const structured = $('#structuredData');
+    if (!event) {
+      document.title = DEFAULT_PAGE_TITLE;
+      setMetaContent('#metaDescription', DEFAULT_PAGE_DESCRIPTION);
+      setMetaContent('#metaOgTitle', DEFAULT_PAGE_TITLE);
+      setMetaContent('#metaOgDescription', DEFAULT_PAGE_DESCRIPTION);
+      setMetaContent('#metaOgImage', '');
+      if (structured) structured.textContent = JSON.stringify({
+        '@context':'https://schema.org', '@type':'WebSite', name:'台灣展覽誌',
+        url:new URL('./', location.href).href, description:DEFAULT_PAGE_DESCRIPTION,
+      });
+      return;
+    }
+    const description = summaryText(event.description || `${event.title}，${dateRange(event)}，於${event.venueGroup || event.locationName}展出。`);
+    const title = `${event.title}｜台灣展覽誌`;
+    const image = event.images?.[0] || event.image || '';
+    document.title = title;
+    setMetaContent('#metaDescription', description);
+    setMetaContent('#metaOgTitle', title);
+    setMetaContent('#metaOgDescription', description);
+    setMetaContent('#metaOgImage', image);
+    if (structured) structured.textContent = JSON.stringify({
+      '@context':'https://schema.org', '@type':'Event', name:event.title,
+      startDate:event.startDate || undefined, endDate:event.endDate || undefined,
+      description, image:image ? [image] : undefined, url:location.href,
+      location:{
+        '@type':'Place', name:event.venueGroup || event.locationName || undefined,
+        address:event.address ? {'@type':'PostalAddress', streetAddress:event.address, addressRegion:event.region || undefined, addressCountry:'TW'} : undefined,
+      },
+      eventAttendanceMode:'https://schema.org/OfflineEventAttendanceMode',
+      eventStatus:'https://schema.org/EventScheduled',
+    });
+  }
+
   function safeUrl(value = '') {
     try {
       let text = String(value ?? '').trim().replace(/\\\//g, '/');
@@ -429,9 +472,15 @@
 
   function cardMarkup(event, options = {}) {
     const badges = specialBadges(event, options);
-    const revealStyle = Number.isInteger(options.revealIndex) ? ` style="--reveal-index:${options.revealIndex}"` : '';
+    const isDateReveal = Number.isInteger(options.revealIndex);
+    const isMotionReveal = Number.isInteger(options.motionIndex);
+    const styleParts = [];
+    if (isDateReveal) styleParts.push(`--reveal-index:${options.revealIndex}`);
+    if (isMotionReveal) styleParts.push(`--motion-index:${options.motionIndex}`);
+    const inlineStyle = styleParts.length ? ` style="${styleParts.join(';')}"` : '';
+    const motionClass = isMotionReveal ? ' motion-card motion-from-right' : '';
     return `
-      <article class="exhibition-card${Number.isInteger(options.revealIndex) ? ' date-reveal-card' : ''}"${revealStyle}>
+      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}"${inlineStyle}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
           ${!(event.images?.length || event.image) && state.venueImages[event.venueGroup || event.locationName] ? '<span class="venue-image-label">場館示意</span>' : ''}
@@ -471,7 +520,8 @@
   }
 
   function readParams() {
-    const params = state.params;
+    const params = new URLSearchParams(location.search);
+    state.params = params;
     state.query = params.get('q') || '';
     const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => value.trim()).filter(category => CATEGORY_ORDER.includes(category));
     state.categories = new Set(categoryValues);
@@ -591,6 +641,45 @@
     ensureHeroRotation();
   }
 
+  const HOME_STATUS_COPY = {
+    ongoing: {eyebrow:'NOW ON VIEW', title:'目前正在舉辦的展覽'},
+    upcoming: {eyebrow:'COMING SOON', title:'即將舉辦的展覽'},
+    ending: {eyebrow:'ENDING SOON', title:'即將結束的展覽'},
+    free: {eyebrow:'FREE ADMISSION', title:'免費入場的展覽'},
+  };
+
+  function renderStatusResults(items) {
+    const section = $('#statusResultsSection');
+    const copy = HOME_STATUS_COPY[state.status];
+    if (!copy || state.status === 'all') {
+      section.classList.remove('is-visible');
+      section.classList.add('is-leaving');
+      window.setTimeout(() => {
+        if (state.status === 'all') {
+          section.hidden = true;
+          section.classList.remove('is-leaving');
+          $('#statusResultsRail').innerHTML = '';
+        }
+      }, 900);
+      return;
+    }
+
+    section.hidden = false;
+    section.classList.remove('is-visible','is-leaving');
+    $('#statusResultsEyebrow').textContent = copy.eyebrow;
+    $('#statusResultsTitle').textContent = copy.title;
+    $('#statusResultsDescription').textContent = items.length
+      ? `共找到 ${items.length.toLocaleString('zh-TW')} 檔，向右滑動查看更多。`
+      : '目前沒有符合這個狀態的展覽。';
+    $('#statusResultsRail').innerHTML = items.length
+      ? selectFeatured(items, 14).map((event,index) => cardMarkup(event,{motionIndex:index})).join('')
+      : emptyInline('目前沒有符合條件的展覽');
+    const params = new URLSearchParams({view:'all', status:state.status});
+    $('#statusResultsMore').href = `?${params.toString()}`;
+    void section.offsetWidth;
+    requestAnimationFrame(() => requestAnimationFrame(() => section.classList.add('is-visible')));
+  }
+
   function renderDateResults(items) {
     const section = $('#dateResultsSection');
     if (!state.date) {
@@ -628,10 +717,10 @@
   }
 
   function renderHome() {
-    const basePool = filterEvents(state.events, {includeDate:false});
     const ongoing = state.events.filter(isOngoing);
-    const featured = selectFeatured(basePool.length ? basePool : ongoing, 9);
-    const dateItems = state.date ? basePool.filter(event => eventOccursOn(event, state.date)) : [];
+    const featured = selectFeatured(ongoing.length ? ongoing : state.events, 9);
+    const filteredPool = filterEvents(state.events, {includeDate:false});
+    const dateItems = state.date ? filteredPool.filter(event => eventOccursOn(event, state.date)) : [];
     const upcoming = state.events.filter(isUpcoming).sort((a,b) => (parseDate(a.startDate)?.getTime() || Infinity) - (parseDate(b.startDate)?.getTime() || Infinity)).slice(0, 4);
     const ending = state.events.filter(event => isEnding(event, 30)).sort((a,b) => (parseDate(a.endDate)?.getTime() || Infinity) - (parseDate(b.endDate)?.getTime() || Infinity)).slice(0, 4);
 
@@ -652,8 +741,9 @@
     ensureHeroRotation();
 
     renderCategoryStrip();
+    renderStatusResults(filteredPool);
     renderDateResults(dateItems);
-    $('#featuredRail').innerHTML = featured.length ? featured.map((event,index) => cardMarkup(event,{curated:index < 3})).join('') : emptyInline('目前沒有符合篩選的展覽');
+    $('#featuredRail').innerHTML = featured.length ? featured.map((event,index) => cardMarkup(event,{curated:index < 3,motionIndex:index})).join('') : emptyInline('目前沒有符合篩選的展覽');
     $('#upcomingList').innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
     $('#endingList').innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
     renderVenueGrid();
@@ -708,7 +798,8 @@
     if (state.venue) titleParts.push(state.venue);
     $('#listingTitle').textContent = titleParts.length ? titleParts.join(' · ') : '探索全台展覽';
     $('#listingEyebrow').textContent = state.query ? 'SEARCH RESULTS' : 'EXPLORE EXHIBITIONS';
-    $('#listingDescription').textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '先選分類與日期，再從縣市展開對應的展覽場所。';
+    const listingDescription = $('#listingDescription');
+    if (listingDescription) listingDescription.textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '';
     $('#listingCount').textContent = `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
     $('#listingGrid').innerHTML = items.map(cardMarkup).join('');
     $('#listingEmpty').hidden = items.length !== 0;
@@ -739,8 +830,7 @@
       if (!regionEvents.length) return '';
       const venueCounts = countBy(regionEvents, event => displayableVenueName(event.venueGroup || event.locationName));
       const venues = Object.keys(venueCounts).filter(Boolean).sort((a,b) => venueCounts[b] - venueCounts[a] || a.localeCompare(b, 'zh-Hant'));
-      const isOpen = state.region === region || (state.venue && venues.includes(state.venue));
-      return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" ${isOpen ? 'open' : ''}>
+      return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" open>
         <summary><span class="region-name">${escapeHtml(region)}</span><small>${regionEvents.length.toLocaleString('zh-TW')} 檔</small><i aria-hidden="true">⌄</i></summary>
         <div class="region-venues">
           <button class="venue-filter-option ${state.region === region && !state.venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter=""><span>全部 ${escapeHtml(region)}</span><small>${regionEvents.length}</small></button>
@@ -808,9 +898,10 @@
       $('#detailContent').innerHTML = `<div class="empty-state"><span>?</span><h3>找不到這個展覽</h3><p>活動可能已下架或網址已更新。</p><a class="primary-link" href="./">回到首頁</a></div>`;
       return;
     }
-    document.title = `${event.title}｜台灣展覽誌`;
+    updatePageMetadata(event);
     const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 6);
-    const externalUrl = event.sourceUrl || googleMapsUrl(event);
+    const mapUrl = googleMapsUrl(event);
+    const externalUrl = event.sourceUrl || '';
     $('#detailContent').innerHTML = `
       <div class="detail-breadcrumb"><a href="./">首頁</a> / <a href="${categoryHref(event.category)}">${escapeHtml(event.category)}</a> / ${escapeHtml(event.title)}</div>
       <div class="detail-grid">
@@ -826,8 +917,8 @@
             ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail ? `${event.venueGroup || event.locationName}｜${event.venueDetail}` : (event.venueGroup || event.locationName))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', event.price)}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
           </div>
           <div class="detail-actions">
-            <a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener"><span>查看官方資訊</span><span aria-hidden="true">↗</span></a>
-            <a href="${escapeHtml(googleMapsUrl(event))}" target="_blank" rel="noopener"><span>地圖導航</span></a>
+            ${externalUrl ? `<a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener"><span>查看官方資訊</span><span aria-hidden="true">↗</span></a>` : '<span class="detail-action-disabled" aria-disabled="true">官方頁面待確認</span>'}
+            ${mapUrl ? `<a href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener"><span>地圖導航</span></a>` : '<span class="detail-action-disabled" aria-disabled="true">地點待確認</span>'}
             <button type="button" data-detail-favorite="${escapeHtml(eventKey(event))}">${isFavorite(event) ? '♥ 已收藏' : '♡ 加入收藏'}</button>
             <button type="button" data-share-event="${escapeHtml(eventKey(event))}">分享展覽</button>
           </div>
@@ -904,20 +995,25 @@
   function navigationQuery(event) {
     const address = cleanPlaceText(event.address || '');
     const venue = displayableVenueName(event.venueGroup || event.locationName || '');
-    const addressLooksUseful = address && /(?:路|街|大道|巷|弄|號|村|里)/.test(address) && (!event.region || address.includes(event.region.replace('台','臺')) || address.includes(event.region));
-    if (addressLooksUseful) return `${venue ? `${venue} ` : ''}${address}`.trim();
-    if (venue) return `${event.region || ''} ${venue}`.trim();
+    const region = cleanPlaceText(event.region || '');
+    const addressLooksUseful = address
+      && /(?:路|街|大道|巷|弄|號|村|里|園區)/.test(address)
+      && !/場館資料整理中|地點待確認/.test(address);
+    if (addressLooksUseful) return `${address}${venue && !address.includes(venue) ? ` ${venue}` : ''}`.trim();
+    if (venue) return `${region} ${venue}`.trim();
     if (coordinateMatchesRegion(event)) return `${event.latitude},${event.longitude}`;
-    return `${event.region || '台灣'} ${event.title}`.trim();
+    return '';
   }
 
   function googleMapsUrl(event) {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(navigationQuery(event))}`;
+    const query = navigationQuery(event);
+    return query ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}` : '';
   }
 
   function renderCurrentView() {
     const views = {home:$('#homeView'),listing:$('#listingView'),nearby:$('#nearbyView'),detail:$('#detailView'),favorites:$('#favoritesView')};
     Object.entries(views).forEach(([name,element]) => element.hidden = name !== state.view);
+    if (state.view !== 'detail') updatePageMetadata();
     if (state.view === 'home') renderHome();
     if (state.view === 'listing') renderListing();
     if (state.view === 'nearby') renderNearby();
@@ -930,7 +1026,20 @@
   function updateFooter() {
     $('#footerRecordCount').textContent = `目前收錄 ${state.events.length.toLocaleString('zh-TW')} 檔活動`;
     const updated = parseDate(state.updatedAt);
-    $('#footerUpdatedAt').textContent = updated ? `最後更新 ${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日 ${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分` : '每日自動更新';
+    $('#footerUpdatedAt').textContent = updated ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日 ${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分` : '每日自動更新';
+  }
+
+  function navigateTo(target, {replace = false, preserveScroll = false} = {}) {
+    const url = new URL(target, location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname) return false;
+    history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
+    readParams();
+    renderCurrentView();
+    document.body.classList.remove('menu-open');
+    $('#mobileMenu').hidden = true;
+    $('#mobileMenuButton').setAttribute('aria-expanded', 'false');
+    if (!preserveScroll) window.scrollTo({top:0, left:0, behavior:'auto'});
+    return true;
   }
 
   function updateUrl(filters = {}) {
@@ -946,7 +1055,7 @@
       if (value === null || value === '' || value === 'all') params.delete(key); else params.set(key,value);
     });
     params.delete('event');
-    location.href = `?${params.toString()}`;
+    navigateTo(`?${params.toString()}`);
   }
 
   function toggleCategoryFilter(category) {
@@ -966,15 +1075,16 @@
   }
 
   function setupScrollReveal() {
-    const groups = $$('[data-reveal-sequence]');
-    groups.forEach(group => {
+    const sequenceGroups = $$('[data-reveal-sequence]');
+    sequenceGroups.forEach(group => {
       [...group.children].forEach((child, index) => {
         child.classList.add('reveal-item');
         child.style.setProperty('--reveal-index', index);
       });
     });
+    const motionTargets = [...sequenceGroups, ...$$('[data-motion-group], [data-split-reveal], [data-fade-reveal]')];
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      groups.forEach(group => group.classList.add('is-in-view'));
+      motionTargets.forEach(group => group.classList.add('is-in-view'));
       return;
     }
     if (!state.revealObserver) {
@@ -984,15 +1094,16 @@
           entry.target.classList.add('is-in-view');
           state.revealObserver.unobserve(entry.target);
         });
-      }, {threshold:.16, rootMargin:'0px 0px -6% 0px'});
+      }, {threshold:.12, rootMargin:'0px 0px -5% 0px'});
     }
-    groups.forEach(group => {
+    motionTargets.forEach(group => {
       if (!group.classList.contains('is-in-view')) state.revealObserver.observe(group);
     });
   }
 
   function bindEvents() {
     window.addEventListener('scroll', () => $('#siteHeader').classList.toggle('scrolled', scrollY > 12), {passive:true});
+    window.addEventListener('popstate', () => { readParams(); renderCurrentView(); window.scrollTo({top:0,left:0,behavior:'auto'}); });
     $('#mobileMenuButton').addEventListener('click', () => {
       const open = $('#mobileMenuButton').getAttribute('aria-expanded') === 'true';
       $('#mobileMenuButton').setAttribute('aria-expanded', String(!open));
@@ -1002,7 +1113,7 @@
 
     const submitSearch = input => {
       const query = input.value.trim();
-      if (query) location.href = `?view=all&q=${encodeURIComponent(query)}`;
+      if (query) navigateTo(`?view=all&q=${encodeURIComponent(query)}`);
     };
     $('#navSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#navSearchInput'));});
     $('#mobileSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#mobileSearchInput'));});
@@ -1024,6 +1135,16 @@
     $('#statusPills').addEventListener('click', event => {const button=event.target.closest('[data-status]');if(!button)return;state.status=button.dataset.status;renderHome();});
 
     document.addEventListener('click', event => {
+      const internalLink = event.target.closest('a[href]');
+      if (internalLink && !event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && !internalLink.target && !internalLink.hasAttribute('download')) {
+        const url = new URL(internalLink.href, location.href);
+        const isSameAppRoute = url.origin === location.origin && url.pathname === location.pathname && !url.hash;
+        if (isSameAppRoute) {
+          event.preventDefault();
+          navigateTo(url.href);
+          return;
+        }
+      }
       const scrollButton = event.target.closest('[data-scroll-target]');
       if (scrollButton) {
         const target = document.getElementById(scrollButton.dataset.scrollTarget);

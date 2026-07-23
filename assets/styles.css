@@ -1481,3 +1481,227 @@ img, video, svg { display: block; max-width: 100%; }
   background: rgba(35,31,27,.6); color: #fff; font-size: 9px; font-weight: 650; letter-spacing: .06em;
   backdrop-filter: blur(7px);
 }
+
+/* ========================================================================== */
+/* V3.6 — filtered home rails, slow editorial motion, stable SPA navigation   */
+/* ========================================================================== */
+
+/* A filtered status rail appears independently; it no longer replaces picks. */
+.status-results-section {
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  overflow: clip;
+  transform: translateY(18px);
+  transition:
+    opacity 1.05s cubic-bezier(.2,.7,.2,1),
+    transform 1.05s cubic-bezier(.2,.7,.2,1),
+    max-height 1.2s cubic-bezier(.2,.7,.2,1),
+    padding 1s ease,
+    margin 1s ease;
+}
+.status-results-section.is-visible {
+  max-height: 1040px;
+  margin-bottom: 72px;
+  padding-top: 34px;
+  padding-bottom: 34px;
+  opacity: 1;
+  transform: translateY(0);
+}
+.status-results-section.is-leaving {
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.status-results-footer { margin-top: 18px; display: flex; justify-content: center; }
+
+/* Cards enter slowly from the right and settle toward the left. */
+.motion-card {
+  opacity: 0;
+  transform: translate3d(78px, 10px, 0);
+  transition:
+    opacity 1.15s calc(var(--motion-index, 0) * 125ms + 120ms) cubic-bezier(.18,.72,.2,1),
+    transform 1.28s calc(var(--motion-index, 0) * 125ms + 120ms) cubic-bezier(.18,.72,.2,1);
+  will-change: opacity, transform;
+}
+[data-motion-group].is-in-view .motion-card,
+.status-results-section.is-visible .motion-card {
+  opacity: 1;
+  transform: translate3d(0,0,0);
+}
+
+/* The two planning panels enter from opposite sides. */
+[data-split-reveal] > .time-column {
+  opacity: 0;
+  transition: opacity 1.15s cubic-bezier(.2,.7,.2,1), transform 1.35s cubic-bezier(.2,.7,.2,1);
+  will-change: opacity, transform;
+}
+[data-split-reveal] > .time-column:first-child { transform: translate3d(-78px,0,0); }
+[data-split-reveal] > .time-column:last-child { transform: translate3d(78px,0,0); transition-delay: 140ms; }
+[data-split-reveal].is-in-view > .time-column { opacity: 1; transform: translate3d(0,0,0); }
+
+/* Nearby block uses a restrained, slow fade rather than a directional slide. */
+[data-fade-reveal] {
+  opacity: 0;
+  transform: translate3d(0,24px,0);
+  transition: opacity 1.35s cubic-bezier(.2,.7,.2,1), transform 1.35s cubic-bezier(.2,.7,.2,1);
+}
+[data-fade-reveal].is-in-view { opacity: 1; transform: translate3d(0,0,0); }
+
+/* Explore header: title/status at left, compact category matrix at right. */
+.listing-view-hero {
+  padding: 34px 0 26px;
+  display: grid;
+  grid-template-columns: minmax(260px,.68fr) minmax(540px,1.32fr);
+  align-items: stretch;
+  gap: 22px;
+}
+.listing-heading-column {
+  min-width: 0;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+.listing-view-hero .view-title-row { align-items: flex-start; }
+.listing-view-hero h1 { font-size: clamp(30px,3.2vw,40px); }
+.listing-view-hero .listing-status-panel,
+.listing-view-hero .listing-category-panel {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.listing-view-hero .listing-category-panel {
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.listing-view-hero .listing-status-options { max-width: none; }
+.listing-view-hero .filter-panel-heading { margin-bottom: 11px; }
+.listing-view-hero .listing-category-grid {
+  grid-template-columns: repeat(9, minmax(52px,1fr));
+  gap: 7px;
+}
+.listing-view-hero .listing-category-option { min-height: 68px; }
+.listing-view-hero .listing-category-option .category-icon { width: 42px; height: 42px; }
+.listing-view-hero .listing-category-option .category-icon svg { width: 20px; height: 20px; }
+.listing-view-hero .listing-category-option strong { font-size: 11px; }
+
+/* County and venue list follows the document flow with no nested scrollbar. */
+.listing-layout { align-items: start; }
+.filter-sidebar {
+  position: relative;
+  top: auto;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.location-filter-panel { min-height: 0; }
+.location-accordion {
+  max-height: none !important;
+  height: auto;
+  overflow: visible !important;
+  padding-right: 0;
+  scrollbar-width: none;
+}
+.location-accordion::-webkit-scrollbar { display: none; }
+.region-accordion[open] .region-venues { display: block; }
+
+/* The map CTA only appears when a reliable address, venue, or coordinate exists. */
+.detail-action-disabled {
+  min-height: 44px;
+  padding: 0 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #d1c9be;
+  border-radius: 999px;
+  background: #f3f0eb;
+  color: #8b847b;
+  font-size: 13px;
+  cursor: not-allowed;
+}
+.detail-info h1 { font-size: clamp(27px,2.55vw,34px); line-height: 1.38; }
+
+/* A calmer fallback is preferable to an empty or loud default image. */
+.card-placeholder,
+.detail-poster-placeholder,
+.nearby-mini-media,
+.nearby-result-media {
+  background:
+    linear-gradient(rgba(76,72,66,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76,72,66,.055) 1px, transparent 1px),
+    radial-gradient(circle at 78% 20%, rgba(190,116,72,.18), transparent 24%),
+    linear-gradient(145deg, #eee7dc, #d8ccbc);
+  background-size: 22px 22px, 22px 22px, auto, auto;
+  color: rgba(78,67,57,.72);
+  text-shadow: 0 1px 0 rgba(255,255,255,.7);
+}
+
+/* Footer update label and complete timestamp stay as two deliberate lines. */
+.footer-update-block {
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px !important;
+}
+.footer-update-block small {
+  color: #d7d2ca;
+  font-size: 11px;
+  font-weight: 600;
+}
+.footer-update-block #footerUpdatedAt {
+  display: block;
+  white-space: nowrap;
+  color: #a9a49c;
+  font-size: 13px;
+}
+
+@media (max-width: 1120px) {
+  .listing-view-hero { grid-template-columns: 1fr; }
+  .listing-view-hero .listing-category-grid { grid-template-columns: repeat(9, minmax(54px,1fr)); }
+}
+
+@media (max-width: 820px) {
+  .listing-view-hero { display: grid; padding-top: 28px; }
+  .listing-view-hero .listing-category-grid { grid-template-columns: repeat(7, 62px); overflow-x: auto; }
+  .filter-sidebar {
+    position: fixed;
+    top: 74px;
+    max-height: calc(100vh - 74px) !important;
+    overflow-y: auto !important;
+  }
+  .location-accordion { overflow: visible !important; }
+}
+
+@media (max-width: 600px) {
+  .status-results-section.is-visible { margin-bottom: 50px; padding-top: 27px; padding-bottom: 27px; }
+  .motion-card { transform: translate3d(52px,8px,0); }
+  [data-split-reveal] > .time-column:first-child { transform: translate3d(-46px,0,0); }
+  [data-split-reveal] > .time-column:last-child { transform: translate3d(46px,0,0); }
+  .detail-info h1 { font-size: 25px; }
+  .footer-update-block #footerUpdatedAt { white-space: normal; line-height: 1.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-card,
+  [data-split-reveal] > .time-column,
+  [data-fade-reveal],
+  .status-results-section {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
