@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=4.8">
+  <link rel="stylesheet" href="assets/styles.css?v=4.9">
 </head>
 <body>
   <div class="page-noise" aria-hidden="true"></div>
@@ -91,48 +91,40 @@
             <span class="paper-sheet paper-sheet-grid"></span>
             <span class="paper-city-map">
               <svg viewBox="0 0 420 250" aria-hidden="true">
-                <rect width="420" height="250" rx="8" fill="#f1eadf"></rect>
+                <rect width="420" height="250" rx="8" fill="#f4ecdf"></rect>
                 <g class="city-contours">
-                  <path d="M-18 39C53 8 118 14 172 43s121 35 177 8 83-28 103-16"></path>
-                  <path d="M-25 217c53-35 98-41 145-21s88 25 137 5 111-37 184-18"></path>
-                  <path d="M14 88c54-31 112-28 157-2s85 37 135 23 78-34 126-31"></path>
+                  <path d="M-24 52C55 8 128 18 188 50s124 31 256-6"></path>
+                  <path d="M-18 214c76-43 134-40 192-9s121 26 270-19"></path>
                 </g>
                 <g class="city-districts">
-                  <path class="district-sage" d="M25 29 106 21l29 48-44 42-73-13Z"></path>
-                  <path class="district-clay" d="m139 27 81 9 24 57-49 38-64-27Z"></path>
-                  <path class="district-sand" d="m266 24 114 9 18 62-48 34-78-24-23-43Z"></path>
-                  <path class="district-rose" d="m34 137 93-18 48 45-19 63-115-5-24-48Z"></path>
-                  <path class="district-olive" d="m190 142 73-32 61 32-14 78-106 10-28-48Z"></path>
-                  <path class="district-blue" d="m329 127 76-15 27 94-91 25-20-53Z"></path>
+                  <path class="district-sage" d="M16 25 135 18l34 74-51 46-112-23Z"></path>
+                  <path class="district-sand" d="m172 22 214 4 25 87-83 39-145-39-28-58Z"></path>
+                  <path class="district-clay" d="m22 143 146-35 67 56-29 77-184-5-18-53Z"></path>
+                  <path class="district-olive" d="m238 137 105-28 79 44-18 83-166 7-27-59Z"></path>
                 </g>
-                <path class="city-river" d="M-18 184C45 151 91 197 151 165s105-14 153-53c39-31 77-39 139-52"></path>
+                <path class="city-river" d="M-22 193C54 154 100 200 164 164s119-18 164-57c37-32 73-43 119-55"></path>
                 <g class="city-routes">
-                  <path d="M28 62C103 42 161 57 224 99s113 61 170 37"></path>
-                  <path d="M70 229C105 176 139 145 192 118s108-45 174-96"></path>
-                  <path d="M20 126C85 110 139 111 190 134s94 32 143 24"></path>
-                  <path d="M118 18c9 47 26 85 65 117s54 61 63 104"></path>
+                  <path d="M28 70C110 38 169 57 226 102s108 59 170 35"></path>
+                  <path d="M67 230C109 171 151 136 208 110S316 60 377 18"></path>
                 </g>
                 <g class="city-nodes">
-                  <circle cx="73" cy="54" r="4"></circle><circle cx="135" cy="58" r="4"></circle>
-                  <circle cx="191" cy="118" r="4"></circle><circle cx="262" cy="152" r="4"></circle>
-                  <circle cx="340" cy="139" r="4"></circle><circle cx="366" cy="53" r="4"></circle>
+                  <circle cx="93" cy="54" r="4"></circle>
+                  <circle cx="205" cy="107" r="4"></circle>
+                  <circle cx="330" cy="141" r="4"></circle>
                 </g>
                 <g class="city-landmarks">
-                  <g transform="translate(42 35)">
-                    <path d="m0 27 30-17 30 17M6 29h48v31H6zM15 29v31M30 29v31M45 29v31M2 63h56"></path>
+                  <g transform="translate(48 37)">
+                    <path d="m0 22 25-14 25 14M6 24h38v26H6zM17 24v26M33 24v26M2 53h46"></path>
                   </g>
-                  <g transform="translate(159 149)">
-                    <path d="M0 52V14L17 4l18 10 17-10 18 10v38M0 52h70M13 24h11v11H13zM46 24h11v11H46z"></path>
-                  </g>
-                  <g transform="translate(323 153)">
-                    <path d="M0 52 8 5h36l9 47M4 35h45M7 20h39M17 5v47M35 5v47M-4 52h62"></path>
+                  <g transform="translate(300 158)">
+                    <path d="M0 45V14L15 5l16 9 15-9 16 9v31M0 45h62M12 23h10v10H12zM41 23h10v10H41z"></path>
                   </g>
                 </g>
-                <g class="city-pin" transform="translate(274 79)">
-                  <path d="M0-19c-11 0-19 8-19 18 0 14 19 31 19 31S19 13 19-1C19-11 11-19 0-19Z"></path>
+                <g class="city-pin" transform="translate(265 77)">
+                  <path d="M0-18c-10 0-18 8-18 17 0 13 18 29 18 29S18 12 18-1C18-10 10-18 0-18Z"></path>
                   <circle cy="-1" r="6"></circle>
                 </g>
-                <text class="city-map-title" x="20" y="230">CITY ART WALK · 城市展覽散步</text>
+                <text class="city-map-title" x="20" y="231">CITY ART WALK · 城市展覽散步</text>
               </svg>
             </span>
             <span class="paper-stamp">TAIWAN<br><b>EXHIBITION</b><small>CURATED DAILY</small></span>
@@ -244,7 +236,7 @@
       <section class="nearby-home editorial-section" data-fade-reveal>
         <div class="nearby-copy">
           <p class="eyebrow">AROUND YOU</p>
-          <h2>離你不遠，<br>還有這些選擇。</h2>
+          <h2>這些選擇，<br>離你不遠</h2>
           <p>讓所在的位置成為起點，沿著距離慢慢拾起城市裡的展覽風景。</p>
           <button class="location-button" id="homeLocationButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
@@ -363,14 +355,14 @@
         <div>
           <p class="eyebrow">NEARBY EXHIBITIONS</p>
           <h1>附近展覽</h1>
-          <p id="nearbyStatusText">允許定位後，顯示 20 公里內展覽並依距離排序。</p>
+          <p id="nearbyStatusText">允許定位後，顯示 10 公里內展覽並依距離排序。</p>
         </div>
         <button class="location-button light" id="nearbyLocationButton" type="button">重新取得位置</button>
       </div>
       <div class="nearby-layout">
         <div class="nearby-map" id="nearbyMap"></div>
         <div class="nearby-results">
-          <div class="nearby-results-head"><h2>你附近 20 公里</h2><span id="nearbyCount"></span></div>
+          <div class="nearby-results-head"><h2>你附近 10 公里</h2><span id="nearbyCount"></span></div>
           <div class="nearby-result-list" id="nearbyResultList"></div>
         </div>
       </div>
@@ -451,6 +443,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=4.8"></script>
+  <script src="assets/app.js?v=4.9"></script>
 </body>
 </html>

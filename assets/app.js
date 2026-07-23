@@ -31,7 +31,7 @@
     '科技':12, '競賽':13, '快閃':14, '其他':15,
   };
   const HERO_ROTATION_MS = 15000;
-  const NEARBY_RADIUS_KM = 20;
+  const NEARBY_RADIUS_KM = 10;
   const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'其他','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'其他'};
   const CATEGORY_ALIASES = {
     '展覽':'美術','展覽資訊':'美術','藝術':'美術','戲劇':'表演','戲劇表演':'表演','綜藝':'表演','綜藝活動':'表演',
@@ -89,6 +89,7 @@
     heroFocusInside: false,
     heroCursor: 0,
     heroLastKeys: [],
+    mobilePreviewTicket: null,
     heroHasShuffled: false,
     lastRenderedDate: null,
     heroTransitionTimer: null,
@@ -704,7 +705,7 @@
 
   function heroTicketMarkup(event, slot) {
     const label = slot === 0 ? '觀展靈感' : slot === 1 ? '編輯精選' : '下一站推薦';
-    return `<a class="hero-ticket-card hero-ticket-slot-${slot + 1}" href="${eventHref(event)}" aria-label="查看展覽：${escapeHtml(event.title)}">
+    return `<a class="hero-ticket-card hero-ticket-slot-${slot + 1}" href="${eventHref(event)}" data-ticket-key="${escapeHtml(eventKey(event))}" aria-expanded="false" aria-label="查看展覽：${escapeHtml(event.title)}">
       <span class="ticket-watermark" aria-hidden="true"><b>展</b><i>TEJ</i></span>
       <span class="ticket-perforation" aria-hidden="true"></span>
       <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
@@ -739,6 +740,7 @@
     if (!pool.length) return;
     const picks = randomHeroPicks(pool);
     const apply = () => {
+      state.mobilePreviewTicket = null;
       stack.innerHTML = picks.map(heroTicketMarkup).join('');
       stack.classList.remove('is-changing');
       requestAnimationFrame(() => stack.classList.add('is-entering'));
@@ -1153,10 +1155,10 @@
     const items = nearestEvents(filterEvents(), 200, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
     $('#nearbyStatusText').textContent = state.userLocation
       ? `已定位目前位置，顯示 ${NEARBY_RADIUS_KM} 公里內展覽並由近到遠排列。`
-      : '正在請求定位權限；允許後會顯示 20 公里內展覽。';
-    $('#nearbyCount').textContent = state.userLocation ? `${items.length} 檔・20 KM 內` : `${items.length} 檔待定位`;
+      : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展覽。`;
+    $('#nearbyCount').textContent = state.userLocation ? `${items.length} 檔・${NEARBY_RADIUS_KM} KM 內` : `${items.length} 檔待定位`;
     $('#nearbyResultList').innerHTML = items.map(event => resultMarkup(event, event._distance)).join('')
-      || emptyInline(state.userLocation ? '目前位置 20 公里內沒有可定位的展覽' : '目前沒有提供座標的展覽');
+      || emptyInline(state.userLocation ? `目前位置 ${NEARBY_RADIUS_KM} 公里內沒有可定位的展覽` : '目前沒有提供座標的展覽');
     renderMap(items);
   }
 
@@ -1455,6 +1457,34 @@
     });
 
     document.addEventListener('click', event => {
+      const tappedHeroTicket = event.target.closest('.hero-ticket-card');
+      const touchTicketMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+      if (tappedHeroTicket && touchTicketMode) {
+        const ticketKey = tappedHeroTicket.dataset.ticketKey;
+        if (state.mobilePreviewTicket !== ticketKey || !tappedHeroTicket.classList.contains('is-touch-preview')) {
+          event.preventDefault();
+          $$('.hero-ticket-card.is-touch-preview').forEach(ticket => {
+            ticket.classList.remove('is-touch-preview');
+            ticket.setAttribute('aria-expanded', 'false');
+          });
+          tappedHeroTicket.classList.add('is-touch-preview');
+          tappedHeroTicket.setAttribute('aria-expanded', 'true');
+          state.mobilePreviewTicket = ticketKey;
+          pauseHeroRotation();
+          return;
+        }
+        state.mobilePreviewTicket = null;
+      } else if (touchTicketMode && state.mobilePreviewTicket) {
+        $$('.hero-ticket-card.is-touch-preview').forEach(ticket => {
+          ticket.classList.remove('is-touch-preview');
+          ticket.setAttribute('aria-expanded', 'false');
+        });
+        state.mobilePreviewTicket = null;
+        state.heroPointerInside = false;
+        state.heroFocusInside = false;
+        state.heroPaused = false;
+        resetHeroRotation();
+      }
       const internalLink = event.target.closest('a[href]');
       if (internalLink && !event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && !internalLink.target && !internalLink.hasAttribute('download')) {
         const url = new URL(internalLink.href, location.href);

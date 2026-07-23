@@ -58,8 +58,8 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('id="cityShadow"', self.html)
 
     def test_v48_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.8", self.html)
-        self.assertIn("assets/app.js?v=4.8", self.html)
+        self.assertIn("assets/styles.css?v=4.9", self.html)
+        self.assertIn("assets/app.js?v=4.9", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -74,11 +74,11 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("每 15 秒換一組推薦・懸浮即暫停", self.html)
 
     def test_nearby_auto_location_radius_distance_and_external_map(self):
-        self.assertIn("const NEARBY_RADIUS_KM = 20", self.app)
+        self.assertIn("const NEARBY_RADIUS_KM = 10", self.app)
         self.assertIn("requestLocation({automatic:true})", self.app)
         self.assertIn("distance-badge", self.app)
         self.assertIn("googleMapsDirectionsUrl", self.app)
-        self.assertIn("你附近 20 公里", self.html)
+        self.assertIn("你附近 10 公里", self.html)
 
     def test_favorites_are_four_square_cards_with_recommendations(self):
         self.assertIn('id="favoritesRecommendations"', self.html)
@@ -123,7 +123,7 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("展覽<br>是城市寫給你的信", self.html)
         self.assertIn("收錄全台展覽與演出。<br>拆封前，先聽聽城市想說些什麼。", self.html)
         self.assertIn("循著今日心緒，遇見一場展覽", self.html)
-        self.assertIn("離你不遠，<br>還有這些選擇。", self.html)
+        self.assertIn("這些選擇，<br>離你不遠", self.html)
         self.assertIn('id="footerRecordCount"', self.html)
         self.assertIn('id="footerVenueCount"', self.html)
         self.assertIn('id="footerUpdatedAt"', self.html)
@@ -173,6 +173,17 @@ class FrontendContractTests(unittest.TestCase):
         for colour in ("#f2e7db", "#f7efe3", "#f3e6dc", "#efe4df", "#f4ede4"):
             self.assertIn(f"background: {colour};", self.css)
         self.assertNotIn("listing-tone-block", self.html)
+
+    def test_v49_full_width_hero_touch_ticket_and_mobile_time_alignment(self):
+        self.assertIn("Exhibition Hub V4.9", self.css)
+        self.assertIn("padding-right: max(24px,calc((100vw - var(--max))/2 + 24px));", self.css)
+        self.assertIn("linear-gradient(90deg, #fbf6ef 0%, #f4eadd 48%, #ead9c8 100%);", self.css)
+        self.assertIn("data-ticket-key=", self.app)
+        self.assertIn("is-touch-preview", self.app)
+        self.assertIn("(hover: none) and (pointer: coarse)", self.app)
+        self.assertIn("[data-split-reveal] > .time-column:first-child", self.css)
+        self.assertIn("transform: none !important;", self.css)
+        self.assertIn(".filter-workbench .filter-results-section {\n  background: #fffaf4;", self.css)
         self.assertNotIn("listingIndex", self.app)
         self.assertNotIn("replayListingBlockAnimations", self.app)
 
