@@ -1,4 +1,4 @@
-# Exhibition Hub V4.3／台灣展覽誌
+# Exhibition Hub V4.4／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
 
@@ -15,9 +15,10 @@ exhibition-hub/
 │   ├── hero-art.svg
 │   └── hero-video.mp4        # 選用；可保留原本影片
 ├── data/
-│   ├── README.md
 │   ├── curated-overrides.json
-│   └── exhibitions.json      # 首次 Action 執行後自動產生
+│   ├── venue-aliases.json
+│   ├── geocode-cache.json
+│   └── exhibitions.json
 ├── scripts/
 │   └── scraper.py
 ├── requirements.txt
@@ -29,7 +30,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V4.3_ZH-TW.md`](REPLACEMENT_GUIDE_V4.3_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V4.4_ZH-TW.md`](REPLACEMENT_GUIDE_V4.4_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，提交到 `main`，再執行
@@ -56,10 +57,12 @@ assets/hero-video.mp4
 - 漫畫／寵物／商業博覽會、漫才、音樂會與比賽得獎作品展等實質展演內容仍會保留。
 - 首頁 Hero 使用暖灰米色滿版紙張底區、低彩度城市街區插畫與約 16:10 橫向票券拼貼；票券加入雙線類型框、深色條碼、淡色圓章浮水印及裁切虛線，首頁展覽卡統一為 1:1。
 - 左上角 Logo 只有淺奶油棕票券保留底色；探索頁整張圖卡皆可用滑鼠或鍵盤開啟詳情。
+- Hero 文案更新為「展覽／是城市寫給你的信」，右側紙張拼貼填滿票券欄，只保留與左側文字之間的垂直分隔線；首頁主要段落留白亦已整體收斂。
 - 捲動頁面後，右側會出現小型票券式「回到最上方」按鈕。
 - 頁尾會同步顯示收錄展覽、展演場地及最後更新時間。
 - 場館探索列一次呈現三列、每列四張矮版卡片；優先使用場館影像，再依序嘗試館內展覽主視覺，全部失效才顯示精緻分類圖，並支援橫向滑動。
 - 更新器及前端會共同排除載入 GIF、spinner、placeholder、favicon 與尺寸過小的圖片；活動圖片全部失效時，使用依分類生成的日式藝文誌主視覺，不會冒用其他活動圖片。
+- 發布前會再清洗一次 `image` 與 `images`，避免官方頁補抓完成後把網站 Logo、分享圖或介面 icon 重新帶回資料。
 - Hero 每 15 秒更換推薦，滑鼠或鍵盤焦點停留在 Hero／票券時暫停剩餘倒數。
 - 附近展覽進頁自動請求定位，只列出 20 公里內活動並提供距離與 Google Maps 導航。
 - 我的收藏在桌機為四欄 1:1 方卡，並依收藏類型推薦可橫向瀏覽的相似展覽。

@@ -57,9 +57,9 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v43_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.3", self.html)
-        self.assertIn("assets/app.js?v=4.3", self.html)
+    def test_v44_cache_busting(self):
+        self.assertIn("assets/styles.css?v=4.4", self.html)
+        self.assertIn("assets/app.js?v=4.4", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -119,11 +119,11 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn("state.categories].join('＋')", self.app)
         self.assertIn("font-size: clamp(21px,2.15vw,29px)", self.css)
 
-    def test_v43_copy_footer_hover_motion_and_whole_card_link(self):
-        self.assertIn("找一場展覽，", self.html)
-        self.assertIn("安排今天的去處。", self.html)
+    def test_v44_copy_footer_hover_motion_and_whole_card_link(self):
+        self.assertIn("展覽<br>是城市寫給你的信", self.html)
+        self.assertIn("收錄全台展覽與演出。拆封前，先聽聽城市想說些什麼。", self.html)
         self.assertIn("循著今日心緒，遇見一場展覽", self.html)
-        self.assertIn("看看附近，", self.html)
+        self.assertIn("離你不遠，<br>還有這些選擇。", self.html)
         self.assertIn('id="footerRecordCount"', self.html)
         self.assertIn('id="footerVenueCount"', self.html)
         self.assertIn('id="footerUpdatedAt"', self.html)
@@ -137,6 +137,15 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn("is-whole-card-link", self.app)
         self.assertIn("data-card-href", self.app)
         self.assertIn("event.target !== wholeCard", self.app)
+
+    def test_v44_hero_split_and_tighter_home_spacing(self):
+        self.assertIn("border-left: 1px solid rgba(99,77,54,.2);", self.css)
+        self.assertIn("border-top: 0;", self.css)
+        self.assertIn(".discovery-panel { padding-top: 48px;", self.css)
+        self.assertIn(".featured-block { padding-bottom: 46px;", self.css)
+        self.assertIn(".split-feature { padding-bottom: 22px;", self.css)
+        self.assertIn("padding-top: 42px;", self.css)
+        self.assertIn("padding-bottom: 42px;", self.css)
 
     def test_v43_ticket_perforation_back_to_top_and_image_guard(self):
         self.assertIn("ticket-perforation", self.app)
