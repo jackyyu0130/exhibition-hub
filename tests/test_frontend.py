@@ -58,8 +58,8 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('id="cityShadow"', self.html)
 
     def test_v48_cache_busting(self):
-        self.assertIn("assets/styles.css?v=4.9", self.html)
-        self.assertIn("assets/app.js?v=4.9", self.html)
+        self.assertIn("assets/styles.css?v=5.0", self.html)
+        self.assertIn("assets/app.js?v=5.0", self.html)
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
@@ -175,7 +175,7 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn("listing-tone-block", self.html)
 
     def test_v49_full_width_hero_touch_ticket_and_mobile_time_alignment(self):
-        self.assertIn("Exhibition Hub V4.9", self.css)
+        self.assertIn("Exhibition Hub V5.0", self.css)
         self.assertIn("padding-right: max(24px,calc((100vw - var(--max))/2 + 24px));", self.css)
         self.assertIn("linear-gradient(90deg, #fbf6ef 0%, #f4eadd 48%, #ead9c8 100%);", self.css)
         self.assertIn("data-ticket-key=", self.app)
@@ -186,6 +186,16 @@ class FrontendContractTests(unittest.TestCase):
         self.assertIn(".filter-workbench .filter-results-section {\n  background: #fffaf4;", self.css)
         self.assertNotIn("listingIndex", self.app)
         self.assertNotIn("replayListingBlockAnimations", self.app)
+
+    def test_v50_shuffle_position_neutral_hero_and_layered_filter_results(self):
+        self.assertIn("Exhibition Hub V5.0", self.css)
+        self.assertIn(".hero-ticket-stage .hero-shuffle-button {\n  top: -4px;\n  left: -46px;", self.css)
+        self.assertIn("background: #eadfd2;", self.css)
+        self.assertIn("rgba(103,80,57,.055)", self.css)
+        self.assertIn("linear-gradient(90deg, #fbf7f1 0%, #f3ebdd 50%, #e8dcc7 100%);", self.css)
+        self.assertIn("linear-gradient(105deg, #f5ece1 0%, #efe2d3 56%, #e9d8c5 100%);", self.css)
+        self.assertIn(".filter-workbench .filter-results-section .exhibition-card", self.css)
+        self.assertIn("left: -6px;", self.css)
 
     def test_v43_ticket_perforation_back_to_top_and_image_guard(self):
         self.assertIn("ticket-perforation", self.app)

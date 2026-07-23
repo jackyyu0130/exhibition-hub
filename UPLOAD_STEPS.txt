@@ -1,7 +1,7 @@
-Exhibition Hub V4.9｜完整替換最短流程
+Exhibition Hub V5.0｜完整替換最短流程
 
 1. 先到 GitHub 專案首頁，點 Code → Download ZIP，保存舊版備份。
-2. 解壓縮 Exhibition-Hub-V4.9-full-replacement.zip。
+2. 解壓縮 Exhibition-Hub-V5.0-full-replacement.zip。
 3. 複製 ZIP 內全部內容到儲存庫根目錄（與 index.html 同一層），覆蓋同名檔案。
 4. 保留你原有的 CNAME 與 assets/hero-video.mp4（替換包不會覆蓋這兩個檔案）。
 5. 提交到 main 分支；若用 GitHub Desktop，點 Commit to main → Push origin。
@@ -12,4 +12,4 @@ Exhibition Hub V4.9｜完整替換最短流程
 不需要手動修改任何 HTML、CSS 或 JavaScript。
 
 所有點擊位置、替換路徑、合併衝突處理、核對清單與復原方式：
-REPLACEMENT_GUIDE_V4.9_ZH-TW.md
+REPLACEMENT_GUIDE_V5.0_ZH-TW.md

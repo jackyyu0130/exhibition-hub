@@ -3975,3 +3975,81 @@ body {
     padding-left: 16px;
   }
 }
+
+/* ==========================================================================
+   Exhibition Hub V5.0
+   ========================================================================== */
+
+/* Keep the confirmed V4.9 geometry, but move the shuffle control to the true
+   upper-left corner of the collage instead of letting the narrower ticket
+   stage make it appear centred. */
+.hero-ticket-stage .hero-shuffle-button {
+  top: -4px;
+  left: -46px;
+}
+
+/* A paler oat-milk action remains readable without becoming the darkest
+   object in the opening copy column. */
+.hero-actions .primary-link {
+  border-color: rgba(120,91,65,.18);
+  background: #eadfd2;
+  color: #51483f;
+  box-shadow: 0 8px 20px rgba(78,58,40,.07);
+}
+.hero-actions .primary-link:hover {
+  border-color: rgba(112,82,57,.26);
+  background: #dfcfbd;
+  color: #403830;
+}
+
+/* Neutral milk-tea replaces the slightly rosy cast. The grid is one step
+   darker than V4.9, remaining visible only as a quiet paper texture. */
+.hero {
+  background-color: #f5eee3;
+  background-image:
+    linear-gradient(rgba(103,80,57,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(103,80,57,.055) 1px, transparent 1px),
+    linear-gradient(90deg, #fbf7f1 0%, #f3ebdd 50%, #e8dcc7 100%);
+  background-size: 30px 30px, 30px 30px, auto;
+}
+.hero-visual,
+.hero-paper-collage {
+  background:
+    linear-gradient(rgba(98,75,52,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(98,75,52,.05) 1px, transparent 1px),
+    linear-gradient(90deg, #fbf7f0 0%, #f1e7d6 58%, #e2d0b5 100%);
+  background-size: 30px 30px, 30px 30px, auto;
+}
+
+/* The selected-date/status continuation uses a deeper milk-tea sheet. Cards
+   retain a lighter ivory top edge so the rail still has visual hierarchy. */
+.filter-workbench .filter-results-section {
+  background: linear-gradient(105deg, #f5ece1 0%, #efe2d3 56%, #e9d8c5 100%);
+}
+.filter-workbench .filter-results-section .exhibition-card {
+  border-color: rgba(116,86,58,.14);
+  background: linear-gradient(145deg, #fffaf4 0%, #f5e9dc 100%);
+  box-shadow: 0 12px 28px rgba(91,65,43,.075);
+}
+
+@media (max-width: 1120px) {
+  .hero-ticket-stage .hero-shuffle-button {
+    top: -5px;
+    left: -8px;
+  }
+}
+
+@media (max-width: 820px) {
+  .hero-ticket-stage .hero-shuffle-button {
+    top: -7px;
+    left: -8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-ticket-stage .hero-shuffle-button {
+    top: -7px;
+    left: -6px;
+    max-width: calc(100% - 4px);
+  }
+}
