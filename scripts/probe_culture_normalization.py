@@ -495,6 +495,290 @@ def build_quality_event_sample(
     }
 
 
+
+def build_source_domain_counts(
+    events: list[dict[str, Any]],
+) -> dict[str, int]:
+    """Count source URL hostnames for enrichment planning."""
+
+    counts: Counter[str] = Counter()
+
+    for event in events:
+        domain = get_url_domain(
+            event.get("sourceUrl")
+        )
+
+        if domain:
+            counts[domain] += 1
+
+    return dict(
+        sorted(
+            counts.items(),
+            key=lambda item: (
+                -item[1],
+                item[0],
+            ),
+        )
+    )
+
+
+def build_image_host_counts(
+    events: list[dict[str, Any]],
+) -> dict[str, int]:
+    """Count image hostnames for diagnostics."""
+
+    counts: Counter[str] = Counter()
+
+    for event in events:
+        domain = get_url_domain(
+            event.get("image")
+        )
+
+        if domain:
+            counts[domain] += 1
+
+    return dict(
+        sorted(
+            counts.items(),
+            key=lambda item: (
+                -item[1],
+                item[0],
+            ),
+        )
+    )
+
+
+def build_enrichment_queue_entry(
+    event: dict[str, Any],
+    actions: list[str],
+    priority: str,
+) -> dict[str, Any]:
+    """Return one compact enrichment queue entry."""
+
+    return {
+        "id": event.get("id"),
+        "title": event.get("title"),
+        "priority": priority,
+        "actions": actions,
+        "startDate": event.get("startDate"),
+        "endDate": event.get("endDate"),
+        "locationName": event.get(
+            "locationName"
+        ),
+        "address": event.get("address"),
+        "region": event.get("region"),
+        "price": event.get("price"),
+        "image": event.get("image"),
+        "sourceUrl": event.get("sourceUrl"),
+        "sourceUrlKind": describe_source_url(
+            event.get("sourceUrl")
+        ),
+        "ticketUrl": event.get("ticketUrl"),
+    }
+
+
+def plan_enrichment_actions(
+    event: dict[str, Any],
+) -> tuple[str, list[str]]:
+    """Return the priority and actions needed for one event."""
+
+    actions: list[str] = []
+
+    source_url = clean_string(
+        event.get("sourceUrl")
+    )
+    source_kind = describe_source_url(
+        source_url
+    )
+    image = clean_string(event.get("image"))
+    description = clean_string(
+        event.get("description")
+    )
+    ticket_url = clean_string(
+        event.get("ticketUrl")
+    )
+
+    if source_kind == "social":
+        actions.append(
+            "replace_social_source_with_official_page"
+        )
+    elif source_kind == "shortener":
+        actions.append(
+            "resolve_shortened_source_url"
+        )
+    elif source_kind == "invalid":
+        actions.append(
+            "replace_invalid_source_url"
+        )
+    elif source_kind == "missing":
+        actions.append(
+            "find_official_source_url"
+        )
+
+    if not image:
+        if source_kind == "official_candidate":
+            actions.append(
+                "extract_image_from_official_page"
+            )
+        else:
+            actions.append(
+                "find_official_image_after_source_resolution"
+            )
+
+    if not description:
+        actions.append(
+            "add_description_from_official_page"
+        )
+
+    if (
+        event.get("latitude") is None
+        or event.get("longitude") is None
+    ):
+        actions.append(
+            "add_coordinates_optional"
+        )
+
+    if (
+        appears_to_require_ticket(
+            event.get("price")
+        )
+        and not ticket_url
+    ):
+        actions.append(
+            "verify_ticket_url_for_priced_event"
+        )
+
+    if any(
+        action in actions
+        for action in (
+            "replace_social_source_with_official_page",
+            "resolve_shortened_source_url",
+            "replace_invalid_source_url",
+        )
+    ):
+        priority = "P1_source_review"
+    elif "find_official_source_url" in actions:
+        priority = "P2_find_official_source"
+    elif "extract_image_from_official_page" in actions:
+        priority = "P3_extract_official_image"
+    elif actions:
+        priority = "P4_optional_enrichment"
+    else:
+        priority = "P0_ready"
+
+    return priority, actions
+
+
+def build_enrichment_plan(
+    events: list[dict[str, Any]],
+    sample_limit: int,
+) -> dict[str, Any]:
+    """Build prioritized queues for source and image enrichment."""
+
+    queue_names = (
+        "P0_ready",
+        "P1_source_review",
+        "P2_find_official_source",
+        "P3_extract_official_image",
+        "P4_optional_enrichment",
+    )
+
+    queues: dict[str, list[dict[str, Any]]] = {
+        name: []
+        for name in queue_names
+    }
+    action_counts: Counter[str] = Counter()
+    source_kind_counts: Counter[str] = Counter()
+
+    for event in events:
+        source_kind = describe_source_url(
+            event.get("sourceUrl")
+        )
+        source_kind_counts[source_kind] += 1
+
+        priority, actions = plan_enrichment_actions(
+            event
+        )
+        action_counts.update(actions)
+
+        queues[priority].append(
+            build_enrichment_queue_entry(
+                event,
+                actions,
+                priority,
+            )
+        )
+
+    return {
+        "queueCounts": {
+            queue_name: len(queues[queue_name])
+            for queue_name in queue_names
+        },
+        "queuePercentages": {
+            queue_name: calculate_percentage(
+                len(queues[queue_name]),
+                len(events),
+            )
+            for queue_name in queue_names
+        },
+        "actionCounts": dict(
+            sorted(
+                action_counts.items(),
+                key=lambda item: (
+                    -item[1],
+                    item[0],
+                ),
+            )
+        ),
+        "sourceUrlKindCounts": {
+            source_kind: source_kind_counts.get(
+                source_kind,
+                0,
+            )
+            for source_kind in (
+                "official_candidate",
+                "missing",
+                "social",
+                "shortener",
+                "invalid",
+            )
+        },
+        "sourceDomainCounts": (
+            build_source_domain_counts(events)
+        ),
+        "imageHostCounts": (
+            build_image_host_counts(events)
+        ),
+        "queues": {
+            queue_name: queues[queue_name][
+                :sample_limit
+            ]
+            for queue_name in queue_names
+        },
+        "notes": {
+            "P0_ready": (
+                "No source or enrichment action is "
+                "currently required."
+            ),
+            "P1_source_review": (
+                "Social, shortened, or invalid source "
+                "URLs must be replaced or resolved first."
+            ),
+            "P2_find_official_source": (
+                "No source URL is available. Locate the "
+                "official venue or exhibition page."
+            ),
+            "P3_extract_official_image": (
+                "An official-looking source exists, but "
+                "the exhibition image is missing."
+            ),
+            "P4_optional_enrichment": (
+                "Only optional fields such as coordinates "
+                "or ticket verification remain."
+            ),
+        },
+    }
+
 def main() -> int:
     arguments = parse_arguments()
 
@@ -736,6 +1020,10 @@ def main() -> int:
         },
         "qualityTierPercentages": (
             quality_tier_percentages
+        ),
+        "enrichmentPlan": build_enrichment_plan(
+            normalized,
+            arguments.quality_sample_limit,
         ),
         "publicationPolicy": {
             "automaticPublishTier": "ready",
