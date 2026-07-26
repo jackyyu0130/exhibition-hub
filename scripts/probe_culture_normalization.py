@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from datetime import date
 import json
 import sys
 from typing import Any
+from urllib.parse import urlparse
 
 from exhibition_hub.collectors.base import CollectorContext
 from exhibition_hub.collectors.culture_ministry import (
@@ -18,6 +20,34 @@ from exhibition_hub.collectors.culture_ministry import (
 )
 from exhibition_hub.normalizers.culture_ministry import (
     normalize_culture_records,
+)
+
+
+QUALITY_TIERS = (
+    "ready",
+    "needs_enrichment",
+    "needs_review",
+    "rejected",
+)
+
+LOW_TRUST_SOURCE_DOMAINS = (
+    "facebook.com",
+    "fb.com",
+    "instagram.com",
+    "threads.net",
+    "twitter.com",
+    "x.com",
+)
+
+SHORTENER_DOMAINS = (
+    "bit.ly",
+    "goo.gl",
+    "lihi.cc",
+    "lihi1.com",
+    "lihi1.me",
+    "ppt.cc",
+    "reurl.cc",
+    "tinyurl.com",
 )
 
 
@@ -40,6 +70,15 @@ def parse_arguments() -> argparse.Namespace:
         help="Maximum normalized samples to display.",
     )
     parser.add_argument(
+        "--quality-sample-limit",
+        type=int,
+        default=20,
+        help=(
+            "Maximum events to display for each quality queue. "
+            "Default: 20."
+        ),
+    )
+    parser.add_argument(
         "--timeout",
         type=float,
         default=30.0,
@@ -53,6 +92,11 @@ def parse_arguments() -> argparse.Namespace:
 
     if arguments.sample_limit < 0:
         parser.error("--sample-limit must be zero or greater")
+
+    if arguments.quality_sample_limit < 0:
+        parser.error(
+            "--quality-sample-limit must be zero or greater"
+        )
 
     if arguments.timeout <= 0:
         parser.error("--timeout must be greater than zero")
@@ -85,6 +129,115 @@ def count_missing(
         1
         for event in events
         if not event.get(field_name)
+    )
+
+
+def clean_string(value: Any) -> str:
+    """Return a trimmed string for diagnostic comparisons."""
+
+    if value is None:
+        return ""
+
+    return str(value).strip()
+
+
+def parse_normalized_date(value: Any) -> date | None:
+    """Parse a normalized YYYY-MM-DD value when possible."""
+
+    cleaned = clean_string(value)
+
+    if not cleaned:
+        return None
+
+    try:
+        return date.fromisoformat(cleaned[:10])
+    except ValueError:
+        return None
+
+
+def get_url_domain(value: Any) -> str:
+    """Return a lower-case hostname without a leading www."""
+
+    cleaned = clean_string(value)
+
+    if not cleaned:
+        return ""
+
+    parsed = urlparse(cleaned)
+    domain = (parsed.hostname or "").lower()
+
+    if domain.startswith("www."):
+        domain = domain[4:]
+
+    return domain
+
+
+def domain_matches(
+    domain: str,
+    candidates: tuple[str, ...],
+) -> bool:
+    """Return whether a hostname matches a listed root domain."""
+
+    return any(
+        domain == candidate
+        or domain.endswith(f".{candidate}")
+        for candidate in candidates
+    )
+
+
+def describe_source_url(value: Any) -> str:
+    """Classify a source URL for publication-quality review."""
+
+    cleaned = clean_string(value)
+
+    if not cleaned:
+        return "missing"
+
+    parsed = urlparse(cleaned)
+
+    if parsed.scheme not in {"http", "https"}:
+        return "invalid"
+
+    domain = get_url_domain(cleaned)
+
+    if not domain:
+        return "invalid"
+
+    if domain_matches(
+        domain,
+        LOW_TRUST_SOURCE_DOMAINS,
+    ):
+        return "social"
+
+    if domain_matches(
+        domain,
+        SHORTENER_DOMAINS,
+    ):
+        return "shortener"
+
+    return "official_candidate"
+
+
+def appears_to_require_ticket(
+    price: Any,
+) -> bool:
+    """Estimate whether a listed price likely requires a ticket URL."""
+
+    cleaned = clean_string(price).lower()
+
+    if not cleaned:
+        return False
+
+    free_markers = (
+        "免費",
+        "自由入場",
+        "free",
+        "免票",
+    )
+
+    return not any(
+        marker in cleaned
+        for marker in free_markers
     )
 
 
@@ -132,6 +285,211 @@ def build_unrecognized_region_sample(
         "address": event.get("address"),
         "latitude": event.get("latitude"),
         "longitude": event.get("longitude"),
+        "sourceUrl": event.get("sourceUrl"),
+        "ticketUrl": event.get("ticketUrl"),
+    }
+
+
+def evaluate_event_quality(
+    event: dict[str, Any],
+    duplicate_ids: set[str],
+) -> dict[str, Any]:
+    """Assign a publication-quality tier and explain the reasons."""
+
+    rejected_reasons: list[str] = []
+    review_reasons: list[str] = []
+    enrichment_reasons: list[str] = []
+
+    event_id = clean_string(event.get("id"))
+    title = clean_string(event.get("title"))
+    start_date_value = clean_string(
+        event.get("startDate")
+    )
+    end_date_value = clean_string(
+        event.get("endDate")
+    )
+    location_name = clean_string(
+        event.get("locationName")
+    )
+    address = clean_string(event.get("address"))
+    region = clean_string(event.get("region"))
+    sessions = event.get("sessions")
+
+    core_fields = {
+        "id": event_id,
+        "title": title,
+        "startDate": start_date_value,
+        "endDate": end_date_value,
+        "locationName": location_name,
+        "address": address,
+        "region": region,
+    }
+
+    for field_name, field_value in core_fields.items():
+        if not field_value:
+            rejected_reasons.append(
+                f"missing_core_field:{field_name}"
+            )
+
+    if not isinstance(sessions, list) or not sessions:
+        rejected_reasons.append(
+            "missing_core_field:sessions"
+        )
+
+    start_date = parse_normalized_date(
+        start_date_value
+    )
+    end_date = parse_normalized_date(
+        end_date_value
+    )
+
+    if start_date_value and start_date is None:
+        rejected_reasons.append(
+            "invalid_date:startDate"
+        )
+
+    if end_date_value and end_date is None:
+        rejected_reasons.append(
+            "invalid_date:endDate"
+        )
+
+    if (
+        start_date is not None
+        and end_date is not None
+        and end_date < start_date
+    ):
+        rejected_reasons.append(
+            "invalid_date_range:end_before_start"
+        )
+
+    if event_id and event_id in duplicate_ids:
+        review_reasons.append("duplicate_id")
+
+    source_url = clean_string(
+        event.get("sourceUrl")
+    )
+    source_url_kind = describe_source_url(
+        source_url
+    )
+
+    if source_url_kind == "missing":
+        enrichment_reasons.append(
+            "missing_source_url"
+        )
+    elif source_url_kind == "invalid":
+        review_reasons.append(
+            "invalid_source_url"
+        )
+    elif source_url_kind == "social":
+        review_reasons.append(
+            "social_media_source_url"
+        )
+    elif source_url_kind == "shortener":
+        review_reasons.append(
+            "shortened_source_url"
+        )
+
+    if not clean_string(event.get("image")):
+        enrichment_reasons.append("missing_image")
+
+    if not clean_string(
+        event.get("description")
+    ):
+        enrichment_reasons.append(
+            "missing_description"
+        )
+
+    if (
+        event.get("latitude") is None
+        or event.get("longitude") is None
+    ):
+        enrichment_reasons.append(
+            "missing_coordinates"
+        )
+
+    organizers = event.get("organizers")
+
+    if not isinstance(organizers, list) or not organizers:
+        enrichment_reasons.append(
+            "missing_organizers"
+        )
+
+    ticket_url = clean_string(
+        event.get("ticketUrl")
+    )
+
+    if (
+        appears_to_require_ticket(
+            event.get("price")
+        )
+        and not ticket_url
+    ):
+        enrichment_reasons.append(
+            "missing_ticket_url_for_priced_event"
+        )
+
+    ticket_url_kind = describe_source_url(
+        ticket_url
+    )
+
+    if ticket_url and ticket_url_kind == "invalid":
+        review_reasons.append(
+            "invalid_ticket_url"
+        )
+    elif ticket_url and ticket_url_kind == "social":
+        review_reasons.append(
+            "social_media_ticket_url"
+        )
+    elif ticket_url and ticket_url_kind == "shortener":
+        review_reasons.append(
+            "shortened_ticket_url"
+        )
+
+    if rejected_reasons:
+        tier = "rejected"
+        reasons = rejected_reasons
+    elif review_reasons:
+        tier = "needs_review"
+        reasons = review_reasons
+    elif enrichment_reasons:
+        tier = "needs_enrichment"
+        reasons = enrichment_reasons
+    else:
+        tier = "ready"
+        reasons = []
+
+    return {
+        "tier": tier,
+        "reasons": reasons,
+        "rejectedReasons": rejected_reasons,
+        "reviewReasons": review_reasons,
+        "enrichmentReasons": enrichment_reasons,
+        "sourceUrlKind": source_url_kind,
+    }
+
+
+def build_quality_event_sample(
+    event: dict[str, Any],
+    assessment: dict[str, Any],
+) -> dict[str, Any]:
+    """Return a compact quality-queue entry."""
+
+    return {
+        "id": event.get("id"),
+        "title": event.get("title"),
+        "tier": assessment.get("tier"),
+        "reasons": assessment.get("reasons"),
+        "sourceUrlKind": assessment.get(
+            "sourceUrlKind"
+        ),
+        "startDate": event.get("startDate"),
+        "endDate": event.get("endDate"),
+        "locationName": event.get(
+            "locationName"
+        ),
+        "address": event.get("address"),
+        "region": event.get("region"),
+        "image": event.get("image"),
         "sourceUrl": event.get("sourceUrl"),
         "ticketUrl": event.get("ticketUrl"),
     }
@@ -238,6 +596,7 @@ def main() -> int:
         in identifier_counts.items()
         if count > 1
     )
+    duplicate_id_set = set(duplicate_ids)
 
     region_counts = Counter(
         str(event.get("region") or "未辨識")
@@ -249,6 +608,43 @@ def main() -> int:
         for event in normalized
         if not event.get("region")
     ]
+
+    quality_assessments = [
+        (
+            event,
+            evaluate_event_quality(
+                event,
+                duplicate_id_set,
+            ),
+        )
+        for event in normalized
+    ]
+
+    quality_tier_counts = Counter(
+        assessment["tier"]
+        for _, assessment in quality_assessments
+    )
+
+    quality_tier_percentages = {
+        tier: calculate_percentage(
+            quality_tier_counts.get(tier, 0),
+            total,
+        )
+        for tier in QUALITY_TIERS
+    }
+
+    quality_queues = {
+        tier: [
+            build_quality_event_sample(
+                event,
+                assessment,
+            )
+            for event, assessment
+            in quality_assessments
+            if assessment["tier"] == tier
+        ]
+        for tier in QUALITY_TIERS
+    }
 
     report = {
         "mode": "normalization-dry-run",
@@ -334,6 +730,58 @@ def main() -> int:
                 ),
             },
         },
+        "qualityTierCounts": {
+            tier: quality_tier_counts.get(tier, 0)
+            for tier in QUALITY_TIERS
+        },
+        "qualityTierPercentages": (
+            quality_tier_percentages
+        ),
+        "publicationPolicy": {
+            "automaticPublishTier": "ready",
+            "blockedFromAutomaticPublish": [
+                "needs_enrichment",
+                "needs_review",
+                "rejected",
+            ],
+            "notes": {
+                "ready": (
+                    "Core fields and publication assets "
+                    "passed the current checks."
+                ),
+                "needs_enrichment": (
+                    "Core fields passed, but optional "
+                    "content or assets are incomplete."
+                ),
+                "needs_review": (
+                    "A source URL, duplicate ID, or other "
+                    "risk requires human verification."
+                ),
+                "rejected": (
+                    "A core field or valid date range is "
+                    "missing, so automatic publication "
+                    "is blocked."
+                ),
+            },
+        },
+        "readyEvents": quality_queues["ready"][
+            : arguments.quality_sample_limit
+        ],
+        "enrichmentEvents": (
+            quality_queues["needs_enrichment"][
+                : arguments.quality_sample_limit
+            ]
+        ),
+        "reviewEvents": (
+            quality_queues["needs_review"][
+                : arguments.quality_sample_limit
+            ]
+        ),
+        "rejectedEvents": (
+            quality_queues["rejected"][
+                : arguments.quality_sample_limit
+            ]
+        ),
         "regionCounts": dict(
             sorted(region_counts.items())
         ),
