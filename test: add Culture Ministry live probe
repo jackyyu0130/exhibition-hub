@@ -1,0 +1,82 @@
+name: Probe Culture Ministry API
+
+on:
+  # develop 尚未是預設分支，因此目前使用專用觸發檔案啟動。
+  push:
+    branches:
+      - develop
+    paths:
+      - ".github/probe-culture-ministry.trigger"
+
+  # 未來合併進 main 後，可直接使用 Run workflow 按鈕。
+  workflow_dispatch:
+    inputs:
+      category:
+        description: "Culture Ministry category ID"
+        required: true
+        default: "6"
+        type: string
+
+      sample_limit:
+        description: "Number of sample records to display"
+        required: true
+        default: "5"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: probe-culture-ministry-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: Run read-only live probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Resolve probe options
+        id: options
+        shell: bash
+        env:
+          DISPATCH_CATEGORY: ${{ inputs.category }}
+          DISPATCH_SAMPLE_LIMIT: ${{ inputs.sample_limit }}
+        run: |
+          echo "category=${DISPATCH_CATEGORY:-6}" >> "$GITHUB_OUTPUT"
+          echo "sample_limit=${DISPATCH_SAMPLE_LIMIT:-5}" >> "$GITHUB_OUTPUT"
+
+      - name: Probe Culture Ministry exhibition feed
+        env:
+          CATEGORY: ${{ steps.options.outputs.category }}
+          SAMPLE_LIMIT: ${{ steps.options.outputs.sample_limit }}
+        run: |
+          set -o pipefail
+
+          python scripts/probe_culture_ministry.py \
+            --category "$CATEGORY" \
+            --sample-limit "$SAMPLE_LIMIT" \
+            --timeout 30 \
+            | tee culture-ministry-probe.json
+
+      - name: Upload probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-ministry-probe-${{ github.run_number }}
+          path: culture-ministry-probe.json
+          if-no-files-found: warn
+          retention-days: 7
