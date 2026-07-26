@@ -128,3 +128,53 @@ jobs:
           path: culture-normalization-dry-run.json
           if-no-files-found: warn
           retention-days: 7
+
+  dry-run-event-registry:
+    name: Dry run event registry enrichment
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-registry]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate source and venue registries
+        run: python scripts/validate_registries.py
+
+      - name: Run event registry dry run
+        run: |
+          set -o pipefail
+
+          python scripts/apply_event_registry.py \
+            --input "data/exhibitions.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --report-output "event-registry-dry-run.json" \
+            --sample-limit "150" \
+            | tee event-registry-dry-run-summary.json
+
+      - name: Upload event registry report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: event-registry-dry-run-${{ github.run_number }}
+          path: |
+            event-registry-dry-run.json
+            event-registry-dry-run-summary.json
+          if-no-files-found: warn
+          retention-days: 7
