@@ -56,7 +56,7 @@ def parse_arguments() -> argparse.Namespace:
     return arguments
 
 
-    def summarize_show_info(value: Any) -> dict[str, Any]:
+def summarize_show_info(value: Any) -> dict[str, Any]:
     """Describe the session structure without printing every record."""
 
     if isinstance(value, list):
@@ -100,6 +100,53 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def build_sample(
+    event: dict[str, Any],
+) -> dict[str, Any]:
+    """Return fields useful for designing the normalizer."""
+
+    return {
+        "topLevelKeys": sorted(
+            str(key)
+            for key in event
+        ),
+        "title": str(
+            event.get("title") or ""
+        ),
+        "startDate": str(
+            event.get("startDate") or ""
+        ),
+        "endDate": str(
+            event.get("endDate") or ""
+        ),
+        "uid": str(
+            event.get("UID")
+            or event.get("uid")
+            or event.get("id")
+            or ""
+        ),
+        "category": str(
+            event.get("category") or ""
+        ),
+        "showInfoSummary": summarize_show_info(
+            event.get("showInfo")
+        ),
+        "imageUrl": str(
+            event.get("imageUrl")
+            or event.get("image")
+            or ""
+        )[:300],
+        "sourceUrl": str(
+            event.get("sourceWebPromote")
+            or event.get("sourceUrl")
+            or ""
+        )[:300],
+        "feedCategory": str(
+            event.get("_feedCategory") or ""
+        ),
+        "collectorSource": str(
+            event.get("_collectorSource") or ""
+        ),
+    }
     event: dict[str, Any],
 ) -> dict[str, Any]:
     """Return fields useful for designing the normalizer."""
