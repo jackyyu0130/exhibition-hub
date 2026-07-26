@@ -1,0 +1,23 @@
+{
+  "stage": "4-B",
+  "name": "現有活動套用場館主檔與內容分類 Dry Run",
+  "safeMode": true,
+  "doesNotOverwrite": [
+    "data/exhibitions.json"
+  ],
+  "files": [
+    "scripts/exhibition_hub/classifiers/content_types.py",
+    "scripts/exhibition_hub/registry/constants.py",
+    "scripts/exhibition_hub/registry/event_enricher.py",
+    "scripts/exhibition_hub/registry/__init__.py",
+    "scripts/apply_event_registry.py",
+    "tests/test_content_type_classifier.py",
+    "tests/test_event_registry_enrichment.py",
+    "docs/EVENT_REGISTRY_DRY_RUN_ZH-TW.md"
+  ],
+  "verifiedAgainst": {
+    "eventCount": 2354,
+    "venueRegistryCount": 38,
+    "testsPassed": 20
+  }
+}

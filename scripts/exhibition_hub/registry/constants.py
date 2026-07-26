@@ -66,6 +66,7 @@ CONTENT_TYPES = (
     "popup",
     "market",
     "festival",
+    "film_screening",
 )
 
 VENUE_TYPES = (
