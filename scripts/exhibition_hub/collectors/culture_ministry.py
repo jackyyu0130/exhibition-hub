@@ -89,9 +89,11 @@ class CultureMinistryCollector(BaseCollector):
         with HttpClient(context) as client:
             for category in self.categories:
                 try:
-                    records, method = self._fetch_category(
-                        client,
-                        category,
+                    records, method, method_errors = (
+                        self._fetch_category(
+                            client,
+                            category,
+                        )
                     )
 
                 except CollectorError as exc:
@@ -104,9 +106,16 @@ class CultureMinistryCollector(BaseCollector):
                 successful_feeds += 1
 
                 if method != CULTURE_API_METHODS[0]:
+                    primary_failure = (
+                        method_errors[0]
+                        if method_errors
+                        else "unknown primary-method failure"
+                    )
+
                     result.add_warning(
                         f"category={category} used "
-                        f"fallback method {method}"
+                        f"fallback method {method}; "
+                        f"primary failure: {primary_failure}"
                     )
 
                 for record in records:
@@ -142,7 +151,11 @@ class CultureMinistryCollector(BaseCollector):
         self,
         client: HttpClient,
         category: str,
-    ) -> tuple[list[RawEvent], str]:
+    ) -> tuple[
+        list[RawEvent],
+        str,
+        tuple[str, ...],
+    ]:
         errors: list[str] = []
 
         for method in CULTURE_API_METHODS:
@@ -166,7 +179,7 @@ class CultureMinistryCollector(BaseCollector):
                 )
                 continue
 
-            return records, method
+            return records, method, tuple(errors)
 
         raise CollectorError(
             f"No usable response for category={category}; "
