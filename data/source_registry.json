@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-27",
+  "description": "台灣展覽誌全台活動來源登錄表。此檔只管理資料來源，不直接儲存活動。",
+  "coverageRegions": [
+    "基隆市",
+    "臺北市",
+    "新北市",
+    "桃園市",
+    "新竹市",
+    "新竹縣",
+    "苗栗縣",
+    "臺中市",
+    "彰化縣",
+    "南投縣",
+    "雲林縣",
+    "嘉義市",
+    "嘉義縣",
+    "臺南市",
+    "高雄市",
+    "屏東縣",
+    "宜蘭縣",
+    "花蓮縣",
+    "臺東縣",
+    "澎湖縣",
+    "金門縣",
+    "連江縣"
+  ],
+  "sourceLayers": [
+    {
+      "id": "national_base",
+      "name": "全國型基礎資料",
+      "purpose": "補足全台地方館舍、文化中心與較小型藝文活動。"
+    },
+    {
+      "id": "ticketing",
+      "name": "售票與展演平台",
+      "purpose": "收集演唱會、音樂祭、表演藝術與售票特展。"
+    },
+    {
+      "id": "venue_official",
+      "name": "場館官方活動頁",
+      "purpose": "取得場館第一手活動、主視覺、展期與場地資訊。"
+    },
+    {
+      "id": "local_government",
+      "name": "縣市政府與地方平台",
+      "purpose": "補足地方藝術節、城市活動、戶外展演與地方展覽。"
+    },
+    {
+      "id": "social_discovery",
+      "name": "社群探索",
+      "purpose": "發現熱門活動；不得取代官方日期、地址與售票資訊。"
+    }
+  ],
+  "sources": [
+    {
+      "id": "culture-ministry",
+      "name": "文化部文化資料開放服務網",
+      "layer": "national_base",
+      "sourceType": "government_api",
+      "parser": "culture_ministry",
+      "status": "active",
+      "enabled": true,
+      "trustLevel": "official",
+      "priority": 50,
+      "refreshHours": 24,
+      "officialUrl": "https://cloud.culture.tw/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "全台"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition",
+        "concert",
+        "performance",
+        "festival"
+      ],
+      "venueIds": [],
+      "notes": "作為全台候選資料與地方活動補漏來源；發布前仍需經正規化、去重與品質檢查。"
+    },
+    {
+      "id": "opentix",
+      "name": "OPENTIX 兩廳院文化生活",
+      "layer": "ticketing",
+      "sourceType": "ticketing_platform",
+      "parser": "ticketing_platform",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 80,
+      "refreshHours": 12,
+      "officialUrl": "https://www.opentix.life/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "全台"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance",
+        "music_festival",
+        "exhibition"
+      ],
+      "venueIds": [],
+      "notes": "待建立正式 Collector 後再啟用。"
+    },
+    {
+      "id": "huashan-1914",
+      "name": "華山1914文化創意產業園區",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 90,
+      "refreshHours": 12,
+      "officialUrl": "https://www.huashan1914.com/w/huashan1914/index",
+      "listingUrl": "",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "pop_culture",
+        "popup",
+        "market",
+        "performance"
+      ],
+      "venueIds": [
+        "huashan-1914"
+      ],
+      "notes": "全台場館來源之一，不代表網站只收錄此場館。"
+    },
+    {
+      "id": "songshan-cultural-park",
+      "name": "松山文創園區",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 90,
+      "refreshHours": 12,
+      "officialUrl": "https://www.songshanculturalpark.org/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "pop_culture",
+        "popup",
+        "market",
+        "expo"
+      ],
+      "venueIds": [
+        "songshan-cultural-park"
+      ],
+      "notes": "待確認活動列表與詳情頁解析規則。"
+    },
+    {
+      "id": "pier-2",
+      "name": "駁二藝術特區",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 90,
+      "refreshHours": 12,
+      "officialUrl": "https://pier2.org/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "高雄市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition",
+        "pop_culture",
+        "market",
+        "festival"
+      ],
+      "venueIds": [
+        "pier-2-art-center"
+      ],
+      "notes": "待確認活動列表與詳情頁解析規則。"
+    },
+    {
+      "id": "taipei-music-center",
+      "name": "臺北流行音樂中心",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 90,
+      "refreshHours": 6,
+      "officialUrl": "",
+      "listingUrl": "",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "music_festival",
+        "performance",
+        "exhibition"
+      ],
+      "venueIds": [
+        "taipei-music-center"
+      ],
+      "notes": "正式網址與解析入口確認後再啟用。"
+    },
+    {
+      "id": "kaohsiung-music-center",
+      "name": "高雄流行音樂中心",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 90,
+      "refreshHours": 6,
+      "officialUrl": "https://kpmc.com.tw/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "高雄市"
+      ],
+      "contentTypes": [
+        "concert",
+        "music_festival",
+        "performance",
+        "festival"
+      ],
+      "venueIds": [
+        "kaohsiung-music-center"
+      ],
+      "notes": "待確認活動列表與詳情頁解析規則。"
+    },
+    {
+      "id": "national-taiwan-museum-of-fine-arts",
+      "name": "國立臺灣美術館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 85,
+      "refreshHours": 24,
+      "officialUrl": "https://www.ntmofa.gov.tw/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "臺中市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [
+        "national-taiwan-museum-of-fine-arts"
+      ],
+      "notes": "待確認展覽列表與詳情頁解析規則。"
+    },
+    {
+      "id": "tainan-art-museum",
+      "name": "臺南市美術館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 85,
+      "refreshHours": 24,
+      "officialUrl": "https://www.tnam.museum/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "臺南市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [
+        "tainan-art-museum"
+      ],
+      "notes": "待確認展覽列表與詳情頁解析規則。"
+    },
+    {
+      "id": "weiwuying",
+      "name": "衛武營國家藝術文化中心",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "generic_list_detail",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 85,
+      "refreshHours": 12,
+      "officialUrl": "https://www.npac-weiwuying.org/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "高雄市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance",
+        "festival",
+        "exhibition"
+      ],
+      "venueIds": [
+        "weiwuying"
+      ],
+      "notes": "待確認活動列表與詳情頁解析規則。"
+    }
+  ]
+}

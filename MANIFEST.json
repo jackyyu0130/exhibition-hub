@@ -1,0 +1,19 @@
+{
+  "stage": "4-A",
+  "name": "全台活動來源與場館登錄架構",
+  "fileCount": 12,
+  "files": [
+    "data/source_registry.json",
+    "data/venues.json",
+    "docs/REGISTRY_GUIDE_ZH-TW.md",
+    "scripts/exhibition_hub/classifiers/__init__.py",
+    "scripts/exhibition_hub/classifiers/content_types.py",
+    "scripts/exhibition_hub/registry/__init__.py",
+    "scripts/exhibition_hub/registry/constants.py",
+    "scripts/exhibition_hub/registry/loader.py",
+    "scripts/exhibition_hub/registry/validator.py",
+    "scripts/validate_registries.py",
+    "tests/test_content_type_classifier.py",
+    "tests/test_registry.py"
+  ]
+}

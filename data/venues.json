@@ -1,0 +1,804 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-27",
+  "description": "台灣展覽誌場館主檔。同一場館的別名集中管理，避免活動資料產生重複場館。",
+  "venues": [
+    {
+      "id": "huashan-1914",
+      "name": "華山1914文化創意產業園區",
+      "aliases": [
+        "華山1914文創園區",
+        "華山1914",
+        "華山文化創意產業園區",
+        "華山文創園區",
+        "華山"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://www.huashan1914.com/w/huashan1914/index",
+      "sourceIds": [
+        "huashan-1914"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "songshan-cultural-park",
+      "name": "松山文創園區",
+      "aliases": [
+        "松菸文創園區",
+        "松菸",
+        "松山文創"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://www.songshanculturalpark.org/",
+      "sourceIds": [
+        "songshan-cultural-park"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-fine-arts-museum",
+      "name": "臺北市立美術館",
+      "aliases": [
+        "台北市立美術館",
+        "北美館"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://www.tfam.museum/index.aspx?ddlLang=zh-tw",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-taiwan-museum-of-fine-arts",
+      "name": "國立臺灣美術館",
+      "aliases": [
+        "國立台灣美術館",
+        "國美館"
+      ],
+      "region": "臺中市",
+      "district": "西區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://www.ntmofa.gov.tw/",
+      "sourceIds": [
+        "national-taiwan-museum-of-fine-arts"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-palace-museum-north",
+      "name": "國立故宮博物院北部院區",
+      "aliases": [
+        "國立故宮博物院",
+        "故宮博物院",
+        "故宮北院",
+        "台北故宮",
+        "臺北故宮"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueTypes": [
+        "museum"
+      ],
+      "officialUrl": "https://www.npm.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-palace-museum-south",
+      "name": "國立故宮博物院南部院區",
+      "aliases": [
+        "故宮南院",
+        "故宮博物院南部院區"
+      ],
+      "region": "嘉義縣",
+      "district": "太保市",
+      "venueTypes": [
+        "museum"
+      ],
+      "officialUrl": "https://south.npm.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "pier-2-art-center",
+      "name": "駁二藝術特區",
+      "aliases": [
+        "駁二",
+        "高雄駁二"
+      ],
+      "region": "高雄市",
+      "district": "鹽埕區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space",
+        "outdoor_space"
+      ],
+      "officialUrl": "https://pier2.org/",
+      "sourceIds": [
+        "pier-2"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "weiwuying",
+      "name": "衛武營國家藝術文化中心",
+      "aliases": [
+        "衛武營"
+      ],
+      "region": "高雄市",
+      "district": "鳳山區",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall"
+      ],
+      "officialUrl": "https://www.npac-weiwuying.org/",
+      "sourceIds": [
+        "weiwuying"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-taichung-theater",
+      "name": "臺中國家歌劇院",
+      "aliases": [
+        "台中國家歌劇院",
+        "台中歌劇院",
+        "歌劇院"
+      ],
+      "region": "臺中市",
+      "district": "西屯區",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall"
+      ],
+      "officialUrl": "https://www.npac-ntt.org/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-performing-arts-center",
+      "name": "臺北表演藝術中心",
+      "aliases": [
+        "台北表演藝術中心",
+        "北藝中心"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueTypes": [
+        "performing_arts_center"
+      ],
+      "officialUrl": "https://tpac.org.taipei/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-theater-and-concert-hall",
+      "name": "國家兩廳院",
+      "aliases": [
+        "國家音樂廳",
+        "國家戲劇院",
+        "兩廳院"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall"
+      ],
+      "officialUrl": "https://www.ntch.edu.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "kaohsiung-museum-of-fine-arts",
+      "name": "高雄市立美術館",
+      "aliases": [
+        "高美館"
+      ],
+      "region": "高雄市",
+      "district": "鼓山區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://www.kmfa.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taiwan-c-lab",
+      "name": "臺灣當代文化實驗場 C-LAB",
+      "aliases": [
+        "台灣當代文化實驗場",
+        "臺灣當代文化實驗場",
+        "C-LAB",
+        "空總"
+      ],
+      "region": "臺北市",
+      "district": "大安區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space",
+        "performance_space"
+      ],
+      "officialUrl": "https://clab.org.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taiwan-hakka-culture-museum",
+      "name": "臺灣客家文化館",
+      "aliases": [
+        "台灣客家文化館",
+        "苗栗園區",
+        "客家文化發展中心苗栗園區"
+      ],
+      "region": "苗栗縣",
+      "district": "銅鑼鄉",
+      "venueTypes": [
+        "museum",
+        "cultural_center"
+      ],
+      "officialUrl": "https://thcdc.hakka.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-taiwan-museum",
+      "name": "國立臺灣博物館",
+      "aliases": [
+        "國立台灣博物館",
+        "臺博館",
+        "台博館"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueTypes": [
+        "museum"
+      ],
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-museum-of-natural-science",
+      "name": "國立自然科學博物館",
+      "aliases": [
+        "自然科學博物館",
+        "科博館"
+      ],
+      "region": "臺中市",
+      "district": "北區",
+      "venueTypes": [
+        "museum",
+        "science_museum"
+      ],
+      "officialUrl": "https://www.nmns.edu.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-museum-of-taiwan-history",
+      "name": "國立臺灣歷史博物館",
+      "aliases": [
+        "國立台灣歷史博物館",
+        "臺史博",
+        "台史博"
+      ],
+      "region": "臺南市",
+      "district": "安南區",
+      "venueTypes": [
+        "museum"
+      ],
+      "officialUrl": "https://www.nmth.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "new-taipei-city-art-museum",
+      "name": "新北市美術館",
+      "aliases": [
+        "新美館"
+      ],
+      "region": "新北市",
+      "district": "鶯歌區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://ntcart.museum/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taoyuan-museum-of-fine-arts",
+      "name": "桃園市立美術館",
+      "aliases": [
+        "桃美館"
+      ],
+      "region": "桃園市",
+      "district": "",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://tmofa.tycg.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "chiayi-art-museum",
+      "name": "嘉義市立美術館",
+      "aliases": [
+        "嘉美館"
+      ],
+      "region": "嘉義市",
+      "district": "西區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://chiayiartmuseum.chiayi.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "tainan-art-museum",
+      "name": "臺南市美術館",
+      "aliases": [
+        "台南市美術館",
+        "南美館",
+        "南美館一館",
+        "南美館二館"
+      ],
+      "region": "臺南市",
+      "district": "中西區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://www.tnam.museum/",
+      "sourceIds": [
+        "tainan-art-museum"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "moca-taipei",
+      "name": "臺北當代藝術館",
+      "aliases": [
+        "台北當代藝術館",
+        "當代館",
+        "MOCA Taipei"
+      ],
+      "region": "臺北市",
+      "district": "大同區",
+      "venueTypes": [
+        "museum",
+        "art_museum"
+      ],
+      "officialUrl": "https://www.mocataipei.org.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "chiang-kai-shek-memorial-hall",
+      "name": "國立中正紀念堂",
+      "aliases": [
+        "中正紀念堂"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueTypes": [
+        "cultural_landmark",
+        "exhibition_space",
+        "performance_space"
+      ],
+      "officialUrl": "https://www.cksmh.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "national-science-and-technology-museum",
+      "name": "國立科學工藝博物館",
+      "aliases": [
+        "科工館"
+      ],
+      "region": "高雄市",
+      "district": "三民區",
+      "venueTypes": [
+        "museum",
+        "science_museum"
+      ],
+      "officialUrl": "https://www.nstm.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "kaohsiung-music-center",
+      "name": "高雄流行音樂中心",
+      "aliases": [
+        "高流"
+      ],
+      "region": "高雄市",
+      "district": "鹽埕區",
+      "venueTypes": [
+        "music_venue",
+        "concert_hall",
+        "outdoor_space"
+      ],
+      "officialUrl": "https://kpmc.com.tw/",
+      "sourceIds": [
+        "kaohsiung-music-center"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-dome",
+      "name": "臺北大巨蛋",
+      "aliases": [
+        "台北大巨蛋",
+        "大巨蛋"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueTypes": [
+        "stadium",
+        "concert_venue",
+        "expo_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-arena",
+      "name": "臺北小巨蛋",
+      "aliases": [
+        "台北小巨蛋",
+        "小巨蛋"
+      ],
+      "region": "臺北市",
+      "district": "松山區",
+      "venueTypes": [
+        "arena",
+        "concert_venue",
+        "sports_venue"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-music-center",
+      "name": "臺北流行音樂中心",
+      "aliases": [
+        "台北流行音樂中心",
+        "北流",
+        "北流表演廳"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueTypes": [
+        "music_venue",
+        "concert_hall",
+        "exhibition_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [
+        "taipei-music-center"
+      ],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-nangang-exhibition-center",
+      "name": "台北南港展覽館",
+      "aliases": [
+        "南港展覽館",
+        "南港展覽館1館",
+        "南港展覽館2館",
+        "南港展覽館一館",
+        "南港展覽館二館"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueTypes": [
+        "convention_center",
+        "expo_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-world-trade-center",
+      "name": "台北世界貿易中心",
+      "aliases": [
+        "台北世貿",
+        "臺北世貿",
+        "世貿一館",
+        "世貿展覽館"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueTypes": [
+        "convention_center",
+        "expo_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-international-convention-center",
+      "name": "台北國際會議中心",
+      "aliases": [
+        "臺北國際會議中心",
+        "TICC"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueTypes": [
+        "convention_center",
+        "performance_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taipei-expo-park-expo-dome",
+      "name": "花博公園爭艷館",
+      "aliases": [
+        "花博爭艷館",
+        "爭艷館"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueTypes": [
+        "exhibition_hall",
+        "expo_space",
+        "market_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "calligraphy-greenway",
+      "name": "草悟道",
+      "aliases": [
+        "台中草悟道",
+        "臺中草悟道",
+        "勤美草悟道"
+      ],
+      "region": "臺中市",
+      "district": "西區",
+      "venueTypes": [
+        "urban_district",
+        "outdoor_space",
+        "market_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "icc-tainan",
+      "name": "大臺南會展中心",
+      "aliases": [
+        "大台南會展中心",
+        "臺南會展中心",
+        "台南會展中心",
+        "ICC TAINAN"
+      ],
+      "region": "臺南市",
+      "district": "歸仁區",
+      "venueTypes": [
+        "convention_center",
+        "expo_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "kaohsiung-exhibition-center",
+      "name": "高雄展覽館",
+      "aliases": [
+        "高雄國際會議中心",
+        "KEC"
+      ],
+      "region": "高雄市",
+      "district": "前鎮區",
+      "venueTypes": [
+        "convention_center",
+        "expo_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "taichung-cultural-heritage-park",
+      "name": "文化部文化資產園區",
+      "aliases": [
+        "台中文化創意產業園區",
+        "臺中文化創意產業園區",
+        "文資園區"
+      ],
+      "region": "臺中市",
+      "district": "南區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "chiayi-cultural-creative-industries-park",
+      "name": "嘉義文化創意產業園區",
+      "aliases": [
+        "嘉義文創園區"
+      ],
+      "region": "嘉義市",
+      "district": "西區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    },
+    {
+      "id": "hualien-cultural-creative-industries-park",
+      "name": "花蓮文化創意產業園區",
+      "aliases": [
+        "花蓮文創園區"
+      ],
+      "region": "花蓮縣",
+      "district": "花蓮市",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": ""
+    }
+  ]
+}
