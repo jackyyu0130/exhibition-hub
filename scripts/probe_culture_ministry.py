@@ -56,7 +56,97 @@ def parse_arguments() -> argparse.Namespace:
     return arguments
 
 
-def build_sample(event: dict[str, Any]) -> dict[str, str]:
+    def summarize_show_info(value: Any) -> dict[str, Any]:
+    """Describe the session structure without printing every record."""
+
+    if isinstance(value, list):
+        first_item = next(
+            (
+                item
+                for item in value
+                if isinstance(item, dict)
+            ),
+            None,
+        )
+
+        return {
+            "type": "list",
+            "count": len(value),
+            "firstItemKeys": (
+                sorted(
+                    str(key)
+                    for key in first_item
+                )
+                if first_item
+                else []
+            ),
+        }
+
+    if isinstance(value, dict):
+        return {
+            "type": "dict",
+            "count": 1,
+            "firstItemKeys": sorted(
+                str(key)
+                for key in value
+            ),
+        }
+
+    return {
+        "type": type(value).__name__,
+        "count": 0,
+        "firstItemKeys": [],
+    }
+
+
+def build_sample(
+    event: dict[str, Any],
+) -> dict[str, Any]:
+    """Return fields useful for designing the normalizer."""
+
+    return {
+        "topLevelKeys": sorted(
+            str(key)
+            for key in event
+        ),
+        "title": str(
+            event.get("title") or ""
+        ),
+        "startDate": str(
+            event.get("startDate") or ""
+        ),
+        "endDate": str(
+            event.get("endDate") or ""
+        ),
+        "uid": str(
+            event.get("UID")
+            or event.get("uid")
+            or event.get("id")
+            or ""
+        ),
+        "category": str(
+            event.get("category") or ""
+        ),
+        "showInfoSummary": summarize_show_info(
+            event.get("showInfo")
+        ),
+        "imageUrl": str(
+            event.get("imageUrl")
+            or event.get("image")
+            or ""
+        )[:300],
+        "sourceUrl": str(
+            event.get("sourceWebPromote")
+            or event.get("sourceUrl")
+            or ""
+        )[:300],
+        "feedCategory": str(
+            event.get("_feedCategory") or ""
+        ),
+        "collectorSource": str(
+            event.get("_collectorSource") or ""
+        ),
+    }
     """Return only non-sensitive fields useful for API inspection."""
 
     return {
