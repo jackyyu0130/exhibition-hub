@@ -211,7 +211,7 @@ def normalize_boolean(value: Any) -> bool | None:
 
 
 def normalize_url(value: Any) -> str:
-    """Return only valid HTTP or HTTPS URLs."""
+    """Repair known feed artifacts and return a valid HTTP(S) URL."""
 
     if isinstance(value, list):
         for item in value:
@@ -227,12 +227,41 @@ def normalize_url(value: Any) -> str:
     if not cleaned:
         return ""
 
+    known_replacements = {
+        (
+            "https://cloud.culture.tw"
+            "https://cloud.culture.tw/"
+        ): "https://cloud.culture.tw/",
+        (
+            "http://cloud.culture.tw"
+            "http://cloud.culture.tw/"
+        ): "http://cloud.culture.tw/",
+        (
+            "https://cloud.culture.tw"
+            "http://cloud.culture.tw/"
+        ): "https://cloud.culture.tw/",
+        (
+            "http://cloud.culture.tw"
+            "https://cloud.culture.tw/"
+        ): "https://cloud.culture.tw/",
+    }
+
+    for malformed, repaired in known_replacements.items():
+        if cleaned.startswith(malformed):
+            cleaned = repaired + cleaned[len(malformed):]
+            break
+
     parsed = urlsplit(cleaned)
 
     if (
         parsed.scheme not in {"http", "https"}
         or not parsed.netloc
     ):
+        return ""
+
+    hostname = (parsed.hostname or "").lower()
+
+    if not hostname or "http" in hostname:
         return ""
 
     return cleaned
