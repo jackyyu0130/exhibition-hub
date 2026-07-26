@@ -213,8 +213,10 @@ def _build_alias_records(
 
 def _event_venue_values(
     event: Mapping[str, Any],
-) -> list[str]:
-    values: list[str] = []
+) -> list[dict[str, Any]]:
+    """Return unique venue strings with matching context."""
+
+    values: dict[str, dict[str, Any]] = {}
 
     for field_name in (
         "locationName",
@@ -223,13 +225,34 @@ def _event_venue_values(
     ):
         value = str(event.get(field_name) or "").strip()
 
-        if value and value not in values:
-            values.append(value)
+        if not value:
+            continue
+
+        allow_cross_region = any(
+            delimiter in value
+            for delimiter in (
+                "|",
+                "｜",
+                "、",
+            )
+        )
+        current = values.get(value)
+
+        if current is None:
+            values[value] = {
+                "value": value,
+                "allowCrossRegion": (
+                    allow_cross_region
+                ),
+                "source": field_name,
+            }
+        elif allow_cross_region:
+            current["allowCrossRegion"] = True
 
     sessions = event.get("sessions")
 
     if isinstance(sessions, list):
-        for session in sessions[:3]:
+        for session in sessions:
             if not isinstance(session, dict):
                 continue
 
@@ -237,11 +260,21 @@ def _event_venue_values(
                 session.get("locationName") or ""
             ).strip()
 
-            if value and value not in values:
-                values.append(value)
+            if not value:
+                continue
 
-    return values
+            current = values.get(value)
 
+            if current is None:
+                values[value] = {
+                    "value": value,
+                    "allowCrossRegion": True,
+                    "source": "session",
+                }
+            else:
+                current["allowCrossRegion"] = True
+
+    return list(values.values())
 
 def _region_compatible(
     event_region: str,
@@ -257,11 +290,113 @@ def _region_compatible(
     return not venue_region or venue_region == event_region
 
 
+def _candidate_match_record(
+    candidate: Mapping[str, Any],
+    method: str,
+    confidence: float,
+) -> dict[str, Any]:
+    venue = candidate["venue"]
+
+    return {
+        "venue": venue,
+        "venueId": venue.get("id"),
+        "venueName": venue.get("name"),
+        "method": method,
+        "confidence": confidence,
+        "matchedValue": candidate.get(
+            "matchedValue",
+            "",
+        ),
+        "matchedAlias": candidate.get(
+            "alias",
+            "",
+        ),
+    }
+
+
+def _deduplicate_match_records(
+    matches: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    for match in matches:
+        venue_id = str(match.get("venueId") or "")
+
+        if not venue_id or venue_id in seen:
+            continue
+
+        seen.add(venue_id)
+        result.append(match)
+
+    return result
+
+
+def _single_match_payload(
+    match: Mapping[str, Any],
+) -> dict[str, Any]:
+    return {
+        "status": "matched",
+        "venue": match["venue"],
+        "venues": [match["venue"]],
+        "matches": [dict(match)],
+        "method": match["method"],
+        "confidence": match["confidence"],
+        "matchedValue": match["matchedValue"],
+        "matchedAlias": match["matchedAlias"],
+        "candidateVenueIds": [
+            match["venueId"]
+        ],
+    }
+
+
+def _multiple_match_payload(
+    matches: list[dict[str, Any]],
+    method: str,
+    matched_values: list[str],
+) -> dict[str, Any]:
+    unique_matches = _deduplicate_match_records(
+        matches
+    )
+    venues = [
+        match["venue"]
+        for match in unique_matches
+    ]
+    confidence = min(
+        (
+            float(match.get("confidence") or 0.0)
+            for match in unique_matches
+        ),
+        default=0.0,
+    )
+
+    return {
+        "status": "matched_multiple",
+        "venue": venues[0] if venues else None,
+        "venues": venues,
+        "matches": unique_matches,
+        "method": method,
+        "confidence": confidence,
+        "matchedValue": " | ".join(
+            matched_values
+        ),
+        "matchedAlias": "",
+        "candidateVenueIds": [
+            venue.get("id")
+            for venue in venues
+        ],
+    }
+
+
 def _special_venue_match(
     event: Mapping[str, Any],
     venue_registry: Mapping[str, Any],
 ) -> dict[str, Any] | None:
-    values = _event_venue_values(event)
+    value_records = _event_venue_values(event)
+    values = [
+        record["value"]
+        for record in value_records
+    ]
     joined = " ".join(values)
     region = normalize_region(event.get("region"))
     venue_by_id = {
@@ -277,18 +412,22 @@ def _special_venue_match(
             venue = venue_by_id.get(venue_id)
 
             if venue:
-                return {
-                    "status": "matched",
-                    "venue": venue,
-                    "method": "special_pattern",
-                    "confidence": 1.0,
-                    "matchedValue": joined,
-                    "matchedAlias": next(
-                        pattern
-                        for pattern in patterns
-                        if pattern in joined
-                    ),
-                }
+                matched_alias = next(
+                    pattern
+                    for pattern in patterns
+                    if pattern in joined
+                )
+                return _single_match_payload(
+                    {
+                        "venue": venue,
+                        "venueId": venue.get("id"),
+                        "venueName": venue.get("name"),
+                        "method": "special_pattern",
+                        "confidence": 1.0,
+                        "matchedValue": joined,
+                        "matchedAlias": matched_alias,
+                    }
+                )
 
     if "故宮" in joined:
         if region == "嘉義縣":
@@ -303,14 +442,17 @@ def _special_venue_match(
             venue = None
 
         if venue:
-            return {
-                "status": "matched",
-                "venue": venue,
-                "method": "special_region",
-                "confidence": 0.95,
-                "matchedValue": joined,
-                "matchedAlias": "故宮",
-            }
+            return _single_match_payload(
+                {
+                    "venue": venue,
+                    "venueId": venue.get("id"),
+                    "venueName": venue.get("name"),
+                    "method": "special_region",
+                    "confidence": 0.95,
+                    "matchedValue": joined,
+                    "matchedAlias": "故宮",
+                }
+            )
 
     return None
 
@@ -322,14 +464,15 @@ def resolve_event_venue(
         Mapping[str, Any] | None
     ) = None,
 ) -> dict[str, Any]:
-    """Resolve an event venue using exact and contained aliases."""
+    """Resolve one or multiple venues from an event."""
 
     special = _special_venue_match(
         event,
         venue_registry,
     )
+    value_records = _event_venue_values(event)
 
-    if special:
+    if special and len(value_records) <= 1:
         return special
 
     alias_records = _build_alias_records(
@@ -339,12 +482,20 @@ def resolve_event_venue(
     event_region = normalize_region(
         event.get("region")
     )
-    venue_values = _event_venue_values(event)
+    collected_matches: list[
+        dict[str, Any]
+    ] = []
 
-    exact_candidates: list[dict[str, Any]] = []
-
-    for value in venue_values:
+    for value_record in value_records:
+        value = value_record["value"]
+        allow_cross_region = bool(
+            value_record.get("allowCrossRegion")
+        )
         normalized_value = normalize_venue_key(value)
+
+        exact_candidates: list[
+            dict[str, Any]
+        ] = []
 
         for record in alias_records:
             if record["alias"] != normalized_value:
@@ -352,9 +503,12 @@ def resolve_event_venue(
 
             venue = record["venue"]
 
-            if not _region_compatible(
-                event_region,
-                venue,
+            if (
+                not allow_cross_region
+                and not _region_compatible(
+                    event_region,
+                    venue,
+                )
             ):
                 continue
 
@@ -365,58 +519,25 @@ def resolve_event_venue(
                 }
             )
 
-    exact_venues = _unique_venues(
-        [
-            candidate["venue"]
-            for candidate in exact_candidates
-        ]
-    )
+        if exact_candidates:
+            collected_matches.extend(
+                _candidate_match_record(
+                    candidate,
+                    (
+                        "legacy_exact"
+                        if candidate["source"]
+                        == "legacy_alias"
+                        else "registry_exact"
+                    ),
+                    1.0,
+                )
+                for candidate in exact_candidates
+            )
+            continue
 
-    if len(exact_venues) == 1:
-        selected = next(
-            candidate
-            for candidate in exact_candidates
-            if candidate["venue"]["id"]
-            == exact_venues[0]["id"]
-        )
-        return {
-            "status": "matched",
-            "venue": selected["venue"],
-            "method": (
-                "legacy_exact"
-                if selected["source"]
-                == "legacy_alias"
-                else "registry_exact"
-            ),
-            "confidence": 1.0,
-            "matchedValue": selected[
-                "matchedValue"
-            ],
-            "matchedAlias": selected["alias"],
-        }
-
-    if len(exact_venues) > 1:
-        return {
-            "status": "ambiguous",
-            "venue": None,
-            "method": "exact",
-            "confidence": 0.0,
-            "matchedValue": " | ".join(
-                venue_values
-            ),
-            "matchedAlias": "",
-            "candidateVenueIds": [
-                venue["id"]
-                for venue in exact_venues
-            ],
-        }
-
-    contained_candidates: list[
-        dict[str, Any]
-    ] = []
-
-    for value in venue_values:
-        normalized_value = normalize_venue_key(value)
+        contained_candidates: list[
+            dict[str, Any]
+        ] = []
 
         for record in alias_records:
             alias = record["alias"]
@@ -429,9 +550,12 @@ def resolve_event_venue(
 
             venue = record["venue"]
 
-            if not _region_compatible(
-                event_region,
-                venue,
+            if (
+                not allow_cross_region
+                and not _region_compatible(
+                    event_region,
+                    venue,
+                )
             ):
                 continue
 
@@ -443,68 +567,94 @@ def resolve_event_venue(
                 }
             )
 
-    if contained_candidates:
-        longest = max(
-            candidate["aliasLength"]
-            for candidate in contained_candidates
-        )
-        best_candidates = [
-            candidate
-            for candidate in contained_candidates
-            if candidate["aliasLength"] == longest
-        ]
-        best_venues = _unique_venues(
-            [
-                candidate["venue"]
-                for candidate in best_candidates
-            ]
-        )
+        if not contained_candidates:
+            continue
 
-        if len(best_venues) == 1:
-            selected = best_candidates[0]
-            return {
-                "status": "matched",
-                "venue": selected["venue"],
-                "method": (
+        longest_by_venue: dict[
+            str,
+            dict[str, Any],
+        ] = {}
+
+        for candidate in contained_candidates:
+            venue_id = str(
+                candidate["venue"].get("id") or ""
+            )
+            existing = longest_by_venue.get(
+                venue_id
+            )
+
+            if (
+                existing is None
+                or candidate["aliasLength"]
+                > existing["aliasLength"]
+            ):
+                longest_by_venue[
+                    venue_id
+                ] = candidate
+
+        collected_matches.extend(
+            _candidate_match_record(
+                candidate,
+                (
                     "legacy_contains"
-                    if selected["source"]
+                    if candidate["source"]
                     == "legacy_alias"
                     else "registry_contains"
                 ),
-                "confidence": 0.9,
-                "matchedValue": selected[
-                    "matchedValue"
-                ],
-                "matchedAlias": selected["alias"],
-            }
+                0.9,
+            )
+            for candidate in longest_by_venue.values()
+        )
 
-        return {
-            "status": "ambiguous",
-            "venue": None,
-            "method": "contains",
-            "confidence": 0.0,
-            "matchedValue": " | ".join(
-                venue_values
-            ),
-            "matchedAlias": "",
-            "candidateVenueIds": [
-                venue["id"]
-                for venue in best_venues
-            ],
+    unique_matches = _deduplicate_match_records(
+        collected_matches
+    )
+
+    if len(unique_matches) == 1:
+        return _single_match_payload(
+            unique_matches[0]
+        )
+
+    if len(unique_matches) > 1:
+        match_methods = {
+            str(match.get("method") or "")
+            for match in unique_matches
         }
+        method = (
+            "multi_exact"
+            if all(
+                value.endswith("_exact")
+                for value in match_methods
+            )
+            else "multi_mixed"
+        )
+
+        return _multiple_match_payload(
+            unique_matches,
+            method,
+            [
+                record["value"]
+                for record in value_records
+            ],
+        )
+
+    if special:
+        return special
 
     return {
         "status": "unmatched",
         "venue": None,
+        "venues": [],
+        "matches": [],
         "method": "none",
         "confidence": 0.0,
         "matchedValue": " | ".join(
-            venue_values
+            record["value"]
+            for record in value_records
         ),
         "matchedAlias": "",
         "candidateVenueIds": [],
     }
-
 
 def enrich_event_with_registry(
     event: Mapping[str, Any],
@@ -525,18 +675,61 @@ def enrich_event_with_registry(
         event.get("region")
     )
 
-    venue = match.get("venue")
+    matches = [
+        item
+        for item in match.get("matches", [])
+        if isinstance(item, dict)
+    ]
+    venues = [
+        item.get("venue")
+        for item in matches
+        if isinstance(item.get("venue"), dict)
+    ]
 
-    if isinstance(venue, dict):
-        enriched["venueId"] = venue.get("id")
-        enriched["venueName"] = venue.get("name")
-        enriched["venueMatchConfidence"] = (
-            match.get("confidence")
-        )
-    else:
-        enriched["venueId"] = ""
-        enriched["venueName"] = ""
-        enriched["venueMatchConfidence"] = 0.0
+    venue_ids = [
+        str(venue.get("id") or "")
+        for venue in venues
+        if venue.get("id")
+    ]
+    venue_names = [
+        str(venue.get("name") or "")
+        for venue in venues
+        if venue.get("name")
+    ]
+
+    enriched["venueIds"] = venue_ids
+    enriched["venueNames"] = venue_names
+    enriched["venueMatches"] = [
+        {
+            "venueId": item.get("venueId"),
+            "venueName": item.get("venueName"),
+            "method": item.get("method"),
+            "confidence": item.get("confidence"),
+            "matchedValue": item.get(
+                "matchedValue"
+            ),
+            "matchedAlias": item.get(
+                "matchedAlias"
+            ),
+        }
+        for item in matches
+    ]
+
+    enriched["venueId"] = (
+        venue_ids[0]
+        if venue_ids
+        else ""
+    )
+    enriched["venueName"] = (
+        venue_names[0]
+        if venue_names
+        else ""
+    )
+    enriched["venueMatchConfidence"] = (
+        match.get("confidence")
+        if venue_ids
+        else 0.0
+    )
 
     diagnostic = {
         "eventId": event.get("id"),
@@ -553,6 +746,11 @@ def enrich_event_with_registry(
         "matchedAlias": match.get("matchedAlias"),
         "venueId": enriched["venueId"],
         "venueName": enriched["venueName"],
+        "venueIds": venue_ids,
+        "venueNames": venue_names,
+        "venueMatches": enriched[
+            "venueMatches"
+        ],
         "candidateVenueIds": match.get(
             "candidateVenueIds",
             [],

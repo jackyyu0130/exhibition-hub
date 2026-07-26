@@ -146,6 +146,8 @@ def compact_event_sample(
         ),
         "venueId": event.get("venueId"),
         "venueName": event.get("venueName"),
+        "venueIds": event.get("venueIds"),
+        "venueNames": event.get("venueNames"),
         "contentType": event.get("contentType"),
         "contentTypes": event.get(
             "contentTypes"
@@ -246,9 +248,25 @@ def main() -> int:
         )
     )
     venue_counts = Counter(
-        event.get("venueName")
+        venue_name
         for event in enriched_events
-        if event.get("venueName")
+        for venue_name in event.get(
+            "venueNames",
+            [],
+        )
+        if venue_name
+    )
+
+    resolved_event_count = sum(
+        venue_status_counts.get(status, 0)
+        for status in (
+            "matched",
+            "matched_multiple",
+        )
+    )
+    multi_venue_event_count = venue_status_counts.get(
+        "matched_multiple",
+        0,
     )
 
     normalized_region_change_count = sum(
@@ -270,7 +288,7 @@ def main() -> int:
     matched_events = [
         compact_event_sample(event)
         for event in enriched_events
-        if event.get("venueId")
+        if event.get("venueIds")
     ]
     unmatched_events = [
         {
@@ -287,6 +305,18 @@ def main() -> int:
         diagnostic
         for diagnostic in venue_diagnostics
         if diagnostic["status"] == "ambiguous"
+    ]
+    multi_venue_events = [
+        {
+            **compact_event_sample(event),
+            "venueDiagnostic": diagnostic,
+        }
+        for event, diagnostic in zip(
+            enriched_events,
+            venue_diagnostics,
+        )
+        if diagnostic["status"]
+        == "matched_multiple"
     ]
     review_events = [
         compact_event_sample(event)
@@ -318,11 +348,14 @@ def main() -> int:
                     venue_method_counts.items()
                 )
             ),
+            "resolvedEventCount": (
+                resolved_event_count
+            ),
+            "multiVenueEventCount": (
+                multi_venue_event_count
+            ),
             "matchedPercentage": percentage(
-                venue_status_counts.get(
-                    "matched",
-                    0,
-                ),
+                resolved_event_count,
                 total,
             ),
             "topMatchedVenues": dict(
@@ -374,6 +407,9 @@ def main() -> int:
             "matchedEvents": matched_events[
                 : arguments.sample_limit
             ],
+            "multiVenueEvents": multi_venue_events[
+                : arguments.sample_limit
+            ],
             "unmatchedEvents": unmatched_events[
                 : arguments.sample_limit
             ],
@@ -402,11 +438,11 @@ def main() -> int:
             "venueRegistryCount": len(
                 venue_registry.get("venues", [])
             ),
-            "matchedVenueCount": (
-                venue_status_counts.get(
-                    "matched",
-                    0,
-                )
+            "resolvedEventCount": (
+                resolved_event_count
+            ),
+            "multiVenueEventCount": (
+                multi_venue_event_count
             ),
         }
         write_json(
@@ -422,17 +458,9 @@ def main() -> int:
         "venueRegistryCount": report[
             "venueRegistryCount"
         ],
-        "venueResolution": {
-            "statusCounts": report[
-                "venueResolution"
-            ]["statusCounts"],
-            "methodCounts": report[
-                "venueResolution"
-            ]["methodCounts"],
-            "matchedPercentage": report[
-                "venueResolution"
-            ]["matchedPercentage"],
-        },
+        "venueResolution": report[
+            "venueResolution"
+        ],
         "classification": report[
             "classification"
         ],

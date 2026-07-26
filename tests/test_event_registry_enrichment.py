@@ -11,7 +11,6 @@ if str(SCRIPTS) not in sys.path:
 
 from exhibition_hub.registry import (  # noqa: E402
     enrich_event_with_registry,
-    load_source_registry,
     load_venue_registry,
     normalize_region,
     resolve_event_venue,
@@ -103,12 +102,96 @@ class EventRegistryEnrichmentTests(unittest.TestCase):
             "taipei-music-center",
         )
         self.assertEqual(
+            enriched["venueIds"],
+            ["taipei-music-center"],
+        )
+        self.assertEqual(
             enriched["regionCanonical"],
             "臺北市",
         )
         self.assertEqual(
             diagnostic["status"],
             "matched",
+        )
+
+    def test_multiple_venues_are_preserved(self):
+        event = {
+            "id": "multi",
+            "title": "聯合放映",
+            "locationName": "高雄市電影館3樓",
+            "venueGroup": (
+                "高雄市電影館3樓 | "
+                "內惟藝術中心 Reel two 2廳"
+            ),
+            "region": "高雄市",
+            "categories": ["電影"],
+        }
+
+        enriched, diagnostic = (
+            enrich_event_with_registry(
+                event,
+                self.venue_registry,
+            )
+        )
+
+        self.assertEqual(
+            diagnostic["status"],
+            "matched_multiple",
+        )
+        self.assertEqual(
+            set(enriched["venueIds"]),
+            {
+                "kaohsiung-film-archive",
+                "neiwei-arts-center",
+            },
+        )
+        self.assertEqual(
+            len(enriched["venueMatches"]),
+            2,
+        )
+        self.assertEqual(
+            enriched["venueId"],
+            enriched["venueIds"][0],
+        )
+
+    def test_multiple_session_venues_are_preserved(self):
+        event = {
+            "id": "tour",
+            "title": "巡迴節目",
+            "locationName": "國家兩廳院",
+            "region": "臺北市",
+            "sessions": [
+                {
+                    "locationName": (
+                        "臺北市中山堂中正廳"
+                    )
+                },
+                {
+                    "locationName": (
+                        "苗北藝文中心演藝廳"
+                    )
+                },
+            ],
+        }
+
+        enriched, diagnostic = (
+            enrich_event_with_registry(
+                event,
+                self.venue_registry,
+            )
+        )
+
+        self.assertEqual(
+            diagnostic["status"],
+            "matched_multiple",
+        )
+        self.assertEqual(
+            set(enriched["venueIds"]),
+            {
+                "national-theater-and-concert-hall",
+                "taipei-zhongshan-hall",
+                "miaobei-art-center",
+            },
         )
 
 
