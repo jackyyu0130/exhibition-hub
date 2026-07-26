@@ -118,6 +118,25 @@ def build_sample(
     }
 
 
+def build_unrecognized_region_sample(
+    event: dict[str, Any],
+) -> dict[str, Any]:
+    """Return fields needed to inspect an unrecognized region."""
+
+    return {
+        "id": event.get("id"),
+        "title": event.get("title"),
+        "startDate": event.get("startDate"),
+        "endDate": event.get("endDate"),
+        "locationName": event.get("locationName"),
+        "address": event.get("address"),
+        "latitude": event.get("latitude"),
+        "longitude": event.get("longitude"),
+        "sourceUrl": event.get("sourceUrl"),
+        "ticketUrl": event.get("ticketUrl"),
+    }
+
+
 def main() -> int:
     arguments = parse_arguments()
 
@@ -225,6 +244,12 @@ def main() -> int:
         for event in normalized
     )
 
+    unrecognized_region_events = [
+        build_unrecognized_region_sample(event)
+        for event in normalized
+        if not event.get("region")
+    ]
+
     report = {
         "mode": "normalization-dry-run",
         "published": False,
@@ -311,6 +336,12 @@ def main() -> int:
         },
         "regionCounts": dict(
             sorted(region_counts.items())
+        ),
+        "unrecognizedRegionCount": len(
+            unrecognized_region_events
+        ),
+        "unrecognizedRegionEvents": (
+            unrecognized_region_events[:30]
         ),
         "collectionWarnings": (
             collection_result.warnings
