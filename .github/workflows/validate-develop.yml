@@ -42,3 +42,45 @@ jobs:
 
       - name: Run automated tests
         run: python -m unittest discover -s tests -v
+  probe-culture-ministry:
+    name: Probe Culture Ministry API
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[probe-culture]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Probe Culture Ministry exhibition feed
+        run: |
+          set -o pipefail
+
+          python scripts/probe_culture_ministry.py \
+            --category "6" \
+            --sample-limit "5" \
+            --timeout "30" \
+            | tee culture-ministry-probe.json
+
+      - name: Upload probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-ministry-probe-${{ github.run_number }}
+          path: culture-ministry-probe.json
+          if-no-files-found: warn
+          retention-days: 7
