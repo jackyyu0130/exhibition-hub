@@ -21,11 +21,12 @@ CULTURE_API_URL = (
     "SearchShowAction.do"
 )
 
-# Use the current Open API first and retain the older method
-# only as a compatibility fallback.
+# The documented Open API currently returns an empty record list.
+# Use the live feed that returns records as the primary source while
+# retaining the Open API as a compatibility fallback.
 CULTURE_API_METHODS = (
-    "doFindTypeJOpenApi",
     "doFindTypeJ",
+    "doFindTypeJOpenApi",
 )
 
 # Keep the same feed coverage as the existing production scraper
