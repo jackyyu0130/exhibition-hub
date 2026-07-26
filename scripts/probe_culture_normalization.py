@@ -72,10 +72,10 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--quality-sample-limit",
         type=int,
-        default=20,
+        default=150,
         help=(
             "Maximum events to display for each quality queue. "
-            "Default: 20."
+            "Default: 150."
         ),
     )
     parser.add_argument(
