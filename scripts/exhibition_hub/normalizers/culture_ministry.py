@@ -336,10 +336,21 @@ def first_session_value(
     return None
 
 
-def detect_region(address: Any) -> str:
-    """Extract a Taiwan county or city from an address."""
+def detect_region(
+    address: Any,
+    location_name: Any = "",
+) -> str:
+    """Extract a Taiwan county or city from address and venue text.
 
-    cleaned = clean_text(address)
+    The Culture Ministry feed sometimes omits the county or city and only
+    provides a district, township, road, or venue name. Direct county/city
+    names remain the highest-confidence signal. Unique administrative areas
+    and carefully scoped context keywords are used as fallbacks.
+    """
+
+    cleaned_address = clean_text(address)
+    cleaned_location = clean_text(location_name)
+    cleaned = f"{cleaned_address} {cleaned_location}".strip()
 
     regions = (
         "臺北市",
@@ -380,6 +391,58 @@ def detect_region(address: Any) -> str:
     for alias, official_name in aliases.items():
         if alias in cleaned:
             return official_name
+
+    unique_admin_areas = {
+        "大同區": "臺北市",
+        "內湖區": "臺北市",
+        "香山區": "新竹市",
+        "西屯區": "臺中市",
+        "中西區": "臺南市",
+        "鹽埕區": "高雄市",
+        "鼓山區": "高雄市",
+        "埔里鎮": "南投縣",
+        "新港鄉": "嘉義縣",
+    }
+
+    for area_name, region in unique_admin_areas.items():
+        if area_name in cleaned:
+            return region
+
+    context_keywords = {
+        "臺北市": (
+            "羅斯福路",
+            "忠孝東路",
+            "敦化南路",
+            "南海路",
+            "瑞光路",
+            "承德路三段",
+            "環河北路一段",
+            "聯邦藝術中心",
+            "金車文藝中心",
+            "安卓藝術",
+            "國立歷史博物館",
+            "谷公館",
+            "厭世會社",
+        ),
+        "臺中市": (
+            "THE 201 ART",
+            "順天建築",
+        ),
+        "高雄市": (
+            "新浜碼頭藝術空間",
+            "大仁路146號",
+            "臨海一路",
+            "光隆行",
+        ),
+        "南投縣": (
+            "中台世界博物館",
+            "中台路",
+        ),
+    }
+
+    for region, keywords in context_keywords.items():
+        if any(keyword in cleaned for keyword in keywords):
+            return region
 
     return ""
 
@@ -486,7 +549,10 @@ def normalize_culture_event(
         "locationName": location_name,
         "venueGroup": location_name,
         "address": address,
-        "region": detect_region(address),
+        "region": detect_region(
+            address,
+            location_name,
+        ),
         "latitude": first_session_value(
             sessions,
             "latitude",
