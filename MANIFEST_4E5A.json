@@ -1,0 +1,19 @@
+{
+  "stage": "4-E-5A",
+  "name": "探索頁排序選單調整",
+  "sortOptions": [
+    "推薦排序",
+    "熱門排序",
+    "名稱排序",
+    "時間排序"
+  ],
+  "timeSortRule": "正在舉辦優先；即將舉辦依開始日期由近到遠；已結束依結束日期距離今天由近到遠；缺少日期最後",
+  "cacheVersion": "5.5",
+  "files": [
+    "index.html",
+    "assets/app.js",
+    "tests/test_explore_alignment_and_sort_control.py",
+    "tests/test_calendar_and_compact_categories.py",
+    "docs/SORT_OPTIONS_4E5A_ZH-TW.md"
+  ]
+}

@@ -43,8 +43,9 @@ jobs:
           python-version: "3.12"
           cache: pip
 
+      # 驗證測試本身也會匯入 requests，
+      # 因此 Push、排程與手動執行都必須先安裝相依套件。
       - name: Install dependencies
-        if: github.event_name != 'push'
         run: pip install -r requirements.txt
 
       - name: Fetch and normalize exhibition data
