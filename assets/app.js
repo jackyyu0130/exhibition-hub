@@ -1,27 +1,28 @@
 (() => {
   'use strict';
 
-  const CATEGORY_ORDER = ['快閃','美術','攝影','設計','動漫','歷史文化','自然科學','親子','音樂','表演','舞蹈','電影','市集','競賽','科技','其他'];
+  const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
   const CONTENT_TYPE_LABELS = {
     exhibition:'一般展覽', art_exhibition:'藝術展覽', pop_culture:'動漫／IP', expo:'博覽會',
-    concert:'演唱會', music_festival:'音樂祭', performance:'表演藝術', popup:'快閃活動',
+    concert:'演唱會', music_festival:'音樂祭', performance:'表演藝術', popup:'快閃店',
     market:'市集', festival:'城市節慶', film_screening:'電影／影展'
   };
   const CONTENT_TYPE_CATEGORY_MAP = {
-    art_exhibition:'美術', pop_culture:'動漫', concert:'音樂', music_festival:'音樂',
-    performance:'表演', popup:'快閃', market:'市集', film_screening:'電影'
+    art_exhibition:'美術', pop_culture:'動漫', concert:'演唱會', music_festival:'音樂',
+    performance:'表演', popup:'快閃店', market:'市集', film_screening:'電影'
   };
   const iconSvg = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
   const CATEGORY_ICON = {
-    '快閃': iconSvg('<path d="M4 9h16l-1.2-4H5.2L4 9Z"></path><path d="M5 9v10h14V9M9 19v-5h6v5"></path><path d="M4 9c0 1.3 1 2.3 2.3 2.3S8.7 10.3 8.7 9c0 1.3 1 2.3 2.3 2.3s2.3-1 2.3-2.3c0 1.3 1 2.3 2.3 2.3S18 10.3 18 9"></path>'),
+    '快閃店': iconSvg('<path d="M4 10h16l-1.6-5H5.6L4 10Z"></path><path d="M5 10v9h14v-9M9 19v-5h6v5"></path><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2"></path><path d="m18.2 2 .7 1.5 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.5Z"></path>'),
     '美術': iconSvg('<rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="m7 16 4-4 3 3 3-4 2 3"></path><circle cx="9" cy="9" r="1.4"></circle>'),
     '攝影': iconSvg('<path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z"></path><circle cx="12" cy="13.5" r="3.5"></circle>'),
     '設計': iconSvg('<path d="m4 20 4.5-1 9.8-9.8a2 2 0 0 0-2.8-2.8L5.7 16.2 4 20Z"></path><path d="m13.8 8.2 2.8 2.8M4 4h6M4 8h3"></path>'),
     '動漫': iconSvg('<path d="M5 5h14v10H9l-4 4V5Z"></path><path d="m10 8 .8 1.7 1.9.2-1.4 1.3.4 1.9-1.7-.9-1.7.9.4-1.9-1.4-1.3 1.9-.2L10 8Z"></path>'),
-    '歷史文化': iconSvg('<path d="M4 9h16M6 9v8M10 9v8M14 9v8M18 9v8M3 19h18M12 4l8 4H4l8-4Z"></path>'),
-    '自然科學': iconSvg('<circle cx="12" cy="12" r="2"></circle><ellipse cx="12" cy="12" rx="9" ry="4"></ellipse><ellipse cx="12" cy="12" rx="4" ry="9" transform="rotate(35 12 12)"></ellipse>'),
+    '歷史': iconSvg('<path d="M4 9h16M6 9v8M10 9v8M14 9v8M18 9v8M3 19h18M12 4l8 4H4l8-4Z"></path>'),
+    '自然': iconSvg('<circle cx="12" cy="12" r="2"></circle><ellipse cx="12" cy="12" rx="9" ry="4"></ellipse><ellipse cx="12" cy="12" rx="4" ry="9" transform="rotate(35 12 12)"></ellipse>'),
     '親子': iconSvg('<circle cx="9" cy="8" r="2.5"></circle><circle cx="16" cy="9" r="2"></circle><path d="M4.5 19c.5-4 2-6 4.5-6s4 2 4.5 6M13 19c.4-3 1.4-4.8 3-4.8s2.6 1.8 3 4.8"></path>'),
     '音樂': iconSvg('<path d="M9 18V6l10-2v12"></path><circle cx="6" cy="18" r="3"></circle><circle cx="16" cy="16" r="3"></circle>'),
+    '演唱會': iconSvg('<rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6 10v1a6 6 0 0 0 12 0v-1M12 17v4M9 21h6M18 5h3M19.5 3.5v3"></path>'),
     '表演': iconSvg('<path d="M5 5c3 0 5 1 7 3 2-2 4-3 7-3v7c0 4-3 7-7 7s-7-3-7-7V5Z"></path><path d="M8 10h.01M16 10h.01M9 14c2 1 4 1 6 0"></path>'),
     '舞蹈': iconSvg('<circle cx="12" cy="5" r="2"></circle><path d="m12 7-3 5 3 2 3-5M9 12l-4 3M12 14l-2 6M14 11l5 2M15 13l3 6"></path>'),
     '電影': iconSvg('<rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="m10 9 5 3-5 3V9ZM4 8h16"></path>'),
@@ -32,19 +33,19 @@
     '科技': iconSvg('<rect x="7" y="7" width="10" height="10" rx="2"></rect><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4M10 10h4v4h-4z"></path>'),
     '其他': iconSvg('<circle cx="7" cy="7" r="2"></circle><circle cx="17" cy="7" r="2"></circle><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle>')
   };
-  const CATEGORY_SYMBOL = {'快閃':'閃','美術':'藝','攝影':'影','設計':'設','動漫':'漫','歷史文化':'史','自然科學':'科','親子':'親','音樂':'樂','表演':'演','舞蹈':'舞','電影':'映','講座':'講','研習':'學','市集':'集','競賽':'賽','科技':'技','其他':'展'};
+  const CATEGORY_SYMBOL = {'快閃店':'閃','美術':'藝','攝影':'影','設計':'設','動漫':'漫','歷史':'史','自然':'自','親子':'親','音樂':'樂','演唱會':'唱','表演':'演','舞蹈':'舞','電影':'映','講座':'講','研習':'學','市集':'集','競賽':'賽','科技':'技','其他':'展'};
   const CATEGORY_FALLBACK_INDEX = {
     '美術':0, '攝影':1, '設計':2, '動漫':3,
-    '歷史文化':4, '自然科學':5, '親子':6, '音樂':7,
-    '表演':8, '舞蹈':9, '電影':10, '市集':11,
-    '科技':12, '競賽':13, '快閃':14, '其他':15,
+    '歷史':4, '自然':5, '親子':6, '音樂':7,
+    '演唱會':7, '表演':8, '舞蹈':9, '電影':10, '市集':11,
+    '科技':12, '競賽':13, '快閃店':14, '其他':15,
   };
   const HERO_ROTATION_MS = 15000;
   const NEARBY_RADIUS_KM = 10;
   const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'其他','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'其他'};
   const CATEGORY_ALIASES = {
     '展覽':'美術','展覽資訊':'美術','藝術':'美術','戲劇':'表演','戲劇表演':'表演','綜藝':'表演','綜藝活動':'表演',
-    '音樂表演':'音樂','獨立音樂':'音樂','演唱會':'音樂','講座資訊':'其他','親子活動':'親子','電影欣賞':'電影',
+    '快閃':'快閃店','快閃活動':'快閃店','期間限定':'快閃店','歷史文化':'歷史','自然科學':'自然','音樂表演':'音樂','獨立音樂':'音樂','演唱會活動':'演唱會','大型演唱會':'演唱會','講座資訊':'其他','親子活動':'親子','電影欣賞':'電影',
     '競賽活動':'競賽','徵選活動':'其他','徵選':'其他','商展':'其他','研習課程':'其他','其他藝文資訊':'其他'
   };
   const VENUE_ALIAS_RULES = [
@@ -189,11 +190,14 @@
     const url = safeUrl(value);
     if (!url || isFacebookUrl(url)) return false;
     try {
-      const path = decodeURIComponent(new URL(url).pathname).toLowerCase();
+      const parsed = new URL(url);
+      const host = parsed.hostname.toLowerCase();
+      const path = decodeURIComponent(parsed.pathname).toLowerCase();
+      if (/(?:^|\.)reurl\.cc$/i.test(host)) return false;
       if (/\.(?:gif|svg|ico)$/.test(path)) return false;
       const filename = path.split('/').pop() || '';
       if (/(?:^|[-_])default(?:[-_.]|$)|programinfodefault/i.test(filename)) return false;
-      return !/(?:^|[/_.-])(?:ajax[-_]?loader|loader|loading|spinner|progress|preload|placeholder|blank|spacer|pixel|sprite|favicon|avatar|qr[-_]?code)(?:[/_.-]|$)/i.test(path);
+      return !/(?:^|[/_.-])(?:ajax[-_]?loader|loader|loading|spinner|progress|preload|placeholder|blank|spacer|pixel|sprite|favicon|avatar|qr[-_]?code|meta[-_]?image|post\.image|section[-_](?:api|extention|linebot))(?:[/_.-]|$)/i.test(path);
     } catch { return false; }
   }
 
@@ -231,11 +235,11 @@
 
     const text = `${title} ${description}`;
     const keywordRules = [
-      ['快閃', /快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像展|photo(graphy)?/i],
-      ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展/i], ['歷史文化', /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗/i],
-      ['自然科學', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
+      ['快閃店', /快閃店|快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像展|photo(graphy)?/i],
+      ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展/i], ['歷史', /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗/i],
+      ['自然', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
       ['設計', /設計|建築|工藝|時尚|家居|文具|design/i], ['舞蹈', /舞蹈|舞作|芭蕾/i],
-      ['音樂', /音樂|演唱會|樂團|管弦|獨立音樂|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
+      ['音樂', /音樂|樂團|管弦|獨立音樂|音樂祭|音樂會/i], ['演唱會', /演唱會|巡迴演唱|live concert|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
       ['電影', /電影|(?<!攝)影展|放映/i], ['市集', /市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
       ['親子', /親子|兒童|家庭|幼兒/i], ['競賽', /競賽|比賽|大賽|徵件比賽/i],
       ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會/i]
@@ -442,7 +446,10 @@
     const rawCategories = firstValue(raw.categories, raw.categoryName, raw.category);
     const baseCategories = normalizeCategories(rawCategories, title, description);
     const mappedCategory = contentTypes.map(type => CONTENT_TYPE_CATEGORY_MAP[type]).find(Boolean) || CONTENT_TYPE_CATEGORY_MAP[contentType];
-    const categories = [mappedCategory, ...baseCategories].filter(Boolean).filter((category, categoryIndex, array) => array.indexOf(category) === categoryIndex).slice(0, 3);
+    const categoryCandidates = mappedCategory === '演唱會'
+      ? baseCategories.filter(category => category !== '音樂')
+      : baseCategories;
+    const categories = [mappedCategory, ...categoryCandidates].filter(Boolean).filter((category, categoryIndex, array) => array.indexOf(category) === categoryIndex).slice(0, 3);
     const imageCandidates = [
       ...flattenImageCandidates(raw.images), ...flattenImageCandidates(raw.imageCandidates),
       ...flattenImageCandidates(raw.image), ...flattenImageCandidates(raw.imageURL), ...flattenImageCandidates(raw.imageUrl),
@@ -736,7 +743,7 @@
     const params = new URLSearchParams(location.search);
     state.params = params;
     state.query = params.get('q') || '';
-    const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => value.trim()).filter(category => CATEGORY_ORDER.includes(category));
+    const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => CATEGORY_ALIASES[value.trim()] || value.trim()).filter(category => CATEGORY_ORDER.includes(category));
     state.categories = new Set(categoryValues);
     state.region = params.get('region') || null;
     state.venue = params.get('venue') || null;
@@ -970,14 +977,11 @@
 
   function renderCategoryStrip() {
     const counts = countBy(state.events, event => event.categories);
-    const categories = Object.keys(counts).sort((a,b) => {
-      const ai = CATEGORY_ORDER.indexOf(a), bi = CATEGORY_ORDER.indexOf(b);
-      return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
-    }).slice(0, 12);
+    const categories = CATEGORY_ORDER;
     $('#categoryStrip').innerHTML = categories.map(category => `
       <a class="category-chip reveal-item ${state.categories.has(category) ? 'active' : ''}" style="--reveal-index:${categories.indexOf(category)}" href="${categoryHref(category)}">
         <span class="category-icon">${CATEGORY_ICON[category] || '＋'}</span>
-        <strong>${escapeHtml(category)}</strong><small>${counts[category]} 檔</small>
+        <strong>${escapeHtml(category)}</strong><small>${(counts[category] || 0).toLocaleString('zh-TW')} 檔</small>
       </a>`).join('');
   }
 
@@ -1086,8 +1090,8 @@
     $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="status-filter-button ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}" type="button">${label}</button>`).join('');
 
     const categoryCounts = countBy(state.events, event => event.categories);
-    const categories = Object.keys(categoryCounts).filter(category => CATEGORY_ORDER.includes(category)).sort((a,b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b));
-    $('#listingCategoryOptions').innerHTML = categories.map(category => `<button class="listing-category-option ${state.categories.has(category) ? 'active' : ''}" data-toggle-category="${escapeHtml(category)}" type="button" aria-pressed="${state.categories.has(category)}"><span class="category-icon">${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span><strong>${escapeHtml(category)}</strong><small>${categoryCounts[category].toLocaleString('zh-TW')} 檔</small></button>`).join('');
+    const categories = CATEGORY_ORDER;
+    $('#listingCategoryOptions').innerHTML = categories.map(category => `<button class="listing-category-option ${state.categories.has(category) ? 'active' : ''}" data-toggle-category="${escapeHtml(category)}" type="button" aria-pressed="${state.categories.has(category)}"><span class="category-icon">${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span><strong>${escapeHtml(category)}</strong><small>${(categoryCounts[category] || 0).toLocaleString('zh-TW')} 檔</small></button>`).join('');
 
     const regionGroups = REGION_ORDER.map(region => {
       const regionEvents = state.events.filter(event => event.region === region);

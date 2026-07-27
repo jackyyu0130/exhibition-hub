@@ -1,0 +1,75 @@
+{
+  "stage": "4-E-1B",
+  "name": "分類順序與特殊分類 Icon",
+  "supersedes": [
+    "4-E-1",
+    "4-E-1A"
+  ],
+  "categoryOrder": [
+    "演唱會",
+    "快閃店",
+    "動漫",
+    "美術",
+    "設計",
+    "攝影",
+    "市集",
+    "音樂",
+    "自然",
+    "歷史",
+    "表演",
+    "舞蹈",
+    "電影",
+    "親子",
+    "競賽",
+    "科技",
+    "其他"
+  ],
+  "desktopRows": [
+    [
+      "演唱會",
+      "快閃店",
+      "動漫",
+      "美術",
+      "設計"
+    ],
+    [
+      "攝影",
+      "市集",
+      "音樂",
+      "自然"
+    ],
+    [
+      "歷史",
+      "表演",
+      "舞蹈",
+      "電影"
+    ],
+    [
+      "親子",
+      "競賽",
+      "科技",
+      "其他"
+    ]
+  ],
+  "specialIcons": {
+    "演唱會": "麥克風線框 Icon",
+    "快閃店": "快閃店面與閃光線框 Icon"
+  },
+  "sharedPages": [
+    "首頁",
+    "探索全台展覽"
+  ],
+  "files": [
+    "assets/app.js",
+    "assets/styles.css",
+    "data/exhibitions.enriched.json",
+    "tests/test_category_order_and_special_icons.py",
+    "tests/test_category_names_and_concert.py",
+    "tests/test_data_and_category_consistency.py",
+    "docs/CATEGORY_ORDER_AND_SPECIAL_ICONS_4E1B_ZH-TW.md"
+  ],
+  "designProtection": {
+    "includesIndexHtml": false,
+    "layoutStructureChanged": false
+  }
+}

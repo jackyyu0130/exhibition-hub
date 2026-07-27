@@ -9,21 +9,23 @@
     "imageCoverage": 0.6922,
     "coordinateCoverage": 0.7838,
     "categoryCounts": {
+      "演唱會": 35,
+      "快閃店": 1,
+      "動漫": 84,
       "美術": 1444,
       "設計": 261,
-      "科技": 55,
-      "自然科學": 148,
       "攝影": 55,
-      "親子": 429,
-      "音樂": 903,
-      "電影": 378,
-      "歷史文化": 214,
-      "表演": 784,
       "市集": 32,
-      "動漫": 84,
-      "舞蹈": 128,
-      "其他": 87,
-      "快閃": 1
+      "音樂": 875,
+      "自然": 148,
+      "歷史": 214,
+      "表演": 784,
+      "舞蹈": 127,
+      "電影": 377,
+      "親子": 429,
+      "競賽": 0,
+      "科技": 55,
+      "其他": 87
     }
   },
   "events": [
@@ -140,7 +142,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -478,7 +480,7 @@
       "categories": [
         "設計",
         "科技",
-        "自然科學"
+        "自然"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -718,10 +720,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-11-16",
       "locationName": "原住民族委員會原住民族文化發展中心",
@@ -1045,7 +1047,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -1207,7 +1209,7 @@
       "images": [],
       "categories": [
         "科技",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "科技",
@@ -1596,7 +1598,7 @@
       "images": [],
       "categories": [
         "表演",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "表演",
@@ -1667,8 +1669,8 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -1958,7 +1960,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -2029,7 +2031,7 @@
       "images": [],
       "categories": [
         "科技",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "科技",
@@ -2100,7 +2102,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "動漫"
       ],
       "category": "設計",
@@ -2173,7 +2175,7 @@
       "categories": [
         "音樂",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-01-01",
@@ -2244,10 +2246,10 @@
         "https://thcdc.hakka.gov.tw/media/seuadiuv/f1573803479865.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "客家委員會客家文化發展中心臺灣客家文化館",
@@ -2337,7 +2339,7 @@
       ],
       "categories": [
         "親子",
-        "歷史文化",
+        "歷史",
         "攝影"
       ],
       "category": "親子",
@@ -2425,11 +2427,11 @@
         "https://www.ysnp.gov.tw/UploadPlugin?file=dHB%2Fc7k8iJzrTc3ceYUqrKKA2QtAOnUVRghzGKHRcIH3qTMmJ2YH88bwIc6oyHiWV23omjkrRv2ArRxBunJe6w%3D%3D"
       ],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "攝影"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "玉山國家公園管理處水里遊客中心",
@@ -2635,10 +2637,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "鼓山區（高雄市）",
@@ -2707,7 +2709,7 @@
       "images": [],
       "categories": [
         "科技",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "科技",
@@ -2789,7 +2791,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -2860,7 +2862,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -2931,11 +2933,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "攝影",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-30",
       "locationName": "新北市立圖書館淡水分館",
@@ -3143,7 +3145,7 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -3216,10 +3218,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立歷史博物館",
@@ -3297,10 +3299,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國史館臺灣文獻館",
@@ -3368,7 +3370,7 @@
       "images": [],
       "categories": [
         "表演",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "表演",
@@ -3439,7 +3441,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -3509,10 +3511,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "花壇鄉（彰化縣）",
@@ -3732,7 +3734,7 @@
       "images": [],
       "categories": [
         "親子",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "親子",
@@ -3874,10 +3876,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "左營區（高雄市）",
@@ -3945,11 +3947,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立歷史博物館",
@@ -4099,7 +4101,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -4180,7 +4182,7 @@
       ],
       "categories": [
         "科技",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "科技",
@@ -4271,8 +4273,8 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -4361,10 +4363,10 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/NDp45RbeaaUNCGVteT5CW2jLWfCYe6EdSRkG0cgW.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國立臺灣史前文化博物館南科考古館",
@@ -4451,10 +4453,10 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/NDp45RbeaaUNCGVteT5CW2jLWfCYe6EdSRkG0cgW.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國立臺灣史前文化博物館南科考古館",
@@ -4541,11 +4543,11 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/NDp45RbeaaUNCGVteT5CW2jLWfCYe6EdSRkG0cgW.jpg"
       ],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國立臺灣史前文化博物館南科考古館",
@@ -4633,8 +4635,8 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -4723,11 +4725,11 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/NDp45RbeaaUNCGVteT5CW2jLWfCYe6EdSRkG0cgW.jpg"
       ],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國立臺灣史前文化博物館南科考古館",
@@ -4904,11 +4906,11 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/NDp45RbeaaUNCGVteT5CW2jLWfCYe6EdSRkG0cgW.jpg"
       ],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國立臺灣史前文化博物館南科考古館",
@@ -4995,10 +4997,10 @@
         "https://d2ogsb5xx5l1tv.cloudfront.net/images/viewer/stack_floor.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "桃園市原住民族文化會館",
@@ -5066,8 +5068,8 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -5216,7 +5218,7 @@
       "images": [],
       "categories": [
         "表演",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "表演",
@@ -5301,7 +5303,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -5382,11 +5384,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術",
         "攝影"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "甲仙區（高雄市）",
@@ -5454,11 +5456,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "動漫"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國史館臺灣文獻館",
@@ -5610,7 +5612,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -5689,10 +5691,10 @@
         "https://www.nmns.edu.tw/export/system/modules/com.thesys.project.nmns2025/resources/images/AA.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "車籠埔斷層保存園區",
@@ -5832,11 +5834,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術",
         "攝影"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "基隆文化中心",
@@ -5993,11 +5995,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "七美鄉老人文康活動中心",
@@ -6139,10 +6141,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立歷史博物館",
@@ -6221,7 +6223,7 @@
       "images": [],
       "categories": [
         "表演",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "表演",
@@ -6301,7 +6303,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -6383,7 +6385,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -6463,7 +6465,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "攝影"
       ],
       "category": "設計",
@@ -6544,7 +6546,7 @@
       "categories": [
         "親子",
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "親子",
       "startDate": "2026-01-01",
@@ -6623,7 +6625,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -6763,10 +6765,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "彰化縣立圖書館",
@@ -6925,10 +6927,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-11-08",
       "locationName": "國史館臺灣文獻館",
@@ -6995,10 +6997,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "戰爭與和平紀念公園主題館",
@@ -7144,8 +7146,8 @@
       "images": [],
       "categories": [
         "市集",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "市集",
       "startDate": "2026-01-01",
@@ -7284,10 +7286,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "溪湖糖廠",
@@ -7537,7 +7539,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "動漫"
       ],
       "category": "設計",
@@ -7686,11 +7688,11 @@
         "https://comet.noonspace.com/w62/ec/MsgInfo/search_juming.png"
       ],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "朱銘美術館",
@@ -7757,11 +7759,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "攝影",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "臺南市東區林森圖書館",
@@ -8113,7 +8115,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -8186,7 +8188,7 @@
       "categories": [
         "設計",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -8256,7 +8258,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -8327,10 +8329,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "苗栗縣泰雅原住民文化產業區",
@@ -8400,7 +8402,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -8555,7 +8557,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -8714,10 +8716,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "彰化區漁會",
@@ -8787,7 +8789,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -8870,7 +8872,7 @@
       "categories": [
         "表演",
         "音樂",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-01-01",
@@ -9008,9 +9010,9 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化"
+        "歷史"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "駁二藝術特區",
@@ -9090,7 +9092,7 @@
       "categories": [
         "表演",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-01-01",
@@ -9394,10 +9396,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立圖書館左新分館",
@@ -9476,7 +9478,7 @@
       ],
       "categories": [
         "音樂",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-01-01",
@@ -9567,10 +9569,10 @@
         "https://www.chimeimuseum.org/cache/GTItIZZUKw4WxTY5HFPUJIVA2wLeWHT8mHNRzeKd1XWxgev8J7QcGZc.webp"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "臺南市奇美博物館",
@@ -9925,10 +9927,10 @@
         "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "國立臺灣文學館",
@@ -10239,7 +10241,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -10309,10 +10311,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-11-20",
       "locationName": "臺中市眷村文物館",
@@ -10481,10 +10483,10 @@
         "https://www.chimeimuseum.org/uploads/temporaryexhibitions/5fd33973b14f3.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "臺南市奇美博物館",
@@ -10574,7 +10576,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -10747,10 +10749,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "臺灣客家茶文化館",
@@ -10818,7 +10820,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -10969,7 +10971,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -11039,10 +11041,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "舊打狗驛故事館",
@@ -11118,10 +11120,10 @@
         "https://tcdbdata.ntcri.gov.tw/upload/act/357c84d13290200065762fdd58b98005a7341474/60310_0_0_45997_wp.webp"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "二水鄉（彰化縣）",
@@ -11261,7 +11263,7 @@
       "categories": [
         "音樂",
         "舞蹈",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-01-01",
@@ -11573,7 +11575,7 @@
       "categories": [
         "設計",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-01-01",
@@ -11725,7 +11727,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -11805,10 +11807,10 @@
         "https://www.laiho.org.tw/upload/news/20260612174228qb66a.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "賴和文教基金會（賴和紀念館）",
@@ -11875,10 +11877,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "苗栗縣賽夏族民俗文物館",
@@ -11955,7 +11957,7 @@
       ],
       "categories": [
         "親子",
-        "自然科學",
+        "自然",
         "動漫"
       ],
       "category": "親子",
@@ -12035,10 +12037,10 @@
         "https://file.moc.gov.tw/001/Upload/528/relpic/13791/246435/d4b21d8d-f1d6-4819-b17b-1d0baf47be82@710x470.jpg"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-01",
       "endDate": "2026-08-30",
       "locationName": "國立臺灣歷史博物館",
@@ -12117,7 +12119,7 @@
       "images": [],
       "categories": [
         "市集",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "市集",
@@ -12207,10 +12209,10 @@
         "https://www.changhua.gov.tw/Upload/RowView/「《跨樂寶島・紐藝夏》-2026 年度音樂會暨台紐國際交流行前音樂會」大合影.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "彰化市古月民俗館",
@@ -12287,8 +12289,8 @@
       ],
       "categories": [
         "表演",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-01-01",
@@ -12358,10 +12360,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "鼓山區（高雄市）",
@@ -12437,7 +12439,7 @@
       ],
       "categories": [
         "科技",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "科技",
@@ -12517,7 +12519,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -12657,7 +12659,7 @@
       "images": [],
       "categories": [
         "表演",
-        "歷史文化",
+        "歷史",
         "動漫"
       ],
       "category": "表演",
@@ -12822,10 +12824,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市左營孔子廟",
@@ -12965,7 +12967,7 @@
       "categories": [
         "親子",
         "電影",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-01-01",
@@ -13045,10 +13047,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立歷史博物館",
@@ -13126,10 +13128,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "大東文化藝術中心",
@@ -13207,10 +13209,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立歷史博物館",
@@ -13288,10 +13290,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-01",
       "endDate": "2026-12-31",
       "locationName": "林園區（高雄市）",
@@ -13360,7 +13362,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -13430,10 +13432,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-02",
       "endDate": "2026-12-31",
       "locationName": "雲林布袋戲館",
@@ -13501,7 +13503,7 @@
       "images": [],
       "categories": [
         "表演",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "表演",
@@ -13784,7 +13786,7 @@
       "categories": [
         "親子",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-01-02",
@@ -13923,11 +13925,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-01-02",
       "endDate": "2026-12-31",
       "locationName": "高雄市立圖書館李科永紀念圖書館",
@@ -13999,10 +14001,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-02",
       "endDate": "2026-12-31",
       "locationName": "桃園區（桃園市）",
@@ -14081,7 +14083,7 @@
       "categories": [
         "音樂",
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-01-02",
@@ -15061,7 +15063,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-01-08",
@@ -15626,7 +15628,7 @@
       "images": [],
       "categories": [
         "舞蹈",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-01-14",
@@ -15848,7 +15850,7 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -15931,7 +15933,7 @@
       "categories": [
         "美術",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-01-29",
@@ -16022,11 +16024,11 @@
         "https://www.chimeimuseum.org/uploads/photos/shares/68cba3d0a27df.png"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術",
         "動漫"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-01-29",
       "endDate": "2026-12-31",
       "locationName": "臺南市奇美博物館",
@@ -16336,7 +16338,7 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -16822,10 +16824,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-02-18",
       "endDate": "2026-12-31",
       "locationName": "新北市立國定古蹟林本源園邸",
@@ -17649,10 +17651,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-03-06",
       "endDate": "2026-12-12",
       "locationName": "馬公水上警察官吏派出所",
@@ -17719,11 +17721,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-03-06",
       "endDate": "2026-12-12",
       "locationName": "澎湖郵便局",
@@ -18299,7 +18301,7 @@
       "images": [],
       "categories": [
         "舞蹈",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-03-12",
@@ -18439,9 +18441,9 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化"
+        "歷史"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-03-20",
       "endDate": "2026-12-31",
       "locationName": "財團法人高雄市文武聖殿",
@@ -18668,7 +18670,7 @@
       "images": [],
       "categories": [
         "舞蹈",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-03-25",
@@ -18809,11 +18811,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-03-27",
       "endDate": "2026-12-31",
       "locationName": "新北市立十三行博物館",
@@ -18881,7 +18883,7 @@
       "images": [],
       "categories": [
         "科技",
-        "歷史文化",
+        "歷史",
         "動漫"
       ],
       "category": "科技",
@@ -19093,10 +19095,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-04-01",
       "endDate": "2026-12-31",
       "locationName": "高雄市立歷史博物館",
@@ -19255,7 +19257,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -19486,7 +19488,7 @@
       "images": [],
       "categories": [
         "市集",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "市集",
@@ -19651,7 +19653,7 @@
       "categories": [
         "設計",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-04-02",
@@ -19818,7 +19820,7 @@
       "categories": [
         "親子",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-04-02",
@@ -19888,7 +19890,7 @@
       "images": [],
       "categories": [
         "親子",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "親子",
@@ -20103,10 +20105,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-04-08",
       "endDate": "2026-12-31",
       "locationName": "桃園區（桃園市）",
@@ -20185,7 +20187,7 @@
       "categories": [
         "美術",
         "市集",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-04-09",
@@ -20339,9 +20341,9 @@
         "https://ssl.gstatic.com/docs/forms/device_home/android_192.png"
       ],
       "categories": [
-        "歷史文化"
+        "歷史"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-04-11",
       "endDate": "2026-08-29",
       "locationName": "東區（新竹市）",
@@ -20411,7 +20413,7 @@
       "categories": [
         "設計",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-04-11",
@@ -20481,7 +20483,7 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -20621,11 +20623,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "攝影"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-04-11",
       "endDate": "2026-12-31",
       "locationName": "國立暨南國際大學圖書館",
@@ -20693,7 +20695,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-04-11",
@@ -21071,7 +21073,7 @@
       "categories": [
         "設計",
         "科技",
-        "自然科學"
+        "自然"
       ],
       "category": "設計",
       "startDate": "2026-04-17",
@@ -21151,11 +21153,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "攝影",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-04-18",
       "endDate": "2026-08-30",
       "locationName": "桃園市土地公文化館",
@@ -21296,7 +21298,7 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -21505,7 +21507,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-04-18",
@@ -21949,7 +21951,7 @@
       "categories": [
         "親子",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "親子",
       "startDate": "2026-04-22",
@@ -22290,7 +22292,7 @@
       "categories": [
         "電影",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-04-25",
@@ -22580,7 +22582,7 @@
       "images": [],
       "categories": [
         "親子",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "親子",
@@ -22722,7 +22724,7 @@
       "categories": [
         "電影",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-05-01",
@@ -22792,7 +22794,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-05-02",
@@ -23087,10 +23089,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-05-02",
       "endDate": "2026-11-29",
       "locationName": "公館鄉（苗栗縣）",
@@ -23441,7 +23443,7 @@
       "images": [],
       "categories": [
         "舞蹈",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-05-04",
@@ -23942,7 +23944,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "動漫"
       ],
       "category": "設計",
@@ -24104,7 +24106,7 @@
       ],
       "categories": [
         "市集",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "市集",
@@ -24196,11 +24198,11 @@
         "https://www.kmfa.gov.tw/ckfinder/userfiles/files/%e5%8f%83%e8%a7%80%e5%b1%95%e8%a6%bd%e5%85%a5%e5%8f%a3%e6%8c%87%e5%bc%95-01.jpg"
       ],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-05-09",
       "endDate": "2026-09-06",
       "locationName": "高雄市立美術館",
@@ -24287,10 +24289,10 @@
         "https://www.ctwm.org.tw/images/theme-b67/1504768522652.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "其他"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-05-09",
       "endDate": "2026-12-26",
       "locationName": "埔里鎮（南投縣）",
@@ -24753,10 +24755,10 @@
         "https://www.sokaculture.org.tw/assets/exhibits/2025/_videoThumbnail/2025M3高一峰_賣唱者（一）_Itinerant-Singers-1_1955-1956_水墨設色、紙_Ink-and-color-on-paper_44-×-46-cm_創價美術館典藏.jpg"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-05-12",
       "endDate": "2026-09-20",
       "locationName": "台灣創價學會臺中藝文中心",
@@ -24823,10 +24825,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-05-15",
       "endDate": "2026-08-16",
       "locationName": "國立臺灣歷史博物館",
@@ -25053,10 +25055,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-05-16",
       "endDate": "2026-08-30",
       "locationName": "農業部生物多樣性研究所保育教育館",
@@ -25134,7 +25136,7 @@
       "categories": [
         "美術",
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-05-16",
@@ -25205,7 +25207,7 @@
       "categories": [
         "設計",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-05-16",
@@ -25366,8 +25368,8 @@
       "images": [],
       "categories": [
         "科技",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "科技",
       "startDate": "2026-05-16",
@@ -25520,7 +25522,7 @@
       ],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "親子"
       ],
       "category": "設計",
@@ -26494,7 +26496,7 @@
       "categories": [
         "電影",
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-05-26",
@@ -26563,10 +26565,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-05-27",
       "endDate": "2026-12-31",
       "locationName": "竹田鄉（屏東縣）",
@@ -26711,8 +26713,8 @@
       ],
       "categories": [
         "設計",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-05-29",
@@ -27044,11 +27046,11 @@
         "https://www.kmfa.gov.tw/FileDownload/Exhibition/20260430436609397380.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "攝影",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-05-30",
       "endDate": "2026-10-18",
       "locationName": "高雄市立美術館",
@@ -27128,7 +27130,7 @@
       "categories": [
         "設計",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-05-30",
@@ -27198,7 +27200,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -27419,9 +27421,9 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化"
+        "歷史"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-06-01",
       "endDate": "2026-08-02",
       "locationName": "臺北市",
@@ -27797,11 +27799,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "動漫",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-06-01",
       "endDate": "2026-07-31",
       "locationName": "苗栗縣立圖書館",
@@ -28014,9 +28016,10 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "表演"
       ],
-      "category": "表演",
+      "category": "演唱會",
       "startDate": "2026-06-02",
       "endDate": "2026-08-01",
       "locationName": "花蓮縣",
@@ -28073,7 +28076,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "花蓮縣"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a2b06fb26b3243414ccd17e",
@@ -28633,10 +28637,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-06-05",
       "endDate": "2026-08-06",
       "locationName": "高雄市立圖書館美濃分館",
@@ -29116,7 +29120,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -29271,7 +29275,7 @@
       "categories": [
         "表演",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-06-06",
@@ -29641,10 +29645,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-06-06",
       "endDate": "2026-08-01",
       "locationName": "大河美術",
@@ -29782,7 +29786,7 @@
       "images": [],
       "categories": [
         "表演",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "表演",
@@ -29935,7 +29939,7 @@
       "images": [],
       "categories": [
         "音樂",
-        "歷史文化",
+        "歷史",
         "攝影"
       ],
       "category": "音樂",
@@ -30089,7 +30093,7 @@
       "images": [],
       "categories": [
         "音樂",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "音樂",
@@ -30538,10 +30542,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-06-13",
       "endDate": "2026-10-26",
       "locationName": "蒙藏文化館",
@@ -30709,10 +30713,10 @@
         "https://www.yjs.com.tw/Uploads/Poster/Temp/637541785328387791.jpg"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-06-13",
       "endDate": "2026-07-26",
       "locationName": "大甲三寶文化館",
@@ -31095,10 +31099,10 @@
         "https://museum.post.gov.tw/post/Postal_Museum/museum/images/gototop.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-06-17",
       "endDate": "2026-11-29",
       "locationName": "郵政博物館",
@@ -31166,7 +31170,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -31336,7 +31340,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-06-18",
@@ -31643,7 +31647,7 @@
       ],
       "categories": [
         "美術",
-        "快閃",
+        "快閃店",
         "親子"
       ],
       "category": "美術",
@@ -31788,7 +31792,7 @@
       ],
       "categories": [
         "電影",
-        "自然科學",
+        "自然",
         "動漫"
       ],
       "category": "電影",
@@ -31942,10 +31946,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-06-20",
       "endDate": "2026-08-02",
       "locationName": "桃園十一份美術館",
@@ -32013,7 +32017,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "設計",
       "startDate": "2026-06-21",
@@ -32380,10 +32384,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-06-26",
       "endDate": "2026-07-31",
       "locationName": "彰化縣芬園鄉立圖書館",
@@ -32687,7 +32691,7 @@
       "categories": [
         "美術",
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-06-26",
@@ -33244,7 +33248,7 @@
       "categories": [
         "表演",
         "科技",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-06-27",
@@ -33393,10 +33397,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-06-27",
       "endDate": "2026-09-19",
       "locationName": "鼓山區（高雄市）",
@@ -33464,11 +33468,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術",
         "動漫"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-06-27",
       "endDate": "2026-07-26",
       "locationName": "台中市｜場館資料整理中",
@@ -34068,7 +34072,7 @@
       ],
       "categories": [
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-07-01",
@@ -34221,7 +34225,7 @@
       "images": [],
       "categories": [
         "親子",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "親子",
@@ -34291,10 +34295,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣二林鎮立圖書館",
@@ -34361,10 +34365,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣二水鄉立圖書館",
@@ -34431,9 +34435,9 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學"
+        "自然"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣伸港鄉立圖書館",
@@ -34500,10 +34504,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣北斗鎮立圖書館",
@@ -34571,7 +34575,7 @@
       "images": [],
       "categories": [
         "音樂",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "音樂",
@@ -34641,10 +34645,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣埔鹽鄉立圖書館",
@@ -34711,10 +34715,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣埤頭鄉立圖書館",
@@ -34781,10 +34785,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣大城鄉立圖書館",
@@ -34851,10 +34855,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化市立圖書館",
@@ -34990,10 +34994,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣永靖鄉立圖書館",
@@ -35060,10 +35064,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣溪州鄉立圖書館",
@@ -35130,10 +35134,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣田中鎮立圖書館",
@@ -35200,10 +35204,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣田尾鄉立圖書館",
@@ -35270,10 +35274,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣社頭鄉立圖書館",
@@ -35340,10 +35344,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣福興鄉立粘銘紀念圖書館",
@@ -35410,10 +35414,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣秀水鄉立圖書館",
@@ -35480,10 +35484,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣竹塘鄉立圖書館",
@@ -35550,10 +35554,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣花壇鄉立圖書館",
@@ -35620,10 +35624,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "彰化縣芳苑鄉立圖書館",
@@ -35690,10 +35694,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-08-30",
       "locationName": "彰化縣鹿港鎮立圖書館(文化所)",
@@ -36188,20 +36192,14 @@
       "id": "6a3c362f26b3243414ccd5b4",
       "title": "「翻開這頁藍色夏日」主題書展、「一個人，更要好好吃飯」主題書展",
       "description": "「翻開這頁藍色夏日」主題書展\n展出期間：2026/7/01~2026/7/31\n展出內容：\n炎炎夏日，先進來圖書館吹冷氣吧！ 我們把整座海洋的顏色都搬上桌了，隨手挑一本藍色，帶走一抹清涼。\n外頭烈日當頭，歡迎走進圖書館，這裡有最舒適的冷氣，還有我們為您特別留下來的清涼。今年七月，我們把整座海洋與晴空的顏色都搬上桌了！\n這一整桌的藍色書籍不設限任何類別，從驚悚推理、文學散文到科普新知應有盡有。我們不聊生硬的分類，純粹用視覺為大腦降溫。當你覺得生活有些悶熱、心靜不下來時，不妨來到藍色書架前，隨手挑一本看順眼的藍色書皮。翻開書頁，就像跳進湛藍的池水中，讓字裡行間的微風，帶走一整個夏天的燥熱。\n「一個人，更要好好吃飯」主題書展\n展出期間：2026/7/01~2026/7/31\n展出內容：\n「一個人隨便吃吃就好了啦！」這大概是獨居者最常掛在嘴邊的話，泡麵、超商便當常常就此打發了一餐。但是，敷衍了身體，心情也會跟著變得粗糙。好好吃飯，是愛自己最直接的方式。\n第一次搬進租屋處，小巧的套房裡沒有媽媽專屬的厚重木砧板，取而代之的是一張卡式爐與輕巧的單人鍋。離家獨立的滋味，往往是從洗第一個碗、切第一條小黃瓜開始的。沒有了家人的叨念與熱騰騰的現成晚飯，外送與外食成了常態，但總有些深夜，你會突然想念起家常菜的煙火氣。\n這群選書是送給都市獨居青年的生活指南。透過療癒小說裡隻身打拼的共鳴，搭配微波爐料理、單人份平底鍋食譜，教你在忙碌的城市角落裡，用最簡單的工具餵飽靈魂。一人的餐桌，就是你獨立自主的成年禮。",
-      "sourceUrl": "",
-      "image": "https://reurl.cc/main/meta_image",
-      "images": [
-        "https://reurl.cc/main/meta_image",
-        "https://reurl.cc/asset/images/section-api.webp",
-        "https://reurl.cc/asset/images/section-extention.webp",
-        "https://reurl.cc/asset/images/section-linebot.webp",
-        "https://reurl.cc/main/post.image"
-      ],
+      "sourceUrl": "https://www.library.taichung.gov.tw/active/index?Parser=99%2C3%2C39%2C27%2C%2C%2C%2C%2C%2C%2C35",
+      "image": "",
+      "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "臺中市立圖書館中區分館",
@@ -36235,10 +36233,10 @@
       "source": "全國藝文活動資訊系統",
       "firstSeenAt": "2026-07-22T23:38:03+08:00",
       "lastSeenAt": "2026-07-27T18:53:19+08:00",
-      "pageMetadataCheckedAt": "2026-07-27T18:56:06+08:00",
-      "sourceUrlVerified": false,
-      "sourceUrlMatchScore": 0.0,
-      "sourceUrlRejected": "https://reurl.cc/grqMl4 ； https://reurl.cc/K2aQve",
+      "pageMetadataCheckedAt": "2026-07-28T02:30:00+08:00",
+      "sourceUrlVerified": true,
+      "sourceUrlMatchScore": 1.0,
+      "sourceUrlRejected": "",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -36339,7 +36337,7 @@
       "images": [],
       "categories": [
         "表演",
-        "自然科學",
+        "自然",
         "動漫"
       ],
       "category": "表演",
@@ -36982,7 +36980,7 @@
       "categories": [
         "親子",
         "科技",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-07-01",
@@ -37201,7 +37199,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "攝影"
       ],
       "category": "設計",
@@ -37409,10 +37407,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館新店三民圖書閱覽室",
@@ -37479,10 +37477,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館新店中央圖書閱覽室",
@@ -37895,10 +37893,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館新店碧潭圖書閱覽室",
@@ -39150,7 +39148,7 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學",
+        "自然",
         "動漫"
       ],
       "category": "親子",
@@ -39433,7 +39431,7 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "親子",
@@ -40056,10 +40054,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館深坑分館",
@@ -40546,10 +40544,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館萬里分館",
@@ -40616,10 +40614,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館蘆洲仁愛智慧圖書館",
@@ -40686,10 +40684,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館蘆洲永安圖書閱覽室",
@@ -40757,8 +40755,8 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "親子",
       "startDate": "2026-07-01",
@@ -40827,10 +40825,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "新北市立圖書館蘆洲長安分館",
@@ -40898,8 +40896,8 @@
       "images": [],
       "categories": [
         "美術",
-        "自然科學",
-        "歷史文化"
+        "自然",
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-07-01",
@@ -41950,7 +41948,7 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-07-01",
@@ -42019,10 +42017,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "大東文化藝術中心",
@@ -43039,11 +43037,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
-        "歷史文化",
+        "自然",
+        "歷史",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-01",
       "endDate": "2026-07-31",
       "locationName": "高雄市政府文化局﹝岡山文化中心﹞",
@@ -44124,10 +44122,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "電影"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-02",
       "endDate": "2026-07-23",
       "locationName": "內惟藝術中心",
@@ -44206,7 +44204,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -44645,10 +44643,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-03",
       "endDate": "2026-07-30",
       "locationName": "彰化縣溪湖鎮立圖書館",
@@ -44931,7 +44929,7 @@
       "categories": [
         "電影",
         "科技",
-        "自然科學"
+        "自然"
       ],
       "category": "電影",
       "startDate": "2026-07-03",
@@ -46072,10 +46070,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-04",
       "endDate": "2026-08-22",
       "locationName": "台中市｜場館資料整理中",
@@ -46147,10 +46145,10 @@
         "https://cloud.culture.tw/e_new_upload/signinImage/2026-06-29/b96644d9-cd45-43ee-b418-49cf3853c7d4/食物話語的流動-萬一一＆社群 主視覺(Photo版).jpg"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-04",
       "endDate": "2026-08-01",
       "locationName": "藝站 One Station",
@@ -47549,10 +47547,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-04",
       "endDate": "2026-08-23",
       "locationName": "台中市｜場館資料整理中",
@@ -49067,7 +49065,7 @@
       "images": [],
       "categories": [
         "科技",
-        "自然科學",
+        "自然",
         "電影"
       ],
       "category": "科技",
@@ -49279,7 +49277,7 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-07-05",
@@ -49632,7 +49630,7 @@
       "images": [],
       "categories": [
         "設計",
-        "自然科學",
+        "自然",
         "美術"
       ],
       "category": "設計",
@@ -49707,7 +49705,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化",
+        "歷史",
         "親子"
       ],
       "category": "美術",
@@ -51625,7 +51623,7 @@
       "images": [],
       "categories": [
         "設計",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "設計",
@@ -51858,7 +51856,7 @@
       "categories": [
         "舞蹈",
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-07-11",
@@ -52830,11 +52828,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "美術",
         "設計"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-11",
       "endDate": "2026-10-11",
       "locationName": "國立臺灣科學教育館 七樓西側特展室",
@@ -55278,7 +55276,7 @@
       ],
       "categories": [
         "親子",
-        "自然科學",
+        "自然",
         "電影"
       ],
       "category": "親子",
@@ -57521,11 +57519,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
-        "表演",
-        "音樂"
+        "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-07-23",
       "endDate": "2026-07-23",
       "locationName": "南投縣中寮鄉中寮國民小學",
@@ -57582,7 +57580,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "南投縣中寮鄉中寮國民小學"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "69cd4fb526b3242a48a9dfff",
@@ -59361,7 +59360,7 @@
       ],
       "categories": [
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-07-25",
@@ -61535,11 +61534,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "攝影",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-07-25",
       "endDate": "2026-08-04",
       "locationName": "南投縣政府文化局",
@@ -61697,10 +61696,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
         "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-07-25",
       "endDate": "2026-07-25",
       "locationName": "南投市（南投縣）",
@@ -61758,7 +61758,8 @@
       "unmatchedVenueValues": [
         "南投市（南投縣）",
         "南投市（南投縣）="
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a2b070526b3243414ccd1b8",
@@ -62990,7 +62991,7 @@
       ],
       "categories": [
         "表演",
-        "自然科學",
+        "自然",
         "親子"
       ],
       "category": "表演",
@@ -63737,7 +63738,7 @@
       ],
       "categories": [
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-07-25",
@@ -64339,9 +64340,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-07-26",
       "endDate": "2026-07-26",
       "locationName": "台北國際會議中心大會堂",
@@ -64419,7 +64420,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 1,
       "matchedVenueValueCount": 1,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a2998dd26b3243414ccd0c3",
@@ -66334,7 +66336,7 @@
       ],
       "categories": [
         "親子",
-        "歷史文化"
+        "歷史"
       ],
       "category": "親子",
       "startDate": "2026-07-26",
@@ -67248,11 +67250,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "電影",
         "美術"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-07-26",
       "endDate": "2026-07-26",
       "locationName": "國家電影及視聽文化中心-大影格",
@@ -67330,7 +67332,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 1,
       "matchedVenueValueCount": 1,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "69e267c426b3242a48a9e466",
@@ -67944,7 +67947,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化",
+        "歷史",
         "音樂"
       ],
       "category": "美術",
@@ -69963,7 +69966,7 @@
       "categories": [
         "音樂",
         "科技",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-07-27",
@@ -72173,11 +72176,11 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "動漫",
         "親子"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-07-28",
       "endDate": "2028-12-31",
       "locationName": "台中市｜場館資料整理中",
@@ -80453,10 +80456,10 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1762831219460WM3SmsKOJQ.jpeg"
       ],
       "categories": [
-        "美術",
-        "音樂"
+        "演唱會",
+        "美術"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-07-29",
       "endDate": "2026-07-29",
       "locationName": "台北市政府親子劇場",
@@ -80546,7 +80549,8 @@
       "matchedVenueValueCount": 1,
       "unmatchedVenueValues": [
         "台北市政府親子劇場"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a19c72d26b3243414ccccf8",
@@ -83671,10 +83675,10 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "科技"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-07-30",
       "endDate": "2026-08-02",
       "locationName": "國立中山大學逸仙館",
@@ -83742,7 +83746,8 @@
       "unmatchedVenueValues": [
         "國立中山大學逸仙館",
         "高雄市立社會教育館演藝廳"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "69fb748426b3243414ccc607",
@@ -83758,7 +83763,7 @@
       "categories": [
         "音樂",
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-07-30",
@@ -86559,9 +86564,9 @@
       "image": "",
       "images": [],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-07-31",
       "endDate": "2026-07-31",
       "locationName": "清金門鎮總兵署",
@@ -86618,7 +86623,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "清金門鎮總兵署"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "69eba23826b3242a48a9e64c",
@@ -88002,7 +88008,7 @@
       "images": [],
       "categories": [
         "音樂",
-        "歷史文化",
+        "歷史",
         "美術"
       ],
       "category": "音樂",
@@ -88880,7 +88886,7 @@
       "categories": [
         "美術",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-08-01",
@@ -91517,7 +91523,7 @@
       "categories": [
         "美術",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-08-01",
@@ -92154,9 +92160,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-08-01",
       "endDate": "2027-06-26",
       "locationName": "臺南文化中心演藝廳",
@@ -92287,7 +92293,8 @@
       "unmatchedVenueValues": [
         "臺東縣立體育館",
         "台中中興大學惠蓀堂"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a1875c626b3243414cccc33",
@@ -93078,7 +93085,7 @@
       ],
       "categories": [
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-08-01",
@@ -94352,7 +94359,7 @@
       "categories": [
         "音樂",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-08-01",
@@ -94595,10 +94602,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-08-01",
       "endDate": "2026-08-31",
       "locationName": "高雄市立圖書館湖內分館",
@@ -96997,7 +97004,7 @@
       "categories": [
         "音樂",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-02",
@@ -97837,7 +97844,7 @@
       "categories": [
         "美術",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-08-02",
@@ -97993,11 +98000,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
-        "表演",
-        "音樂"
+        "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-08-02",
       "endDate": "2026-08-02",
       "locationName": "南投縣鹿谷鄉鹿谷國民小學",
@@ -98054,7 +98061,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "南投縣鹿谷鄉鹿谷國民小學"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "69cd4fa026b3242a48a9dfc3",
@@ -98705,7 +98713,7 @@
       ],
       "categories": [
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-08-02",
@@ -99073,7 +99081,7 @@
       "categories": [
         "電影",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-08-02",
@@ -99262,7 +99270,7 @@
       ],
       "categories": [
         "表演",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-08-02",
@@ -99606,7 +99614,7 @@
       "categories": [
         "美術",
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-08-03",
@@ -99774,7 +99782,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-03",
@@ -100526,10 +100534,10 @@
         "https://www.ctwm.org.tw/upload-files/banner/49__________banner___1920x689.jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-08-04",
       "endDate": "2026-12-31",
       "locationName": "埔里鎮（南投縣）",
@@ -102785,10 +102793,10 @@
         "https://www.huludun.taichung.gov.tw/images/fontsize.png"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-08-07",
       "endDate": "2026-08-30",
       "locationName": "臺中市葫蘆墩文化中心",
@@ -102873,7 +102881,7 @@
       ],
       "categories": [
         "其他",
-        "歷史文化"
+        "歷史"
       ],
       "category": "其他",
       "startDate": "2026-08-07",
@@ -104824,11 +104832,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
+        "演唱會",
         "親子",
-        "音樂",
         "美術"
       ],
-      "category": "親子",
+      "category": "演唱會",
       "startDate": "2026-08-07",
       "endDate": "2026-08-11",
       "locationName": "功學社音樂廳",
@@ -104919,7 +104927,8 @@
       "unmatchedVenueValues": [
         "功學社音樂廳",
         "國立臺中教育大學寶成演藝廳"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a1f30f526b3243414ccce46",
@@ -105002,7 +105011,7 @@
       "categories": [
         "美術",
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-08-08",
@@ -105899,7 +105908,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化",
+        "歷史",
         "表演"
       ],
       "category": "美術",
@@ -105984,7 +105993,7 @@
       ],
       "categories": [
         "親子",
-        "自然科學",
+        "自然",
         "音樂"
       ],
       "category": "親子",
@@ -107882,9 +107891,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-08-08",
       "endDate": "2026-08-09",
       "locationName": "台北國際會議中心大會堂",
@@ -107962,7 +107971,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 1,
       "matchedVenueValueCount": 1,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a3d869b26b3243414ccd637",
@@ -108791,7 +108801,7 @@
       ],
       "categories": [
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-08-08",
@@ -110593,10 +110603,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
         "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-08-09",
       "endDate": "2026-08-09",
       "locationName": "竹山鎮（南投縣）",
@@ -110654,7 +110665,8 @@
       "unmatchedVenueValues": [
         "竹山鎮（南投縣）",
         "竹山鎮（南投縣）="
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a1dbbca26b3243414cccdd6",
@@ -112429,7 +112441,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化",
+        "歷史",
         "音樂"
       ],
       "category": "美術",
@@ -112582,7 +112594,7 @@
       "categories": [
         "美術",
         "表演",
-        "自然科學"
+        "自然"
       ],
       "category": "美術",
       "startDate": "2026-08-12",
@@ -114069,7 +114081,7 @@
       "categories": [
         "音樂",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-08-13",
@@ -116398,10 +116410,10 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "舞蹈"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-08-14",
       "endDate": "2026-08-14",
       "locationName": "四號公園文創演藝廳",
@@ -119674,9 +119686,9 @@
         "https://www.legacy.com.tw/uploads/article/90345826640088071656.jpg"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-08-15",
       "endDate": "2026-08-15",
       "locationName": "Legacy Taichung 音樂展演空間",
@@ -119733,7 +119745,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "Legacy Taichung 音樂展演空間"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a633312eb43f5f34e51884a",
@@ -121270,7 +121283,7 @@
       "categories": [
         "表演",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-08-15",
@@ -122102,7 +122115,7 @@
       ],
       "categories": [
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-08-15",
@@ -122301,7 +122314,7 @@
       "categories": [
         "表演",
         "設計",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-08-15",
@@ -122416,7 +122429,7 @@
       "categories": [
         "表演",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-08-15",
@@ -123586,7 +123599,7 @@
       "categories": [
         "表演",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-08-15",
@@ -124431,7 +124444,7 @@
       ],
       "categories": [
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-08-15",
@@ -126839,7 +126852,7 @@
       "categories": [
         "美術",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-08-16",
@@ -127399,7 +127412,7 @@
       "categories": [
         "音樂",
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-16",
@@ -127601,11 +127614,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "音樂",
         "表演"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-08-16",
       "endDate": "2026-08-28",
       "locationName": "舊峸劇場",
@@ -128897,11 +128910,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "音樂",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-08-16",
       "endDate": "2026-08-16",
       "locationName": "國家兩廳院",
@@ -128984,7 +128997,7 @@
       ],
       "categories": [
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "電影",
       "startDate": "2026-08-16",
@@ -129247,7 +129260,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-16",
@@ -132699,10 +132712,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-08-18",
       "endDate": "2026-08-30",
       "locationName": "彰化藝術館",
@@ -135747,7 +135760,7 @@
       ],
       "categories": [
         "其他",
-        "歷史文化"
+        "歷史"
       ],
       "category": "其他",
       "startDate": "2026-08-20",
@@ -136268,7 +136281,7 @@
       ],
       "categories": [
         "表演",
-        "自然科學"
+        "自然"
       ],
       "category": "表演",
       "startDate": "2026-08-20",
@@ -137032,7 +137045,7 @@
       "categories": [
         "音樂",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-08-20",
@@ -140861,7 +140874,7 @@
       "categories": [
         "音樂",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-08-21",
@@ -141282,7 +141295,7 @@
       "categories": [
         "音樂",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-21",
@@ -141971,11 +141984,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "美術",
         "表演"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-08-22",
       "endDate": "2026-08-22",
       "locationName": "國家兩廳院",
@@ -142043,7 +142056,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 2,
       "matchedVenueValueCount": 2,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a020c0526b3243414ccc751",
@@ -143399,10 +143413,10 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "美術",
-        "音樂"
+        "演唱會",
+        "美術"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-08-22",
       "endDate": "2026-08-23",
       "locationName": "恆春文化中心劇場館表演廳",
@@ -143469,7 +143483,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "恆春文化中心劇場館表演廳"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a45485f26b32427d060402b",
@@ -144875,7 +144890,7 @@
       "categories": [
         "音樂",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-08-22",
@@ -145114,11 +145129,11 @@
         "https://s3.resource.opentix.life/default/opentixPageDefault.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "親子",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-08-22",
       "endDate": "2026-08-22",
       "locationName": "國立雲林科技大學-雲泰表演廳",
@@ -145519,11 +145534,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "表演",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-08-22",
       "endDate": "2026-08-30",
       "locationName": "兒童新樂園-光XR實境樂園2F",
@@ -146432,7 +146447,7 @@
       "images": [],
       "categories": [
         "表演",
-        "自然科學",
+        "自然",
         "音樂"
       ],
       "category": "表演",
@@ -146515,7 +146530,7 @@
       "categories": [
         "美術",
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "美術",
       "startDate": "2026-08-23",
@@ -148213,7 +148228,7 @@
       "categories": [
         "音樂",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-23",
@@ -150854,7 +150869,7 @@
       "categories": [
         "音樂",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-26",
@@ -150937,11 +150952,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
+        "演唱會",
         "舞蹈",
-        "美術",
-        "電影"
+        "美術"
       ],
-      "category": "舞蹈",
+      "category": "演唱會",
       "startDate": "2026-08-26",
       "endDate": "2026-09-03",
       "locationName": "國立雲林科技大學-雲泰表演廳",
@@ -151042,7 +151057,8 @@
       "unmatchedVenueValues": [
         "國立雲林科技大學-雲泰表演廳",
         "中油大樓國光會議廳"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "694acb5226b32416dc348fb6",
@@ -151234,7 +151250,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-26",
@@ -151876,11 +151892,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "表演",
         "美術"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-08-26",
       "endDate": "2026-08-30",
       "locationName": "台北偶戲館黑箱劇場",
@@ -151968,7 +151984,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 1,
       "matchedVenueValueCount": 1,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a4bdfe326b32427d0604138",
@@ -154313,11 +154330,11 @@
         "https://s3.resource.opentix.life/upload/program/17774463849181UxB8ZSXQS.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "親子",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-08-28",
       "endDate": "2026-08-30",
       "locationName": "華山1914文化創意產業園區",
@@ -156382,10 +156399,10 @@
         "https://www.artfocus.com.tw/files/141[1][373][33][15][12].jpg"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "親子"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-08-28",
       "endDate": "2026-09-11",
       "locationName": "新月藝文",
@@ -157090,7 +157107,7 @@
       "categories": [
         "音樂",
         "電影",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-29",
@@ -157254,7 +157271,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-08-29",
@@ -158491,7 +158508,7 @@
       "categories": [
         "舞蹈",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-08-29",
@@ -158753,7 +158770,7 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學",
+        "自然",
         "電影"
       ],
       "category": "親子",
@@ -158830,7 +158847,7 @@
       ],
       "categories": [
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-08-29",
@@ -159518,7 +159535,7 @@
       "categories": [
         "表演",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "表演",
       "startDate": "2026-08-29",
@@ -159693,10 +159710,10 @@
         "https://page-share.line.me//%40bhz3084k/global/og_image.png?ts=1784827467210\\"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "電影"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-08-29",
       "endDate": "2026-11-28",
       "locationName": "台北國際會議中心大會堂",
@@ -159786,7 +159803,8 @@
       "matchedVenueValueCount": 1,
       "unmatchedVenueValues": [
         "台中中興大學惠蓀堂"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a5e554426b32427d0604201",
@@ -166087,11 +166105,11 @@
         "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "美術",
         "表演"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-09-04",
       "endDate": "2026-09-04",
       "locationName": "衛武營國家藝術文化中心",
@@ -166159,7 +166177,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 2,
       "matchedVenueValueCount": 2,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a5e554326b32427d06041ff",
@@ -171488,7 +171507,7 @@
       "categories": [
         "音樂",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-09-09",
@@ -172689,7 +172708,7 @@
       ],
       "categories": [
         "音樂",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-09-11",
@@ -173063,11 +173082,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
-        "表演",
-        "音樂"
+        "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-09-11",
       "endDate": "2026-09-11",
       "locationName": "國立水里高級商工職業學校",
@@ -173124,7 +173143,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "國立水里高級商工職業學校"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a205ebd26b3243414ccce66",
@@ -173242,7 +173262,7 @@
       "images": [],
       "categories": [
         "親子",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-09-12",
@@ -173564,7 +173584,7 @@
       "categories": [
         "舞蹈",
         "表演",
-        "歷史文化"
+        "歷史"
       ],
       "category": "舞蹈",
       "startDate": "2026-09-12",
@@ -174187,7 +174207,7 @@
       "categories": [
         "音樂",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-09-12",
@@ -174581,10 +174601,10 @@
         "https://s3.resource.opentix.life/default/opentixPageDefault.png"
       ],
       "categories": [
-        "美術",
-        "音樂"
+        "演唱會",
+        "美術"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-09-12",
       "endDate": "2026-09-13",
       "locationName": "恆春文化中心劇場館表演廳",
@@ -174651,7 +174671,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "恆春文化中心劇場館表演廳"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a1f0d1a26b3243414ccce1c",
@@ -175016,9 +175037,9 @@
         "https://s3.resource.opentix.life/default/opentixPageDefault.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-09-12",
       "endDate": "2026-09-12",
       "locationName": "Legacy Taichung傳音樂展演空間",
@@ -175075,7 +175096,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "Legacy Taichung傳音樂展演空間"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a2b070526b3243414ccd1ad",
@@ -175094,9 +175116,9 @@
         "https://www.legacy.com.tw/uploads/article/86903833044045329229.jpg"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-09-12",
       "endDate": "2026-09-12",
       "locationName": "Legacy Taichung 音樂展演空間",
@@ -175153,7 +175175,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "Legacy Taichung 音樂展演空間"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "691df92226b32445dce6f048",
@@ -175883,9 +175906,9 @@
       "image": "",
       "images": [],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-09-12",
       "endDate": "2026-09-12",
       "locationName": "金湖鎮（金門縣）",
@@ -175943,7 +175966,8 @@
       "unmatchedVenueValues": [
         "金湖鎮（金門縣）",
         "金湖鎮（金門縣）="
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a2c3c0b26b3243414ccd226",
@@ -176494,10 +176518,10 @@
         "https://s3.resource.opentix.life/default/opentixPageDefault.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "美術"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-09-13",
       "endDate": "2026-09-13",
       "locationName": "國家兩廳院",
@@ -176565,7 +176589,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 2,
       "matchedVenueValueCount": 2,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a57bdb526b32427d06041b4",
@@ -178688,7 +178713,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化",
+        "歷史",
         "表演"
       ],
       "category": "美術",
@@ -180030,11 +180055,11 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
+        "演唱會",
         "親子",
-        "音樂",
         "表演"
       ],
-      "category": "親子",
+      "category": "演唱會",
       "startDate": "2026-09-19",
       "endDate": "2026-11-22",
       "locationName": "臺中市政府文化局中山堂",
@@ -180134,7 +180159,8 @@
       "matchedVenueValueCount": 1,
       "unmatchedVenueValues": [
         "臺中市政府文化局中山堂"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a169ff3eb437cf2219b95e6",
@@ -180436,7 +180462,7 @@
       "categories": [
         "音樂",
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-09-19",
@@ -182449,11 +182475,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
-        "表演",
-        "音樂"
+        "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-09-19",
       "endDate": "2026-09-19",
       "locationName": "魚池鄉（南投縣）",
@@ -182511,7 +182537,8 @@
       "unmatchedVenueValues": [
         "魚池鄉（南投縣）",
         "魚池鄉（南投縣）="
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a108ccf26b3243414cccacf",
@@ -186385,10 +186412,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
         "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-09-24",
       "endDate": "2026-09-24",
       "locationName": "南投縣埔里藝文中心",
@@ -186445,7 +186473,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "南投縣埔里藝文中心"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a5fa88126b32427d060420b",
@@ -187826,11 +187855,11 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1742801119314TBmJpmcqiq.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "親子",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-09-25",
       "endDate": "2026-09-27",
       "locationName": "臺灣戲曲中心大表演廳",
@@ -187934,11 +187963,11 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1742801119314TBmJpmcqiq.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "親子",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-09-25",
       "endDate": "2026-09-27",
       "locationName": "臺灣戲曲中心大表演廳",
@@ -188153,10 +188182,10 @@
         "https://khcc.kcg.gov.tw/ProgramPic.aspx?ID=39842&FIELD=IMAGE1"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2026-09-25",
       "endDate": "2026-10-06",
       "locationName": "高雄市政府文化局﹝高雄市文化中心﹞",
@@ -189228,9 +189257,9 @@
         "https://s3.resource.opentix.life/default/opentixPageDefault.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-09-26",
       "endDate": "2026-09-26",
       "locationName": "高雄流行音樂中心",
@@ -189298,7 +189327,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 2,
       "matchedVenueValueCount": 2,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "69fcc5f926b3243414ccc64a",
@@ -191211,7 +191241,7 @@
       "categories": [
         "電影",
         "音樂",
-        "自然科學"
+        "自然"
       ],
       "category": "電影",
       "startDate": "2026-09-27",
@@ -192444,7 +192474,7 @@
       "categories": [
         "音樂",
         "表演",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-10-01",
@@ -195956,7 +195986,7 @@
       "categories": [
         "音樂",
         "美術",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-10-04",
@@ -196129,10 +196159,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
         "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-10-04",
       "endDate": "2026-10-04",
       "locationName": "集集鎮（南投縣）",
@@ -196190,7 +196221,8 @@
       "unmatchedVenueValues": [
         "集集鎮（南投縣）",
         "集集鎮（南投縣）="
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a45485f26b32427d060402e",
@@ -197866,7 +197898,7 @@
       ],
       "categories": [
         "美術",
-        "歷史文化",
+        "歷史",
         "音樂"
       ],
       "category": "美術",
@@ -201187,7 +201219,7 @@
       ],
       "categories": [
         "音樂",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2026-10-16",
@@ -202368,11 +202400,11 @@
       "image": "",
       "images": [],
       "categories": [
+        "演唱會",
         "美術",
-        "表演",
-        "舞蹈"
+        "表演"
       ],
-      "category": "美術",
+      "category": "演唱會",
       "startDate": "2026-10-17",
       "endDate": "2026-10-17",
       "locationName": "名間鄉（南投縣）",
@@ -202430,7 +202462,8 @@
       "unmatchedVenueValues": [
         "名間鄉（南投縣）",
         "名間鄉（南投縣）="
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a57bdb526b32427d06041ba",
@@ -202781,9 +202814,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-10-17",
       "endDate": "2026-10-17",
       "locationName": "高雄市文化中心至德堂",
@@ -202851,7 +202884,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 1,
       "matchedVenueValueCount": 1,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a5538d926b32427d06041a6",
@@ -203302,10 +203336,10 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16921566842289DVPUeBAY5.png"
       ],
       "categories": [
-        "音樂",
+        "演唱會",
         "美術"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-10-20",
       "endDate": "2026-10-21",
       "locationName": "國家兩廳院",
@@ -203383,7 +203417,8 @@
       "venueCoverageStatus": "complete",
       "venueValueCount": 2,
       "matchedVenueValueCount": 2,
-      "unmatchedVenueValues": []
+      "unmatchedVenueValues": [],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a04aef826b3243414ccc7fb",
@@ -204349,7 +204384,7 @@
       ],
       "categories": [
         "親子",
-        "自然科學"
+        "自然"
       ],
       "category": "親子",
       "startDate": "2026-10-23",
@@ -205874,7 +205909,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-10-26",
@@ -205954,10 +205989,10 @@
       "image": "",
       "images": [],
       "categories": [
-        "自然科學",
+        "自然",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-10-27",
       "endDate": "2026-11-08",
       "locationName": "彰化藝術館",
@@ -206574,7 +206609,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化",
+        "歷史",
         "表演"
       ],
       "category": "音樂",
@@ -210490,7 +210525,7 @@
       "categories": [
         "音樂",
         "設計",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-11-11",
@@ -211374,11 +211409,11 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678353538978I0pas4GNu6.png"
       ],
       "categories": [
-        "自然科學",
+        "自然",
         "親子",
         "美術"
       ],
-      "category": "自然科學",
+      "category": "自然",
       "startDate": "2026-11-13",
       "endDate": "2026-11-14",
       "locationName": "功學社音樂廳",
@@ -214279,7 +214314,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-11-27",
@@ -214855,7 +214890,7 @@
       "categories": [
         "音樂",
         "美術",
-        "歷史文化"
+        "歷史"
       ],
       "category": "音樂",
       "startDate": "2026-11-29",
@@ -219067,9 +219102,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA_RWD/img/app/dl_google_161229_zh-hant.png"
       ],
       "categories": [
-        "音樂"
+        "演唱會"
       ],
-      "category": "音樂",
+      "category": "演唱會",
       "startDate": "2026-12-26",
       "endDate": "2026-12-27",
       "locationName": "台中中興大學惠蓀堂",
@@ -219136,7 +219171,8 @@
       "matchedVenueValueCount": 0,
       "unmatchedVenueValues": [
         "台中中興大學惠蓀堂"
-      ]
+      ],
+      "contentTypeLabel": "演唱會"
     },
     {
       "id": "6a30306826b3243414ccd2d9",
@@ -219912,11 +219948,11 @@
         "https://www.chimeimuseum.org/uploads/photos/shares/68cba3d0a27df.png"
       ],
       "categories": [
-        "歷史文化",
+        "歷史",
         "美術",
         "動漫"
       ],
-      "category": "歷史文化",
+      "category": "歷史",
       "startDate": "2027-01-01",
       "endDate": "2027-01-10",
       "locationName": "臺南市奇美博物館",
@@ -220984,7 +221020,7 @@
       "categories": [
         "音樂",
         "親子",
-        "自然科學"
+        "自然"
       ],
       "category": "音樂",
       "startDate": "2027-05-08",
