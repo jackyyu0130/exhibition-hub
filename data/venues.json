@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-27",
+  "updatedAt": "2026-07-28",
   "description": "台灣展覽誌場館主檔。同一場館的別名集中管理，避免活動資料產生重複場館。",
   "venues": [
     {
@@ -46,6 +46,25 @@
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
     },
     {
+      "id": "chiayi-city-cultural-bureau-music-hall",
+      "name": "嘉義市政府文化局音樂廳",
+      "aliases": [
+        "嘉義市文化局音樂廳"
+      ],
+      "region": "嘉義市",
+      "district": "東區",
+      "venueTypes": [
+        "concert_hall",
+        "performance_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "chiayi-art-museum",
       "name": "嘉義市立美術館",
       "aliases": [
@@ -84,6 +103,28 @@
       "notes": ""
     },
     {
+      "id": "chiayi-county-performing-arts-center",
+      "name": "嘉義縣表演藝術中心",
+      "aliases": [
+        "嘉義縣表演藝術中心演藝廳",
+        "嘉義縣表演藝術中心芙蕖廳",
+        "嘉義縣表演藝術中心實驗劇場"
+      ],
+      "region": "嘉義縣",
+      "district": "民雄鄉",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://cypac.cyhg.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "national-palace-museum-south",
       "name": "國立故宮博物院南部院區",
       "aliases": [
@@ -101,6 +142,92 @@
       "latitude": null,
       "longitude": null,
       "notes": ""
+    },
+    {
+      "id": "keelung-performing-arts-center",
+      "name": "基隆表演藝術中心",
+      "aliases": [
+        "基隆表演藝術中心演藝廳",
+        "基隆表演藝術中心島嶼實驗劇場",
+        "基隆表藝中心"
+      ],
+      "region": "基隆市",
+      "district": "中正區",
+      "venueTypes": [
+        "performing_arts_center",
+        "performance_space"
+      ],
+      "officialUrl": "https://klpas.klcg.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
+      "id": "yilan-performing-arts-hall",
+      "name": "宜蘭演藝廳",
+      "aliases": [
+        "宜蘭縣政府文化局宜蘭演藝廳"
+      ],
+      "region": "宜蘭縣",
+      "district": "宜蘭市",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
+      "id": "taiwan-indigenous-culture-development-center",
+      "name": "原住民族委員會原住民族文化發展中心",
+      "aliases": [
+        "原住民族文化發展中心",
+        "臺灣原住民族文化園區",
+        "台灣原住民族文化園區"
+      ],
+      "region": "屏東縣",
+      "district": "瑪家鄉",
+      "venueTypes": [
+        "cultural_center",
+        "cultural_park",
+        "exhibition_space",
+        "performance_space"
+      ],
+      "officialUrl": "https://www.cip.gov.tw/zh-tw/menu/data-list/B2CCFC5351C76F71-info.html?cumid=B2CCFC5351C76F71",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
+      "id": "pingtung-performing-arts-hall",
+      "name": "屏東演藝廳",
+      "aliases": [
+        "屏東演藝廳音樂廳",
+        "屏東演藝廳實驗劇場",
+        "屏東演藝廳音樂廳 大廳",
+        "屏東演藝廳-音樂廳"
+      ],
+      "region": "屏東縣",
+      "district": "屏東市",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall",
+        "performance_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "hemei-township-library",
@@ -161,6 +288,25 @@
       "latitude": null,
       "longitude": null,
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
+    },
+    {
+      "id": "changhua-art-museum",
+      "name": "彰化藝術館",
+      "aliases": [
+        "彰化縣彰化藝術館"
+      ],
+      "region": "彰化縣",
+      "district": "彰化市",
+      "venueTypes": [
+        "art_museum",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://www.bocach.gov.tw/cl.aspx?n=1392",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "taiwan-film-audiovisual-institute",
@@ -285,6 +431,28 @@
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
     },
     {
+      "id": "hsinchu-county-cultural-bureau-hall",
+      "name": "新竹縣政府文化局演藝廳",
+      "aliases": [
+        "新竹縣文化局演藝廳",
+        "新竹縣政府文化局演奏廳",
+        "新竹縣政府文化局實驗劇場"
+      ],
+      "region": "新竹縣",
+      "district": "竹北市",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall",
+        "performance_space"
+      ],
+      "officialUrl": "https://www.hchcc.gov.tw/Tw/Common/SinglePage?filter=D278B6D6-F5CF-4B8A-ADF1-9E82D64461DB",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "zhongli-arts-hall",
       "name": "中壢藝術館",
       "aliases": [
@@ -305,6 +473,47 @@
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
     },
     {
+      "id": "taoyuan-arts-center",
+      "name": "桃園展演中心",
+      "aliases": [
+        "桃園展演中心展演廳",
+        "桃園展演中心展場",
+        "桃園展演中心藝文廣場"
+      ],
+      "region": "桃園市",
+      "district": "桃園區",
+      "venueTypes": [
+        "performing_arts_center",
+        "exhibition_hall",
+        "outdoor_space"
+      ],
+      "officialUrl": "https://www.afmc.gov.tw/Center_Art_Center",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
+      "id": "taoyuan-cultural-bureau-performance-hall",
+      "name": "桃園市政府文化局演藝廳",
+      "aliases": [
+        "桃園市文化局演藝廳"
+      ],
+      "region": "桃園市",
+      "district": "桃園區",
+      "venueTypes": [
+        "performance_space",
+        "concert_hall"
+      ],
+      "officialUrl": "https://culture.tycg.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "taoyuan-museum-of-fine-arts",
       "name": "桃園市立美術館",
       "aliases": [
@@ -322,6 +531,27 @@
       "latitude": null,
       "longitude": null,
       "notes": ""
+    },
+    {
+      "id": "penghu-performing-arts-hall",
+      "name": "澎湖縣演藝廳",
+      "aliases": [
+        "澎湖演藝廳",
+        "澎湖縣演藝廳多功能室"
+      ],
+      "region": "澎湖縣",
+      "district": "馬公市",
+      "venueTypes": [
+        "performing_arts_center",
+        "concert_hall",
+        "performance_space"
+      ],
+      "officialUrl": "https://www.penghu.gov.tw/hall/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "national-museum-of-natural-science",
@@ -476,6 +706,30 @@
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
     },
     {
+      "id": "taichung-huludun-cultural-center",
+      "name": "臺中市葫蘆墩文化中心",
+      "aliases": [
+        "台中市葫蘆墩文化中心",
+        "葫蘆墩文化中心",
+        "臺中市葫蘆墩文化中心演奏廳",
+        "台中市葫蘆墩文化中心演奏廳",
+        "葫蘆墩文化中心演奏廳"
+      ],
+      "region": "臺中市",
+      "district": "豐原區",
+      "venueTypes": [
+        "cultural_center",
+        "concert_hall",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://www.huludun.taichung.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "calligraphy-greenway",
       "name": "草悟道",
       "aliases": [
@@ -498,6 +752,28 @@
       "notes": ""
     },
     {
+      "id": "beitou-heart-village",
+      "name": "北投中心新村",
+      "aliases": [
+        "北投中心新村-E2-2心村行+E2-3展間",
+        "北投中心新村-C1 藝棧",
+        "北投中心新村C1藝棧",
+        "北投中心新村E2-2心村行E2-3展間"
+      ],
+      "region": "臺北市",
+      "district": "北投區",
+      "venueTypes": [
+        "cultural_park",
+        "exhibition_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "taipei-world-trade-center",
       "name": "台北世界貿易中心",
       "aliases": [
@@ -518,6 +794,28 @@
       "latitude": null,
       "longitude": null,
       "notes": ""
+    },
+    {
+      "id": "taipei-puppetry-museum",
+      "name": "台北偶戲館",
+      "aliases": [
+        "臺北偶戲館",
+        "台北偶戲館黑箱劇場",
+        "臺北偶戲館黑箱劇場"
+      ],
+      "region": "臺北市",
+      "district": "松山區",
+      "venueTypes": [
+        "museum",
+        "performance_space",
+        "exhibition_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "taipei-nangang-exhibition-center",
@@ -765,6 +1063,25 @@
       "notes": ""
     },
     {
+      "id": "water-source-theater",
+      "name": "水源劇場",
+      "aliases": [
+        "臺北水源劇場",
+        "台北水源劇場"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueTypes": [
+        "performance_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "guling-street-avant-garde-theatre",
       "name": "牯嶺街小劇場",
       "aliases": [
@@ -847,6 +1164,24 @@
       "latitude": null,
       "longitude": null,
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
+    },
+    {
+      "id": "taipei-city-hall-family-theater",
+      "name": "臺北市政大樓親子劇場",
+      "aliases": [
+        "台北市政大樓親子劇場"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueTypes": [
+        "performance_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "taipei-fine-arts-museum",
@@ -1020,6 +1355,25 @@
       "latitude": null,
       "longitude": null,
       "notes": ""
+    },
+    {
+      "id": "mongolian-tibetan-cultural-center",
+      "name": "蒙藏文化館",
+      "aliases": [
+        "文化部蒙藏文化館"
+      ],
+      "region": "臺北市",
+      "district": "大安區",
+      "venueTypes": [
+        "museum",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://mtcc.moc.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "eslite-performance-hall",
@@ -1292,6 +1646,26 @@
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
     },
     {
+      "id": "kinmen-cultural-affairs-bureau",
+      "name": "金門縣文化局",
+      "aliases": [
+        "金門縣政府文化局"
+      ],
+      "region": "金門縣",
+      "district": "金城鎮",
+      "venueTypes": [
+        "cultural_center",
+        "exhibition_space",
+        "performance_space"
+      ],
+      "officialUrl": "",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "yunlin-performance-hall",
       "name": "雲林表演廳",
       "aliases": [
@@ -1455,6 +1829,29 @@
       "notes": ""
     },
     {
+      "id": "kaohsiung-cultural-center",
+      "name": "高雄市文化中心",
+      "aliases": [
+        "高雄市文化中心至德堂",
+        "高雄市文化中心至善廳",
+        "高雄市政府文化局﹝高雄市文化中心﹞",
+        "高雄市政府文化局高雄市文化中心"
+      ],
+      "region": "高雄市",
+      "district": "苓雅區",
+      "venueTypes": [
+        "cultural_center",
+        "performing_arts_center",
+        "exhibition_space"
+      ],
+      "officialUrl": "https://www.khcc.gov.tw/",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
+    },
+    {
       "id": "kaohsiung-museum-history",
       "name": "高雄市立歷史博物館",
       "aliases": [
@@ -1512,6 +1909,27 @@
       "latitude": null,
       "longitude": null,
       "notes": "4-B-2：依 event registry Dry Run 高頻未配對場館新增。"
+    },
+    {
+      "id": "kaohsiung-city-music-hall",
+      "name": "高雄市音樂館",
+      "aliases": [
+        "高雄市音樂館演奏廳",
+        "高雄市政府文化局﹝高雄市音樂館﹞",
+        "高雄市政府文化局高雄市音樂館"
+      ],
+      "region": "高雄市",
+      "district": "鹽埕區",
+      "venueTypes": [
+        "concert_hall",
+        "music_venue"
+      ],
+      "officialUrl": "https://art-garden.khcc.gov.tw/venue",
+      "sourceIds": [],
+      "status": "active",
+      "latitude": null,
+      "longitude": null,
+      "notes": "4-B-5：依場館覆蓋 Dry Run 高頻未辨識值補入；官方資訊以政府或場館網站為準。"
     },
     {
       "id": "kaohsiung-music-center",

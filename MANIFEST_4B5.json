@@ -1,0 +1,17 @@
+{
+  "stage": "4-B-5",
+  "name": "正式資料的重要場館補全",
+  "baseline": {
+    "sourceBranch": "main",
+    "updatedAt": "2026-07-27T19:01:56+08:00",
+    "eventCount": 2428,
+    "venueRegistryCountBefore": 74
+  },
+  "venueRegistryCountAfter": 94,
+  "addedVenueCount": 20,
+  "files": [
+    "data/venues.json",
+    "tests/test_priority_venue_registry.py",
+    "docs/PRIORITY_VENUES_4B5_ZH-TW.md"
+  ]
+}
