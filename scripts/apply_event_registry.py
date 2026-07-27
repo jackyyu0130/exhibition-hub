@@ -148,6 +148,18 @@ def compact_event_sample(
         "venueName": event.get("venueName"),
         "venueIds": event.get("venueIds"),
         "venueNames": event.get("venueNames"),
+        "venueCoverageStatus": event.get(
+            "venueCoverageStatus"
+        ),
+        "venueValueCount": event.get(
+            "venueValueCount"
+        ),
+        "matchedVenueValueCount": event.get(
+            "matchedVenueValueCount"
+        ),
+        "unmatchedVenueValues": event.get(
+            "unmatchedVenueValues"
+        ),
         "contentType": event.get("contentType"),
         "contentTypes": event.get(
             "contentTypes"
@@ -219,6 +231,13 @@ def main() -> int:
         diagnostic["method"]
         for diagnostic in venue_diagnostics
     )
+    venue_coverage_counts = Counter(
+        diagnostic.get(
+            "venueCoverageStatus",
+            "none",
+        )
+        for diagnostic in venue_diagnostics
+    )
     primary_type_counts = Counter(
         event.get("contentType") or "unknown"
         for event in enriched_events
@@ -284,6 +303,15 @@ def main() -> int:
         for diagnostic in venue_diagnostics
         if diagnostic["status"] == "unmatched"
     )
+    unmatched_venue_value_counts = Counter(
+        str(value or "（空白場館）")
+        for diagnostic in venue_diagnostics
+        for value in diagnostic.get(
+            "unmatchedVenueValues",
+            [],
+        )
+        if value
+    )
 
     matched_events = [
         compact_event_sample(event)
@@ -317,6 +345,19 @@ def main() -> int:
         )
         if diagnostic["status"]
         == "matched_multiple"
+    ]
+    partial_venue_events = [
+        {
+            **compact_event_sample(event),
+            "venueDiagnostic": diagnostic,
+        }
+        for event, diagnostic in zip(
+            enriched_events,
+            venue_diagnostics,
+        )
+        if diagnostic.get(
+            "venueCoverageStatus"
+        ) == "partial"
     ]
     review_events = [
         compact_event_sample(event)
@@ -366,6 +407,23 @@ def main() -> int:
                     50
                 )
             ),
+            "venueCoverageStatusCounts": dict(
+                sorted(
+                    venue_coverage_counts.items()
+                )
+            ),
+            "completeCoveragePercentage": percentage(
+                venue_coverage_counts.get(
+                    "complete",
+                    0,
+                ),
+                total,
+            ),
+            "topUnmatchedVenueValues": dict(
+                unmatched_venue_value_counts.most_common(
+                    50
+                )
+            ),
         },
         "classification": {
             "primaryContentTypeCounts": dict(
@@ -408,6 +466,9 @@ def main() -> int:
                 : arguments.sample_limit
             ],
             "multiVenueEvents": multi_venue_events[
+                : arguments.sample_limit
+            ],
+            "partialVenueEvents": partial_venue_events[
                 : arguments.sample_limit
             ],
             "unmatchedEvents": unmatched_events[

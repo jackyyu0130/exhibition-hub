@@ -1,0 +1,10 @@
+{
+  "stage": "4-B-4",
+  "name": "場館覆蓋完整度檢查",
+  "files": [
+    "scripts/exhibition_hub/registry/event_enricher.py",
+    "scripts/apply_event_registry.py",
+    "tests/test_event_registry_enrichment.py",
+    "docs/VENUE_COVERAGE_4B4_ZH-TW.md"
+  ]
+}

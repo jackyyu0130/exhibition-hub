@@ -195,5 +195,84 @@ class EventRegistryEnrichmentTests(unittest.TestCase):
         )
 
 
+    def test_partial_venue_coverage_is_reported(self):
+        event = {
+            "id": "partial",
+            "title": "巡迴節目",
+            "locationName": "國家兩廳院",
+            "region": "臺北市",
+            "sessions": [
+                {
+                    "locationName": "國家音樂廳"
+                },
+                {
+                    "locationName": "尚未登錄的新場館"
+                },
+            ],
+        }
+
+        enriched, diagnostic = (
+            enrich_event_with_registry(
+                event,
+                self.venue_registry,
+            )
+        )
+
+        self.assertEqual(
+            enriched["venueCoverageStatus"],
+            "partial",
+        )
+        self.assertEqual(
+            enriched["venueValueCount"],
+            3,
+        )
+        self.assertEqual(
+            enriched["matchedVenueValueCount"],
+            2,
+        )
+        self.assertEqual(
+            enriched["unmatchedVenueValues"],
+            ["尚未登錄的新場館"],
+        )
+        self.assertEqual(
+            diagnostic["venueCoverageStatus"],
+            "partial",
+        )
+
+    def test_complete_multi_venue_coverage_is_reported(self):
+        event = {
+            "id": "complete-multi",
+            "title": "雙城巡演",
+            "locationName": "國家兩廳院",
+            "region": "臺北市",
+            "sessions": [
+                {
+                    "locationName": "苗北藝文中心演藝廳"
+                },
+            ],
+        }
+
+        enriched, _ = enrich_event_with_registry(
+            event,
+            self.venue_registry,
+        )
+
+        self.assertEqual(
+            enriched["venueCoverageStatus"],
+            "complete",
+        )
+        self.assertEqual(
+            set(enriched["venueIds"]),
+            {
+                "national-theater-and-concert-hall",
+                "miaobei-art-center",
+            },
+        )
+        self.assertEqual(
+            enriched["unmatchedVenueValues"],
+            [],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

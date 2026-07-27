@@ -656,6 +656,97 @@ def resolve_event_venue(
         "candidateVenueIds": [],
     }
 
+
+def resolve_event_venue_values(
+    event: Mapping[str, Any],
+    venue_registry: Mapping[str, Any],
+    legacy_alias_registry: (
+        Mapping[str, Any] | None
+    ) = None,
+) -> list[dict[str, Any]]:
+    """Resolve each original venue string independently.
+
+    A multi-venue event may have some recognized venue values and some
+    unresolved values. Keeping value-level diagnostics prevents a partial
+    match from being mistaken for complete venue coverage.
+    """
+
+    resolutions: list[dict[str, Any]] = []
+
+    for value_record in _event_venue_values(event):
+        value = str(
+            value_record.get("value") or ""
+        ).strip()
+
+        if not value:
+            continue
+
+        synthetic_event = {
+            "locationName": value,
+            "region": (
+                ""
+                if value_record.get(
+                    "allowCrossRegion"
+                )
+                else event.get("region")
+            ),
+        }
+        result = resolve_event_venue(
+            synthetic_event,
+            venue_registry,
+            legacy_alias_registry,
+        )
+        matched_venues = [
+            venue
+            for venue in result.get(
+                "venues",
+                [],
+            )
+            if isinstance(venue, dict)
+        ]
+        venue_ids = [
+            str(venue.get("id") or "")
+            for venue in matched_venues
+            if venue.get("id")
+        ]
+        venue_names = [
+            str(venue.get("name") or "")
+            for venue in matched_venues
+            if venue.get("name")
+        ]
+
+        resolutions.append(
+            {
+                "value": value,
+                "source": value_record.get(
+                    "source",
+                    "",
+                ),
+                "allowCrossRegion": bool(
+                    value_record.get(
+                        "allowCrossRegion"
+                    )
+                ),
+                "status": (
+                    "matched"
+                    if venue_ids
+                    else "unmatched"
+                ),
+                "venueIds": venue_ids,
+                "venueNames": venue_names,
+                "method": result.get(
+                    "method",
+                    "none",
+                ),
+                "confidence": result.get(
+                    "confidence",
+                    0.0,
+                ),
+            }
+        )
+
+    return resolutions
+
 def enrich_event_with_registry(
     event: Mapping[str, Any],
     venue_registry: Mapping[str, Any],
@@ -697,6 +788,37 @@ def enrich_event_with_registry(
         if venue.get("name")
     ]
 
+    venue_value_resolutions = (
+        resolve_event_venue_values(
+            event,
+            venue_registry,
+            legacy_alias_registry,
+        )
+    )
+    unmatched_venue_values = [
+        str(resolution.get("value") or "")
+        for resolution in venue_value_resolutions
+        if resolution.get("status")
+        == "unmatched"
+    ]
+    matched_venue_value_count = sum(
+        1
+        for resolution in venue_value_resolutions
+        if resolution.get("status") == "matched"
+    )
+    venue_value_count = len(
+        venue_value_resolutions
+    )
+
+    if venue_value_count <= 0:
+        venue_coverage_status = "none"
+    elif matched_venue_value_count <= 0:
+        venue_coverage_status = "none"
+    elif matched_venue_value_count < venue_value_count:
+        venue_coverage_status = "partial"
+    else:
+        venue_coverage_status = "complete"
+
     enriched["venueIds"] = venue_ids
     enriched["venueNames"] = venue_names
     enriched["venueMatches"] = [
@@ -730,6 +852,18 @@ def enrich_event_with_registry(
         if venue_ids
         else 0.0
     )
+    enriched["venueCoverageStatus"] = (
+        venue_coverage_status
+    )
+    enriched["venueValueCount"] = (
+        venue_value_count
+    )
+    enriched["matchedVenueValueCount"] = (
+        matched_venue_value_count
+    )
+    enriched["unmatchedVenueValues"] = (
+        unmatched_venue_values
+    )
 
     diagnostic = {
         "eventId": event.get("id"),
@@ -754,6 +888,19 @@ def enrich_event_with_registry(
         "candidateVenueIds": match.get(
             "candidateVenueIds",
             [],
+        ),
+        "venueCoverageStatus": (
+            venue_coverage_status
+        ),
+        "venueValueCount": venue_value_count,
+        "matchedVenueValueCount": (
+            matched_venue_value_count
+        ),
+        "unmatchedVenueValues": (
+            unmatched_venue_values
+        ),
+        "venueValueResolutions": (
+            venue_value_resolutions
         ),
     }
 
