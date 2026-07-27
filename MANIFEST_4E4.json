@@ -1,0 +1,29 @@
+{
+  "stage": "4-E-4",
+  "name": "日曆與分類版面精修",
+  "changes": [
+    "日曆選取狀態改為淺色底與深色字",
+    "選取其他日期時淡化今日狀態",
+    "再次點擊已選日期可取消",
+    "首頁分類電腦版每排 6 個",
+    "探索頁分類每排 6 個圓圈",
+    "探索頁只有圓圈可點擊",
+    "探索頁左右欄不再等高拉伸",
+    "前端快取版本更新至 5.3"
+  ],
+  "huashanSourceGap": {
+    "sourceRegistryStatus": "planned",
+    "sourceRegistryEnabled": false,
+    "collectorExists": false,
+    "currentScraperPrimarySource": "文化部活動 API",
+    "eventPresentInEnrichedData": false
+  },
+  "files": [
+    "assets/app.js",
+    "assets/styles.css",
+    "index.html",
+    "tests/test_category_order_and_special_icons.py",
+    "tests/test_calendar_and_compact_categories.py",
+    "docs/FRONTEND_REFINEMENTS_AND_HUASHAN_AUDIT_4E4_ZH-TW.md"
+  ]
+}
