@@ -1091,7 +1091,15 @@
 
     const categoryCounts = countBy(state.events, event => event.categories);
     const categories = CATEGORY_ORDER;
-    $('#listingCategoryOptions').innerHTML = categories.map(category => `<button class="listing-category-option ${state.categories.has(category) ? 'active' : ''}" data-toggle-category="${escapeHtml(category)}" type="button" aria-pressed="${state.categories.has(category)}"><span class="category-icon">${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span><strong>${escapeHtml(category)}</strong><small>${(categoryCounts[category] || 0).toLocaleString('zh-TW')} 檔</small></button>`).join('');
+    $('#listingCategoryOptions').innerHTML = categories.map(category => {
+      const count = (categoryCounts[category] || 0).toLocaleString('zh-TW');
+      return `<div class="listing-category-item">
+        <button class="listing-category-option ${state.categories.has(category) ? 'active' : ''}" data-toggle-category="${escapeHtml(category)}" type="button" aria-pressed="${state.categories.has(category)}" aria-label="${escapeHtml(category)}，${count}檔">
+          <span class="category-icon">${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span>
+        </button>
+        <strong>${escapeHtml(category)}</strong>
+      </div>`;
+    }).join('');
 
     const regionGroups = REGION_ORDER.map(region => {
       const regionEvents = state.events.filter(event => event.region === region);
@@ -1114,6 +1122,7 @@
     const year = month.getFullYear();
     const monthIndex = month.getMonth();
     $('#calendarMonthLabel').textContent = `${year} 年 ${monthIndex + 1} 月`;
+    $('#listingCalendar')?.classList.toggle('has-selected-date', Boolean(state.date));
     const firstWeekday = new Date(year, monthIndex, 1).getDay();
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
     const todayKey = localDateKey(new Date());
@@ -1616,7 +1625,10 @@
         if (item) shareEvent(item);
       }
       const calendarButton = event.target.closest('[data-calendar-date]');
-      if (calendarButton) updateUrl({date:calendarButton.dataset.calendarDate});
+      if (calendarButton) {
+        const nextDate = calendarButton.dataset.calendarDate;
+        updateUrl({date:nextDate === state.date ? null : nextDate});
+      }
 
       const locationButton = event.target.closest('[data-region-filter]');
       if (locationButton) updateUrl({region:locationButton.dataset.regionFilter || null, venue:locationButton.dataset.venueFilter || null});

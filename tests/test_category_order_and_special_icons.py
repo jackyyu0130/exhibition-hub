@@ -58,16 +58,19 @@ class CategoryOrderAndSpecialIconTests(unittest.TestCase):
             APP,
         )
 
-    def test_exact_desktop_row_grouping_is_shared(self):
+    def test_home_and_listing_use_six_column_desktop_layouts(self):
         self.assertIn(
-            ".category-strip,\n  "
-            ".listing-view-hero .listing-category-grid",
+            "grid-template-columns: repeat(6, minmax(0, 1fr))",
             CSS,
         )
-        self.assertIn("grid-template-columns: repeat(20", CSS)
-        self.assertIn("nth-child(n + 6)", CSS)
-        self.assertIn("grid-column: span 4", CSS)
-        self.assertIn("grid-column: span 5", CSS)
+        self.assertIn(
+            "grid-template-columns: repeat(6, minmax(62px, 1fr))",
+            CSS,
+        )
+        self.assertIn(
+            "grid-column: auto !important",
+            CSS,
+        )
 
     def test_concert_has_independent_microphone_icon(self):
         self.assertIn("'演唱會': iconSvg", APP)
