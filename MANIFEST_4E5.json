@@ -1,0 +1,22 @@
+{
+  "stage": "4-E-5",
+  "name": "探索頁框線、標題與顯示排序控制",
+  "changes": [
+    "左右主框上下對齊",
+    "移除標題放大鏡 Icon",
+    "標題與 STATUS 左側對齊",
+    "顯示選單同步舉辦狀態名稱",
+    "保留名稱排序",
+    "新增熱門排序",
+    "前端快取版本更新至 5.4"
+  ],
+  "collectorNextStage": "5-A",
+  "files": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "tests/test_explore_alignment_and_sort_control.py",
+    "docs/EXPLORE_ALIGNMENT_AND_SORT_4E5_ZH-TW.md",
+    "docs/COLLECTOR_ROADMAP_5A_ZH-TW.md"
+  ]
+}

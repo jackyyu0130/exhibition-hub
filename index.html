@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=5.3">
+  <link rel="stylesheet" href="assets/styles.css?v=5.4">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -280,9 +280,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="view-hero compact-view-hero listing-view-hero">
         <div class="listing-heading-column">
           <div class="view-title-row">
-            <span class="view-title-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5M10 6v8M6 10h8"></path></svg>
-            </span>
             <div>
               <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
               <h1 id="listingTitle">探索全台展覽</h1>
@@ -343,11 +340,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <button class="filter-drawer-button" id="filterDrawerButton" type="button">日期與地點篩選</button>
               <span id="listingCount">載入中…</span>
             </div>
-            <select id="sortSelect" aria-label="排序方式">
-              <option value="recommended">推薦排序</option>
-              <option value="newest">最新開展</option>
-              <option value="ending">即將結束</option>
-              <option value="title">名稱排序</option>
+            <select id="sortSelect" aria-label="展覽顯示與排序方式">
+              <option value="status:all">全部展覽</option>
+              <option value="status:ongoing">目前舉辦</option>
+              <option value="status:upcoming">即將舉辦</option>
+              <option value="status:ending">即將結束</option>
+              <option value="status:free">免費展覽</option>
+              <option value="sort:title">名稱排序</option>
+              <option value="sort:popular">熱門排序</option>
             </select>
           </div>
           <div class="active-filters" id="activeFilters"></div>
@@ -454,6 +454,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=5.3"></script>
+  <script src="assets/app.js?v=5.4"></script>
 </body>
 </html>
