@@ -89,7 +89,7 @@
     venue: null,
     date: null,
     query: '',
-    sort: 'recommended',
+    sort: null,
     userLocation: null,
     map: null,
     markers: null,
@@ -748,6 +748,12 @@
     state.region = params.get('region') || null;
     state.venue = params.get('venue') || null;
     state.status = params.get('status') || 'all';
+    const requestedSort = params.get('sort');
+    state.sort = requestedSort === 'title'
+      ? 'title'
+      : requestedSort === 'popular'
+        ? 'popular'
+        : null;
     state.date = params.get('date') || null;
     const calendarAnchor = state.date ? parseDate(`${state.date}T00:00:00`) : new Date();
     state.calendarMonth = new Date(calendarAnchor.getFullYear(), calendarAnchor.getMonth(), 1);
@@ -780,11 +786,18 @@
 
   function sortEvents(items) {
     const result = [...items];
-    if (state.sort === 'newest') result.sort((a,b) => (parseDate(b.startDate)?.getTime() || 0) - (parseDate(a.startDate)?.getTime() || 0));
-    else if (state.sort === 'ending') result.sort((a,b) => (parseDate(a.endDate)?.getTime() || Infinity) - (parseDate(b.endDate)?.getTime() || Infinity));
-    else if (state.sort === 'title') result.sort((a,b) => a.title.localeCompare(b.title, 'zh-Hant'));
-    else result.sort((a,b) => recommendationScore(b) - recommendationScore(a));
+    if (state.sort === 'title') {
+      result.sort((a,b) => a.title.localeCompare(b.title, 'zh-Hant'));
+    } else {
+      result.sort((a,b) => recommendationScore(b) - recommendationScore(a));
+    }
     return result;
+  }
+
+  function listingControlValue() {
+    if (state.sort === 'title') return 'sort:title';
+    if (state.sort === 'popular') return 'sort:popular';
+    return `status:${state.status || 'all'}`;
   }
 
   function recommendationScore(event) {
@@ -1071,7 +1084,7 @@
     $('#listingCount').textContent = `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
     $('#listingGrid').innerHTML = items.map(event => cardMarkup(event,{wholeCardLink:true})).join('');
     $('#listingEmpty').hidden = items.length !== 0;
-    $('#sortSelect').value = state.sort;
+    $('#sortSelect').value = listingControlValue();
     renderSidebarOptions();
     renderListingCalendar();
     renderActiveFilters();
@@ -1673,7 +1686,19 @@
     $('#calendarPrevButton').addEventListener('click', () => {state.calendarMonth = new Date(state.calendarMonth.getFullYear(),state.calendarMonth.getMonth()-1,1);renderListingCalendar();});
     $('#calendarNextButton').addEventListener('click', () => {state.calendarMonth = new Date(state.calendarMonth.getFullYear(),state.calendarMonth.getMonth()+1,1);renderListingCalendar();});
     $('#calendarTodayButton').addEventListener('click', () => updateUrl({date:localDateKey(new Date())}));
-    $('#sortSelect').addEventListener('change', event => {state.sort=event.target.value;renderListing();});
+    $('#sortSelect').addEventListener('change', event => {
+      const [mode, value] = String(event.target.value).split(':');
+      if (mode === 'status') {
+        updateUrl({
+          status:value === 'all' ? null : value,
+          sort:null,
+        });
+        return;
+      }
+      if (mode === 'sort') {
+        updateUrl({sort:value});
+      }
+    });
     $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.add('open'));
     $('#filterCloseButton').addEventListener('click', () => $('#filterSidebar').classList.remove('open'));
     $('#homeLocationButton').addEventListener('click', requestLocation);

@@ -4196,3 +4196,42 @@ body {
     justify-content: start;
   }
 }
+
+/* 4-E-5: align the explore panels and simplify the title/sort control */
+
+/* Left and right cards share the same top and bottom edges. */
+.listing-view-hero {
+  align-items: stretch;
+}
+
+.listing-view-hero .listing-heading-column {
+  align-self: stretch;
+  height: 100%;
+}
+
+/* With the decorative magnifier removed, the title aligns with STATUS. */
+.listing-view-hero .view-title-row {
+  display: block;
+  width: 100%;
+  gap: 0;
+}
+
+.listing-view-hero .view-title-row > div {
+  width: 100%;
+}
+
+/* Keep the combined status/sort menu compact and readable. */
+.listing-content .listing-toolbar select {
+  min-width: 142px;
+  font-weight: 600;
+}
+
+@media (max-width: 820px) {
+  .listing-view-hero {
+    align-items: start;
+  }
+
+  .listing-view-hero .listing-heading-column {
+    height: auto;
+  }
+}
