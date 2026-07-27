@@ -1,0 +1,10 @@
+{
+  "stage": "4-B-3",
+  "name": "多場館活動支援",
+  "files": [
+    "scripts/exhibition_hub/registry/event_enricher.py",
+    "scripts/apply_event_registry.py",
+    "tests/test_event_registry_enrichment.py",
+    "docs/MULTI_VENUE_EVENTS_4B3_ZH-TW.md"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "stage": "4-E-2A",
+  "name": "修正前端快取版本測試",
+  "reason": "舊測試固定要求 v=5.0，與目前 v=5.2 不一致",
+  "files": [
+    "tests/test_frontend.py",
+    "docs/CACHE_VERSION_TEST_FIX_4E2A_ZH-TW.md"
+  ],
+  "productionFilesChanged": false
+}

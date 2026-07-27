@@ -1,0 +1,22 @@
+{
+  "stage": "4-D Full",
+  "name": "完整 Enriched 功能、不變更前台設計",
+  "designFilesIncluded": [],
+  "features": [
+    "regionCanonical",
+    "venueName",
+    "venueNames",
+    "multiVenue",
+    "allVenueSearchAndFilter",
+    "contentType",
+    "editorialStatus",
+    "unmatchedVenueFallback",
+    "legacyDataFallback"
+  ],
+  "files": [
+    "assets/app.js",
+    "data/exhibitions.enriched.json",
+    "tests/test_full_features_no_design_change.py",
+    "docs/FULL_FEATURES_NO_DESIGN_CHANGE_4D_ZH-TW.md"
+  ]
+}

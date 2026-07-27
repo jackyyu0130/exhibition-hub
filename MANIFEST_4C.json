@@ -1,0 +1,26 @@
+{
+  "stage": "4-C",
+  "name": "產生網站候選資料",
+  "baseline": {
+    "artifact": "event-registry-dry-run-67",
+    "sourceBranch": "main",
+    "updatedAt": "2026-07-27T19:01:56+08:00",
+    "inputEventCount": 2428,
+    "venueRegistryCount": 94
+  },
+  "expectedCandidate": {
+    "outputEventCount": 2424,
+    "candidate": 2320,
+    "needsReview": 104,
+    "excludedReview": 4,
+    "resolvedEventCount": 1241,
+    "multiVenueEventCount": 107
+  },
+  "files": [
+    ".github/workflows/validate-develop.yml",
+    ".github/probe-enriched-candidate.trigger",
+    "scripts/build_enriched_candidate.py",
+    "tests/test_enriched_candidate_builder.py",
+    "docs/ENRICHED_CANDIDATE_4C_ZH-TW.md"
+  ]
+}

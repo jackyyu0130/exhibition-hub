@@ -1,0 +1,12 @@
+{
+  "stage": "4-B-2",
+  "name": "高頻未配對場館擴充",
+  "previousVenueCount": 38,
+  "addedVenueCount": 36,
+  "newVenueCount": 74,
+  "files": [
+    "data/venues.json",
+    "tests/test_registry.py",
+    "docs/VENUE_EXPANSION_4B2_ZH-TW.md"
+  ]
+}

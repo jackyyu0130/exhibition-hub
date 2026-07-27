@@ -1,0 +1,341 @@
+name: Validate development changes
+
+on:
+  push:
+    branches:
+      - develop
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run project tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: python -m compileall -q scripts tests
+
+      - name: Run automated tests
+        run: python -m unittest discover -s tests -v
+
+  probe-culture-ministry:
+    name: Probe Culture Ministry API
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[probe-culture]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Probe Culture Ministry exhibition feed
+        run: |
+          set -o pipefail
+
+          python scripts/probe_culture_ministry.py \
+            --category "6" \
+            --sample-limit "5" \
+            --timeout "30" \
+            | tee culture-ministry-probe.json
+
+      - name: Upload probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-ministry-probe-${{ github.run_number }}
+          path: culture-ministry-probe.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-culture-normalization:
+    name: Dry run Culture normalization
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-culture]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Culture normalization dry run
+        run: |
+          set -o pipefail
+
+          python scripts/probe_culture_normalization.py \
+            --category "6" \
+            --sample-limit "5" \
+            --timeout "30" \
+            | tee culture-normalization-dry-run.json
+
+      - name: Upload normalization report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-normalization-dry-run-${{ github.run_number }}
+          path: culture-normalization-dry-run.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-event-registry:
+    name: Dry run event registry enrichment
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-registry]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate source and venue registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch latest production exhibition data
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags --prune --depth=1 origin \
+            +refs/heads/main:refs/remotes/origin/main
+
+          mkdir -p build
+
+          git show origin/main:data/exhibitions.json \
+            > build/exhibitions-production.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source_path = Path(
+              "build/exhibitions-production.json"
+          )
+          payload = json.loads(
+              source_path.read_text(encoding="utf-8")
+          )
+          events = payload.get("events", [])
+          stats = payload.get("stats", {})
+
+          baseline = {
+              "sourceBranch": "main",
+              "updatedAt": payload.get("updatedAt"),
+              "eventCount": len(events),
+              "stats": stats,
+          }
+
+          Path(
+              "production-data-baseline.json"
+          ).write_text(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+          )
+          PY
+
+      - name: Run event registry dry run
+        run: |
+          set -o pipefail
+
+          python scripts/apply_event_registry.py \
+            --input "build/exhibitions-production.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --report-output "event-registry-dry-run.json" \
+            --sample-limit "150" \
+            | tee event-registry-dry-run-summary.json
+
+      - name: Upload event registry report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: event-registry-dry-run-${{ github.run_number }}
+          path: |
+            production-data-baseline.json
+            event-registry-dry-run.json
+            event-registry-dry-run-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  build-enriched-candidate:
+    name: Build enriched candidate data
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[build-enriched]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate source and venue registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch latest production exhibition data
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags --prune --depth=1 origin \
+            +refs/heads/main:refs/remotes/origin/main
+
+          mkdir -p build
+
+          git show origin/main:data/exhibitions.json \
+            > build/exhibitions-production.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source_path = Path(
+              "build/exhibitions-production.json"
+          )
+          payload = json.loads(
+              source_path.read_text(encoding="utf-8")
+          )
+          events = payload.get("events", [])
+          stats = payload.get("stats", {})
+
+          baseline = {
+              "sourceBranch": "main",
+              "updatedAt": payload.get("updatedAt"),
+              "eventCount": len(events),
+              "stats": stats,
+          }
+
+          Path(
+              "production-data-baseline.json"
+          ).write_text(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+          )
+          PY
+
+      - name: Build enriched candidate data
+        run: |
+          set -o pipefail
+
+          python scripts/build_enriched_candidate.py \
+            --input "build/exhibitions-production.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --output "exhibitions.enriched.candidate.json" \
+            --report-output "enriched-candidate-report.json" \
+            --excluded-output "excluded-events-review.json" \
+            | tee enriched-candidate-summary.json
+
+      - name: Upload enriched candidate artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enriched-candidate-${{ github.run_number }}
+          path: |
+            production-data-baseline.json
+            exhibitions.enriched.candidate.json
+            enriched-candidate-report.json
+            excluded-events-review.json
+            enriched-candidate-summary.json
+          if-no-files-found: warn
+          retention-days: 7

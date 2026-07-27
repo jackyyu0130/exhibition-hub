@@ -1,0 +1,9 @@
+{
+  "stage": "4-B-3A",
+  "name": "場館別名安全修正",
+  "files": [
+    "data/venues.json",
+    "tests/test_venue_alias_safety.py",
+    "docs/VENUE_ALIAS_SAFETY_4B3A_ZH-TW.md"
+  ]
+}

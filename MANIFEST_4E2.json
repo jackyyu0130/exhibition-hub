@@ -1,0 +1,13 @@
+{
+  "stage": "4-E-2",
+  "name": "正式部署前清除前端快取",
+  "changes": {
+    "assets/styles.css": "v=5.1 → v=5.2",
+    "assets/app.js": "v=5.1 → v=5.2"
+  },
+  "designChanged": false,
+  "layoutChanged": false,
+  "files": [
+    "index.html"
+  ]
+}

@@ -1,18 +1,28 @@
 (() => {
   'use strict';
 
-  const CATEGORY_ORDER = ['快閃','美術','攝影','設計','動漫','歷史文化','自然科學','親子','音樂','表演','舞蹈','電影','市集','競賽','科技','其他'];
+  const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
+  const CONTENT_TYPE_LABELS = {
+    exhibition:'一般展覽', art_exhibition:'藝術展覽', pop_culture:'動漫／IP', expo:'博覽會',
+    concert:'演唱會', music_festival:'音樂祭', performance:'表演藝術', popup:'快閃店',
+    market:'市集', festival:'城市節慶', film_screening:'電影／影展'
+  };
+  const CONTENT_TYPE_CATEGORY_MAP = {
+    art_exhibition:'美術', pop_culture:'動漫', concert:'演唱會', music_festival:'音樂',
+    performance:'表演', popup:'快閃店', market:'市集', film_screening:'電影'
+  };
   const iconSvg = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
   const CATEGORY_ICON = {
-    '快閃': iconSvg('<path d="M4 9h16l-1.2-4H5.2L4 9Z"></path><path d="M5 9v10h14V9M9 19v-5h6v5"></path><path d="M4 9c0 1.3 1 2.3 2.3 2.3S8.7 10.3 8.7 9c0 1.3 1 2.3 2.3 2.3s2.3-1 2.3-2.3c0 1.3 1 2.3 2.3 2.3S18 10.3 18 9"></path>'),
+    '快閃店': iconSvg('<path d="M4 10h16l-1.6-5H5.6L4 10Z"></path><path d="M5 10v9h14v-9M9 19v-5h6v5"></path><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2"></path><path d="m18.2 2 .7 1.5 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.5Z"></path>'),
     '美術': iconSvg('<rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="m7 16 4-4 3 3 3-4 2 3"></path><circle cx="9" cy="9" r="1.4"></circle>'),
     '攝影': iconSvg('<path d="M4 8h3l1.5-2h7L17 8h3v11H4V8Z"></path><circle cx="12" cy="13.5" r="3.5"></circle>'),
     '設計': iconSvg('<path d="m4 20 4.5-1 9.8-9.8a2 2 0 0 0-2.8-2.8L5.7 16.2 4 20Z"></path><path d="m13.8 8.2 2.8 2.8M4 4h6M4 8h3"></path>'),
     '動漫': iconSvg('<path d="M5 5h14v10H9l-4 4V5Z"></path><path d="m10 8 .8 1.7 1.9.2-1.4 1.3.4 1.9-1.7-.9-1.7.9.4-1.9-1.4-1.3 1.9-.2L10 8Z"></path>'),
-    '歷史文化': iconSvg('<path d="M4 9h16M6 9v8M10 9v8M14 9v8M18 9v8M3 19h18M12 4l8 4H4l8-4Z"></path>'),
-    '自然科學': iconSvg('<circle cx="12" cy="12" r="2"></circle><ellipse cx="12" cy="12" rx="9" ry="4"></ellipse><ellipse cx="12" cy="12" rx="4" ry="9" transform="rotate(35 12 12)"></ellipse>'),
+    '歷史': iconSvg('<path d="M4 9h16M6 9v8M10 9v8M14 9v8M18 9v8M3 19h18M12 4l8 4H4l8-4Z"></path>'),
+    '自然': iconSvg('<circle cx="12" cy="12" r="2"></circle><ellipse cx="12" cy="12" rx="9" ry="4"></ellipse><ellipse cx="12" cy="12" rx="4" ry="9" transform="rotate(35 12 12)"></ellipse>'),
     '親子': iconSvg('<circle cx="9" cy="8" r="2.5"></circle><circle cx="16" cy="9" r="2"></circle><path d="M4.5 19c.5-4 2-6 4.5-6s4 2 4.5 6M13 19c.4-3 1.4-4.8 3-4.8s2.6 1.8 3 4.8"></path>'),
     '音樂': iconSvg('<path d="M9 18V6l10-2v12"></path><circle cx="6" cy="18" r="3"></circle><circle cx="16" cy="16" r="3"></circle>'),
+    '演唱會': iconSvg('<rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6 10v1a6 6 0 0 0 12 0v-1M12 17v4M9 21h6M18 5h3M19.5 3.5v3"></path>'),
     '表演': iconSvg('<path d="M5 5c3 0 5 1 7 3 2-2 4-3 7-3v7c0 4-3 7-7 7s-7-3-7-7V5Z"></path><path d="M8 10h.01M16 10h.01M9 14c2 1 4 1 6 0"></path>'),
     '舞蹈': iconSvg('<circle cx="12" cy="5" r="2"></circle><path d="m12 7-3 5 3 2 3-5M9 12l-4 3M12 14l-2 6M14 11l5 2M15 13l3 6"></path>'),
     '電影': iconSvg('<rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="m10 9 5 3-5 3V9ZM4 8h16"></path>'),
@@ -23,19 +33,19 @@
     '科技': iconSvg('<rect x="7" y="7" width="10" height="10" rx="2"></rect><path d="M9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4M10 10h4v4h-4z"></path>'),
     '其他': iconSvg('<circle cx="7" cy="7" r="2"></circle><circle cx="17" cy="7" r="2"></circle><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle>')
   };
-  const CATEGORY_SYMBOL = {'快閃':'閃','美術':'藝','攝影':'影','設計':'設','動漫':'漫','歷史文化':'史','自然科學':'科','親子':'親','音樂':'樂','表演':'演','舞蹈':'舞','電影':'映','講座':'講','研習':'學','市集':'集','競賽':'賽','科技':'技','其他':'展'};
+  const CATEGORY_SYMBOL = {'快閃店':'閃','美術':'藝','攝影':'影','設計':'設','動漫':'漫','歷史':'史','自然':'自','親子':'親','音樂':'樂','演唱會':'唱','表演':'演','舞蹈':'舞','電影':'映','講座':'講','研習':'學','市集':'集','競賽':'賽','科技':'技','其他':'展'};
   const CATEGORY_FALLBACK_INDEX = {
     '美術':0, '攝影':1, '設計':2, '動漫':3,
-    '歷史文化':4, '自然科學':5, '親子':6, '音樂':7,
-    '表演':8, '舞蹈':9, '電影':10, '市集':11,
-    '科技':12, '競賽':13, '快閃':14, '其他':15,
+    '歷史':4, '自然':5, '親子':6, '音樂':7,
+    '演唱會':7, '表演':8, '舞蹈':9, '電影':10, '市集':11,
+    '科技':12, '競賽':13, '快閃店':14, '其他':15,
   };
   const HERO_ROTATION_MS = 15000;
   const NEARBY_RADIUS_KM = 10;
   const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'其他','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'其他'};
   const CATEGORY_ALIASES = {
     '展覽':'美術','展覽資訊':'美術','藝術':'美術','戲劇':'表演','戲劇表演':'表演','綜藝':'表演','綜藝活動':'表演',
-    '音樂表演':'音樂','獨立音樂':'音樂','演唱會':'音樂','講座資訊':'其他','親子活動':'親子','電影欣賞':'電影',
+    '快閃':'快閃店','快閃活動':'快閃店','期間限定':'快閃店','歷史文化':'歷史','自然科學':'自然','音樂表演':'音樂','獨立音樂':'音樂','演唱會活動':'演唱會','大型演唱會':'演唱會','講座資訊':'其他','親子活動':'親子','電影欣賞':'電影',
     '競賽活動':'競賽','徵選活動':'其他','徵選':'其他','商展':'其他','研習課程':'其他','其他藝文資訊':'其他'
   };
   const VENUE_ALIAS_RULES = [
@@ -67,6 +77,9 @@
   const state = {
     events: [],
     updatedAt: null,
+    stats: {},
+    registryBuild: null,
+    dataSource: '',
     venueImages: {},
     params: new URLSearchParams(location.search),
     view: 'home',
@@ -130,7 +143,7 @@
       });
       return;
     }
-    const description = summaryText(event.description || `${event.title}，${dateRange(event)}，於${event.venueGroup || event.locationName}展出。`);
+    const description = summaryText(event.description || `${event.title}，${dateRange(event)}，於${eventVenueLabel(event)}展出。`);
     const title = `${event.title}｜台灣展覽誌`;
     const image = event.images?.[0] || event.image || '';
     document.title = title;
@@ -143,7 +156,7 @@
       startDate:event.startDate || undefined, endDate:event.endDate || undefined,
       description, image:image ? [image] : undefined, url:location.href,
       location:{
-        '@type':'Place', name:event.venueGroup || event.locationName || undefined,
+        '@type':'Place', name:eventVenueLabel(event) || undefined,
         address:event.address ? {'@type':'PostalAddress', streetAddress:event.address, addressRegion:event.region || undefined, addressCountry:'TW'} : undefined,
       },
       eventAttendanceMode:'https://schema.org/OfflineEventAttendanceMode',
@@ -177,11 +190,14 @@
     const url = safeUrl(value);
     if (!url || isFacebookUrl(url)) return false;
     try {
-      const path = decodeURIComponent(new URL(url).pathname).toLowerCase();
+      const parsed = new URL(url);
+      const host = parsed.hostname.toLowerCase();
+      const path = decodeURIComponent(parsed.pathname).toLowerCase();
+      if (/(?:^|\.)reurl\.cc$/i.test(host)) return false;
       if (/\.(?:gif|svg|ico)$/.test(path)) return false;
       const filename = path.split('/').pop() || '';
       if (/(?:^|[-_])default(?:[-_.]|$)|programinfodefault/i.test(filename)) return false;
-      return !/(?:^|[/_.-])(?:ajax[-_]?loader|loader|loading|spinner|progress|preload|placeholder|blank|spacer|pixel|sprite|favicon|avatar|qr[-_]?code)(?:[/_.-]|$)/i.test(path);
+      return !/(?:^|[/_.-])(?:ajax[-_]?loader|loader|loading|spinner|progress|preload|placeholder|blank|spacer|pixel|sprite|favicon|avatar|qr[-_]?code|meta[-_]?image|post\.image|section[-_](?:api|extention|linebot))(?:[/_.-]|$)/i.test(path);
     } catch { return false; }
   }
 
@@ -219,11 +235,11 @@
 
     const text = `${title} ${description}`;
     const keywordRules = [
-      ['快閃', /快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像展|photo(graphy)?/i],
-      ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展/i], ['歷史文化', /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗/i],
-      ['自然科學', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
+      ['快閃店', /快閃店|快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像展|photo(graphy)?/i],
+      ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展/i], ['歷史', /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗/i],
+      ['自然', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
       ['設計', /設計|建築|工藝|時尚|家居|文具|design/i], ['舞蹈', /舞蹈|舞作|芭蕾/i],
-      ['音樂', /音樂|演唱會|樂團|管弦|獨立音樂|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
+      ['音樂', /音樂|樂團|管弦|獨立音樂|音樂祭|音樂會/i], ['演唱會', /演唱會|巡迴演唱|live concert|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
       ['電影', /電影|(?<!攝)影展|放映/i], ['市集', /市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
       ['親子', /親子|兒童|家庭|幼兒/i], ['競賽', /競賽|比賽|大賽|徵件比賽/i],
       ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會/i]
@@ -243,6 +259,7 @@
   const LARGE_OR_OFFICIAL_EVENT_PATTERN = /國際|全國|博覽會|美術館|博物館|文化局|文化中心|文化處/i;
 
   function isExcludedEvent(event) {
+    if (event.editorialStatus) return event.editorialStatus === 'exclude_review';
     const title = String(event.title || '');
     const sourceUrl = String(event.sourceUrl || '');
     const organizer = String(event.unit || '');
@@ -350,37 +367,121 @@
     return entries.sort((a,b) => score(b) - score(a))[0] || {};
   }
 
+  function stringList(value) {
+    const values = Array.isArray(value) ? value : value !== undefined && value !== null && value !== '' ? [value] : [];
+    return values.flatMap(item => String(item).split(/[、,，|｜;；]+/)).map(item => cleanPlaceText(item)).filter(Boolean).filter((item, index, array) => array.indexOf(item) === index);
+  }
+
+  function eventVenueNames(event) {
+    const matched = stringList(event?.venueNames);
+    const unmatched = stringList(event?.unmatchedVenueValues);
+    const registryValues = [...matched, ...unmatched]
+      .filter((item, index, array) => array.indexOf(item) === index);
+
+    if (registryValues.length) return registryValues;
+
+    const fallback = stringList(firstValue(
+      event?.originalVenueGroup,
+      event?.originalLocationName,
+      event?.venueGroup,
+      event?.locationName
+    ));
+    return fallback.length ? fallback : [];
+  }
+
+  function eventVenueLabel(event, separator = '、') {
+    const names = eventVenueNames(event);
+    return names.length ? names.join(separator) : '地點待確認';
+  }
+
+  function eventVenueCompactLabel(event) {
+    const names = eventVenueNames(event);
+    if (!names.length) return '地點待確認';
+    if (names.length === 1) return names[0];
+    return `${names[0]} 等 ${names.length} 處`;
+  }
+
+  function eventVenueImage(event) {
+    const candidates = [
+      ...eventVenueNames(event),
+      event?.originalVenueGroup,
+      event?.originalLocationName,
+      event?.venueGroup,
+      event?.locationName,
+    ].map(value => cleanPlaceText(value)).filter(Boolean);
+    for (const venue of candidates) {
+      const image = safeUrl(state.venueImages[venue] || '');
+      if (isUsableImageUrl(image)) return image;
+    }
+    return '';
+  }
+
+  function eventContentTypeLabel(event) {
+    return CONTENT_TYPE_LABELS[event?.contentType] || event?.categories?.[0] || '展覽';
+  }
+
+  function sourceVenueCount(items = state.events) {
+    return new Set(items.map(event => cleanPlaceText(firstValue(event.originalVenueGroup, event.originalLocationName, event.venueGroup, event.locationName))).filter(Boolean)).size;
+  }
+
   function normalizeEvent(raw, index) {
     const show = bestShow(raw);
     const title = firstValue(raw.title, raw.titile, raw.name, '未命名展覽');
     const description = stripFacebookReferences(firstValue(raw.description, raw.descriptionFilterHtml, raw.comment));
     const address = cleanPlaceText(firstValue(raw.address, raw.location, show.location, show.address));
-    const rawVenue = cleanPlaceText(firstValue(raw.locationName, raw.venue, show.locationName, show.venue, address));
-    const {venueGroup, venueDetail} = venueParts(rawVenue, address, raw.venueGroup, raw.venueDetail);
+    const originalLocationName = cleanPlaceText(firstValue(raw.locationName, raw.venue, show.locationName, show.venue, address));
+    const originalVenueGroup = cleanPlaceText(firstValue(raw.venueGroup, raw.locationName, raw.venue, show.locationName, show.venue, address));
+    const registryVenueNames = stringList(raw.venueNames);
+    const registryVenueName = cleanPlaceText(firstValue(raw.venueName, registryVenueNames[0]));
+    const rawVenue = cleanPlaceText(firstValue(registryVenueName, originalLocationName, address));
+    const parsedVenue = venueParts(rawVenue, address, raw.venueGroup, raw.venueDetail);
+    const venueGroup = registryVenueName || parsedVenue.venueGroup;
+    const venueNames = registryVenueNames.length ? registryVenueNames : [venueGroup].filter(Boolean);
+    const venueDetail = cleanPlaceText(firstValue(raw.venueDetail, parsedVenue.venueDetail));
     const sourceUrl = firstValue(raw.sourceUrl, raw.sourceWebPromote, raw.webSales, raw.sourceWebSite, raw.url, raw.website);
     const id = String(firstValue(raw.id, raw.UID, raw.uid, sourceUrl, `${title}-${index}`));
+    const contentTypes = stringList(raw.contentTypes);
+    const contentType = String(firstValue(raw.contentType, contentTypes[0])).trim();
+    if (contentType && !contentTypes.includes(contentType)) contentTypes.unshift(contentType);
     const rawCategories = firstValue(raw.categories, raw.categoryName, raw.category);
+    const baseCategories = normalizeCategories(rawCategories, title, description);
+    const mappedCategory = contentTypes.map(type => CONTENT_TYPE_CATEGORY_MAP[type]).find(Boolean) || CONTENT_TYPE_CATEGORY_MAP[contentType];
+    const categoryCandidates = mappedCategory === '演唱會'
+      ? baseCategories.filter(category => category !== '音樂')
+      : baseCategories;
+    const categories = [mappedCategory, ...categoryCandidates].filter(Boolean).filter((category, categoryIndex, array) => array.indexOf(category) === categoryIndex).slice(0, 3);
     const imageCandidates = [
       ...flattenImageCandidates(raw.images), ...flattenImageCandidates(raw.imageCandidates),
       ...flattenImageCandidates(raw.image), ...flattenImageCandidates(raw.imageURL), ...flattenImageCandidates(raw.imageUrl),
       ...flattenImageCandidates(raw.imageUrls), ...flattenImageCandidates(raw.poster), ...flattenImageCandidates(raw.posterUrl),
       ...flattenImageCandidates(raw.picture), ...flattenImageCandidates(raw.pictureUrl), ...flattenImageCandidates(show.image),
       ...flattenImageCandidates(show.imageUrl), ...flattenImageCandidates(show.imageURL)
-    ].map(safeUrl).filter(isUsableImageUrl).filter((url, index, array) => array.indexOf(url) === index);
+    ].map(safeUrl).filter(isUsableImageUrl).filter((url, imageIndex, array) => array.indexOf(url) === imageIndex);
     const image = imageCandidates[0] || '';
     const {latitude, longitude} = coordinatesFrom(show, raw);
-    const region = normalizeRegion(firstValue(raw.region, address, venueGroup, rawVenue));
+    const region = normalizeRegion(firstValue(raw.regionCanonical, raw.region, address, venueGroup, rawVenue));
     const price = stripFacebookReferences(firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : ''));
-    const categories = normalizeCategories(rawCategories, title, description);
     return {
       id, title: String(title).trim(), description: stripHtml(description),
-      sourceUrl: safeUrl(sourceUrl), image,
-      images: imageCandidates,
-      categories, category: categories[0],
+      sourceUrl: safeUrl(sourceUrl), image, images: imageCandidates,
+      categories, category: categories[0], contentType, contentTypes,
+      contentTypeLabel: CONTENT_TYPE_LABELS[contentType] || categories[0] || '展覽',
+      eventFormat: String(raw.eventFormat || '').trim(),
+      editorialStatus: String(raw.editorialStatus || '').trim(),
+      editorialFlags: stringList(raw.editorialFlags),
       startDate: firstValue(raw.startDate, raw.start, show.time, show.startTime),
       endDate: firstValue(raw.endDate, raw.end, raw.endTime, show.endTime, raw.startDate),
       locationName: String(venueGroup || '地點待確認').trim(),
-      location: String(venueGroup || '地點待確認').trim(), venueGroup, venueDetail, address: String(address || '').trim(), region,
+      location: String(venueGroup || '地點待確認').trim(),
+      venueGroup, venueDetail, venueNames,
+      venueName: String(firstValue(raw.venueName, venueNames[0], venueGroup)).trim(),
+      venueId: String(raw.venueId || '').trim(),
+      venueIds: stringList(raw.venueIds),
+      venueMatches: Array.isArray(raw.venueMatches) ? raw.venueMatches : [],
+      venueCoverageStatus: String(raw.venueCoverageStatus || '').trim(),
+      unmatchedVenueValues: stringList(raw.unmatchedVenueValues),
+      originalLocationName, originalVenueGroup,
+      address: String(address || '').trim(), region,
       latitude, longitude, coordinateSource: firstValue(raw.coordinateSource, raw.coordinate_source),
       price: String(price || '票價請見活動頁面').trim(),
       unit: stripFacebookReferences(Array.isArray(raw.masterUnit) ? raw.masterUnit.join('、') : firstValue(raw.unit, raw.organizer, raw.showUnit, raw.masterUnit)),
@@ -518,13 +619,12 @@
   function imageMarkup(event, className = '') {
     const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(isUsableImageUrl);
     const allowVenueFallback = !String(className).startsWith('detail-poster');
-    const venueCandidate = allowVenueFallback ? safeUrl(state.venueImages[event.venueGroup || event.locationName] || '') : '';
-    const venueImage = isUsableImageUrl(venueCandidate) ? venueCandidate : '';
+    const venueImage = allowVenueFallback ? eventVenueImage(event) : '';
     const candidates = eventCandidates.length ? eventCandidates : venueImage ? [venueImage] : [];
     const mediaKind = eventCandidates.length ? 'event' : venueImage ? 'venue' : 'placeholder';
     if (!candidates.length) return fallbackMarkup(event, className);
     const serialized = escapeHtml(JSON.stringify(candidates));
-    const alt = mediaKind === 'venue' ? `${event.venueGroup || event.locationName}場館示意` : event.title;
+    const alt = mediaKind === 'venue' ? `${eventVenueLabel(event)}場館示意` : event.title;
     return `<span class="smart-image-frame ${escapeHtml(className)}" data-media-kind="${mediaKind}">
       <img class="smart-image-blur" src="${escapeHtml(candidates[0])}" alt="" aria-hidden="true" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true">
       <img class="smart-image-foreground" src="${escapeHtml(candidates[0])}" data-images="${serialized}" data-image-index="0" data-media-kind="${mediaKind}" data-placeholder-class="${escapeHtml(className || 'card-placeholder')}" data-fallback-category="${escapeHtml(event.category || '其他')}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="window.__validateExhibitionImage(this)" onerror="window.__exhibitionImageFallback(this)">
@@ -591,17 +691,17 @@
       ? ` data-card-href="${escapeHtml(eventHref(event))}" role="link" tabindex="0" aria-label="查看${escapeHtml(event.title)}詳細資訊"`
       : '';
     return `
-      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}"${inlineStyle}${wholeCardAttrs}>
+      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}" data-content-type="${escapeHtml(event.contentType || '')}" data-editorial-status="${escapeHtml(event.editorialStatus || '')}" data-venue-coverage="${escapeHtml(event.venueCoverageStatus || '')}"${inlineStyle}${wholeCardAttrs}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
-          ${!(event.images?.length || event.image) && state.venueImages[event.venueGroup || event.locationName] ? '<span class="venue-image-label">場館示意</span>' : ''}
+          ${!(event.images?.length || event.image) && eventVenueImage(event) ? '<span class="venue-image-label">場館示意</span>' : ''}
           ${badges.length ? `<span class="card-badges">${badges.map(badge => `<span class="card-badge badge-${badge.type}">${badge.label}</span>`).join('')}</span>` : ''}
         </a>
         <button class="favorite-button ${isFavorite(event) ? 'active' : ''}" type="button" data-favorite="${escapeHtml(eventKey(event))}" aria-label="${isFavorite(event) ? '取消收藏' : '加入收藏'}">${isFavorite(event) ? '♥' : '♡'}</button>
         <div class="card-body">
-          <div class="card-kicker"><span>${escapeHtml(event.categories[0] || '展覽')}</span><span>${escapeHtml(event.region)}</span></div>
+          <div class="card-kicker"><span>${escapeHtml(eventContentTypeLabel(event))}</span><span>${escapeHtml(event.region)}</span></div>
           <a href="${eventHref(event)}"><h3 class="card-title">${escapeHtml(event.title)}</h3></a>
-          <div class="card-meta"><span>${escapeHtml(dateRange(event))}</span><span>${escapeHtml(event.venueGroup || event.locationName)}</span></div>
+          <div class="card-meta"><span>${escapeHtml(dateRange(event))}</span><span>${escapeHtml(eventVenueCompactLabel(event))}</span></div>
           <div class="card-price ${isFree(event) ? 'free' : ''}">${escapeHtml(event.price)}</div>
         </div>
       </article>`;
@@ -611,7 +711,7 @@
     const date = compactDate(event);
     return `<a class="compact-item" href="${eventHref(event)}">
       <div class="compact-date"><strong>${date.day}</strong><span>${date.month}</span></div>
-      <div class="compact-info"><h4>${escapeHtml(event.title)}</h4><p>${escapeHtml(event.venueGroup || event.locationName)} · ${escapeHtml(event.region)}</p></div>
+      <div class="compact-info"><h4>${escapeHtml(event.title)}</h4><p>${escapeHtml(eventVenueCompactLabel(event))} · ${escapeHtml(event.region)}</p></div>
       <span class="compact-arrow">↗</span>
     </a>`;
   }
@@ -619,7 +719,7 @@
   function nearbyMiniMarkup(event, distance = null) {
     return `<a class="nearby-mini-card" href="${eventHref(event)}">
       ${imageMarkup(event, 'nearby-mini-media')}
-      <div class="nearby-mini-body"><small>${distance === null ? escapeHtml(event.region) : `${distance.toFixed(1)} KM`}</small><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.venueGroup || event.locationName)}</p></div>
+      <div class="nearby-mini-body"><small>${distance === null ? escapeHtml(event.region) : `${distance.toFixed(1)} KM`}</small><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(eventVenueCompactLabel(event))}</p></div>
     </a>`;
   }
 
@@ -632,7 +732,7 @@
           <span class="distance-badge">${Number.isFinite(distance) ? `${distance.toFixed(1)} KM` : escapeHtml(event.region)}</span>
           <h3>${escapeHtml(event.title)}</h3>
           <p>${escapeHtml(dateRange(event))}</p>
-          <p>${escapeHtml(event.venueGroup || event.locationName)}</p>
+          <p>${escapeHtml(eventVenueCompactLabel(event))}</p>
         </div>
       </a>
       ${directionsUrl ? `<a class="nearby-map-link" href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener" aria-label="使用外部地圖前往${escapeHtml(event.title)}">地圖導航 ↗</a>` : ''}
@@ -643,7 +743,7 @@
     const params = new URLSearchParams(location.search);
     state.params = params;
     state.query = params.get('q') || '';
-    const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => value.trim()).filter(category => CATEGORY_ORDER.includes(category));
+    const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => CATEGORY_ALIASES[value.trim()] || value.trim()).filter(category => CATEGORY_ORDER.includes(category));
     state.categories = new Set(categoryValues);
     state.region = params.get('region') || null;
     state.venue = params.get('venue') || null;
@@ -663,12 +763,12 @@
     const query = state.query.trim().toLowerCase();
     return items.filter(event => {
       if (query) {
-        const haystack = [event.title,event.description,event.locationName,event.address,event.region,event.categories.join(' '),event.price].join(' ').toLowerCase();
+        const haystack = [event.title,event.description,event.locationName,event.address,event.region,event.categories.join(' '),eventContentTypeLabel(event),eventVenueNames(event).join(' '),event.originalVenueGroup,event.price].join(' ').toLowerCase();
         if (!haystack.includes(query)) return false;
       }
       if (state.categories.size && !event.categories.some(category => state.categories.has(category))) return false;
       if (state.region && event.region !== state.region) return false;
-      if (state.venue && (event.venueGroup || event.locationName) !== state.venue) return false;
+      if (state.venue && !eventVenueNames(event).includes(state.venue) && cleanPlaceText(event.originalVenueGroup) !== state.venue) return false;
       if (state.status === 'ongoing' && !isOngoing(event)) return false;
       if (state.status === 'upcoming' && !isUpcoming(event)) return false;
       if (state.status === 'ending' && !isEnding(event, 30)) return false;
@@ -711,7 +811,7 @@
       <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
       <div class="ticket-main">
         <span class="ticket-index">${String(slot + 1).padStart(2,'0')}</span>
-        <div><small>${label} · ${escapeHtml(event.categories[0] || '展覽')}</small><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(dateRange(event))} · ${escapeHtml(event.venueGroup || event.locationName)}</p></div>
+        <div><small>${label} · ${escapeHtml(eventContentTypeLabel(event))}</small><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(dateRange(event))} · ${escapeHtml(eventVenueCompactLabel(event))}</p></div>
       </div>
       <div class="ticket-footer"><span>EXHIBITION JOURNAL</span><span class="barcode">|||| ||| ||||</span></div>
     </a>`;
@@ -849,7 +949,7 @@
     const ending = state.events.filter(event => isEnding(event, 30)).sort((a,b) => (parseDate(a.endDate)?.getTime() || Infinity) - (parseDate(b.endDate)?.getTime() || Infinity)).slice(0, 4);
 
     $('#heroEventCount').textContent = state.events.length.toLocaleString('zh-TW');
-    $('#heroVenueCount').textContent = new Set(state.events.map(event => event.venueGroup || event.locationName).filter(Boolean)).size.toLocaleString('zh-TW');
+    $('#heroVenueCount').textContent = sourceVenueCount(state.events).toLocaleString('zh-TW');
     const updated = parseDate(state.updatedAt);
     $('#heroUpdatedDate').textContent = updated
       ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日`
@@ -877,24 +977,21 @@
 
   function renderCategoryStrip() {
     const counts = countBy(state.events, event => event.categories);
-    const categories = Object.keys(counts).sort((a,b) => {
-      const ai = CATEGORY_ORDER.indexOf(a), bi = CATEGORY_ORDER.indexOf(b);
-      return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
-    }).slice(0, 12);
+    const categories = CATEGORY_ORDER;
     $('#categoryStrip').innerHTML = categories.map(category => `
       <a class="category-chip reveal-item ${state.categories.has(category) ? 'active' : ''}" style="--reveal-index:${categories.indexOf(category)}" href="${categoryHref(category)}">
         <span class="category-icon">${CATEGORY_ICON[category] || '＋'}</span>
-        <strong>${escapeHtml(category)}</strong><small>${counts[category]} 檔</small>
+        <strong>${escapeHtml(category)}</strong><small>${(counts[category] || 0).toLocaleString('zh-TW')} 檔</small>
       </a>`).join('');
   }
 
   function renderVenueGrid() {
-    const counts = countBy(state.events, event => event.venueGroup || event.locationName);
+    const counts = countBy(state.events, event => eventVenueNames(event).map(displayableVenueName).filter(Boolean));
     const venues = Object.keys(counts).filter(venue => venue && !/資料整理中|地點待確認/.test(venue)).sort((a,b) => counts[b] - counts[a]).slice(0, 36);
     $('#venueGrid').innerHTML = venues.map((venue, index) => {
       const venueImage = safeUrl(state.venueImages[venue] || '');
       const venueEvents = state.events
-        .filter(event => (event.venueGroup || event.locationName) === venue)
+        .filter(event => eventVenueNames(event).map(displayableVenueName).includes(venue))
         .sort((a, b) => Number(isOngoing(b)) - Number(isOngoing(a)) || recommendationScore(b) - recommendationScore(a));
       const eventImages = venueEvents
         .flatMap(event => event.images?.length ? event.images : event.image ? [event.image] : [])
@@ -993,13 +1090,13 @@
     $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="status-filter-button ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}" type="button">${label}</button>`).join('');
 
     const categoryCounts = countBy(state.events, event => event.categories);
-    const categories = Object.keys(categoryCounts).filter(category => CATEGORY_ORDER.includes(category)).sort((a,b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b));
-    $('#listingCategoryOptions').innerHTML = categories.map(category => `<button class="listing-category-option ${state.categories.has(category) ? 'active' : ''}" data-toggle-category="${escapeHtml(category)}" type="button" aria-pressed="${state.categories.has(category)}"><span class="category-icon">${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span><strong>${escapeHtml(category)}</strong><small>${categoryCounts[category].toLocaleString('zh-TW')} 檔</small></button>`).join('');
+    const categories = CATEGORY_ORDER;
+    $('#listingCategoryOptions').innerHTML = categories.map(category => `<button class="listing-category-option ${state.categories.has(category) ? 'active' : ''}" data-toggle-category="${escapeHtml(category)}" type="button" aria-pressed="${state.categories.has(category)}"><span class="category-icon">${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span><strong>${escapeHtml(category)}</strong><small>${(categoryCounts[category] || 0).toLocaleString('zh-TW')} 檔</small></button>`).join('');
 
     const regionGroups = REGION_ORDER.map(region => {
       const regionEvents = state.events.filter(event => event.region === region);
       if (!regionEvents.length) return '';
-      const venueCounts = countBy(regionEvents, event => displayableVenueName(event.venueGroup || event.locationName));
+      const venueCounts = countBy(regionEvents, event => eventVenueNames(event).map(displayableVenueName).filter(Boolean));
       const venues = Object.keys(venueCounts).filter(Boolean).sort((a,b) => venueCounts[b] - venueCounts[a] || a.localeCompare(b, 'zh-Hant'));
       return `<details class="region-accordion ${state.region === region ? 'selected' : ''}" data-region-accordion="${escapeHtml(region)}" ${state.region === region ? 'open' : ''}>
         <summary><span class="region-name">${escapeHtml(region)}</span><small>${regionEvents.length.toLocaleString('zh-TW')} 檔</small><i aria-hidden="true">⌄</i></summary>
@@ -1110,7 +1207,7 @@
       <div class="detail-breadcrumb"><a href="./">首頁</a> / <a href="${categoryHref(event.category)}">${escapeHtml(event.category)}</a> / ${escapeHtml(event.title)}</div>
       <div class="detail-grid">
         <div class="detail-poster">${imageMarkup(event, 'detail-poster-placeholder')}</div>
-        <article class="detail-info">
+        <article class="detail-info" data-content-type="${escapeHtml(event.contentType || '')}" data-editorial-status="${escapeHtml(event.editorialStatus || '')}" data-venue-coverage="${escapeHtml(event.venueCoverageStatus || '')}">
           <div class="detail-category detail-taxonomy">
             ${event.categories.map(category => `<a href="${categoryHref(category)}">${escapeHtml(category)}</a>`).join('<span aria-hidden="true">·</span>')}
             <span aria-hidden="true">/</span>
@@ -1118,7 +1215,7 @@
           </div>
           <h1>${escapeHtml(event.title)}</h1>
           <div class="detail-meta">
-            ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail ? `${event.venueGroup || event.locationName}｜${event.venueDetail}` : (event.venueGroup || event.locationName))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', event.price)}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
+            ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail && eventVenueNames(event).length <= 1 ? `${eventVenueLabel(event)}｜${event.venueDetail}` : eventVenueLabel(event, '／'))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', event.price)}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
           </div>
           <div class="detail-actions">
             ${externalUrl ? `<a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener"><span>查看官方資訊</span><span aria-hidden="true">↗</span></a>` : '<span class="detail-action-disabled" aria-disabled="true">官方頁面待確認</span>'}
@@ -1177,7 +1274,7 @@
       if (!hasCoordinates(event)) return;
       const marker = L.marker([event.latitude,event.longitude]).addTo(state.map);
       const directionsUrl = googleMapsDirectionsUrl(event);
-      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(event.venueGroup || event.locationName)}</p><p>${escapeHtml(dateRange(event))}</p><div class="map-popup-actions"><a href="${eventHref(event)}">查看展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
+      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(eventVenueCompactLabel(event))}</p><p>${escapeHtml(dateRange(event))}</p><div class="map-popup-actions"><a href="${eventHref(event)}">查看展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
       markers.push(marker);
     });
     if (markers.length) {
@@ -1219,7 +1316,7 @@
 
   function navigationQuery(event) {
     const address = cleanPlaceText(event.address || '');
-    const venue = displayableVenueName(event.venueGroup || event.locationName || '');
+    const venue = displayableVenueName(eventVenueNames(event)[0] || event.originalVenueGroup || event.locationName || '');
     const region = cleanPlaceText(event.region || '');
     const addressLooksUseful = address
       && /(?:路|街|大道|巷|弄|號|村|里|園區)/.test(address)
@@ -1270,7 +1367,7 @@
     const recordCount = $('#footerRecordCount');
     if (recordCount) recordCount.textContent = `${state.events.length.toLocaleString('zh-TW')} 檔`;
     const venueCount = $('#footerVenueCount');
-    if (venueCount) venueCount.textContent = `${new Set(state.events.map(event => event.venueGroup || event.locationName).filter(Boolean)).size.toLocaleString('zh-TW')} 處`;
+    if (venueCount) venueCount.textContent = `${sourceVenueCount(state.events).toLocaleString('zh-TW')} 處`;
     const updated = parseDate(state.updatedAt);
     const updatedAt = $('#footerUpdatedAt');
     if (updatedAt) updatedAt.textContent = updated
@@ -1572,7 +1669,7 @@
   }
 
   async function shareEvent(event) {
-    const data = {title:event.title,text:`${event.title}｜${dateRange(event)}｜${event.venueGroup || event.locationName}`,url:new URL(eventHref(event),location.href).href};
+    const data = {title:event.title,text:`${event.title}｜${dateRange(event)}｜${eventVenueLabel(event)}`,url:new URL(eventHref(event),location.href).href};
     try {
       if (navigator.share) await navigator.share(data);
       else { await navigator.clipboard.writeText(data.url); showToast('連結已複製'); }
@@ -1581,7 +1678,8 @@
 
   async function fetchEventPayload() {
     const sources = [
-      {url:'data/exhibitions.json', local:true},
+      {url:'data/exhibitions.enriched.json', local:true, enriched:true},
+      {url:'data/exhibitions.json', local:true, enriched:false},
       {url:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=all', local:false},
       {url:'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJOpenApi&category=all', local:false},
     ];
@@ -1593,7 +1691,7 @@
         const payload = await response.json();
         const rawEvents = Array.isArray(payload) ? payload : payload.events || payload.data || payload.result || [];
         if (!Array.isArray(rawEvents) || !rawEvents.length) throw new Error('資料為空');
-        return {payload, rawEvents, local:source.local};
+        return {payload, rawEvents, local:source.local, sourceUrl:source.url, enriched:Boolean(source.enriched)};
       } catch (error) {
         failures.push(`${source.url}: ${error.message}`);
         console.warn('[Exhibition Hub] data source failed', source.url, error);
@@ -1606,8 +1704,12 @@
     readParams();
     bindEvents();
     try {
-      const {payload, rawEvents, local} = await fetchEventPayload();
+      const {payload, rawEvents, local, sourceUrl, enriched} = await fetchEventPayload();
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
+      state.stats = payload.stats || {};
+      state.registryBuild = payload.registryBuild || null;
+      state.dataSource = sourceUrl;
+      document.documentElement.dataset.eventData = enriched ? 'enriched' : 'legacy';
       state.venueImages = Object.fromEntries(Object.entries(payload.venueImages || {}).map(([venue, image]) => [venue, safeUrl(image)]).filter(([, image]) => isUsableImageUrl(image)));
       state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
       if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
