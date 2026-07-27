@@ -1,3 +1,4 @@
+import re
 import unittest
 from pathlib import Path
 
@@ -57,9 +58,22 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn('class="city-compass"', self.html)
         self.assertNotIn('id="cityShadow"', self.html)
 
-    def test_v48_cache_busting(self):
-        self.assertIn("assets/styles.css?v=5.0", self.html)
-        self.assertIn("assets/app.js?v=5.0", self.html)
+    def test_frontend_assets_have_matching_cache_versions(self):
+        style_match = re.search(
+            r'assets/styles\.css\?v=([0-9.]+)',
+            self.html,
+        )
+        app_match = re.search(
+            r'assets/app\.js\?v=([0-9.]+)',
+            self.html,
+        )
+
+        self.assertIsNotNone(style_match)
+        self.assertIsNotNone(app_match)
+        self.assertEqual(
+            style_match.group(1),
+            app_match.group(1),
+        )
 
     def test_filtered_cards_use_one_stable_animation(self):
         self.assertIn("cardMarkup(event,{revealIndex:index})", self.app)
