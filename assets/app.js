@@ -89,7 +89,7 @@
     venue: null,
     date: null,
     query: '',
-    sort: null,
+    sort: 'recommended',
     userLocation: null,
     map: null,
     markers: null,
@@ -749,11 +749,9 @@
     state.venue = params.get('venue') || null;
     state.status = params.get('status') || 'all';
     const requestedSort = params.get('sort');
-    state.sort = requestedSort === 'title'
-      ? 'title'
-      : requestedSort === 'popular'
-        ? 'popular'
-        : null;
+    state.sort = ['popular', 'title', 'time'].includes(requestedSort)
+      ? requestedSort
+      : 'recommended';
     state.date = params.get('date') || null;
     const calendarAnchor = state.date ? parseDate(`${state.date}T00:00:00`) : new Date();
     state.calendarMonth = new Date(calendarAnchor.getFullYear(), calendarAnchor.getMonth(), 1);
@@ -784,20 +782,57 @@
     });
   }
 
-  function sortEvents(items) {
-    const result = [...items];
-    if (state.sort === 'title') {
-      result.sort((a,b) => a.title.localeCompare(b.title, 'zh-Hant'));
-    } else {
-      result.sort((a,b) => recommendationScore(b) - recommendationScore(a));
+  function eventTimeSortKey(event) {
+    const today = dateOnly(new Date()).getTime();
+    const start = parseDate(event.startDate);
+    const end = parseDate(event.endDate) || start;
+    const startTime = start ? dateOnly(start).getTime() : Infinity;
+    const endTime = end ? dateOnly(end).getTime() : startTime;
+
+    if (startTime <= today && endTime >= today) {
+      return [0, endTime - today, startTime];
     }
-    return result;
+    if (startTime > today) {
+      return [1, startTime - today, startTime];
+    }
+    if (endTime < today) {
+      return [2, today - endTime, -endTime];
+    }
+    return [3, Infinity, Infinity];
   }
 
-  function listingControlValue() {
-    if (state.sort === 'title') return 'sort:title';
-    if (state.sort === 'popular') return 'sort:popular';
-    return `status:${state.status || 'all'}`;
+  function compareTimeSort(a, b) {
+    const keyA = eventTimeSortKey(a);
+    const keyB = eventTimeSortKey(b);
+    for (let index = 0; index < keyA.length; index += 1) {
+      if (keyA[index] !== keyB[index]) {
+        return keyA[index] - keyB[index];
+      }
+    }
+    return a.title.localeCompare(b.title, 'zh-Hant');
+  }
+
+  function sortEvents(items) {
+    const result = [...items];
+
+    if (state.sort === 'popular') {
+      result.sort((a, b) =>
+        (Number(b.hitRate) || 0) - (Number(a.hitRate) || 0)
+        || recommendationScore(b) - recommendationScore(a)
+      );
+    } else if (state.sort === 'title') {
+      result.sort((a, b) =>
+        a.title.localeCompare(b.title, 'zh-Hant')
+      );
+    } else if (state.sort === 'time') {
+      result.sort(compareTimeSort);
+    } else {
+      result.sort((a, b) =>
+        recommendationScore(b) - recommendationScore(a)
+      );
+    }
+
+    return result;
   }
 
   function recommendationScore(event) {
@@ -1084,7 +1119,7 @@
     $('#listingCount').textContent = `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
     $('#listingGrid').innerHTML = items.map(event => cardMarkup(event,{wholeCardLink:true})).join('');
     $('#listingEmpty').hidden = items.length !== 0;
-    $('#sortSelect').value = listingControlValue();
+    $('#sortSelect').value = state.sort || 'recommended';
     renderSidebarOptions();
     renderListingCalendar();
     renderActiveFilters();
@@ -1687,17 +1722,10 @@
     $('#calendarNextButton').addEventListener('click', () => {state.calendarMonth = new Date(state.calendarMonth.getFullYear(),state.calendarMonth.getMonth()+1,1);renderListingCalendar();});
     $('#calendarTodayButton').addEventListener('click', () => updateUrl({date:localDateKey(new Date())}));
     $('#sortSelect').addEventListener('change', event => {
-      const [mode, value] = String(event.target.value).split(':');
-      if (mode === 'status') {
-        updateUrl({
-          status:value === 'all' ? null : value,
-          sort:null,
-        });
-        return;
-      }
-      if (mode === 'sort') {
-        updateUrl({sort:value});
-      }
+      const value = String(event.target.value);
+      updateUrl({
+        sort:value === 'recommended' ? null : value,
+      });
     });
     $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.add('open'));
     $('#filterCloseButton').addEventListener('click', () => $('#filterSidebar').classList.remove('open'));

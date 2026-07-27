@@ -52,15 +52,12 @@ class ExploreAlignmentAndSortControlTests(unittest.TestCase):
             section,
         )
 
-    def test_status_and_sort_options_match_request(self):
+    def test_sort_options_match_request(self):
         expected = [
-            ("status:all", "全部展覽"),
-            ("status:ongoing", "目前舉辦"),
-            ("status:upcoming", "即將舉辦"),
-            ("status:ending", "即將結束"),
-            ("status:free", "免費展覽"),
-            ("sort:title", "名稱排序"),
-            ("sort:popular", "熱門排序"),
+            ("recommended", "推薦排序"),
+            ("popular", "熱門排序"),
+            ("title", "名稱排序"),
+            ("time", "時間排序"),
         ]
         for value, label in expected:
             with self.subTest(value=value):
@@ -69,37 +66,54 @@ class ExploreAlignmentAndSortControlTests(unittest.TestCase):
                     HTML,
                 )
 
-        self.assertNotIn(">推薦排序</option>", HTML)
+        self.assertNotIn('option value="status:', HTML)
         self.assertNotIn(">最新開展</option>", HTML)
+        self.assertNotIn(">即將結束</option>", HTML)
 
-    def test_popular_sort_uses_recommendation_score(self):
+    def test_recommended_and_popular_are_different(self):
         self.assertIn(
             "recommendationScore(b) - recommendationScore(a)",
             APP,
         )
         self.assertIn(
-            "if (state.sort === 'title')",
+            "(Number(b.hitRate) || 0) - (Number(a.hitRate) || 0)",
+            APP,
+        )
+        self.assertIn(
+            "if (state.sort === 'popular')",
             APP,
         )
 
-    def test_control_can_change_status_or_sort(self):
+    def test_time_sort_orders_nearest_period_first(self):
+        self.assertIn("function eventTimeSortKey(event)", APP)
+        self.assertIn("function compareTimeSort(a, b)", APP)
+        self.assertIn("result.sort(compareTimeSort)", APP)
         self.assertIn(
-            "const [mode, value] = "
+            "if (startTime <= today && endTime >= today)",
+            APP,
+        )
+        self.assertIn(
+            "if (startTime > today)",
+            APP,
+        )
+
+    def test_control_only_changes_sort(self):
+        self.assertIn(
+            "const value = String(event.target.value)",
+            APP,
+        )
+        self.assertIn(
+            "sort:value === 'recommended' ? null : value",
+            APP,
+        )
+        self.assertNotIn(
             "String(event.target.value).split(':')",
             APP,
         )
-        self.assertIn(
-            "status:value === 'all' ? null : value",
-            APP,
-        )
-        self.assertIn(
-            "updateUrl({sort:value})",
-            APP,
-        )
 
-    def test_cache_version_is_54(self):
-        self.assertIn("assets/styles.css?v=5.4", HTML)
-        self.assertIn("assets/app.js?v=5.4", HTML)
+    def test_cache_version_is_55(self):
+        self.assertIn("assets/styles.css?v=5.5", HTML)
+        self.assertIn("assets/app.js?v=5.5", HTML)
 
 
 if __name__ == "__main__":
