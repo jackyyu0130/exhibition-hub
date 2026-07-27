@@ -156,12 +156,65 @@ jobs:
       - name: Validate source and venue registries
         run: python scripts/validate_registries.py
 
+      - name: Fetch latest production exhibition data
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags --prune --depth=1 origin \
+            +refs/heads/main:refs/remotes/origin/main
+
+          mkdir -p build
+
+          git show origin/main:data/exhibitions.json \
+            > build/exhibitions-production.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source_path = Path(
+              "build/exhibitions-production.json"
+          )
+          payload = json.loads(
+              source_path.read_text(encoding="utf-8")
+          )
+          events = payload.get("events", [])
+          stats = payload.get("stats", {})
+
+          baseline = {
+              "sourceBranch": "main",
+              "updatedAt": payload.get("updatedAt"),
+              "eventCount": len(events),
+              "stats": stats,
+          }
+
+          Path(
+              "production-data-baseline.json"
+          ).write_text(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+          )
+          PY
+
       - name: Run event registry dry run
         run: |
           set -o pipefail
 
           python scripts/apply_event_registry.py \
-            --input "data/exhibitions.json" \
+            --input "build/exhibitions-production.json" \
             --venues "data/venues.json" \
             --legacy-aliases "data/venue-aliases.json" \
             --report-output "event-registry-dry-run.json" \
@@ -174,6 +227,7 @@ jobs:
         with:
           name: event-registry-dry-run-${{ github.run_number }}
           path: |
+            production-data-baseline.json
             event-registry-dry-run.json
             event-registry-dry-run-summary.json
           if-no-files-found: warn
