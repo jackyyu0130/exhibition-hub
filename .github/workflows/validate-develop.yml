@@ -430,3 +430,51 @@ jobs:
             huashan-collector-summary.json
           if-no-files-found: warn
           retention-days: 7
+
+  dry-run-huashan-details:
+    name: Dry run Huashan detail normalization
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-huashan-details]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Huashan detail normalization dry run
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --detail-limit "8" \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-detail-dry-run.json" \
+            | tee huashan-detail-summary.json
+
+      - name: Upload Huashan detail report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-detail-dry-run-${{ github.run_number }}
+          path: |
+            huashan-detail-dry-run.json
+            huashan-detail-summary.json
+          if-no-files-found: warn
+          retention-days: 7
