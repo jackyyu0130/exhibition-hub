@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from exhibition_hub.collectors import (  # noqa: E402
+    BatchExecutionPolicy,
     CollectorBatchExecutor,
     CollectorRunReport,
     CollectorSource,
@@ -212,6 +213,12 @@ class CollectorBatchExecutorTests(
                     source("b"),
                     source("c"),
                 ],
+                policy=BatchExecutionPolicy(
+                    max_attempts_per_source=1,
+                    retry_backoff_seconds=0,
+                    source_timeout_seconds=30,
+                    slow_source_threshold_ms=1000,
+                ),
             )
         )
         self.assertEqual(

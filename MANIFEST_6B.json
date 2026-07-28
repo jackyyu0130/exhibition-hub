@@ -1,0 +1,31 @@
+{
+  "stage": "6-B",
+  "name": "來源失敗隔離、重試與健康報告",
+  "officialDataChanged": false,
+  "frontendChanged": false,
+  "productionPipelineChanged": false,
+  "reusesExistingTrigger": ".github/probe-source-batch.trigger",
+  "defaults": {
+    "maxAttemptsPerSource": 3,
+    "retryBackoffSeconds": 2,
+    "sourceTimeoutSeconds": 180,
+    "slowSourceThresholdMs": 90000
+  },
+  "files": [
+    ".github/workflows/validate-develop.yml",
+    "data/source_batches.json",
+    "scripts/exhibition_hub/collectors/batches.py",
+    "scripts/exhibition_hub/collectors/batch_runtime.py",
+    "scripts/exhibition_hub/collectors/__init__.py",
+    "scripts/run_collector_batch.py",
+    "scripts/validate_source_batch_health.py",
+    "scripts/simulate_source_batch_resilience.py",
+    "tests/test_collector_batch_resilience.py",
+    "tests/test_batch_subprocess_runtime.py",
+    "tests/test_source_batch_health_validator.py",
+    "tests/test_collector_batch_executor.py",
+    "tests/test_category_order_and_special_icons.py",
+    "tests/test_data_and_category_consistency.py",
+    "docs/SOURCE_BATCH_RESILIENCE_6B_ZH-TW.md"
+  ]
+}
