@@ -113,6 +113,15 @@ def collector_record_to_event(
         ]
     )
     now = datetime.now(timezone.utc).isoformat()
+    source_entity_kind = "generic"
+    if source_event_id.startswith("performance_"):
+        source_entity_kind = (
+            "performance_item"
+            if "《" in title and "》" in title
+            else "performance_series"
+        )
+    elif raw.get("contentTypeHint") == "表演":
+        source_entity_kind = "performance_item"
 
     event = {
         "id": _stable_id(source_id, source_event_id),
@@ -162,6 +171,7 @@ def collector_record_to_event(
         "source": source_id,
         "collectorSourceId": source_id,
         "sourceEventId": source_event_id,
+        "sourceEntityKind": source_entity_kind,
         "sourceCategory": str(
             raw.get("sourceCategory") or ""
         ),

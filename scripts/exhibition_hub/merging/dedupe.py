@@ -12,6 +12,7 @@ from .normalization import (
     normalize_name,
     normalize_title,
     normalize_url,
+    title_variants,
 )
 
 
@@ -43,16 +44,26 @@ class MatchResult:
         return value
 
 
-def _title_similarity(left: dict[str, Any], right: dict[str, Any]) -> float:
-    left_title = normalize_title(left.get("title"))
-    right_title = normalize_title(right.get("title"))
-    if not left_title or not right_title:
-        return 0.0
-    return SequenceMatcher(
-        None,
-        left_title,
-        right_title,
-    ).ratio()
+def _title_match(
+    left: dict[str, Any],
+    right: dict[str, Any],
+) -> tuple[float, bool]:
+    left_variants = title_variants(left.get("title"))
+    right_variants = title_variants(right.get("title"))
+    if not left_variants or not right_variants:
+        return 0.0, False
+
+    core_exact = bool(
+        set(left_variants[1:]).intersection(
+            right_variants[1:]
+        )
+    )
+    similarity = max(
+        SequenceMatcher(None, left_value, right_value).ratio()
+        for left_value in left_variants
+        for right_value in right_variants
+    )
+    return similarity, core_exact
 
 
 def _venue_score(left: dict[str, Any], right: dict[str, Any]) -> float:
@@ -133,7 +144,10 @@ def score_match(
     source_event: dict[str, Any],
     existing: dict[str, Any],
 ) -> MatchResult:
-    title_similarity = _title_similarity(source_event, existing)
+    title_similarity, core_title_exact = _title_match(
+        source_event,
+        existing,
+    )
     dates = date_relation(
         source_event.get("startDate"),
         source_event.get("endDate"),
@@ -179,6 +193,8 @@ def score_match(
         reasons.append("official_url_exact")
     if source_reference_exact:
         reasons.append("source_reference_exact")
+    if core_title_exact:
+        reasons.append("core_title_exact")
     if title_similarity >= 0.96:
         reasons.append("title_exact_or_near_exact")
     elif title_similarity >= 0.8:
@@ -199,6 +215,11 @@ def score_match(
     auto_merge = (
         source_reference_exact
         or url_exact
+        or (
+            core_title_exact
+            and bool(dates["compatible"])
+            and venue_score >= 0.8
+        )
         or (
             score >= 0.84
             and title_similarity >= 0.78

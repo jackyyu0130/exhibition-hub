@@ -3,15 +3,13 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-from .normalization import unique_strings
+from .normalization import parse_date, unique_strings
 
 
 _SOURCE_PREFERRED_FIELDS = (
     "officialUrl",
     "sourceUrl",
     "description",
-    "startDate",
-    "endDate",
     "startTime",
     "endTime",
     "timeText",
@@ -52,6 +50,40 @@ def merge_events(
         if should_use and existing_value != source_value:
             result[field_name] = deepcopy(source_value)
             changed_fields.append(field_name)
+
+    source_start = parse_date(source_event.get("startDate"))
+    source_end = parse_date(source_event.get("endDate")) or source_start
+    existing_start = parse_date(result.get("startDate"))
+    existing_end = parse_date(result.get("endDate")) or existing_start
+
+    preserve_specific_performance_dates = False
+    if (
+        source_event.get("sourceEntityKind")
+        == "performance_item"
+        and source_start
+        and source_end
+        and existing_start
+        and existing_end
+        and max(source_start, existing_start)
+        <= min(source_end, existing_end)
+    ):
+        source_span = (source_end - source_start).days
+        existing_span = (existing_end - existing_start).days
+        preserve_specific_performance_dates = (
+            source_span > existing_span + 7
+        )
+
+    if not preserve_specific_performance_dates:
+        for field_name in ("startDate", "endDate"):
+            source_value = source_event.get(field_name)
+            existing_value = result.get(field_name)
+            should_use = bool(source_value) and (
+                not existing_value
+                or source_priority >= existing_priority
+            )
+            if should_use and existing_value != source_value:
+                result[field_name] = deepcopy(source_value)
+                changed_fields.append(field_name)
 
     source_images = source_event.get("images") or []
     existing_images = result.get("images") or []

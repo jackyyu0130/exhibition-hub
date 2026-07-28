@@ -17,6 +17,11 @@ _NON_WORD_RE = re.compile(
     r"[^0-9a-z\u4e00-\u9fff]+",
     re.IGNORECASE,
 )
+_TITLE_CORE_PATTERNS = (
+    re.compile(r"《([^》]{2,120})》"),
+    re.compile(r"「([^」]{2,120})」"),
+    re.compile(r"『([^』]{2,120})』"),
+)
 
 
 def clean_text(value: Any) -> str:
@@ -36,6 +41,23 @@ def normalize_title(value: Any) -> str:
     text = text.replace("臺", "台")
     text = _TITLE_NOISE_RE.sub("", text)
     return _NON_WORD_RE.sub("", text)
+
+
+def title_variants(value: Any) -> list[str]:
+    text = clean_text(value)
+    result: list[str] = []
+
+    full = normalize_title(text)
+    if full:
+        result.append(full)
+
+    for pattern in _TITLE_CORE_PATTERNS:
+        for match in pattern.finditer(text):
+            core = normalize_title(match.group(1))
+            if len(core) >= 4 and core not in result:
+                result.append(core)
+
+    return result
 
 
 def normalize_name(value: Any) -> str:

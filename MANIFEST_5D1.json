@@ -1,0 +1,26 @@
+{
+  "stage": "5-D.1",
+  "name": "表演活動去重精準度修正",
+  "published": false,
+  "findingsFromArtifact105": {
+    "falseNegativeDuplicates": [
+      "星空下的魔笛",
+      "再見，馬麻！",
+      "把書吃掉｜西遊太空篇",
+      "擁抱海洋永續親子音樂會"
+    ],
+    "previousDecisionCounts": {
+      "auto_merge": 3,
+      "new_event": 25,
+      "needs_review": 0
+    }
+  },
+  "files": [
+    "scripts/exhibition_hub/merging/normalization.py",
+    "scripts/exhibition_hub/merging/dedupe.py",
+    "scripts/exhibition_hub/merging/source_adapter.py",
+    "scripts/exhibition_hub/merging/policy.py",
+    "tests/test_source_merge_performance_titles.py",
+    "docs/SOURCE_MERGE_PRECISION_FIX_5D1_ZH-TW.md"
+  ]
+}
