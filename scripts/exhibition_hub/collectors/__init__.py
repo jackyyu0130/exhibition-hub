@@ -14,6 +14,7 @@ from .base import (
     SourceKind,
 )
 from .http import CollectorHttpClient, CollectorHttpError
+from .huashan import Huashan1914Collector
 from .registry import (
     CollectorRegistration,
     CollectorRegistry,
@@ -34,6 +35,7 @@ __all__ = [
     "CollectorError",
     "CollectorHttpClient",
     "CollectorHttpError",
+    "Huashan1914Collector",
     "CollectorRecord",
     "CollectorRegistration",
     "CollectorRegistry",
@@ -46,3 +48,12 @@ __all__ = [
     "collector_registry",
     "run_collectors",
 ]
+
+
+# Planned sources are registered for explicit dry runs. They remain disabled in source_registry.json.
+if collector_registry.get(Huashan1914Collector.source_id) is None:
+    collector_registry.register(
+        Huashan1914Collector,
+        priority=90,
+        enabled=False,
+    )

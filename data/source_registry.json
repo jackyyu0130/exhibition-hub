@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-27",
+  "updatedAt": "2026-07-28",
   "description": "台灣展覽誌全台活動來源登錄表。此檔只管理資料來源，不直接儲存活動。",
   "coverageRegions": [
     "基隆市",
@@ -117,7 +117,7 @@
       "priority": 90,
       "refreshHours": 12,
       "officialUrl": "https://www.huashan1914.com/w/huashan1914/index",
-      "listingUrl": "",
+      "listingUrl": "https://www.huashan1914.com/w/huashan1914/CustomEvent",
       "coverageRegions": [
         "臺北市"
       ],
@@ -131,7 +131,7 @@
       "venueIds": [
         "huashan-1914"
       ],
-      "notes": "全台場館來源之一，不代表網站只收錄此場館。"
+      "notes": "5-B 已建立活動列表 Collector，維持 planned／disabled；通過 Live Dry Run 與詳情頁正規化後才啟用。"
     },
     {
       "id": "songshan-cultural-park",
