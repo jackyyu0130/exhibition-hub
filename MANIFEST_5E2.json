@@ -1,0 +1,14 @@
+{
+  "stage": "5-E.2",
+  "name": "華山詳情頁內容範圍修正",
+  "artifactInspected": "huashan-full-candidate-115.zip",
+  "qualityGateRelaxed": false,
+  "frontendChanged": false,
+  "officialDataChanged": false,
+  "workflowChanged": false,
+  "files": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "tests/test_huashan_content_scope.py",
+    "docs/HUASHAN_CONTENT_SCOPE_FIX_5E2_ZH-TW.md"
+  ]
+}
