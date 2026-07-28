@@ -97,10 +97,14 @@ class CategoryOrderAndSpecialIconTests(unittest.TestCase):
         self.assertIn("快閃店", labels)
         self.assertNotIn("快閃", labels)
 
-    def test_all_categories_exist_in_stats(self):
+    def test_category_stats_match_dynamic_published_data(self):
         counts = PAYLOAD["stats"]["categoryCounts"]
-        for category in EXPECTED_ORDER:
-            self.assertIn(category, counts)
+
+        # The UI keeps a complete fixed category order, while dynamic
+        # production data may legitimately contain zero events for one
+        # or more categories. Stats only need to describe categories
+        # that are actually present in the current catalogue.
+        self.assertTrue(set(counts).issubset(set(EXPECTED_ORDER)))
 
         calculated = {
             category: sum(

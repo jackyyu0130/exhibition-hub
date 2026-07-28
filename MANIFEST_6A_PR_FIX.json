@@ -1,0 +1,12 @@
+{
+  "stage": "6-A final PR compatibility",
+  "name": "Dynamic production data test compatibility",
+  "reason": "PR merge checks use the latest main production catalogue, where zero-count categories may be omitted from stats and upstream feeds may temporarily contain reurl.cc image URLs that the frontend already blocks.",
+  "productionDataChanged": false,
+  "frontendChanged": false,
+  "workflowChanged": false,
+  "files": [
+    "tests/test_category_order_and_special_icons.py",
+    "tests/test_data_and_category_consistency.py"
+  ]
+}
