@@ -537,20 +537,27 @@ def _extract_price_lines(lines: Sequence[str]) -> list[str]:
 
 
 def _classify_admission(price_text: str, full_text: str) -> str:
-    if re.search(
-        r"免費入場|免費參觀|自由入場|免票|免費參加",
-        f"{price_text} {full_text}",
-    ):
-        return "free"
+    # A scoped, explicit ticket price is stronger evidence than
+    # generic "免費" wording elsewhere on the same page.
     if re.search(
         r"NTD\s*\d|NT\$\s*\d|\d[\d,]*\s*元|"
-        r"全票|優待票|愛心票",
+        r"全票|優待票|愛心票|早鳥價|原價",
         price_text,
         re.I,
     ):
         return "paid"
+    if re.search(
+        r"免費入場|免費參觀|自由入場|免票|免費參加",
+        price_text,
+    ):
+        return "free"
     if re.search(r"售票制|購票入場|售票入場", full_text, re.I):
         return "paid"
+    if re.search(
+        r"免費入場|免費參觀|自由入場|免票|免費參加",
+        full_text,
+    ):
+        return "free"
     return "unknown"
 
 
