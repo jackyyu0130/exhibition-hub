@@ -4235,3 +4235,102 @@ body {
     height: auto;
   }
 }
+
+/* 5-A: consistent status buttons and independent admission filters */
+.listing-view-hero .listing-heading-column {
+  justify-content: flex-start;
+  gap: 26px;
+}
+
+.listing-view-hero .listing-status-panel,
+.listing-view-hero .listing-admission-panel {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.listing-view-hero .listing-admission-panel {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.listing-view-hero .listing-status-options,
+.listing-view-hero .listing-admission-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  max-width: none;
+}
+
+.listing-view-hero .listing-status-panel .filter-panel-heading,
+.listing-view-hero .listing-admission-panel .filter-panel-heading {
+  margin-bottom: 12px;
+}
+
+.listing-view-hero .listing-status-panel .filter-panel-heading h2,
+.listing-view-hero .listing-admission-panel .filter-panel-heading h2 {
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.listing-view-hero .listing-status-panel .filter-panel-heading small,
+.listing-view-hero .listing-admission-panel .filter-panel-heading small {
+  font-size: 10px;
+  letter-spacing: .13em;
+}
+
+.listing-view-hero .status-filter-button,
+.listing-view-hero .admission-filter-button {
+  appearance: none;
+  min-height: 39px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+  transition: border-color .2s ease, background .2s ease, color .2s ease, transform .2s ease;
+}
+
+.listing-view-hero .status-filter-button:hover,
+.listing-view-hero .admission-filter-button:hover {
+  border-color: rgba(184,111,69,.48);
+  background: #fff8f3;
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.listing-view-hero .status-filter-button.active,
+.listing-view-hero .admission-filter-button.active,
+.listing-view-hero .status-filter-button[aria-pressed="true"],
+.listing-view-hero .admission-filter-button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+  box-shadow: none;
+}
+
+.listing-view-hero .status-filter-button.active:hover,
+.listing-view-hero .admission-filter-button.active:hover {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+@media (max-width: 820px) {
+  .listing-view-hero .listing-heading-column { gap: 22px; }
+  .listing-view-hero .listing-admission-panel { padding-top: 16px; }
+  .listing-view-hero .status-filter-button,
+  .listing-view-hero .admission-filter-button {
+    min-height: 38px;
+    padding-inline: 14px;
+    font-size: 12px;
+  }
+}

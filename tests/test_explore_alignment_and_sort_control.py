@@ -111,9 +111,9 @@ class ExploreAlignmentAndSortControlTests(unittest.TestCase):
             APP,
         )
 
-    def test_cache_version_is_55(self):
-        self.assertIn("assets/styles.css?v=5.5", HTML)
-        self.assertIn("assets/app.js?v=5.5", HTML)
+    def test_cache_version_is_56(self):
+        self.assertIn("assets/styles.css?v=5.6", HTML)
+        self.assertIn("assets/app.js?v=5.6", HTML)
 
 
 if __name__ == "__main__":
