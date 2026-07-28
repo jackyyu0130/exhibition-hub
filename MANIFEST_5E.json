@@ -1,0 +1,22 @@
+{
+  "stage": "5-E",
+  "name": "華山完整候選資料驗證",
+  "published": false,
+  "frontendChanged": false,
+  "officialDataChanged": false,
+  "qualityGates": [
+    "全部詳情頁成功",
+    "每筆來源活動有決策",
+    "候選 ID 唯一",
+    "來源參照完整且唯一",
+    "人工審核佇列為 0",
+    "候選維持未發布"
+  ],
+  "files": [
+    "scripts/exhibition_hub/merging/quality.py",
+    "scripts/exhibition_hub/merging/__init__.py",
+    "scripts/validate_source_merge_candidate.py",
+    "tests/test_source_merge_quality.py",
+    "docs/HUASHAN_FULL_CANDIDATE_5E_ZH-TW.md"
+  ]
+}
