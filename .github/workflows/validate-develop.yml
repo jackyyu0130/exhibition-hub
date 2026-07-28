@@ -763,7 +763,7 @@ jobs:
 
 
   dry-run-source-batch:
-    name: Dry run official source batch
+    name: Dry run resilient official source batch
     if: >-
       github.event_name == 'push' &&
       contains(
@@ -771,7 +771,7 @@ jobs:
         '[dry-run-source-batch]'
       )
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout current branch
@@ -789,7 +789,7 @@ jobs:
       - name: Validate registries
         run: python scripts/validate_registries.py
 
-      - name: Run active official venue batch
+      - name: Run resilient active official venue batch
         run: |
           set -o pipefail
 
@@ -798,18 +798,177 @@ jobs:
             --source-batches "data/source_batches.json" \
             --source-registry "data/source_registry.json" \
             --fetch-details \
+            --max-attempts "3" \
+            --retry-backoff-seconds "2" \
+            --source-timeout-seconds "180" \
+            --slow-source-threshold-ms "90000" \
             --output-dir "official-source-batch" \
             --report-output "official-source-batch-report.json" \
+            --health-output "official-source-batch-health.json" \
             | tee official-source-batch-summary.json
 
-      - name: Upload official source batch audit
+      - name: Validate live source batch health
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_batch_health.py \
+            --input "official-source-batch-health.json" \
+            --max-failed-sources "0" \
+            --max-timeouts "0" \
+            --require-records \
+            --output "official-source-batch-health-validation.json" \
+            | tee official-source-batch-health-validation-summary.json
+
+      - name: Simulate retry, timeout, and source isolation
+        run: |
+          set -o pipefail
+
+          python scripts/simulate_source_batch_resilience.py \
+            --output "source-batch-resilience-simulation.json" \
+            | tee source-batch-resilience-simulation-summary.json
+
+      - name: Upload resilient source batch audit
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: official-source-batch-${{ github.run_number }}
+          name: resilient-source-batch-${{ github.run_number }}
           path: |
             official-source-batch/
             official-source-batch-report.json
             official-source-batch-summary.json
+            official-source-batch-health.json
+            official-source-batch-health-validation.json
+            official-source-batch-health-validation-summary.json
+            source-batch-resilience-simulation.json
+            source-batch-resilience-simulation-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+
+  dry-run-songshan-candidate:
+    name: Dry run Songshan northern venue candidate
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-songshan]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Run resilient northern cultural park batch
+        run: |
+          set -o pipefail
+
+          python scripts/run_collector_batch.py \
+            --batch "cultural-parks-north" \
+            --source-batches "data/source_batches.json" \
+            --source-registry "data/source_registry.json" \
+            --allow-disabled-batch \
+            --allow-planned \
+            --fetch-details \
+            --max-attempts "3" \
+            --retry-backoff-seconds "2" \
+            --source-timeout-seconds "240" \
+            --slow-source-threshold-ms "120000" \
+            --output-dir "north-cultural-parks-batch" \
+            --report-output "north-cultural-parks-batch-report.json" \
+            --health-output "north-cultural-parks-batch-health.json" \
+            | tee north-cultural-parks-batch-summary.json
+
+      - name: Validate northern batch health
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_batch_health.py \
+            --input "north-cultural-parks-batch-health.json" \
+            --max-failed-sources "0" \
+            --max-timeouts "0" \
+            --require-records \
+            --output "north-cultural-parks-health-validation.json" \
+            | tee north-cultural-parks-health-validation-summary.json
+
+      - name: Extract Songshan source report
+        run: |
+          cp \
+            "north-cultural-parks-batch/sources/songshan-cultural-park.json" \
+            "songshan-source-run.json"
+
+      - name: Validate Songshan source fields
+        run: |
+          set -o pipefail
+
+          python scripts/validate_songshan_source.py \
+            --input "songshan-source-run.json" \
+            --output "songshan-source-quality.json" \
+            | tee songshan-source-quality-summary.json
+
+      - name: Build Songshan merge candidate
+        run: |
+          set -o pipefail
+
+          python scripts/build_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "songshan-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "songshan-cultural-park" \
+            --candidate-output "songshan-merge-candidate.json" \
+            --report-output "songshan-merge-report.json" \
+            --review-output "songshan-merge-review.json" \
+            | tee songshan-merge-summary.json
+
+      - name: Validate Songshan merge candidate
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "songshan-source-run.json" \
+            --candidate "songshan-merge-candidate.json" \
+            --merge-report "songshan-merge-report.json" \
+            --review "songshan-merge-review.json" \
+            --source-id "songshan-cultural-park" \
+            --require-full-details \
+            --max-review "100" \
+            --output "songshan-merge-quality.json" \
+            | tee songshan-merge-quality-summary.json
+
+      - name: Upload Songshan northern venue audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: songshan-north-candidate-${{ github.run_number }}
+          path: |
+            north-cultural-parks-batch/
+            north-cultural-parks-batch-report.json
+            north-cultural-parks-batch-summary.json
+            north-cultural-parks-batch-health.json
+            north-cultural-parks-health-validation.json
+            north-cultural-parks-health-validation-summary.json
+            songshan-source-run.json
+            songshan-source-quality.json
+            songshan-source-quality-summary.json
+            songshan-merge-candidate.json
+            songshan-merge-report.json
+            songshan-merge-review.json
+            songshan-merge-summary.json
+            songshan-merge-quality.json
+            songshan-merge-quality-summary.json
           if-no-files-found: warn
           retention-days: 7

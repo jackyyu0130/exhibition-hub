@@ -1,0 +1,26 @@
+{
+  "stage": "6-C",
+  "name": "北部官方場館來源整合：松山文創園區",
+  "sourceId": "songshan-cultural-park",
+  "sourceStatus": "planned",
+  "sourceEnabled": false,
+  "batchId": "cultural-parks-north",
+  "batchEnabled": false,
+  "officialDataChanged": false,
+  "frontendChanged": false,
+  "productionPipelineChanged": false,
+  "reusesExistingTrigger": ".github/probe-source-batch.trigger",
+  "files": [
+    ".github/workflows/validate-develop.yml",
+    "data/source_registry.json",
+    "data/source_batches.json",
+    "scripts/exhibition_hub/collectors/songshan.py",
+    "scripts/exhibition_hub/collectors/__init__.py",
+    "scripts/run_collectors.py",
+    "scripts/validate_songshan_source.py",
+    "tests/test_songshan_collector.py",
+    "tests/test_songshan_source_validator.py",
+    "tests/test_songshan_registry.py",
+    "docs/SONGSHAN_NORTHERN_VENUE_6C_ZH-TW.md"
+  ]
+}
