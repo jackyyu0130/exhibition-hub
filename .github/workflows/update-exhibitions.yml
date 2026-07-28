@@ -3,19 +3,21 @@ name: Update data and deploy site
 on:
   workflow_dispatch:
   schedule:
-    - cron: "25 21 * * *" # 每天台灣時間 05:25
+    - cron: "25 21 * * *" # 台灣時間 05:25
+    - cron: "25 9 * * *"  # 台灣時間 17:25
   push:
     branches: [main]
     paths-ignore:
       - data/exhibitions.json
+      - data/exhibitions.enriched.json
       - data/geocode-cache.json
+      - data/update-reports/**
 
 permissions:
   contents: write
   pages: write
   id-token: write
 
-# 防止「程式碼 Push、手動執行、每日排程」同時修改 main。
 concurrency:
   group: exhibition-hub-update-and-deploy
   cancel-in-progress: false
@@ -23,7 +25,7 @@ concurrency:
 jobs:
   update-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -35,44 +37,189 @@ jobs:
           fetch-depth: 0
           ref: main
 
-      # 一般程式碼 Push 只部署網站，不在同一時間再寫回資料檔。
-      # 資料更新只由每日排程或手動 Run workflow 執行。
+      - name: Determine update mode
+        id: mode
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RUN_UPDATE=false
+          REASON="deploy-only"
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            RUN_UPDATE=true
+            REASON="scheduled-update"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            RUN_UPDATE=true
+            REASON="manual-update"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            BEFORE="${{ github.event.before }}"
+            AFTER="${{ github.sha }}"
+            if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+              if git diff --name-only "$BEFORE" "$AFTER" | grep -qx "data/source_registry.json"; then
+                RUN_UPDATE=true
+                REASON="source-registry-activation"
+              fi
+            fi
+          fi
+
+          echo "run_update=$RUN_UPDATE" >> "$GITHUB_OUTPUT"
+          echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+          echo "Mode: $REASON"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
 
-      # 驗證測試本身也會匯入 requests，
-      # 因此 Push、排程與手動執行都必須先安裝相依套件。
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Fetch and normalize exhibition data
-        if: github.event_name != 'push'
+      - name: Snapshot current production data
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p production-update-audit
+          cp data/exhibitions.enriched.json production-update-audit/exhibitions.enriched.before.json
+          cp data/exhibitions.json production-update-audit/exhibitions.raw.before.json
+          cp data/source_registry.json production-update-audit/source_registry.json
+
+      - name: Fetch and normalize Culture Ministry data
+        if: steps.mode.outputs.run_update == 'true'
         env:
           MAX_DETAIL_FETCHES: "2200"
           MAX_IMAGE_FETCHES: "2200"
           MAX_GEOCODES: "150"
         run: python scripts/scraper.py
 
+      - name: Build fresh enriched base
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/build_enriched_candidate.py \
+            --input "data/exhibitions.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --output "production-update-audit/fresh-base.json" \
+            --report-output "production-update-audit/fresh-base-report.json" \
+            --excluded-output "production-update-audit/fresh-base-excluded.json" \
+            | tee production-update-audit/fresh-base-summary.json
+
+      - name: Fetch current Huashan details
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --fetch-details \
+            --source-registry "data/source_registry.json" \
+            --report-output "production-update-audit/huashan-source-run.json" \
+            | tee production-update-audit/huashan-source-summary.json
+
+      - name: Build Huashan merge candidate
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/build_source_merge_candidate.py \
+            --base "production-update-audit/fresh-base.json" \
+            --source-run "production-update-audit/huashan-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "production-update-audit/merge-candidate.json" \
+            --report-output "production-update-audit/merge-report.json" \
+            --review-output "production-update-audit/merge-review.json" \
+            | tee production-update-audit/merge-summary.json
+
+      - name: Validate full Huashan candidate
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/validate_source_merge_candidate.py \
+            --base "production-update-audit/fresh-base.json" \
+            --source-run "production-update-audit/huashan-source-run.json" \
+            --candidate "production-update-audit/merge-candidate.json" \
+            --merge-report "production-update-audit/merge-report.json" \
+            --review "production-update-audit/merge-review.json" \
+            --source-id "huashan-1914" \
+            --require-full-details \
+            --max-review "0" \
+            --output "production-update-audit/quality-report.json" \
+            | tee production-update-audit/quality-summary.json
+
+      - name: Prepare production preview
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/prepare_source_publish_preview.py \
+            --base "production-update-audit/fresh-base.json" \
+            --source-run "production-update-audit/huashan-source-run.json" \
+            --candidate "production-update-audit/merge-candidate.json" \
+            --merge-report "production-update-audit/merge-report.json" \
+            --review "production-update-audit/merge-review.json" \
+            --quality-report "production-update-audit/quality-report.json" \
+            --source-id "huashan-1914" \
+            --preview-output "production-update-audit/publish-preview.json" \
+            --diff-output "production-update-audit/publish-diff.json" \
+            --excluded-output "production-update-audit/publish-excluded.json" \
+            | tee production-update-audit/publish-preview-summary.json
+
+      - name: Finalize safe production data
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+          python scripts/finalize_source_publish.py \
+            --current "data/exhibitions.enriched.json" \
+            --preview "production-update-audit/publish-preview.json" \
+            --diff "production-update-audit/publish-diff.json" \
+            --source-run "production-update-audit/huashan-source-run.json" \
+            --quality-report "production-update-audit/quality-report.json" \
+            --source-id "huashan-1914" \
+            --minimum-events "500" \
+            --max-drop-count "250" \
+            --max-drop-ratio "0.15" \
+            --output "production-update-audit/exhibitions.enriched.final.json" \
+            --report-output "production-update-audit/production-publish-report.json" \
+            | tee production-update-audit/production-publish-summary.json
+
+          cp production-update-audit/exhibitions.enriched.final.json data/exhibitions.enriched.json
+          mkdir -p data/update-reports
+          cp production-update-audit/production-publish-report.json data/update-reports/latest-huashan-update.json
+
       - name: Validate frontend, scraper rules, and published data
         run: python -m unittest discover -s tests -v
 
-      - name: Commit updated data safely
-        if: github.event_name != 'push'
+      - name: Commit updated production data safely
+        if: steps.mode.outputs.run_update == 'true'
         shell: bash
         run: |
           set -euo pipefail
 
-          if [ -z "$(git status --porcelain -- data/exhibitions.json data/geocode-cache.json)" ]; then
-            echo "No data changes"
+          TRACKED_PATHS=(
+            data/exhibitions.json
+            data/exhibitions.enriched.json
+            data/geocode-cache.json
+            data/update-reports/latest-huashan-update.json
+          )
+
+          if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
+            echo "No production data changes"
             exit 0
           fi
 
-          cp data/exhibitions.json /tmp/exhibitions.json
+          mkdir -p /tmp/exhibition-hub-production
+          cp data/exhibitions.json /tmp/exhibition-hub-production/exhibitions.json
+          cp data/exhibitions.enriched.json /tmp/exhibition-hub-production/exhibitions.enriched.json
+          cp data/update-reports/latest-huashan-update.json /tmp/exhibition-hub-production/latest-huashan-update.json
           if [ -f data/geocode-cache.json ]; then
-            cp data/geocode-cache.json /tmp/geocode-cache.json
+            cp data/geocode-cache.json /tmp/exhibition-hub-production/geocode-cache.json
           fi
 
           git config user.name "github-actions[bot]"
@@ -82,34 +229,45 @@ jobs:
             echo "Push attempt ${attempt}/3"
             git fetch origin main
             git reset --hard origin/main
-            mkdir -p data
-            cp /tmp/exhibitions.json data/exhibitions.json
-            if [ -f /tmp/geocode-cache.json ]; then
-              cp /tmp/geocode-cache.json data/geocode-cache.json
+            mkdir -p data/update-reports
+            cp /tmp/exhibition-hub-production/exhibitions.json data/exhibitions.json
+            cp /tmp/exhibition-hub-production/exhibitions.enriched.json data/exhibitions.enriched.json
+            cp /tmp/exhibition-hub-production/latest-huashan-update.json data/update-reports/latest-huashan-update.json
+            if [ -f /tmp/exhibition-hub-production/geocode-cache.json ]; then
+              cp /tmp/exhibition-hub-production/geocode-cache.json data/geocode-cache.json
             fi
 
-            if [ -z "$(git status --porcelain -- data/exhibitions.json data/geocode-cache.json)" ]; then
-              echo "Remote already contains the latest exhibition data"
+            if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
+              echo "Remote already contains the latest production data"
               exit 0
             fi
 
-            git add data/exhibitions.json
-            if [ -f data/geocode-cache.json ]; then
-              git add data/geocode-cache.json
-            fi
-            git commit -m "chore: update exhibition data"
+            git add "${TRACKED_PATHS[@]}"
+            git commit -m "chore: update exhibition data and official sources"
 
             if git push origin HEAD:main; then
-              echo "Exhibition data pushed successfully"
+              echo "Production data pushed successfully"
               exit 0
             fi
 
-            echo "Remote changed during push; retrying from the newest main..."
+            echo "Remote changed during push; retrying from newest main..."
             sleep 5
           done
 
-          echo "Unable to push exhibition data after 3 attempts"
+          echo "Unable to push production data after 3 attempts"
           exit 1
+
+      - name: Upload production update audit
+        if: always() && steps.mode.outputs.run_update == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-update-audit-${{ github.run_number }}
+          path: production-update-audit
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Build minimal Pages directory
+        run: python scripts/build_pages_site.py --root . --output site
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -117,7 +275,7 @@ jobs:
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site
 
       - name: Deploy to GitHub Pages
         id: deployment
