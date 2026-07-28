@@ -52,6 +52,19 @@
   ],
   "batches": [
     {
+      "id": "active-official-venues",
+      "name": "已啟用官方場館來源",
+      "enabled": true,
+      "regionGroupIds": [
+        "north"
+      ],
+      "sourceIds": [
+        "huashan-1914"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source"
+    },
+    {
       "id": "cultural-parks-north",
       "name": "北部文化園區",
       "enabled": false,

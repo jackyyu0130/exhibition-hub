@@ -57,6 +57,24 @@ class SourceBatchRegistryTests(unittest.TestCase):
             ]
         )
 
+    def test_active_official_venue_batch_is_enabled(self):
+        payload = json.loads(
+            (
+                ROOT / "data" / "source_batches.json"
+            ).read_text(encoding="utf-8")
+        )
+        batch = next(
+            item
+            for item in payload["batches"]
+            if item["id"]
+            == "active-official-venues"
+        )
+        self.assertTrue(batch["enabled"])
+        self.assertEqual(
+            batch["sourceIds"],
+            ["huashan-1914"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

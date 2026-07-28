@@ -1,6 +1,14 @@
 """Collector contracts for legacy feeds and official venue sources."""
 
 from .audit import audit_collector_coverage
+from .batches import (
+    CollectorBatchExecutor,
+    RegionGroup,
+    SourceBatch,
+    SourceBatchRegistry,
+    SourceBatchRunReport,
+    load_source_batch_registry,
+)
 from .base import (
     BaseCollector,
     CollectionResult,
@@ -28,6 +36,7 @@ from .runner import (
 
 __all__ = [
     "BaseCollector",
+    "CollectorBatchExecutor",
     "CollectionResult",
     "CollectorBatchResult",
     "CollectorContext",
@@ -43,9 +52,14 @@ __all__ = [
     "CollectorRunner",
     "CollectorSource",
     "RawEvent",
+    "RegionGroup",
+    "SourceBatch",
+    "SourceBatchRegistry",
+    "SourceBatchRunReport",
     "SourceKind",
     "audit_collector_coverage",
     "collector_registry",
+    "load_source_batch_registry",
     "run_collectors",
 ]
 

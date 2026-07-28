@@ -1,0 +1,24 @@
+{
+  "stage": "6-A",
+  "name": "通用官方來源批次執行器",
+  "officialDataChanged": false,
+  "frontendChanged": false,
+  "productionPipelineChanged": false,
+  "enabledBatch": {
+    "id": "active-official-venues",
+    "sourceIds": [
+      "huashan-1914"
+    ]
+  },
+  "files": [
+    ".github/workflows/validate-develop.yml",
+    ".github/probe-source-batch.trigger",
+    "data/source_batches.json",
+    "scripts/exhibition_hub/collectors/batches.py",
+    "scripts/exhibition_hub/collectors/__init__.py",
+    "scripts/run_collector_batch.py",
+    "tests/test_collector_batch_executor.py",
+    "tests/test_source_batches.py",
+    "docs/SOURCE_BATCH_RUNNER_6A_ZH-TW.md"
+  ]
+}
