@@ -296,6 +296,7 @@ class _HuashanDetailParser(HTMLParser):
             key = (
                 attrs_map.get("property")
                 or attrs_map.get("name")
+                or ""
             ).strip().lower()
             content = attrs_map.get("content", "").strip()
             if key and content and key not in self.meta:
