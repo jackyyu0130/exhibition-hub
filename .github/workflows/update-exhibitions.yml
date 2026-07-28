@@ -56,9 +56,13 @@ jobs:
             BEFORE="${{ github.event.before }}"
             AFTER="${{ github.sha }}"
             if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-              if git diff --name-only "$BEFORE" "$AFTER" | grep -qx "data/source_registry.json"; then
+              CHANGED_FILES="$(git diff --name-only "$BEFORE" "$AFTER")"
+              if printf '%s\n' "$CHANGED_FILES" | grep -qx "data/source_registry.json"; then
                 RUN_UPDATE=true
                 REASON="source-registry-activation"
+              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(.github/workflows/update-exhibitions\.yml|scripts/validate_published_data\.py)$'; then
+                RUN_UPDATE=true
+                REASON="production-pipeline-recovery"
               fi
             fi
           fi
@@ -75,6 +79,9 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Run project tests before production data update
+        run: python -m unittest discover -s tests -v
 
       - name: Snapshot current production data
         if: steps.mode.outputs.run_update == 'true'
@@ -193,8 +200,27 @@ jobs:
           mkdir -p data/update-reports
           cp production-update-audit/production-publish-report.json data/update-reports/latest-huashan-update.json
 
-      - name: Validate frontend, scraper rules, and published data
-        run: python -m unittest discover -s tests -v
+      - name: Validate dynamic published production data
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REPORT_OUTPUT="/tmp/published-data-validation.json"
+          VALIDATION_ARGS=(
+            --input "data/exhibitions.enriched.json"
+            --minimum-events "500"
+          )
+
+          if [ "${{ steps.mode.outputs.run_update }}" = "true" ]; then
+            mkdir -p production-update-audit
+            REPORT_OUTPUT="production-update-audit/published-data-validation.json"
+            VALIDATION_ARGS+=(
+              --require-published
+              --source-id "huashan-1914"
+            )
+          fi
+
+          python scripts/validate_published_data.py             "${VALIDATION_ARGS[@]}"             --report-output "$REPORT_OUTPUT"
 
       - name: Commit updated production data safely
         if: steps.mode.outputs.run_update == 'true'
