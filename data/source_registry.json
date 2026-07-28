@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-28",
+  "updatedAt": "2026-07-29",
   "description": "台灣展覽誌全台活動來源登錄表。此檔只管理資料來源，不直接儲存活動。",
   "coverageRegions": [
     "基隆市",
@@ -138,14 +138,14 @@
       "name": "松山文創園區",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "generic_list_detail",
+      "parser": "songshan_list_detail",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
       "priority": 90,
       "refreshHours": 12,
       "officialUrl": "https://www.songshanculturalpark.org/",
-      "listingUrl": "",
+      "listingUrl": "https://www.songshanculturalpark.org/exhibition",
       "coverageRegions": [
         "臺北市"
       ],
@@ -159,7 +159,7 @@
       "venueIds": [
         "songshan-cultural-park"
       ],
-      "notes": "待確認活動列表與詳情頁解析規則。"
+      "notes": "6-C 已建立列表與詳情頁 Collector，維持 planned／disabled，通過候選資料與去重檢查後於 6-G 統一評估正式啟用。"
     },
     {
       "id": "pier-2",

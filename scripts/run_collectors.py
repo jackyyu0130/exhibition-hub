@@ -30,10 +30,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     if args.fetch_details:
+        detail_limit = str(max(0, args.detail_limit))
+        os.environ["EXHIBITION_HUB_FETCH_DETAILS"] = "1"
+        os.environ["EXHIBITION_HUB_DETAIL_LIMIT"] = detail_limit
+        # Backward compatibility for the existing Huashan collector.
         os.environ["EXHIBITION_HUB_HUASHAN_FETCH_DETAILS"] = "1"
-        os.environ["EXHIBITION_HUB_HUASHAN_DETAIL_LIMIT"] = str(
-            max(0, args.detail_limit)
-        )
+        os.environ["EXHIBITION_HUB_HUASHAN_DETAIL_LIMIT"] = detail_limit
     sources = load_collector_sources(args.source_registry)
 
     if args.audit_only or not args.source:

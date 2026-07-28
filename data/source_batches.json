@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-28",
+  "updatedAt": "2026-07-29",
   "description": "第 6 階段來源批次設定。新增區域、場館或主辦方時，優先修改此檔與 source_registry.json，不需要複製 Workflow。",
   "regionGroups": [
     {
@@ -76,7 +76,9 @@
         "songshan-cultural-park"
       ],
       "organizerIds": [],
-      "failurePolicy": "isolate_source"
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 3,
+      "sourceTimeoutSeconds": 240
     },
     {
       "id": "cultural-parks-south",

@@ -28,6 +28,7 @@ from .base import (
 )
 from .http import CollectorHttpClient, CollectorHttpError
 from .huashan import Huashan1914Collector
+from .songshan import SongshanCulturalParkCollector
 from .registry import (
     CollectorRegistration,
     CollectorRegistry,
@@ -51,6 +52,7 @@ __all__ = [
     "CollectorHttpClient",
     "CollectorHttpError",
     "Huashan1914Collector",
+    "SongshanCulturalParkCollector",
     "CollectorRecord",
     "CollectorRegistration",
     "CollectorRegistry",
@@ -76,6 +78,14 @@ __all__ = [
 if collector_registry.get(Huashan1914Collector.source_id) is None:
     collector_registry.register(
         Huashan1914Collector,
+        priority=90,
+        enabled=False,
+    )
+
+
+if collector_registry.get(SongshanCulturalParkCollector.source_id) is None:
+    collector_registry.register(
+        SongshanCulturalParkCollector,
         priority=90,
         enabled=False,
     )
