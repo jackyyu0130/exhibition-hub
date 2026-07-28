@@ -115,6 +115,7 @@ class CollectorCompatibilityTests(unittest.TestCase):
             client=Mock(),
         ).run_source(source)
         self.assertTrue(venue_report.success)
+        self.assertIn("metrics", venue_report.to_dict())
 
 
 if __name__ == "__main__":

@@ -195,6 +195,7 @@ class CollectorRunReport:
     errors: list[str] = field(default_factory=list)
     fetched_pages: int = 0
     duration_ms: int = 0
+    metrics: dict[str, Any] = field(default_factory=dict)
     started_at: str = field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
     )
@@ -214,6 +215,7 @@ class CollectorRunReport:
             "errors": self.errors,
             "fetchedPages": self.fetched_pages,
             "durationMs": self.duration_ms,
+            "metrics": dict(self.metrics),
             "startedAt": self.started_at,
         }
 

@@ -110,7 +110,7 @@
       "name": "華山1914文化創意產業園區",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "generic_list_detail",
+      "parser": "huashan_list_detail",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -131,7 +131,7 @@
       "venueIds": [
         "huashan-1914"
       ],
-      "notes": "5-B 已建立活動列表 Collector，維持 planned／disabled；通過 Live Dry Run 與詳情頁正規化後才啟用。"
+      "notes": "5-C 已建立詳情頁擷取與欄位正規化，維持 planned／disabled；通過 Live Detail Dry Run、去重與候選資料檢查後才啟用。"
     },
     {
       "id": "songshan-cultural-park",
