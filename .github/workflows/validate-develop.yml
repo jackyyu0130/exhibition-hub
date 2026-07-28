@@ -1,3 +1,973 @@
+
+星期日 下午2:22
+
+exhibitions(2).json
+檔案
+
+幫我看一下這個檔案是否為展覽的資料檔案。
+我是使用在製作https://twexhibition.com/的展覽相關資訊網
+
+我製作這個網站是用github的方式製作，但是我希望網站是自動更新所有網路上的展覽資訊，包涵google或是各個展覽場所的更新，全台展區都要，包含但不限於：松山、華山、世貿、國家展廳、國父紀念館等等的，北中南都要。
+還有在threads上的討論串，包含但不限於：展覽、台北看展、台中看展等所有關鍵字討論串。
+現在感覺的模式是我要手動調整，但我要讓網站自動去抓取每日的資訊，至少每日的00:00抓取一次。
+
+
+exhibition-hub-main (3).zip
+壓縮封存檔案
+網址：https://chatgpt.com/c/6a65a770-bfa0-83ee-bc8a-f6302bd65050
+
+截圖 2026-07-26 15.19.57.png
+截圖 2026-07-26 15.20.18.png
+貼錯了:jackyyu0130/exhibition-hub
+
+
+
+2. 建立新檔案 找不太到
+
+
+
+
+截圖 2026-07-26 15.54.58.png
+截圖 2026-07-26 15.55.09.png
+
+
+
+
+
+
+
+
+
+
+
+
+
+找不到你說的Probe Culture Ministry API
+
+這樣嗎
+
+
+截圖 2026-07-26 17.00.50.png
+截圖 2026-07-26 17.01.11.png
+截圖 2026-07-26 17.01.18.png
+
+哪裡有灰色
+
+好，接著我要繼續怎麼做
+我們現在到哪一步驟了
+
+順便給我我們後續還有哪些步驟，並且一起給我每個步驟對應的事情是什麼
+
+截圖 2026-07-26 17.17.11.png
+截圖 2026-07-26 17.17.20.png
+這樣可以嗎？還是前面也要空格
+
+這樣嗎
+
+這樣對嗎，我會把108-112刪除，只是先對其位置而已
+
+截圖 2026-07-26 17.36.57.png
+截圖 2026-07-26 17.38.11.png
+
+
+
+
+
+星期日 下午7:55
+
+這邊要填什麼
+
+出現錯誤
+
+
+出現這個問題
+
+截圖 2026-07-26 20.10.05.png
+截圖 2026-07-26 20.10.16.png
+截圖 2026-07-26 20.10.24.png
+我把部分代碼都貼給你 上面有數字幾行 跟我說我要刪除哪幾行貼在哪幾行
+
+
+提交訊息必須填[probe-culture] test: inspect Culture API field structure是要填在哪裡
+
+
+
+
+好像找不太到
+
+
+出現問題
+
+
+
+成功了
+
+
+
+
+
+
+
+截圖 2026-07-26 23.01.26.png
+截圖 2026-07-26 23.01.48.png
+
+
+
+截圖 2026-07-26 23.19.00.png
+截圖 2026-07-26 23.19.08.png
+截圖 2026-07-26 23.19.17.png
+截圖 2026-07-26 23.19.29.png
+截圖 2026-07-26 23.19.38.png
+截圖 2026-07-26 23.19.50.png
+截圖 2026-07-26 23.20.00.png
+截圖 2026-07-26 23.20.10.png
+截圖 2026-07-26 23.20.19.png
+截圖 2026-07-26 23.20.31.png
+截圖 2026-07-26 23.20.43.png
+
+
+已貼上文字 (1)(5).txt
+文件
+
+已貼上文字 (1)(6).txt
+文件
+
+
+
+
+已貼上文字 (1)(7).txt
+文件
+你直接幫我檢查
+
+
+已貼上文字 (1)(8).txt
+文件
+
+截圖 2026-07-27 00.04.11.png
+截圖 2026-07-27 00.05.01.png
+
+
+
+
+culture-normalization-dry-run-41.zip
+壓縮封存檔案
+
+下面沒zip了
+
+
+culture-normalization-dry-run-43.zip
+壓縮封存檔案
+
+
+culture-normalization-dry-run-45.zip
+壓縮封存檔案
+
+
+culture-normalization-dry-run-47.zip
+壓縮封存檔案
+
+
+已貼上文字 (1)(9).txt
+文件
+
+這是我的程式碼 直接幫我改成我可以直接複製使用的版本
+
+另外想問，文化部的部分還要調整很久嗎，因為我的主要想放在像是漫畫博覽會、會是演唱會、音樂祭、獨立個展、畫展、松煙、華山類似這種文創展的出展上，或者是像是threads上面很多人討論高的展覽類型
+
+
+
+exhibitions (1).json
+檔案
+
+venue-aliases(1).json
+檔案
+這樣嗎？
+
+
+
+validate-develop.yml
+檔案
+
+這邊貼進去嗎
+
+你說這邊要怎麼操作
+
+找不到你說的commit directly to the develop branch
+
+現在已經到這個步驟了，此外我找不到summary頁面
+
+
+event-registry-dry-run-54.zip
+壓縮封存檔案
+
+
+event-registry-dry-run-57.zip
+壓縮封存檔案
+
+
+event-registry-dry-run-59.zip
+壓縮封存檔案
+
+
+event-registry-dry-run-61.zip
+壓縮封存檔案
+
+今天 上午12:13
+
+event-registry-dry-run-63.zip
+壓縮封存檔案
+另外問，目前更新過後的步驟到哪裡了，剩餘步驟還有幾才能更新到網站內。
+
+截圖 2026-07-28 00.21.50.png
+好接著繼續後續作業，並且我剛查看過我的網站內更新的資料為圖1，包含展覽有幾檔、場館、更新日期
+
+
+event-registry-dry-run-65.zip
+壓縮封存檔案
+
+
+event-registry-dry-run-67.zip
+壓縮封存檔案
+
+截圖 2026-07-28 01.14.13.png
+找不到.github/probe-enriched-candidate.trigger
+
+截圖 2026-07-28 01.19.17.png
+哪裡看
+
+截圖 2026-07-28 01.22.36.png
+
+截圖 2026-07-28 01.24.53.png
+截圖 2026-07-28 01.27.26.png
+
+
+enriched-candidate-72.zip
+壓縮封存檔案
+
+
+index(3).html
+檔案
+你這個前台的頁面，是否有錯誤，跟我現在的前台設計同樣嗎？我不要變更我的前台設計。
+
+截圖 2026-07-28 01.50.42.png
+截圖 2026-07-28 01.51.01.png
+沒事，我直接上傳你剛剛上面的exhibition_hub_stage_4d_frontend_integration裡面的檔案即可，因為我剛剛看他裡面的index.html如圖1、圖2，整個變很怪。
+
+截圖 2026-07-28 02.05.36.png
+
+截圖 2026-07-28 02.11.14.png
+我在第三步開啟剛剛下載的資料夾長這樣
+
+截圖 2026-07-28 02.21.42.png
+截圖 2026-07-28 02.21.50.png
+截圖 2026-07-28 02.21.59.png
+首先，我找到類似圖1的部分，圖片問題以及外部連結問題
+2.首頁（如圖2.的這個分類以及分類名稱，要與探索全台展覽（如圖3）一致。並且圖片要以圖3的icon為主。
+
+接著是你剛剛上面提到的步驟，在 Finder 進入：data，這部分是指說github上嗎？
+
+截圖 2026-07-28 02.54.06.png
+更新了，但是目前官網前台沒出現更新。https://twexhibition.com/
+
+截圖 2026-07-28 02.58.38.png
+截圖 2026-07-28 02.58.46.png
+出現這些要理他嗎
+
+截圖 2026-07-28 03.03.29.png
+好繼續，後面要怎麼合併再跟我說一次
+
+截圖 2026-07-28 03.04.51.png
+
+截圖 2026-07-28 03.06.59.png
+
+截圖 2026-07-28 03.14.19.png
+
+截圖 2026-07-28 03.18.17.png
+截圖 2026-07-28 03.19.13.png
+截圖 2026-07-28 03.21.21.png
+好，前台的部分要再調整
+
+1.圖1為探索全台展覽頁面的日曆功能，選取日曆時，被選取的日期不要反白，而是顯示其他顏色，或是該日期底色更換，不然字變白色會看不見。並且我選取了其他日期後，目前今日的日期必須更換成其他顏色或是淡色。
+
+2.圖2為首頁的電腦版的分類圖，這感覺有點太怪並且有點icon的框框太長了，感覺6個為一排的大小應該差不多。
+
+3.圖3右側為探索全台展覽頁面的icon分類圖，每個icon的寬度太寬了，他的懸浮點擊只要圓圈的部分即可，幫我依照6個圓圈為一排的排版調整。而且現在的狀況已經影響到了左側的上下高度。
+
+4.我檢查了部分展區的展覽，例如華山就發現有吉伊卡哇的快閃店，但是沒導入到台灣展覽誌的官方網站內，什麼原因？https://www.huashan1914.com/w/huashan1914/exhibition_26061619433530946
+
+截圖 2026-07-28 03.36.37.png
+
+截圖 2026-07-28 03.37.40.png
+
+截圖 2026-07-28 03.38.31.png
+標題填在哪
+
+截圖 2026-07-28 03.42.50.png
+
+截圖 2026-07-28 03.45.12.png
+截圖 2026-07-28 03.48.33.png
+1.幫我優化圖1的探索全台展覽頁面，首先左邊的框框與右邊的分類框框必須對其。
+2.EXPLORE EXHIBITIONS前面的放大鏡icon清除，並且標題字要移向左邊對齊下方的舉辦狀態。
+3.圖2是在探索全台展覽頁面中，展覽塊的排序頁面，幫我排序上面的字的內容要與舉辦狀態相同，保留「名稱排序」，然後加入「熱門排序」
+
+接著告訴我目前的步驟進度，並且跟我說整理正式建立個別的展區的 Collector步驟在哪個環節。
+
+截圖 2026-07-28 04.07.04.png
+現在是這樣
+
+截圖 2026-07-28 04.08.07.png
+是長這樣
+
+截圖 2026-07-28 04.09.25.png
+
+截圖 2026-07-28 04.14.29.png
+截圖 2026-07-28 04.14.35.png
+圖1是操作到一半發現的事情，圖2是前台目前的排序
+
+截圖 2026-07-28 04.16.37.png
+
+今天 下午2:04
+截圖 2026-07-28 14.04.07.png
+
+截圖 2026-07-28 14.06.16.png
+
+截圖 2026-07-28 14.06.57.png
+截圖 2026-07-28 14.07.12.png
+
+處理時間為 10m 37s
+這次不是你操作錯誤，而是 5-A 更新包本身有相容性問題。
+
+錯誤已經很明確：
+
+ImportError: cannot import name 'RawEvent'
+ImportError: cannot import name 'CollectorContext'
+FAILED (errors=6)
+問題原因
+你的專案原本就已經有一套 Collector 基礎介面，既有程式與測試會使用：
+
+RawEvent
+CollectorContext
+但我提供的 5-A 包直接覆蓋了：
+
+scripts/exhibition_hub/collectors/base.py
+scripts/exhibition_hub/collectors/http.py
+新版檔案改成另一套名稱：
+
+CollectorSource
+CollectorRecord
+CollectorRunReport
+CollectorHttpClient
+結果造成原有的文化部 Collector、HTTP Client 與測試無法匯入舊介面。這也是為什麼本次不是單一測試失敗，而是 6 個測試模組在載入階段就中斷。
+
+目前先不要繼續下面步驟：
+
+不要更新 validate-develop.yml
+不要新增 probe-collectors.trigger
+不要建立 Pull Request
+不要合併到 main
+也不用刪除或 Revert 剛才的 Commit，後面用一筆修正 Commit 覆蓋即可。
+
+請下載目前 develop 完整專案
+因為需要同時保留你專案原本的 Collector API，必須以 GitHub 上目前實際的 144 項測試與程式為準，而不是再憑缺少的檔案猜測介面。
+
+下載步驟
+回到 GitHub 專案的 Code 頁面。
+
+左側分支確認：
+
+develop
+點右側綠色：
+
+Code
+點選：
+
+Download ZIP
+下載後檔名通常類似：
+
+exhibition-hub-develop.zip
+請把整個 ZIP 不解壓縮直接上傳到這裡。
+
+修正版會怎麼處理
+下一版會改為 5-A.1 相容性修正包，處理方式會是：
+
+保留原本的 RawEvent
+
+保留原本的 CollectorContext
+
+保留既有 CollectionResult／舊 Collector 執行方式
+
+保留原本 HTTP Client 的公開介面
+
+新的場館 Collector Registry 不再覆蓋舊介面
+
+必要時將新架構移到獨立命名空間
+
+保留這次已完成的「舉辦狀態」與「票價類型」前台功能
+
+直接以你目前 GitHub 的完整測試重跑，不再只用不完整的本機快照驗證
+
+預期修復後，新的 Commit message 會是：
+
+fix: preserve existing collector contracts
+現在只需要上傳目前的 exhibition-hub-develop.zip；先不要動其他 Workflow 檔案。
+
+
+
+exhibition-hub-develop (1).zip
+壓縮封存檔案
+
+截圖 2026-07-28 14.31.16.png
+繼續
+
+截圖 2026-07-28 14.35.33.png
+
+截圖 2026-07-28 14.36.17.png
+截圖 2026-07-28 14.36.25.png
+
+截圖 2026-07-28 14.42.19.png
+
+
+collector-framework-audit-90.zip
+壓縮封存檔案
+
+
+huashan-collector-dry-run-94.zip
+壓縮封存檔案
+
+
+huashan-detail-dry-run-98.zip
+壓縮封存檔案
+上述我們有一段對話是以下：
+
+https://twexhibition.com/?view=all&status=free&date=2026-07-31&category=%E6%BC%94%E5%94%B1%E6%9C%83 發現在「探索全台展覽」頁面中，我選取「舉辦狀態」選擇「即將舉辦」時，背景顏色會與其他的舉辦狀態背景有點誤差，幫我修正bug。並且我在選則「舉辦狀態」時，如果點選一次為選取該狀態，點選第二次則為取消選取。 而且幫我在適當調整舉辦狀態區域的標題字與選取內容的字與大小，現在有點偏小。此外「免費展覽」的部分要額外獨立另一區的標題，此區要再加上「付費展覽」，相同如果點選一次為選取該狀態，點選第二次則為取消選取。這區域的標題給你想一樣四個字的，主要是說免費跟付費的展覽差異。
+
+這部分我好像沒看到有更新到頁面中了，幫我確認下。並且可以繼續下個步驟了
+
+
+huashan-detail-dry-run-100.zip
+壓縮封存檔案
+好，那想問把後面的步驟全部打給我看，5之後還有多少
+另外想問，其他的展覽空間也都是要這樣加入新增嗎還是會給我一整組大資料一次進行操作。例如松山、世貿、南港、駁二等等的（這些只是舉例，台灣還有其他的大小展演空間）。打包成一整個檔案讓我進行操作嗎還是也要一個展場一個展場更新
+
+截圖 2026-07-28 16.16.36.png
+截圖 2026-07-28 16.16.45.png
+
+截圖 2026-07-28 16.20.52.png
+好，繼續
+
+
+huashan-source-merge-105.zip
+壓縮封存檔案
+
+
+huashan-source-merge-107.zip
+壓縮封存檔案
+
+處理時間為 2m 41s
+你上傳的 huashan-source-merge-107.zip 已通過 5-D.1 品質檢查。
+
+Artifact 107 結果
+華山來源活動：28 筆
+詳情頁成功：12／12
+錯誤：0
+警告：0
+
+既有活動：2,424 筆
+自動合併：7 筆
+全新活動候選：21 筆
+人工審核：0 筆
+候選活動總數：2,445 筆
+重複 ID：0
+正式發布：否
+7 筆自動合併為：
+
+星空下的魔笛
+再見，馬麻！
+波隆那世界插畫大獎展
+OSAMU GOODS 50週年展
+2026華山親子表藝節
+把書吃掉｜西遊太空篇
+擁抱海洋永續親子音樂會
+前面誤判為新活動的 4 筆表演，現在都已正確合併，而且保留既有精確演出日期：
+
+星空下的魔笛：2026-08-22～2026-08-23
+再見，馬麻！：2026-08-14～2026-08-16
+把書吃掉：2026-08-01～2026-08-02
+擁抱海洋永續親子音樂會：2026-08-08～2026-08-09
+CHIIKAWA DAYS 台北特展 則正確維持為全新活動候選，沒有被錯誤合併。
+
+我也檢查了其餘 21 筆新活動的最佳配對結果，目前沒有再看到明顯的同活動誤判。
+
+查看 Artifact 107
+
+現在進行第一次前台公開發布
+這就是先前安排的發布點。
+
+這次會公開：
+
+舉辦狀態再次點擊即可取消
+即將舉辦選取背景統一
+舉辦狀態標題與按鈕文字放大
+新增「票價類型」
+新增「免費展覽」
+新增「付費展覽」
+舊 status=free 網址自動轉換為 admission=free
+同時會把 Collector 與去重程式部署到主分支，但華山來源仍然是：
+
+status: planned
+enabled: false
+因此這次不會把 21 筆華山候選活動放上正式網站。
+
+第一步｜建立 develop → main Pull Request
+1. 進入 Pull requests
+GitHub 上方點：
+
+Pull requests
+接著點：
+
+New pull request
+2. 選擇分支
+設定為：
+
+base: main
+compare: develop
+不要選反。
+
+畫面應顯示類似：
+
+develop is ahead of main
+Able to merge
+3. 建立 Pull Request
+點：
+
+Create pull request
+PR 標題填：
+
+release: publish admission filters and collector foundation
+PR 說明可以直接貼入：
+
+## 本次發布
+
+### 前台功能
+- 修正「即將舉辦」選取背景不一致
+- 舉辦狀態再次點擊可取消
+- 放大舉辦狀態標題與選項文字
+- 新增「票價類型」
+- 新增「免費展覽」與「付費展覽」
+- 免費／付費再次點擊可取消
+- 將舊 status=free 網址相容轉換為 admission=free
+
+### 資料架構
+- 新增 Collector 共用框架
+- 保留既有文化部 Collector 相容性
+- 新增華山列表與詳情頁 Collector
+- 新增通用官方來源去重與候選合併架構
+- 新增區域、來源批次與主辦方擴充設定
+
+### 發布安全
+- huashan-1914 維持 planned / disabled
+- 不發布華山候選活動資料
+- 不修改正式 exhibitions 資料
+- Source merge candidate 維持 published: false
+
+## 驗證
+- 專案測試：224 項通過
+- 華山列表：28 筆
+- 詳情頁：12／12 成功
+- 自動合併：7 筆
+- 新活動候選：21 筆
+- 人工審核：0 筆
+- 候選重複 ID：0
+然後點：
+
+Create pull request
+第二步｜等待 PR 測試
+建立 PR 後，因為 validate-develop.yml 有設定：
+
+pull_request → main
+所以會自動執行：
+
+Validate development changes
+Run project tests
+預期：
+
+Run project tests：綠色
+其他 Dry Run：灰色跳過
+其他 Dry Run 跳過是正常的，因為 PR 標題沒有測試標籤。
+
+測試未完成前不要合併。
+
+第三步｜合併到 main
+PR 測試綠色後，點：
+
+Merge pull request
+建議使用一般的：
+
+Create a merge commit
+不要使用 Squash，這次包含多個階段與修正紀錄，保留完整 Commit 歷史比較容易追蹤。
+
+接著點：
+
+Confirm merge
+合併完成後：
+
+不要刪除 develop 分支
+develop 後續還要繼續做 5-E、5-F 與第 6 階段。
+
+第四步｜等待正式網站部署
+合併到 main 後會自動觸發：
+
+Update data and deploy site
+因為這次是 push to main，Workflow 只會：
+
+執行完整測試
+上傳網站檔案
+部署 GitHub Pages
+不會在同一輪重新抓取文化部資料，也不會改寫正式活動檔。
+
+進入：
+
+Actions
+→ Update data and deploy site
+預期所有步驟綠色：
+
+Validate frontend, scraper rules, and published data
+Configure GitHub Pages
+Upload website files
+Deploy to GitHub Pages
+看到：
+
+Status：Success
+才代表正式網站更新完成。
+
+第五步｜檢查正式前台
+部署完成後開啟：
+
+https://twexhibition.com/?view=all
+確認左側或篩選區分成兩個區塊：
+
+舉辦狀態
+目前舉辦｜即將舉辦｜即將結束
+
+票價類型
+免費展覽｜付費展覽
+依序測試：
+
+舉辦狀態
+點一次「即將舉辦」 → 選取
+再點一次「即將舉辦」 → 取消
+確認三個按鈕選取時都是相同深色背景。
+
+票價類型
+點一次「免費展覽」 → 選取
+再點一次「免費展覽」 → 取消
+
+點一次「付費展覽」 → 選取
+再點一次「付費展覽」 → 取消
+網址參數
+免費展覽：
+
+https://twexhibition.com/?view=all&admission=free
+付費展覽：
+
+https://twexhibition.com/?view=all&admission=paid
+舊網址相容測試：
+
+https://twexhibition.com/?view=all&status=free
+載入後網址應自動改成：
+
+?view=all&admission=free
+發布完成後的下一步
+確認正式網站正常後，回到 develop 繼續：
+
+5-E｜華山完整候選資料驗證
+5-E 會把 28 筆詳情頁完整抓取，不再只抽樣 12 筆，產生最終候選與差異報告；仍不直接更新正式網站。
+
+接著才是：
+
+5-F｜華山來源正式啟用與每日更新
+目前先完成：
+
+建立 develop → main PR
+→ 測試綠色
+→ Merge
+→ 等 Update data and deploy site 綠色
+→ 檢查 twexhibition.com 前台
+
+好沒問題
+
+好，現在就照這個順序進行：
+
+1. 建立 develop → main Pull Request
+2. 等 Run project tests 變綠
+3. Merge pull request
+4. 等 Update data and deploy site 成功
+5. 開啟 twexhibition.com 檢查前台
+檢查重點：
+
+舉辦狀態可再次點擊取消
+「即將舉辦」背景與其他按鈕一致
+出現「票價類型」
+免費展覽／付費展覽可選取與取消
+舊 status=free 會轉為 admission=free
+完成部署後，把正式網站畫面或 Actions 結果傳過來，接著直接進入 5-E｜華山完整候選資料驗證。
+
+
+
+github-pages.zip
+壓縮封存檔案
+
+處理時間為 7m 24s
+我已檢查你上傳的 github-pages.zip，這次前台發布包正確。
+
+部署包確認結果
+JavaScript 語法：通過
+完整專案測試：224 項通過
+票價類型區塊：已存在
+免費展覽：已存在
+付費展覽：已存在
+狀態再次點擊取消：已存在
+status=free 自動轉 admission=free：已存在
+狀態選取背景：已統一
+標題字級：17px
+選項字級：12.5px
+按鈕高度：39px
+華山來源仍保持：
+
+status: planned
+enabled: false
+因此這次部署沒有把華山 21 筆候選活動直接放上正式網站。
+
+另外，Pages Artifact 目前也包含：
+
+tests
+scripts
+docs
+各階段 MANIFEST
+requirements.txt
+.DS_Store
+不影響網站使用，但正式部署包偏大，也會把開發檔案一起公開。這項先記入後續部署整理，預計在 5-F 正式自動更新前，改成只部署：
+
+index.html
+assets
+data
+.nojekyll
+必要的網域檔案
+現在進入 5-E｜華山完整候選資料驗證
+5-D 只抓了 12 筆詳情頁。5-E 會抓取當次華山列表中的全部活動詳情頁，再重新執行：
+
+完整詳情頁擷取
+→ 去重合併
+→ 候選資料
+→ 品質閘門
+仍然：
+
+published: false
+不會修改正式活動資料。
+
+5-E 品質檢查
+必須確認：
+
+全部詳情頁成功
+每筆活動都有合併決策
+候選 ID 沒有重複
+每筆來源活動只出現在一個候選事件
+人工審核佇列為 0
+候選總數公式正確
+華山仍未正式啟用
+已完成本機驗證：
+
+完整專案測試：228 項通過
+Workflow YAML：通過
+新增 Job 已正確放在 jobs 底下
+舊 5-D Artifact 結構驗證：通過
+下載 5-E 檔案
+下載 5-E 華山完整候選驗證包
+
+exhibition_hub_stage_5e_full_candidate_validation_report.json
+
+GitHub 隱藏路徑檔案：
+
+validate-develop-with-full-candidate.yml
+
+下載 Full Candidate Trigger
+
+第一部分｜上傳 5-E 主要程式
+1｜切回 develop
+GitHub 點：
+
+Code
+→ 分支選擇 develop
+不需要刪除或重建 develop。
+
+2｜解壓縮 5-E 更新包
+內容會有：
+
+scripts
+tests
+docs
+MANIFEST_5E.json
+3｜上傳
+在專案根目錄點：
+
+Add file
+→ Upload files
+拖入：
+
+scripts
+tests
+docs
+MANIFEST_5E.json
+主要新增：
+
+scripts/exhibition_hub/merging/quality.py
+scripts/validate_source_merge_candidate.py
+tests/test_source_merge_quality.py
+docs/HUASHAN_FULL_CANDIDATE_5E_ZH-TW.md
+並更新：
+
+scripts/exhibition_hub/merging/__init__.py
+4｜提交
+Commit message：
+
+feat: add full Huashan candidate validation
+直接提交到 develop。
+
+5｜檢查 Actions
+預期：
+
+Status：Success
+Run project tests：綠色
+其他 Dry Run：灰色跳過
+這一步沒有 Artifact 是正常的。
+
+第二部分｜更新 Workflow
+一般測試綠色後再進行。
+
+1｜進入檔案
+Code
+→ develop
+→ .github
+→ workflows
+→ validate-develop.yml
+2｜完整替換內容
+下載並開啟：
+
+validate-develop-with-full-candidate.yml
+
+把 GitHub 原本內容全部刪除，再貼入新版完整內容。
+
+GitHub 上的檔名仍保持：
+
+.github/workflows/validate-develop.yml
+3｜提交
+Commit message：
+
+ci: add full Huashan candidate validation
+提交到 develop。
+
+4｜檢查 Actions
+預期會新增：
+
+Validate full Huashan candidate
+但這次應是：
+
+Run project tests：綠色
+Validate full Huashan candidate：灰色跳過
+看到 Job 出現且 Workflow 整體成功，就代表安裝完成。
+
+第三部分｜建立 Trigger
+1｜進入 .github
+Code
+→ develop
+→ .github
+停在 .github，不要進入 workflows。
+
+2｜建立檔案
+點：
+
+Add file
+→ Create new file
+檔名：
+
+probe-huashan-full-candidate.trigger
+完整路徑：
+
+.github/probe-huashan-full-candidate.trigger
+3｜貼入內容
+# Increment Run to validate another full Huashan candidate.
+Run: 1
+也可直接使用：
+
+下載 Trigger 檔案
+
+4｜提交
+Commit message：
+
+chore: add full Huashan candidate trigger
+提交到 develop。
+
+預期：
+
+Run project tests：綠色
+Validate full Huashan candidate：灰色跳過
+第四部分｜執行 5-E 完整驗證
+前三部分都綠色後操作。
+
+1｜開啟 Trigger
+Code
+→ develop
+→ .github
+→ probe-huashan-full-candidate.trigger
+2｜修改數字
+把：
+
+Run: 1
+改成：
+
+Run: 2
+3｜使用指定 Commit message
+必須完整填入：
+
+[full-candidate-huashan] test: validate full Huashan candidate
+提交到 develop。
+
+4｜查看 Actions
+預期：
+
+Run project tests：綠色
+Validate full Huashan candidate：綠色
+其他 Dry Run：灰色跳過
+Artifacts：1
+因為這次會抓全部詳情頁，執行時間可能比之前久。
+
+下載 5-E Artifact
+Artifact 名稱通常為：
+
+huashan-full-candidate-<執行編號>
+ZIP 內應包含：
+
+huashan-full-source-run.json
+huashan-full-source-summary.json
+huashan-full-candidate.json
+huashan-full-merge-report.json
+huashan-full-review.json
+huashan-full-merge-summary.json
+huashan-full-quality-report.json
+huashan-full-quality-summary.json
+將整個 ZIP 上傳，不用解壓縮。
+
+5-E 通過後，接下來就是：
+
+5-F｜華山正式啟用
+5-F 會先處理正式更新安全機制與精簡 Pages 部署內容，再決定華山活動何時寫入正式資料。 
+
+
+檔案庫
+/
+validate-develop-with-full-candidate.yml
+
+
 name: Validate development changes
 
 on:
@@ -546,5 +1516,734 @@ jobs:
             huashan-merge-report.json
             huashan-merge-review.json
             huashan-merge-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+
+  validate-huashan-full-candidate:
+    name: Validate full Huashan candidate
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[full-candidate-huashan]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch every current Huashan detail page
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-full-source-run.json" \
+            | tee huashan-full-source-summary.json
+
+      - name: Build full non-published candidate
+        run: |
+          set -o pipefail
+
+          python scripts/build_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-full-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "huashan-full-candidate.json" \
+            --report-output "huashan-full-merge-report.json" \
+            --review-output "huashan-full-review.json" \
+            | tee huashan-full-merge-summary.json
+
+      - name: Validate full candidate quality gates
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-full-source-run.json" \
+            --candidate "huashan-full-candidate.json" \
+            --merge-report "huashan-full-merge-report.json" \
+            --review "huashan-full-review.json" \
+            --source-id "huashan-1914" \
+            --require-full-details \
+            --max-review "0" \
+            --output "huashan-full-quality-report.json" \
+            | tee huashan-full-quality-summary.json
+
+      - name: Upload full candidate audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-full-candidate-${{ github.run_number }}
+          path: |
+            huashan-full-source-run.json
+            huashan-full-source-summary.json
+            huashan-full-candidate.json
+            huashan-full-merge-report.json
+            huashan-full-review.json
+            huashan-full-merge-summary.json
+            huashan-full-quality-report.json
+            huashan-full-quality-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+檔案庫
+/
+validate-develop-with-full-candidate.yml
+
+
+name: Validate development changes
+
+on:
+  push:
+    branches:
+      - develop
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run project tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: python -m compileall -q scripts tests
+
+      - name: Run automated tests
+        run: python -m unittest discover -s tests -v
+
+  probe-culture-ministry:
+    name: Probe Culture Ministry API
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[probe-culture]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Probe Culture Ministry exhibition feed
+        run: |
+          set -o pipefail
+
+          python scripts/probe_culture_ministry.py \
+            --category "6" \
+            --sample-limit "5" \
+            --timeout "30" \
+            | tee culture-ministry-probe.json
+
+      - name: Upload probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-ministry-probe-${{ github.run_number }}
+          path: culture-ministry-probe.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-culture-normalization:
+    name: Dry run Culture normalization
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-culture]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Culture normalization dry run
+        run: |
+          set -o pipefail
+
+          python scripts/probe_culture_normalization.py \
+            --category "6" \
+            --sample-limit "5" \
+            --timeout "30" \
+            | tee culture-normalization-dry-run.json
+
+      - name: Upload normalization report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: culture-normalization-dry-run-${{ github.run_number }}
+          path: culture-normalization-dry-run.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-event-registry:
+    name: Dry run event registry enrichment
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-registry]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate source and venue registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch latest production exhibition data
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags --prune --depth=1 origin \
+            +refs/heads/main:refs/remotes/origin/main
+
+          mkdir -p build
+
+          git show origin/main:data/exhibitions.json \
+            > build/exhibitions-production.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source_path = Path(
+              "build/exhibitions-production.json"
+          )
+          payload = json.loads(
+              source_path.read_text(encoding="utf-8")
+          )
+          events = payload.get("events", [])
+          stats = payload.get("stats", {})
+
+          baseline = {
+              "sourceBranch": "main",
+              "updatedAt": payload.get("updatedAt"),
+              "eventCount": len(events),
+              "stats": stats,
+          }
+
+          Path(
+              "production-data-baseline.json"
+          ).write_text(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+          )
+          PY
+
+      - name: Run event registry dry run
+        run: |
+          set -o pipefail
+
+          python scripts/apply_event_registry.py \
+            --input "build/exhibitions-production.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --report-output "event-registry-dry-run.json" \
+            --sample-limit "150" \
+            | tee event-registry-dry-run-summary.json
+
+      - name: Upload event registry report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: event-registry-dry-run-${{ github.run_number }}
+          path: |
+            production-data-baseline.json
+            event-registry-dry-run.json
+            event-registry-dry-run-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  build-enriched-candidate:
+    name: Build enriched candidate data
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[build-enriched]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate source and venue registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch latest production exhibition data
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags --prune --depth=1 origin \
+            +refs/heads/main:refs/remotes/origin/main
+
+          mkdir -p build
+
+          git show origin/main:data/exhibitions.json \
+            > build/exhibitions-production.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source_path = Path(
+              "build/exhibitions-production.json"
+          )
+          payload = json.loads(
+              source_path.read_text(encoding="utf-8")
+          )
+          events = payload.get("events", [])
+          stats = payload.get("stats", {})
+
+          baseline = {
+              "sourceBranch": "main",
+              "updatedAt": payload.get("updatedAt"),
+              "eventCount": len(events),
+              "stats": stats,
+          }
+
+          Path(
+              "production-data-baseline.json"
+          ).write_text(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+
+          print(
+              json.dumps(
+                  baseline,
+                  ensure_ascii=False,
+                  indent=2,
+              )
+          )
+          PY
+
+      - name: Build enriched candidate data
+        run: |
+          set -o pipefail
+
+          python scripts/build_enriched_candidate.py \
+            --input "build/exhibitions-production.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --output "exhibitions.enriched.candidate.json" \
+            --report-output "enriched-candidate-report.json" \
+            --excluded-output "excluded-events-review.json" \
+            | tee enriched-candidate-summary.json
+
+      - name: Upload enriched candidate artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enriched-candidate-${{ github.run_number }}
+          path: |
+            production-data-baseline.json
+            exhibitions.enriched.candidate.json
+            enriched-candidate-report.json
+            excluded-events-review.json
+            enriched-candidate-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-collector-framework:
+    name: Dry run collector framework
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-collectors]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Audit collector framework
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --audit-only \
+            --source-registry "data/source_registry.json" \
+            --report-output "collector-framework-audit.json" \
+            | tee collector-framework-summary.json
+
+      - name: Upload collector framework audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collector-framework-audit-${{ github.run_number }}
+          path: |
+            collector-framework-audit.json
+            collector-framework-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-huashan:
+    name: Dry run Huashan collector
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-huashan]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Huashan collector dry run
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-collector-dry-run.json" \
+            | tee huashan-collector-summary.json
+
+      - name: Upload Huashan collector report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-collector-dry-run-${{ github.run_number }}
+          path: |
+            huashan-collector-dry-run.json
+            huashan-collector-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  dry-run-huashan-details:
+    name: Dry run Huashan detail normalization
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-huashan-details]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Huashan detail normalization dry run
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --detail-limit "8" \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-detail-dry-run.json" \
+            | tee huashan-detail-summary.json
+
+      - name: Upload Huashan detail report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-detail-dry-run-${{ github.run_number }}
+          path: |
+            huashan-detail-dry-run.json
+            huashan-detail-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+
+  dry-run-source-merge:
+    name: Dry run official source merge
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-source-merge]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Run Huashan collector with detail sample
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --detail-limit "12" \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-source-run.json" \
+            | tee huashan-source-summary.json
+
+      - name: Build non-published source merge candidate
+        run: |
+          set -o pipefail
+
+          python scripts/build_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "huashan-merge-candidate.json" \
+            --report-output "huashan-merge-report.json" \
+            --review-output "huashan-merge-review.json" \
+            | tee huashan-merge-summary.json
+
+      - name: Upload source merge candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-source-merge-${{ github.run_number }}
+          path: |
+            huashan-source-run.json
+            huashan-source-summary.json
+            huashan-merge-candidate.json
+            huashan-merge-report.json
+            huashan-merge-review.json
+            huashan-merge-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+
+  validate-huashan-full-candidate:
+    name: Validate full Huashan candidate
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[full-candidate-huashan]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch every current Huashan detail page
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-full-source-run.json" \
+            | tee huashan-full-source-summary.json
+
+      - name: Build full non-published candidate
+        run: |
+          set -o pipefail
+
+          python scripts/build_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-full-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "huashan-full-candidate.json" \
+            --report-output "huashan-full-merge-report.json" \
+            --review-output "huashan-full-review.json" \
+            | tee huashan-full-merge-summary.json
+
+      - name: Validate full candidate quality gates
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-full-source-run.json" \
+            --candidate "huashan-full-candidate.json" \
+            --merge-report "huashan-full-merge-report.json" \
+            --review "huashan-full-review.json" \
+            --source-id "huashan-1914" \
+            --require-full-details \
+            --max-review "0" \
+            --output "huashan-full-quality-report.json" \
+            | tee huashan-full-quality-summary.json
+
+      - name: Upload full candidate audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-full-candidate-${{ github.run_number }}
+          path: |
+            huashan-full-source-run.json
+            huashan-full-source-summary.json
+            huashan-full-candidate.json
+            huashan-full-merge-report.json
+            huashan-full-review.json
+            huashan-full-merge-summary.json
+            huashan-full-quality-report.json
+            huashan-full-quality-summary.json
           if-no-files-found: warn
           retention-days: 7
