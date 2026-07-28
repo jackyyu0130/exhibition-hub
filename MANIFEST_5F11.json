@@ -1,0 +1,15 @@
+{
+  "stage": "5-F.1.1",
+  "name": "華山表演票價與場館精準度修正",
+  "artifactInspected": "huashan-publish-preview-123.zip",
+  "published": false,
+  "sourceEnabled": false,
+  "officialDataChanged": false,
+  "workflowChanged": false,
+  "files": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "scripts/exhibition_hub/merging/policy.py",
+    "tests/test_huashan_performance_specificity.py",
+    "docs/HUASHAN_PERFORMANCE_SPECIFICITY_FIX_5F11_ZH-TW.md"
+  ]
+}

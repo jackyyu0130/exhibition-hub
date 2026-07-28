@@ -119,6 +119,18 @@ _EMOJI_IMAGE_RE = re.compile(
     r"(?:^|/)(?:1f[0-9a-f]{3,}|emoji)[^/]*\.(?:png|gif|webp)$",
     re.IGNORECASE,
 )
+_QUOTED_WORK_TITLE_RE = re.compile(
+    r"[《「『][^》」』]{2,120}[》」』]"
+)
+_PRIMARY_TICKET_PRICE_RE = re.compile(
+    r"(?:全票|優待票|愛心票|學生票|早鳥票|"
+    r"\d[\d,]*\s*元?\s*/\s*張)",
+    re.IGNORECASE,
+)
+_ASSOCIATED_ACTIVITY_PRICE_RE = re.compile(
+    r"(?:工作坊|體驗|課程|\d[\d,]*\s*元?\s*/\s*(?:組|人))",
+    re.IGNORECASE,
+)
 
 
 def _normalize_space(value: str) -> str:
@@ -536,6 +548,38 @@ def _extract_price_lines(lines: Sequence[str]) -> list[str]:
     return _unique(values)
 
 
+def _select_performance_price_lines(
+    price_lines: Sequence[str],
+    *,
+    title: str,
+    detail_url: str,
+) -> list[str]:
+    values = list(price_lines)
+    if (
+        "/performance_" not in urlparse(detail_url).path.lower()
+        or not _QUOTED_WORK_TITLE_RE.search(title)
+        or len(values) < 2
+    ):
+        return values
+
+    primary = next(
+        (
+            value
+            for value in values
+            if _PRIMARY_TICKET_PRICE_RE.search(value)
+        ),
+        "",
+    )
+    associated = any(
+        _ASSOCIATED_ACTIVITY_PRICE_RE.search(value)
+        and value != primary
+        for value in values
+    )
+    if primary and associated:
+        return [primary]
+    return values
+
+
 def _classify_admission(price_text: str, full_text: str) -> str:
     # A scoped, explicit ticket price is stronger evidence than
     # generic "免費" wording elsewhere on the same page.
@@ -719,6 +763,11 @@ class Huashan1914Collector(BaseCollector):
             time_text = _normalize_space(time_match.group(0))
 
         price_lines = _extract_price_lines(scoped_lines)
+        price_lines = _select_performance_price_lines(
+            price_lines,
+            title=title,
+            detail_url=detail_url,
+        )
         price_text = _normalize_space(" / ".join(price_lines))
         admission = _classify_admission(price_text, scoped_text)
 
