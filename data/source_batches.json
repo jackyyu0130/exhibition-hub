@@ -107,6 +107,10 @@
     "maxSourcesPerRun": 10,
     "failurePolicy": "isolate_source",
     "allowFutureSourceIds": true,
-    "allowOrganizerExpansion": true
+    "allowOrganizerExpansion": true,
+    "maxAttemptsPerSource": 3,
+    "retryBackoffSeconds": 2,
+    "sourceTimeoutSeconds": 180,
+    "slowSourceThresholdMs": 90000
   }
 }

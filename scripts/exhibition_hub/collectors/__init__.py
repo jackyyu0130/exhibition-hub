@@ -2,12 +2,17 @@
 
 from .audit import audit_collector_coverage
 from .batches import (
+    BatchExecutionPolicy,
     CollectorBatchExecutor,
     RegionGroup,
     SourceBatch,
     SourceBatchRegistry,
     SourceBatchRunReport,
     load_source_batch_registry,
+)
+from .batch_runtime import (
+    SubprocessCollectorRunner,
+    collector_report_from_mapping,
 )
 from .base import (
     BaseCollector,
@@ -36,6 +41,7 @@ from .runner import (
 
 __all__ = [
     "BaseCollector",
+    "BatchExecutionPolicy",
     "CollectorBatchExecutor",
     "CollectionResult",
     "CollectorBatchResult",
@@ -56,9 +62,11 @@ __all__ = [
     "SourceBatch",
     "SourceBatchRegistry",
     "SourceBatchRunReport",
+    "SubprocessCollectorRunner",
     "SourceKind",
     "audit_collector_coverage",
     "collector_registry",
+    "collector_report_from_mapping",
     "load_source_batch_registry",
     "run_collectors",
 ]

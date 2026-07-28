@@ -3,13 +3,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
 
 from exhibition_hub.collectors import (
+    BatchExecutionPolicy,
     CollectorBatchExecutor,
-    CollectorRunner,
-    collector_registry,
+    SubprocessCollectorRunner,
     load_source_batch_registry,
 )
 from exhibition_hub.collectors.sources import (
@@ -20,7 +19,7 @@ from exhibition_hub.collectors.sources import (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Run an official-source collector batch "
+            "Run a resilient official-source batch "
             "from data/source_batches.json"
         )
     )
@@ -30,15 +29,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--source-batches",
-        default=(
-            "data/source_batches.json"
-        ),
+        default="data/source_batches.json",
     )
     parser.add_argument(
         "--source-registry",
-        default=(
-            "data/source_registry.json"
-        ),
+        default="data/source_registry.json",
     )
     parser.add_argument(
         "--allow-disabled-batch",
@@ -61,20 +56,37 @@ def parse_args() -> argparse.Namespace:
         "--strict",
         action="store_true",
         help=(
-            "Exit non-zero when any source fails."
+            "Exit non-zero when any source "
+            "remains failed after retries."
         ),
+    )
+    parser.add_argument(
+        "--max-attempts",
+        type=int,
+    )
+    parser.add_argument(
+        "--retry-backoff-seconds",
+        type=float,
+    )
+    parser.add_argument(
+        "--source-timeout-seconds",
+        type=float,
+    )
+    parser.add_argument(
+        "--slow-source-threshold-ms",
+        type=int,
     )
     parser.add_argument(
         "--output-dir",
-        default=(
-            "collector-batch-output"
-        ),
+        default="collector-batch-output",
     )
     parser.add_argument(
         "--report-output",
-        default=(
-            "collector-batch-report.json"
-        ),
+        default="collector-batch-report.json",
+    )
+    parser.add_argument(
+        "--health-output",
+        default="collector-batch-health.json",
     )
     return parser.parse_args()
 
@@ -100,24 +112,10 @@ def write_json(
 
 def main() -> int:
     args = parse_args()
-
-    if args.fetch_details:
-        os.environ[
-            "EXHIBITION_HUB_HUASHAN_FETCH_DETAILS"
-        ] = "1"
-        os.environ[
-            "EXHIBITION_HUB_HUASHAN_DETAIL_LIMIT"
-        ] = str(
-            max(
-                0,
-                args.detail_limit,
-            )
-        )
-
     sources = load_collector_sources(
         args.source_registry
     )
-    batch_registry = (
+    registry = (
         load_source_batch_registry(
             args.source_batches,
             known_source_ids=[
@@ -126,9 +124,7 @@ def main() -> int:
             ],
         )
     )
-    batch = batch_registry.get(
-        args.batch
-    )
+    batch = registry.get(args.batch)
     if batch is None:
         output = {
             "mode": "collector-batch-run",
@@ -144,23 +140,51 @@ def main() -> int:
             Path(args.report_output),
             output,
         )
-        print(
-            json.dumps(
-                output,
-                ensure_ascii=False,
-                indent=2,
-            )
-        )
         return 2
 
-    executor = CollectorBatchExecutor(
-        CollectorRunner(
-            collector_registry
-        )
+    resolved = registry.resolve_policy(
+        batch
     )
-    report = executor.run(
+    policy = BatchExecutionPolicy(
+        max_attempts_per_source=(
+            args.max_attempts
+            if args.max_attempts is not None
+            else resolved.max_attempts_per_source
+        ),
+        retry_backoff_seconds=(
+            args.retry_backoff_seconds
+            if args.retry_backoff_seconds is not None
+            else resolved.retry_backoff_seconds
+        ),
+        source_timeout_seconds=(
+            args.source_timeout_seconds
+            if args.source_timeout_seconds is not None
+            else resolved.source_timeout_seconds
+        ),
+        slow_source_threshold_ms=(
+            args.slow_source_threshold_ms
+            if args.slow_source_threshold_ms is not None
+            else resolved.slow_source_threshold_ms
+        ),
+    )
+
+    runner = SubprocessCollectorRunner(
+        source_registry=(
+            args.source_registry
+        ),
+        fetch_details=(
+            args.fetch_details
+        ),
+        detail_limit=(
+            args.detail_limit
+        ),
+    )
+    report = CollectorBatchExecutor(
+        runner
+    ).run(
         batch,
         sources,
+        policy=policy,
         allow_disabled_batch=(
             args.allow_disabled_batch
         ),
@@ -169,6 +193,7 @@ def main() -> int:
         ),
     )
     payload = report.to_dict()
+    health = report.health_report()
 
     output_dir = Path(
         args.output_dir
@@ -182,15 +207,19 @@ def main() -> int:
         / "batch-report.json",
         payload,
     )
+    write_json(
+        output_dir
+        / "health-report.json",
+        health,
+    )
 
     all_records: list[dict] = []
-    for source_report in payload.get(
-        "sources"
-    ) or []:
+    for source_report in (
+        payload.get("sources")
+        or []
+    ):
         source_id = str(
-            source_report.get(
-                "sourceId"
-            )
+            source_report.get("sourceId")
             or "unknown-source"
         )
         write_json(
@@ -200,9 +229,7 @@ def main() -> int:
             source_report,
         )
         all_records.extend(
-            source_report.get(
-                "records"
-            )
+            source_report.get("records")
             or []
         )
 
@@ -222,6 +249,10 @@ def main() -> int:
     write_json(
         Path(args.report_output),
         payload,
+    )
+    write_json(
+        Path(args.health_output),
+        health,
     )
     print(
         json.dumps(
