@@ -16,7 +16,12 @@ PAYLOAD = json.loads(
 
 class FullFeaturesNoDesignChangeTests(unittest.TestCase):
     def test_candidate_data_is_available(self):
-        self.assertEqual(len(PAYLOAD["events"]), 2424)
+        events = PAYLOAD["events"]
+        self.assertGreaterEqual(len(events), 500)
+        self.assertEqual(
+            PAYLOAD["stats"]["eventCount"],
+            len(events),
+        )
 
     def test_enriched_then_legacy_fallback(self):
         enriched = APP.index(

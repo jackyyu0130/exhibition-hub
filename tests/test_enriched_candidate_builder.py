@@ -14,6 +14,44 @@ from build_enriched_candidate import (  # noqa: E402
     recompute_stats,
 )
 
+from scripts.build_enriched_candidate import normalize_category_labels
+
+
+class CategoryNormalizationTests(unittest.TestCase):
+    def test_category_labels_are_normalized_for_production(self):
+        event = normalize_category_labels({
+            "categories": [
+                "自然科學",
+                "歷史文化",
+                "快閃",
+            ],
+            "category": "自然科學",
+            "contentType": "popup",
+        })
+        self.assertEqual(
+            event["categories"],
+            ["自然", "歷史", "快閃店"],
+        )
+        self.assertEqual(
+            event["category"],
+            "自然",
+        )
+
+    def test_concert_is_independent_from_music(self):
+        event = normalize_category_labels({
+            "categories": ["音樂", "表演"],
+            "category": "音樂",
+            "contentType": "concert",
+        })
+        self.assertEqual(
+            event["categories"],
+            ["演唱會", "表演"],
+        )
+        self.assertEqual(
+            event["category"],
+            "演唱會",
+        )
+
 
 class EnrichedCandidateBuilderTests(unittest.TestCase):
     def test_recompute_stats(self):

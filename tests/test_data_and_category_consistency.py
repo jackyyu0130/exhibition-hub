@@ -30,22 +30,20 @@ class DataAndCategoryConsistencyTests(unittest.TestCase):
     def test_reurl_service_images_are_rejected(self):
         self.assertIn("reurl\\.cc", APP)
 
-    def test_confirmed_event_has_no_reurl_images(self):
-        title = (
-            "「翻開這頁藍色夏日」主題書展、"
-            "「一個人，更要好好吃飯」主題書展"
-        )
-        event = next(
-            item for item in PAYLOAD["events"]
-            if item["title"] == title
-        )
-        self.assertEqual(event["images"], [])
-        self.assertEqual(event["image"], "")
-        self.assertTrue(event["sourceUrlVerified"])
-        self.assertIn(
-            "library.taichung.gov.tw",
-            event["sourceUrl"],
-        )
+    def test_candidate_data_has_no_reurl_images(self):
+        offenders = [
+            {
+                "id": event.get("id"),
+                "url": url,
+            }
+            for event in PAYLOAD["events"]
+            for url in [
+                event.get("image"),
+                *(event.get("images") or []),
+            ]
+            if url and "reurl.cc" in url.lower()
+        ]
+        self.assertEqual(offenders, [])
 
     def test_existing_layout_contract_is_preserved(self):
         self.assertNotIn("content-type-badge", APP)

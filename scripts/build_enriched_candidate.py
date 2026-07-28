@@ -36,6 +36,13 @@ EXCLUDED_EDITORIAL_STATUSES = {
     "exclude_review",
 }
 
+CATEGORY_ALIASES = {
+    "歷史文化": "歷史",
+    "自然科學": "自然",
+    "快閃": "快閃店",
+    "快閃活動": "快閃店",
+}
+
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -158,6 +165,56 @@ def event_categories(
     return list(dict.fromkeys(values))
 
 
+def normalize_category_labels(
+    event: Mapping[str, Any],
+) -> dict[str, Any]:
+    result = dict(event)
+    normalized = [
+        CATEGORY_ALIASES.get(
+            category,
+            category,
+        )
+        for category in event_categories(event)
+    ]
+    normalized = list(
+        dict.fromkeys(
+            category
+            for category in normalized
+            if category
+        )
+    )
+
+    content_type = str(
+        result.get("contentType")
+        or ""
+    ).strip()
+    if content_type == "concert":
+        normalized = [
+            category
+            for category in normalized
+            if category != "音樂"
+        ]
+        normalized = [
+            "演唱會",
+            *[
+                category
+                for category in normalized
+                if category != "演唱會"
+            ],
+        ]
+
+    if content_type == "popup" and "快閃店" not in normalized:
+        normalized.append("快閃店")
+
+    result["categories"] = normalized
+    result["category"] = (
+        normalized[0]
+        if normalized
+        else ""
+    )
+    return result
+
+
 def recompute_stats(
     events: list[dict[str, Any]],
 ) -> dict[str, Any]:
@@ -262,7 +319,11 @@ def build_candidate_payload(
             venue_registry,
             legacy_registry,
         )
-        enriched_events.append(enriched)
+        enriched_events.append(
+            normalize_category_labels(
+                enriched
+            )
+        )
 
     editorial_counts = Counter(
         str(

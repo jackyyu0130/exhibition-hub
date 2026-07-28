@@ -10,6 +10,39 @@ class ProductionUpdateWorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         cls.text = WORKFLOW.read_text(encoding="utf-8")
 
+    def test_full_tests_run_before_data_mutation(self):
+        tests_index = self.text.index(
+            "Run project tests before production data update"
+        )
+        scraper_index = self.text.index(
+            "Fetch and normalize Culture Ministry data"
+        )
+        self.assertLess(tests_index, scraper_index)
+
+    def test_post_update_validation_is_count_independent(self):
+        self.assertIn(
+            "Validate dynamic published production data",
+            self.text,
+        )
+        self.assertIn(
+            "scripts/validate_published_data.py",
+            self.text,
+        )
+        self.assertNotIn(
+            "Validate frontend, scraper rules, and published data",
+            self.text,
+        )
+
+    def test_recovery_workflow_change_triggers_data_update(self):
+        self.assertIn(
+            "production-pipeline-recovery",
+            self.text,
+        )
+        self.assertIn(
+            ".github/workflows/update-exhibitions",
+            self.text,
+        )
+
     def test_huashan_production_pipeline_is_present(self):
         for required in (
             "Build fresh enriched base",

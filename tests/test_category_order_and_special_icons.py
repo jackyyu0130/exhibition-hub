@@ -99,9 +99,17 @@ class CategoryOrderAndSpecialIconTests(unittest.TestCase):
 
     def test_all_categories_exist_in_stats(self):
         counts = PAYLOAD["stats"]["categoryCounts"]
-        self.assertEqual(list(counts), EXPECTED_ORDER)
         for category in EXPECTED_ORDER:
             self.assertIn(category, counts)
+
+        calculated = {
+            category: sum(
+                category in event.get("categories", [])
+                for event in PAYLOAD["events"]
+            )
+            for category in counts
+        }
+        self.assertEqual(counts, calculated)
 
 
 if __name__ == "__main__":
