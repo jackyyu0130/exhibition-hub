@@ -1,0 +1,20 @@
+{
+  "stage": "5-E.3",
+  "name": "華山票價狀態優先順序修正",
+  "artifactInspected": "huashan-full-candidate-117.zip",
+  "finding": {
+    "title": "2026華山親子表藝節",
+    "previousAdmission": "free",
+    "expectedAdmission": "paid",
+    "priceText": "早鳥價 8800 元／組；原價 9800 元／組"
+  },
+  "frontendChanged": false,
+  "officialDataChanged": false,
+  "workflowChanged": false,
+  "qualityGateRelaxed": false,
+  "files": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "tests/test_huashan_admission_precedence.py",
+    "docs/HUASHAN_ADMISSION_PRECEDENCE_FIX_5E3_ZH-TW.md"
+  ]
+}

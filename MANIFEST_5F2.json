@@ -1,0 +1,29 @@
+{
+  "stage": "5-F.2",
+  "name": "華山正式啟用與安全發布",
+  "publishedAfterMainMerge": true,
+  "sourceId": "huashan-1914",
+  "sourceStatus": "active",
+  "sourceEnabled": true,
+  "scheduleTaiwan": [
+    "05:25",
+    "17:25"
+  ],
+  "failurePolicy": "retain_previous_production",
+  "pagesDeployment": "minimal_allowlist",
+  "files": [
+    ".github/workflows/update-exhibitions.yml",
+    "data/source_registry.json",
+    "scripts/exhibition_hub/collectors/audit.py",
+    "scripts/finalize_source_publish.py",
+    "scripts/build_pages_site.py",
+    "tests/test_huashan_collector.py",
+    "tests/test_collector_framework.py",
+    "tests/test_source_publish_finalizer.py",
+    "tests/test_pages_site_builder.py",
+    "tests/test_production_update_workflow.py",
+    "docs/HUASHAN_PRODUCTION_RELEASE_5F2_ZH-TW.md",
+    "MANIFEST_5F2.json",
+    "STAGE_5F2_UPLOAD_GUIDE_ZH-TW.md"
+  ]
+}

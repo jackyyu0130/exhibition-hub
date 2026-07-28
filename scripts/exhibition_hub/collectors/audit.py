@@ -43,5 +43,5 @@ def audit_collector_coverage(
         "plannedSourcesMissingCollectors": planned_missing,
         "orphanCollectorIds": orphan_collectors,
         "frameworkReady": not active_missing and not orphan_collectors,
-        "nextPilotSourceId": "huashan-1914",
+        "nextPilotSourceId": "songshan-cultural-park",
     }

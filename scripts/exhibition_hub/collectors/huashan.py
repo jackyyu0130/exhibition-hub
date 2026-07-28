@@ -80,7 +80,55 @@ _VENUE_HINT_RE = re.compile(
 _GENERIC_EXTERNAL_RE = re.compile(
     r"(?:facebook\.com/1914CP|instagram\.com/huashan1914_creative_park|"
     r"youtube\.com/channel/UCE4Xrh2u4FGB25h0I3aHE6A|"
-    r"104\.com\.tw/jobbank/custjob)",
+    r"104\.com\.tw/jobbank/custjob|"
+    r"tea\.huashan1914\.org/beingproject|"
+    r"reurl\.cc/33kmg9)",
+    re.IGNORECASE,
+)
+_ASSET_STOP_RE = re.compile(
+    r"^(?:相關活動|更多活動|推薦活動|其他活動|你可能也喜歡|如何來華山)"
+)
+_PRICE_SECTION_RE = re.compile(
+    r"^(?:【?票價】?|票價資訊|售票資訊|門票資訊|活動及票價資訊)"
+)
+_PRICE_AMOUNT_RE = re.compile(
+    r"(?:"
+    r"(?:NTD|NT\$|NT\.?|新臺幣|新台幣)\s*[\d,]+\s*(?:元)?"
+    r"|[\d,]+\s*元"
+    r"|[\d,]+\s*/\s*(?:張|人|組|位)"
+    r")",
+    re.IGNORECASE,
+)
+_PRICE_FRAGMENT_RE = re.compile(
+    r"(?:(?:特典套票|全票|優待票|愛心票|早鳥價|原價|票價)"
+    r"\s*[:：]?\s*)?"
+    r"(?:"
+    r"(?:NTD|NT\$|NT\.?)\s*[\d,]+\s*(?:元)?"
+    r"|[\d,]+\s*元(?:\s*/\s*(?:張|人|組|位))?"
+    r"|[\d,]+\s*/\s*(?:張|人|組|位)"
+    r")",
+    re.IGNORECASE,
+)
+_NON_ADMISSION_PRICE_RE = re.compile(
+    r"(?:禮券|獎金|贈品|抽獎|購物金|徵件獎勵|入選獎勵)"
+)
+_EDITORIAL_EXCLUDE_TITLE_RE = re.compile(
+    r"(?:徵件|招募|工作坊|講座|課程|營隊|研習)"
+)
+_EMOJI_IMAGE_RE = re.compile(
+    r"(?:^|/)(?:1f[0-9a-f]{3,}|emoji)[^/]*\.(?:png|gif|webp)$",
+    re.IGNORECASE,
+)
+_QUOTED_WORK_TITLE_RE = re.compile(
+    r"[《「『][^》」』]{2,120}[》」』]"
+)
+_PRIMARY_TICKET_PRICE_RE = re.compile(
+    r"(?:全票|優待票|愛心票|學生票|早鳥票|"
+    r"\d[\d,]*\s*元?\s*/\s*張)",
+    re.IGNORECASE,
+)
+_ASSOCIATED_ACTIVITY_PRICE_RE = re.compile(
+    r"(?:工作坊|體驗|課程|\d[\d,]*\s*元?\s*/\s*(?:組|人))",
     re.IGNORECASE,
 )
 
@@ -276,6 +324,7 @@ class _HuashanDetailParser(HTMLParser):
         self.external_urls: list[str] = []
         self.canonical_url = ""
         self._ignored_depth = 0
+        self._asset_collection_stopped = False
 
     def handle_starttag(
         self,
@@ -296,13 +345,14 @@ class _HuashanDetailParser(HTMLParser):
             key = (
                 attrs_map.get("property")
                 or attrs_map.get("name")
+                or ""
             ).strip().lower()
             content = attrs_map.get("content", "").strip()
             if key and content and key not in self.meta:
                 self.meta[key] = content
         elif tag == "link" and "canonical" in attrs_map.get("rel", "").lower():
             self.canonical_url = urljoin(self.base_url, attrs_map.get("href", ""))
-        elif tag == "img":
+        elif tag == "img" and not self._asset_collection_stopped:
             image = (
                 attrs_map.get("data-src")
                 or attrs_map.get("data-original")
@@ -310,7 +360,11 @@ class _HuashanDetailParser(HTMLParser):
             )
             if image:
                 absolute = urljoin(self.base_url, image)
-                if not re.search(r"(?:logo|icon|loading|blank|spacer)", absolute, re.I):
+                if not re.search(
+                    r"(?:logo|icon|loading|blank|spacer)",
+                    absolute,
+                    re.I,
+                ):
                     self.image_urls.append(absolute)
         elif tag == "a":
             href = attrs_map.get("href", "").strip()
@@ -338,6 +392,9 @@ class _HuashanDetailParser(HTMLParser):
     def handle_data(self, data: str) -> None:
         if self._ignored_depth:
             return
+        normalized = _normalize_space(data)
+        if normalized and _ASSET_STOP_RE.match(normalized):
+            self._asset_collection_stopped = True
         if data:
             self.text_parts.append(data)
 
@@ -426,26 +483,125 @@ def _values_after_label(
     return []
 
 
+def _price_value_from_line(line: str) -> str:
+    text = _normalize_space(line)
+    if not _is_clean_text(text):
+        return ""
+    if re.search(r"https?://|適合年齡|上映時間|場次", text, re.I):
+        return ""
+    if _NON_ADMISSION_PRICE_RE.search(text):
+        return ""
+
+    amount_matches = list(_PRICE_AMOUNT_RE.finditer(text))
+    if not amount_matches:
+        return ""
+
+    if len(text) <= 180:
+        return text
+
+    fragments = _unique([
+        match.group(0)
+        for match in _PRICE_FRAGMENT_RE.finditer(text)
+        if _normalize_space(match.group(0))
+    ])
+    return _normalize_space(" / ".join(fragments[:8]))
+
+
 def _extract_price_lines(lines: Sequence[str]) -> list[str]:
+    section_starts = [
+        index
+        for index, line in enumerate(lines)
+        if _PRICE_SECTION_RE.match(_normalize_space(line))
+    ]
+
+    for start in section_starts:
+        values: list[str] = []
+        for candidate in lines[start: start + 14]:
+            normalized = _normalize_space(candidate)
+            if (
+                values
+                and normalized in _STOP_LABELS
+                and not _PRICE_SECTION_RE.match(normalized)
+            ):
+                break
+            value = _price_value_from_line(normalized)
+            if not value:
+                continue
+            values.append(value)
+            if len(_PRICE_AMOUNT_RE.findall(value)) >= 2:
+                break
+            if len(values) >= 3:
+                break
+        if values:
+            return _unique(values)
+
     values: list[str] = []
     for line in lines:
-        if not _is_clean_text(line):
+        value = _price_value_from_line(line)
+        if not value:
             continue
-        if len(line) > 280:
-            continue
-        if re.search(r"https?://|適合年齡|上映時間|場次", line, re.I):
-            continue
-        if _PRICE_SIGNAL_RE.search(line):
-            values.append(line)
-    return _unique(values)[:5]
+        values.append(value)
+        if len(_PRICE_AMOUNT_RE.findall(value)) >= 2:
+            break
+        if len(values) >= 2:
+            break
+    return _unique(values)
+
+
+def _select_performance_price_lines(
+    price_lines: Sequence[str],
+    *,
+    title: str,
+    detail_url: str,
+) -> list[str]:
+    values = list(price_lines)
+    if (
+        "/performance_" not in urlparse(detail_url).path.lower()
+        or not _QUOTED_WORK_TITLE_RE.search(title)
+        or len(values) < 2
+    ):
+        return values
+
+    primary = next(
+        (
+            value
+            for value in values
+            if _PRIMARY_TICKET_PRICE_RE.search(value)
+        ),
+        "",
+    )
+    associated = any(
+        _ASSOCIATED_ACTIVITY_PRICE_RE.search(value)
+        and value != primary
+        for value in values
+    )
+    if primary and associated:
+        return [primary]
+    return values
 
 
 def _classify_admission(price_text: str, full_text: str) -> str:
-    combined = f"{price_text} {full_text}"
-    if re.search(r"免費入場|免費參觀|自由入場|免票", combined):
-        return "free"
-    if re.search(r"售票制|NTD\s*\d|NT\$\s*\d|\d[\d,]*\s*元|全票|優待票|愛心票", combined, re.I):
+    # A scoped, explicit ticket price is stronger evidence than
+    # generic "免費" wording elsewhere on the same page.
+    if re.search(
+        r"NTD\s*\d|NT\$\s*\d|\d[\d,]*\s*元|"
+        r"全票|優待票|愛心票|早鳥價|原價",
+        price_text,
+        re.I,
+    ):
         return "paid"
+    if re.search(
+        r"免費入場|免費參觀|自由入場|免票|免費參加",
+        price_text,
+    ):
+        return "free"
+    if re.search(r"售票制|購票入場|售票入場", full_text, re.I):
+        return "paid"
+    if re.search(
+        r"免費入場|免費參觀|自由入場|免票|免費參加",
+        full_text,
+    ):
+        return "free"
     return "unknown"
 
 
@@ -462,6 +618,14 @@ def _infer_source_category(
     if re.search(r"快閃|期間限定|POP\s*UP", title, re.I):
         return "期間限定店"
     return ""
+
+
+def _clean_image_urls(values: Sequence[str]) -> list[str]:
+    return _unique([
+        value
+        for value in values
+        if value and not _EMOJI_IMAGE_RE.search(value)
+    ])[:3]
 
 
 def _clean_external_urls(values: Sequence[str]) -> list[str]:
@@ -589,7 +753,7 @@ class Huashan1914Collector(BaseCollector):
             detail_url,
         )
 
-        time_match = _TIME_RE.search(full_text)
+        time_match = _TIME_RE.search(scoped_text) or _TIME_RE.search(full_text)
         start_time = ""
         end_time = ""
         time_text = ""
@@ -599,6 +763,11 @@ class Huashan1914Collector(BaseCollector):
             time_text = _normalize_space(time_match.group(0))
 
         price_lines = _extract_price_lines(scoped_lines)
+        price_lines = _select_performance_price_lines(
+            price_lines,
+            title=title,
+            detail_url=detail_url,
+        )
         price_text = _normalize_space(" / ".join(price_lines))
         admission = _classify_admission(price_text, scoped_text)
 
@@ -607,15 +776,24 @@ class Huashan1914Collector(BaseCollector):
             or parser.meta.get("twitter:image")
             or ""
         )
-        images = _unique([
+        images = _clean_image_urls([
             urljoin(detail_url, meta_image) if meta_image else "",
             str(listing.get("imageUrl") or ""),
-            *parser.image_urls[:3],
-        ])[:4]
+            *parser.image_urls,
+        ])
 
         external_urls = _clean_external_urls(parser.external_urls)
         canonical = parser.canonical_url or detail_url
-        editorial_status = "exclude_review" if source_category == "論壇講座" else "candidate"
+        editorial_status = "candidate"
+        if (
+            source_category == "論壇講座"
+            or _EDITORIAL_EXCLUDE_TITLE_RE.search(title)
+            or (
+                any("beclass.com" in value for value in external_urls)
+                and re.search(r"探索計畫|報名|課程", title)
+            )
+        ):
+            editorial_status = "exclude_review"
 
         return {
             **listing,

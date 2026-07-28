@@ -73,6 +73,11 @@ def merge_events(
             source_span > existing_span + 7
         )
 
+    preserve_specific_performance_venue = (
+        preserve_specific_performance_dates
+        and bool(result.get("venueDetail"))
+    )
+
     if not preserve_specific_performance_dates:
         for field_name in ("startDate", "endDate"):
             source_value = source_event.get(field_name)
@@ -115,13 +120,16 @@ def merge_events(
                 result[field_name] = main_venue
                 changed_fields.append(field_name)
 
-    for field_name in (
+    list_fields = [
         "venueIds",
         "venueNames",
-        "subVenueNames",
         "sourceUrls",
         "organizers",
-    ):
+    ]
+    if not preserve_specific_performance_venue:
+        list_fields.append("subVenueNames")
+
+    for field_name in list_fields:
         combined = unique_strings(
             [
                 *(source_event.get(field_name) or []),
@@ -135,7 +143,11 @@ def merge_events(
     source_detail = str(
         source_event.get("venueDetail") or ""
     )
-    if source_detail and result.get("venueDetail") != source_detail:
+    if (
+        source_detail
+        and not preserve_specific_performance_venue
+        and result.get("venueDetail") != source_detail
+    ):
         result["venueDetail"] = source_detail
         changed_fields.append("venueDetail")
 

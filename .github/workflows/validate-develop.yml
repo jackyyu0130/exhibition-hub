@@ -548,3 +548,215 @@ jobs:
             huashan-merge-summary.json
           if-no-files-found: warn
           retention-days: 7
+
+
+  validate-huashan-full-candidate:
+    name: Validate full Huashan candidate
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[full-candidate-huashan]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Fetch every current Huashan detail page
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-full-source-run.json" \
+            | tee huashan-full-source-summary.json
+
+      - name: Build full non-published candidate
+        run: |
+          set -o pipefail
+
+          python scripts/build_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-full-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "huashan-full-candidate.json" \
+            --report-output "huashan-full-merge-report.json" \
+            --review-output "huashan-full-review.json" \
+            | tee huashan-full-merge-summary.json
+
+      - name: Validate full candidate quality gates
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-full-source-run.json" \
+            --candidate "huashan-full-candidate.json" \
+            --merge-report "huashan-full-merge-report.json" \
+            --review "huashan-full-review.json" \
+            --source-id "huashan-1914" \
+            --require-full-details \
+            --max-review "0" \
+            --output "huashan-full-quality-report.json" \
+            | tee huashan-full-quality-summary.json
+
+      - name: Upload full candidate audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-full-candidate-${{ github.run_number }}
+          path: |
+            huashan-full-source-run.json
+            huashan-full-source-summary.json
+            huashan-full-candidate.json
+            huashan-full-merge-report.json
+            huashan-full-review.json
+            huashan-full-merge-summary.json
+            huashan-full-quality-report.json
+            huashan-full-quality-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+
+  preview-huashan-production-publish:
+    name: Preview Huashan production publish
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[preview-publish-huashan]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Build fresh enriched base from latest raw data
+        run: |
+          set -o pipefail
+
+          python scripts/build_enriched_candidate.py \
+            --input "data/exhibitions.json" \
+            --venues "data/venues.json" \
+            --legacy-aliases "data/venue-aliases.json" \
+            --output "huashan-publish-fresh-base.json" \
+            --report-output "huashan-publish-fresh-base-report.json" \
+            --excluded-output "huashan-publish-fresh-base-excluded.json" \
+            | tee huashan-publish-fresh-base-summary.json
+
+      - name: Fetch every current Huashan detail page
+        run: |
+          set -o pipefail
+
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-publish-source-run.json" \
+            | tee huashan-publish-source-summary.json
+
+      - name: Build Huashan merge candidate from fresh base
+        run: |
+          set -o pipefail
+
+          python scripts/build_source_merge_candidate.py \
+            --base "huashan-publish-fresh-base.json" \
+            --source-run "huashan-publish-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "huashan-publish-merge-candidate.json" \
+            --report-output "huashan-publish-merge-report.json" \
+            --review-output "huashan-publish-review.json" \
+            | tee huashan-publish-merge-summary.json
+
+      - name: Validate full candidate before preview
+        run: |
+          set -o pipefail
+
+          python scripts/validate_source_merge_candidate.py \
+            --base "huashan-publish-fresh-base.json" \
+            --source-run "huashan-publish-source-run.json" \
+            --candidate "huashan-publish-merge-candidate.json" \
+            --merge-report "huashan-publish-merge-report.json" \
+            --review "huashan-publish-review.json" \
+            --source-id "huashan-1914" \
+            --require-full-details \
+            --max-review "0" \
+            --output "huashan-publish-quality-report.json" \
+            | tee huashan-publish-quality-summary.json
+
+      - name: Prepare non-published production preview
+        run: |
+          set -o pipefail
+
+          python scripts/prepare_source_publish_preview.py \
+            --base "huashan-publish-fresh-base.json" \
+            --source-run "huashan-publish-source-run.json" \
+            --candidate "huashan-publish-merge-candidate.json" \
+            --merge-report "huashan-publish-merge-report.json" \
+            --review "huashan-publish-review.json" \
+            --quality-report "huashan-publish-quality-report.json" \
+            --source-id "huashan-1914" \
+            --preview-output "huashan-publish-preview.json" \
+            --diff-output "huashan-publish-diff.json" \
+            --excluded-output "huashan-publish-excluded.json" \
+            | tee huashan-publish-preview-summary.json
+
+      - name: Upload Huashan production preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-publish-preview-${{ github.run_number }}
+          path: |
+            huashan-publish-fresh-base.json
+            huashan-publish-fresh-base-report.json
+            huashan-publish-fresh-base-excluded.json
+            huashan-publish-fresh-base-summary.json
+            huashan-publish-source-run.json
+            huashan-publish-source-summary.json
+            huashan-publish-merge-candidate.json
+            huashan-publish-merge-report.json
+            huashan-publish-review.json
+            huashan-publish-merge-summary.json
+            huashan-publish-quality-report.json
+            huashan-publish-quality-summary.json
+            huashan-publish-preview.json
+            huashan-publish-diff.json
+            huashan-publish-excluded.json
+            huashan-publish-preview-summary.json
+          if-no-files-found: warn
+          retention-days: 7

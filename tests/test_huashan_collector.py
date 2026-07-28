@@ -53,9 +53,9 @@ class HuashanCollectorTests(unittest.TestCase):
             if source.id == "huashan-1914"
         )
 
-    def test_source_stays_planned_but_has_listing_url(self):
-        self.assertFalse(self.source.enabled)
-        self.assertEqual(self.source.status, "planned")
+    def test_source_is_active_and_has_listing_url(self):
+        self.assertTrue(self.source.enabled)
+        self.assertEqual(self.source.status, "active")
         self.assertEqual(
             self.source.listing_url,
             DEFAULT_LISTING_URL,

@@ -15,6 +15,7 @@ from scripts.exhibition_hub.collectors.http import (
     CollectorHttpError,
 )
 from scripts.exhibition_hub.collectors.registry import CollectorRegistry
+from scripts.exhibition_hub.collectors import collector_registry
 from scripts.exhibition_hub.collectors.runner import CollectorRunner
 from scripts.exhibition_hub.collectors.sources import load_collector_sources
 
@@ -98,11 +99,12 @@ class CollectorFrameworkTests(unittest.TestCase):
 
     def test_audit_treats_culture_as_external_legacy_pipeline(self):
         sources = load_collector_sources(ROOT / 'data' / 'source_registry.json')
-        audit = audit_collector_coverage(sources, CollectorRegistry())
+        audit = audit_collector_coverage(sources, collector_registry)
         self.assertTrue(audit['frameworkReady'])
         self.assertIn('culture-ministry', audit['externalManagedSourceIds'])
-        self.assertIn('huashan-1914', audit['plannedSourcesMissingCollectors'])
-        self.assertEqual(audit['nextPilotSourceId'], 'huashan-1914')
+        self.assertIn('huashan-1914', audit['implementedCollectorIds'])
+        self.assertNotIn('huashan-1914', audit['plannedSourcesMissingCollectors'])
+        self.assertEqual(audit['nextPilotSourceId'], 'songshan-cultural-park')
 
     def test_http_client_rejects_relative_url(self):
         with self.assertRaises(CollectorHttpError):

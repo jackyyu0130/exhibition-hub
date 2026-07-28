@@ -111,8 +111,8 @@
       "layer": "venue_official",
       "sourceType": "venue_website",
       "parser": "huashan_list_detail",
-      "status": "planned",
-      "enabled": false,
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
       "priority": 90,
       "refreshHours": 12,
@@ -131,7 +131,7 @@
       "venueIds": [
         "huashan-1914"
       ],
-      "notes": "5-C 已建立詳情頁擷取與欄位正規化，維持 planned／disabled；通過 Live Detail Dry Run、去重與候選資料檢查後才啟用。"
+      "notes": "5-F.2 已正式啟用。每日兩次抓取完整列表與詳情頁，經去重、品質閘門與發布安全檢查後更新正式 enriched 資料；失敗時不覆蓋上一版。"
     },
     {
       "id": "songshan-cultural-park",

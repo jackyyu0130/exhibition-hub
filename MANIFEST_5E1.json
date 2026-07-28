@@ -1,0 +1,18 @@
+{
+  "stage": "5-E.1",
+  "name": "華山 Meta 標籤解析修正",
+  "artifactInspected": "huashan-full-candidate-113.zip",
+  "failedSourceEventId": "performance_26040110454037661",
+  "failedTitle": "2026華山親子表藝節",
+  "failedDetailUrl": "https://www.huashan1914.com/w/umaytheater/performance_26040110454037661",
+  "error": "AttributeError: 'NoneType' object has no attribute 'strip'",
+  "frontendChanged": false,
+  "officialDataChanged": false,
+  "workflowChanged": false,
+  "qualityGateRelaxed": false,
+  "files": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "tests/test_huashan_meta_parser.py",
+    "docs/HUASHAN_META_PARSER_FIX_5E1_ZH-TW.md"
+  ]
+}
