@@ -480,71 +480,71 @@ jobs:
           retention-days: 7
 
 
-dry-run-source-merge:
-  name: Dry run official source merge
-  if: >-
-    github.event_name == 'push' &&
-    contains(
-      github.event.head_commit.message,
-      '[dry-run-source-merge]'
-    )
-  runs-on: ubuntu-latest
-  timeout-minutes: 20
+  dry-run-source-merge:
+    name: Dry run official source merge
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-source-merge]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
 
-  steps:
-    - name: Checkout current branch
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
-        cache: pip
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Validate registries
-      run: python scripts/validate_registries.py
+      - name: Validate registries
+        run: python scripts/validate_registries.py
 
-    - name: Run Huashan collector with detail sample
-      run: |
-        set -o pipefail
+      - name: Run Huashan collector with detail sample
+        run: |
+          set -o pipefail
 
-        python scripts/run_collectors.py \
-          --source "huashan-1914" \
-          --allow-planned \
-          --fetch-details \
-          --detail-limit "12" \
-          --source-registry "data/source_registry.json" \
-          --report-output "huashan-source-run.json" \
-          | tee huashan-source-summary.json
+          python scripts/run_collectors.py \
+            --source "huashan-1914" \
+            --allow-planned \
+            --fetch-details \
+            --detail-limit "12" \
+            --source-registry "data/source_registry.json" \
+            --report-output "huashan-source-run.json" \
+            | tee huashan-source-summary.json
 
-    - name: Build non-published source merge candidate
-      run: |
-        set -o pipefail
+      - name: Build non-published source merge candidate
+        run: |
+          set -o pipefail
 
-        python scripts/build_source_merge_candidate.py \
-          --base "data/exhibitions.enriched.json" \
-          --source-run "huashan-source-run.json" \
-          --source-registry "data/source_registry.json" \
-          --source-id "huashan-1914" \
-          --candidate-output "huashan-merge-candidate.json" \
-          --report-output "huashan-merge-report.json" \
-          --review-output "huashan-merge-review.json" \
-          | tee huashan-merge-summary.json
+          python scripts/build_source_merge_candidate.py \
+            --base "data/exhibitions.enriched.json" \
+            --source-run "huashan-source-run.json" \
+            --source-registry "data/source_registry.json" \
+            --source-id "huashan-1914" \
+            --candidate-output "huashan-merge-candidate.json" \
+            --report-output "huashan-merge-report.json" \
+            --review-output "huashan-merge-review.json" \
+            | tee huashan-merge-summary.json
 
-    - name: Upload source merge candidate
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: huashan-source-merge-${{ github.run_number }}
-        path: |
-          huashan-source-run.json
-          huashan-source-summary.json
-          huashan-merge-candidate.json
-          huashan-merge-report.json
-          huashan-merge-review.json
-          huashan-merge-summary.json
-        if-no-files-found: warn
-        retention-days: 7
+      - name: Upload source merge candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huashan-source-merge-${{ github.run_number }}
+          path: |
+            huashan-source-run.json
+            huashan-source-summary.json
+            huashan-merge-candidate.json
+            huashan-merge-report.json
+            huashan-merge-review.json
+            huashan-merge-summary.json
+          if-no-files-found: warn
+          retention-days: 7
