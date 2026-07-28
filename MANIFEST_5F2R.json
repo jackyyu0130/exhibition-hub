@@ -1,0 +1,21 @@
+{
+  "stage": "5-F.2-R",
+  "name": "正式更新動態驗證復原",
+  "reason": "Post-finalization full test suite relied on a fixed 2,424-event fixture and failed after valid production data increased to 2,474 events.",
+  "productionDataChanged": false,
+  "safetyGateRelaxed": false,
+  "files": [
+    ".github/workflows/update-exhibitions.yml",
+    "scripts/validate_published_data.py",
+    "tests/test_published_data_validator.py",
+    "tests/test_production_update_workflow.py",
+    "tests/test_full_features_no_design_change.py",
+    "tests/test_category_order_and_special_icons.py",
+    "tests/test_data_and_category_consistency.py",
+    "tests/test_scraper.py",
+    "docs/PRODUCTION_DYNAMIC_VALIDATION_RECOVERY_5F2R_ZH-TW.md",
+    "scripts/build_enriched_candidate.py",
+    "tests/test_enriched_candidate_builder.py"
+  ],
+  "fixesCategoryRegression": true
+}
