@@ -1,0 +1,14 @@
+{
+  "stage": "5-F.1",
+  "name": "華山正式發布預覽",
+  "published": false,
+  "sourceEnabled": false,
+  "officialDataChanged": false,
+  "frontendChanged": false,
+  "purpose": "以最新文化部原始資料重建 enriched 基底，再產生不寫入正式檔案的華山發布預覽。",
+  "files": [
+    "scripts/prepare_source_publish_preview.py",
+    "tests/test_source_publish_preview.py",
+    "docs/HUASHAN_PUBLISH_PREVIEW_5F1_ZH-TW.md"
+  ]
+}
