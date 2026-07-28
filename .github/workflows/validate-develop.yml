@@ -760,3 +760,56 @@ jobs:
             huashan-publish-preview-summary.json
           if-no-files-found: warn
           retention-days: 7
+
+
+  dry-run-source-batch:
+    name: Dry run official source batch
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-source-batch]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registries
+        run: python scripts/validate_registries.py
+
+      - name: Run active official venue batch
+        run: |
+          set -o pipefail
+
+          python scripts/run_collector_batch.py \
+            --batch "active-official-venues" \
+            --source-batches "data/source_batches.json" \
+            --source-registry "data/source_registry.json" \
+            --fetch-details \
+            --output-dir "official-source-batch" \
+            --report-output "official-source-batch-report.json" \
+            | tee official-source-batch-summary.json
+
+      - name: Upload official source batch audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-source-batch-${{ github.run_number }}
+          path: |
+            official-source-batch/
+            official-source-batch-report.json
+            official-source-batch-summary.json
+          if-no-files-found: warn
+          retention-days: 7
