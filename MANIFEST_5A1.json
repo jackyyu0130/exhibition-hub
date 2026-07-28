@@ -1,0 +1,25 @@
+{
+  "stage": "5-A.1",
+  "name": "Collector 介面相容性修正",
+  "fixes": [
+    "恢復 RawEvent",
+    "恢復 CollectorContext",
+    "恢復 CollectionResult",
+    "恢復 CollectorError",
+    "恢復 SourceKind",
+    "恢復 run_collectors",
+    "Registry 同時支援舊批次與新官方來源",
+    "BaseCollector 同時支援 _collect 與 collect_raw/normalize_record"
+  ],
+  "frontendChanged": false,
+  "dataChanged": false,
+  "workflowChanged": false,
+  "files": [
+    "scripts/exhibition_hub/collectors/base.py",
+    "scripts/exhibition_hub/collectors/registry.py",
+    "scripts/exhibition_hub/collectors/runner.py",
+    "scripts/exhibition_hub/collectors/__init__.py",
+    "tests/test_collector_contract_compatibility.py",
+    "docs/COLLECTOR_COMPATIBILITY_FIX_5A1_ZH-TW.md"
+  ]
+}

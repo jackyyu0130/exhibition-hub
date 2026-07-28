@@ -1,14 +1,125 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+from enum import Enum
 from time import perf_counter
-from typing import Any, Mapping, Sequence
+from types import MappingProxyType
+from typing import Any, Mapping, MutableMapping, Sequence, TypeAlias
+from uuid import uuid4
+
+
+RawEvent: TypeAlias = dict[str, Any]
+
+
+class CollectorError(RuntimeError):
+    """Expected failure while collecting from an external source."""
 
 
 class CollectorContractError(ValueError):
-    """Raised when a collector emits an invalid record."""
+    """Raised when a collector emits an invalid framework record."""
+
+
+class SourceKind(str, Enum):
+    API = "api"
+    HTML = "html"
+    RSS = "rss"
+    SOCIAL = "social"
+    MANUAL = "manual"
+
+
+@dataclass(frozen=True)
+class CollectorContext:
+    run_id: str
+    started_at: datetime
+    timeout_seconds: float
+    user_agent: str
+    settings: Mapping[str, Any]
+
+    @classmethod
+    def create(
+        cls,
+        *,
+        timeout_seconds: float = 25,
+        user_agent: str = "TaiwanExhibitionJournal-Collector/1.0",
+        settings: Mapping[str, Any] | None = None,
+    ) -> "CollectorContext":
+        if timeout_seconds <= 0:
+            raise ValueError("timeout_seconds must be greater than zero")
+        normalized_user_agent = str(user_agent).strip()
+        if not normalized_user_agent:
+            raise ValueError("user_agent must not be blank")
+        copied_settings = dict(settings or {})
+        return cls(
+            run_id=uuid4().hex,
+            started_at=datetime.now(timezone.utc),
+            timeout_seconds=float(timeout_seconds),
+            user_agent=normalized_user_agent,
+            settings=MappingProxyType(copied_settings),
+        )
+
+
+@dataclass
+class CollectionResult:
+    source_id: str
+    source_name: str
+    source_kind: SourceKind
+    events: list[RawEvent] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    started_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    finished_at: datetime | None = None
+
+    @property
+    def succeeded(self) -> bool:
+        return not self.errors
+
+    @property
+    def event_count(self) -> int:
+        return len(self.events)
+
+    @property
+    def duration_seconds(self) -> float:
+        if self.finished_at is None:
+            return 0.0
+        return max(0.0, (self.finished_at - self.started_at).total_seconds())
+
+    def add_event(self, event: Mapping[str, Any]) -> None:
+        self.events.append(dict(event))
+
+    def add_warning(self, warning: str) -> None:
+        normalized = str(warning).strip()
+        if normalized:
+            self.warnings.append(normalized)
+
+    def add_error(self, error: str) -> None:
+        normalized = str(error).strip()
+        if normalized:
+            self.errors.append(normalized)
+
+    def finish(self) -> None:
+        if self.finished_at is None:
+            self.finished_at = datetime.now(timezone.utc)
+
+    def as_summary(self) -> dict[str, Any]:
+        return {
+            "sourceId": self.source_id,
+            "sourceName": self.source_name,
+            "sourceKind": self.source_kind.value,
+            "succeeded": self.succeeded,
+            "eventCount": self.event_count,
+            "warningCount": len(self.warnings),
+            "errorCount": len(self.errors),
+            "warnings": list(self.warnings),
+            "errors": list(self.errors),
+            "startedAt": self.started_at.isoformat(),
+            "finishedAt": (
+                self.finished_at.isoformat()
+                if self.finished_at is not None
+                else None
+            ),
+            "durationSeconds": self.duration_seconds,
+        }
 
 
 @dataclass(frozen=True)
@@ -107,22 +218,70 @@ class CollectorRunReport:
         }
 
 
-class BaseCollector(ABC):
-    """Base contract implemented by every official-source collector."""
+class BaseCollector:
+    """Compatibility base for legacy collectors and venue collectors.
 
-    source_id: str
+    Legacy collectors implement ``_collect(context, result)`` and use
+    :meth:`collect`. New venue collectors implement ``collect_raw`` plus
+    ``normalize_record`` and use :meth:`run`.
+    """
 
-    @abstractmethod
-    def collect_raw(self, source: CollectorSource, client: Any) -> Sequence[Mapping[str, Any]]:
-        """Collect raw list/detail records from one official source."""
+    source_id: str = ""
+    source_name: str = ""
+    source_kind: SourceKind = SourceKind.MANUAL
 
-    @abstractmethod
+    def _validate_identity(self) -> None:
+        if not str(self.source_id).strip():
+            raise ValueError("Collector must define source_id")
+        if not str(self.source_name).strip():
+            raise ValueError("Collector must define source_name")
+        if not isinstance(self.source_kind, SourceKind):
+            raise ValueError("Collector must define a valid source_kind")
+
+    def collect(self, context: CollectorContext) -> CollectionResult:
+        self._validate_identity()
+        result = CollectionResult(
+            source_id=self.source_id,
+            source_name=self.source_name,
+            source_kind=self.source_kind,
+            started_at=context.started_at,
+        )
+        try:
+            self._collect(context, result)
+        except CollectorError as exc:
+            result.add_error(str(exc))
+        except Exception as exc:  # preserve collector boundary
+            result.add_error(f"Unexpected {type(exc).__name__}: {exc}")
+        finally:
+            result.finish()
+        return result
+
+    def _collect(
+        self,
+        context: CollectorContext,
+        result: CollectionResult,
+    ) -> None:
+        raise NotImplementedError(
+            "Legacy collectors must implement _collect(context, result)"
+        )
+
+    def collect_raw(
+        self,
+        source: CollectorSource,
+        client: Any,
+    ) -> Sequence[Mapping[str, Any]]:
+        raise NotImplementedError(
+            "Venue collectors must implement collect_raw(source, client)"
+        )
+
     def normalize_record(
         self,
         source: CollectorSource,
         raw: Mapping[str, Any],
     ) -> CollectorRecord:
-        """Convert one raw record into the shared collector contract."""
+        raise NotImplementedError(
+            "Venue collectors must implement normalize_record(source, raw)"
+        )
 
     def run(self, source: CollectorSource, client: Any) -> CollectorRunReport:
         started = perf_counter()
