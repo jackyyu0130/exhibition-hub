@@ -1,0 +1,21 @@
+{
+  "stage": "5-A",
+  "name": "舉辦狀態／票價類型修正與 Collector 共用框架",
+  "frontend": {
+    "statusToggle": true,
+    "admissionTitle": "票價類型",
+    "admissionOptions": [
+      "免費展覽",
+      "付費展覽"
+    ],
+    "legacyFreeUrlMigration": true,
+    "cacheVersion": "5.6"
+  },
+  "collectorFramework": {
+    "implemented": true,
+    "newLiveSourcesEnabled": false,
+    "nextPilot": "huashan-1914",
+    "nextStage": "5-B"
+  },
+  "workflowTrigger": "[dry-run-collectors]"
+}

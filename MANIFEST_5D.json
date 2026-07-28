@@ -1,0 +1,29 @@
+{
+  "stage": "5-D",
+  "name": "官方來源去重與候選合併",
+  "published": false,
+  "genericSourceSupport": true,
+  "phase6Flexibility": {
+    "regionGroups": true,
+    "sourceBatches": true,
+    "organizerExpansion": true,
+    "sourceFailureIsolation": true,
+    "workflowPerSourceRequired": false
+  },
+  "incrementalReleaseCheckpoint": "5-D Dry Run 通過後，先發布前台票價／狀態功能與停用中的 Collector 程式；華山活動資料留在候選階段。",
+  "files": [
+    "scripts/exhibition_hub/merging/__init__.py",
+    "scripts/exhibition_hub/merging/normalization.py",
+    "scripts/exhibition_hub/merging/dedupe.py",
+    "scripts/exhibition_hub/merging/source_adapter.py",
+    "scripts/exhibition_hub/merging/policy.py",
+    "scripts/exhibition_hub/merging/candidate.py",
+    "scripts/build_source_merge_candidate.py",
+    "data/source_batches.json",
+    "tests/test_source_merge_dedupe.py",
+    "tests/test_source_merge_candidate.py",
+    "tests/test_source_batches.py",
+    "docs/SOURCE_MERGE_CANDIDATE_5D_ZH-TW.md",
+    "docs/INCREMENTAL_RELEASE_CHECKPOINT_ZH-TW.md"
+  ]
+}

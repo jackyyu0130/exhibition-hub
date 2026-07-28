@@ -1,0 +1,29 @@
+{
+  "stage": "5-B",
+  "name": "華山1914活動列表 Collector",
+  "sourceId": "huashan-1914",
+  "productionPublishingEnabled": false,
+  "sourceStatus": "planned",
+  "sourceEnabled": false,
+  "officialListingUrl": "https://www.huashan1914.com/w/huashan1914/CustomEvent",
+  "features": [
+    "官方活動列表解析",
+    "分頁解析",
+    "官方詳情網址去重",
+    "活動名稱與展期解析",
+    "園區活動類型解析",
+    "列表圖片解析",
+    "Live Dry Run Workflow"
+  ],
+  "files": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "scripts/exhibition_hub/collectors/__init__.py",
+    "data/source_registry.json",
+    "tests/test_huashan_collector.py",
+    "tests/fixtures/huashan_listing_page1.html",
+    "tests/fixtures/huashan_listing_page2.html",
+    "docs/HUASHAN_COLLECTOR_5B_ZH-TW.md",
+    ".github/workflows/validate-develop.yml",
+    ".github/probe-huashan.trigger"
+  ]
+}

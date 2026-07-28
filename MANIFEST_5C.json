@@ -1,0 +1,35 @@
+{
+  "stage": "5-C",
+  "name": "華山詳情頁與欄位正規化",
+  "artifactAudit": {
+    "sourceArtifact": "huashan-collector-dry-run-94.zip",
+    "success": true,
+    "recordCount": 22,
+    "uniqueRecordCount": 22,
+    "fetchedPages": 3,
+    "warningCount": 0,
+    "errorCount": 0,
+    "imageCoverage": 0,
+    "chiikawaPresent": true
+  },
+  "changes": [
+    "新增華山詳情頁解析器",
+    "新增圖片、主辦單位、場地、時間、票價與描述擷取",
+    "新增臺北市與華山標準場館欄位",
+    "新增詳情頁失敗降級與 coverage metrics",
+    "新增 --fetch-details 與 --detail-limit CLI",
+    "維持來源 planned／disabled 與不發布"
+  ],
+  "files": [
+    "scripts/exhibition_hub/collectors/base.py",
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "scripts/run_collectors.py",
+    "data/source_registry.json",
+    "tests/test_huashan_detail_collector.py",
+    "tests/test_collector_contract_compatibility.py",
+    "tests/fixtures/huashan_detail_chiikawa.html",
+    "tests/fixtures/huashan_detail_osamu.html",
+    "tests/fixtures/huashan_detail_popup.html",
+    "docs/HUASHAN_DETAIL_NORMALIZATION_5C_ZH-TW.md"
+  ]
+}

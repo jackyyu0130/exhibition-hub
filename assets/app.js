@@ -84,6 +84,7 @@
     params: new URLSearchParams(location.search),
     view: 'home',
     status: 'all',
+    admission: 'all',
     categories: new Set(),
     region: null,
     venue: null,
@@ -545,6 +546,13 @@
     return /免費|自由入場|免票|free/i.test(event.price || '');
   }
 
+  function isPaid(event) {
+    const price = String(event.price || '').trim();
+    if (!price || isFree(event)) return false;
+    if (/票價請見|依官網|待確認|另行公告|索票|--|未知|未提供/i.test(price)) return false;
+    return /(?:NT\$|TWD|新臺幣|新台幣|元|售票|付費|門票|票價|全票|優待票|預售票|現場票|\d)/i.test(price);
+  }
+
   function dateRange(event) {
     const start = parseDate(event.startDate);
     const end = parseDate(event.endDate);
@@ -747,7 +755,25 @@
     state.categories = new Set(categoryValues);
     state.region = params.get('region') || null;
     state.venue = params.get('venue') || null;
-    state.status = params.get('status') || 'all';
+
+    const requestedStatus = params.get('status') || 'all';
+    const requestedAdmission = params.get('admission') || 'all';
+    const legacyFreeStatus = requestedStatus === 'free';
+    state.status = ['ongoing', 'upcoming', 'ending'].includes(requestedStatus)
+      ? requestedStatus
+      : 'all';
+    state.admission = ['free', 'paid'].includes(requestedAdmission)
+      ? requestedAdmission
+      : legacyFreeStatus
+        ? 'free'
+        : 'all';
+
+    if (legacyFreeStatus) {
+      params.delete('status');
+      params.set('admission', 'free');
+      history.replaceState({}, '', `${location.pathname}?${params.toString()}${location.hash}`);
+    }
+
     const requestedSort = params.get('sort');
     state.sort = ['popular', 'title', 'time'].includes(requestedSort)
       ? requestedSort
@@ -758,7 +784,7 @@
     if (params.has('event')) state.view = 'detail';
     else if (params.get('view') === 'nearby') state.view = 'nearby';
     else if (params.get('view') === 'favorites') state.view = 'favorites';
-    else if (params.get('view') === 'all' || state.query || state.categories.size || state.region || state.venue || params.has('status')) state.view = 'listing';
+    else if (params.get('view') === 'all' || state.query || state.categories.size || state.region || state.venue || params.has('status') || params.has('admission')) state.view = 'listing';
     else state.view = 'home';
   }
 
@@ -776,7 +802,8 @@
       if (state.status === 'ongoing' && !isOngoing(event)) return false;
       if (state.status === 'upcoming' && !isUpcoming(event)) return false;
       if (state.status === 'ending' && !isEnding(event, 30)) return false;
-      if (state.status === 'free' && !isFree(event)) return false;
+      if (state.admission === 'free' && !isFree(event)) return false;
+      if (state.admission === 'paid' && !isPaid(event)) return false;
       if (includeDate && state.date && !eventOccursOn(event, state.date)) return false;
       return true;
     });
@@ -1134,8 +1161,18 @@
   }
 
   function renderSidebarOptions() {
-    const statusOptions = [['all','全部展覽'],['ongoing','目前舉辦'],['upcoming','即將舉辦'],['ending','即將結束'],['free','免費展覽']];
-    $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="status-filter-button ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}" type="button">${label}</button>`).join('');
+    const statusOptions = [
+      ['ongoing','目前舉辦'],
+      ['upcoming','即將舉辦'],
+      ['ending','即將結束'],
+    ];
+    $('#listingStatusOptions').innerHTML = statusOptions.map(([value,label]) => `<button class="status-filter-button ${state.status === value ? 'active' : ''}" data-set-filter="status" data-value="${value}" type="button" aria-pressed="${state.status === value}">${label}</button>`).join('');
+
+    const admissionOptions = [
+      ['free','免費展覽'],
+      ['paid','付費展覽'],
+    ];
+    $('#listingAdmissionOptions').innerHTML = admissionOptions.map(([value,label]) => `<button class="admission-filter-button ${state.admission === value ? 'active' : ''}" data-set-filter="admission" data-value="${value}" type="button" aria-pressed="${state.admission === value}">${label}</button>`).join('');
 
     const categoryCounts = countBy(state.events, event => event.categories);
     const categories = CATEGORY_ORDER;
@@ -1201,8 +1238,12 @@
     if (state.region) parts.push(`<span class="active-filter">${escapeHtml(state.region)}<button type="button" data-clear-filter="region" aria-label="移除地區">×</button></span>`);
     if (state.venue) parts.push(`<span class="active-filter">${escapeHtml(state.venue)}<button type="button" data-clear-filter="venue" aria-label="移除場館">×</button></span>`);
     if (state.status !== 'all') {
-      const label = {ongoing:'目前舉辦',upcoming:'即將舉辦',ending:'即將結束',free:'免費展覽'}[state.status] || state.status;
+      const label = {ongoing:'目前舉辦',upcoming:'即將舉辦',ending:'即將結束'}[state.status] || state.status;
       parts.push(`<span class="active-filter">${escapeHtml(label)}<button type="button" data-clear-filter="status" aria-label="移除狀態">×</button></span>`);
+    }
+    if (state.admission !== 'all') {
+      const label = {free:'免費展覽',paid:'付費展覽'}[state.admission] || state.admission;
+      parts.push(`<span class="active-filter">${escapeHtml(label)}<button type="button" data-clear-filter="admission" aria-label="移除票價類型">×</button></span>`);
     }
     if (state.date) parts.push(`<span class="active-filter">${escapeHtml(state.date)}<button type="button" data-clear-filter="date" aria-label="移除日期">×</button></span>`);
     if (parts.length) parts.push('<button class="clear-all-filters" type="button" data-clear-all-filters>清除全部篩選</button>');
@@ -1448,6 +1489,9 @@
   function updateUrl(filters = {}) {
     const params = new URLSearchParams(location.search);
     params.set('view','all');
+    if ('status' in filters || 'admission' in filters) {
+      if (params.get('status') === 'free') params.delete('status');
+    }
     Object.entries(filters).forEach(([key,value]) => {
       if (key === 'category') {
         params.delete('category');
@@ -1688,7 +1732,12 @@
         return;
       }
       const filterButton = event.target.closest('[data-set-filter]');
-      if (filterButton) updateUrl({[filterButton.dataset.setFilter]:filterButton.dataset.value});
+      if (filterButton) {
+        const key = filterButton.dataset.setFilter;
+        const value = filterButton.dataset.value;
+        const currentValue = key === 'admission' ? state.admission : state.status;
+        updateUrl({[key]:currentValue === value ? null : value});
+      }
       const clearButton = event.target.closest('[data-clear-filter]');
       if (clearButton) {
         const key = clearButton.dataset.clearFilter;
@@ -1697,7 +1746,7 @@
         else updateUrl({[key]:null});
       }
       if (event.target.closest('[data-clear-all-filters]')) {
-        updateUrl({q:null,category:null,region:null,venue:null,status:null,date:null});
+        updateUrl({q:null,category:null,region:null,venue:null,status:null,admission:null,date:null});
       }
     });
 

@@ -1,0 +1,21 @@
+{
+  "stage": "5-C.1",
+  "name": "華山詳情頁資料清理",
+  "changes": [
+    "忽略 script/style 等非內容文字",
+    "限制欄位解析於主活動內容範圍",
+    "清理 venueNames 污染",
+    "清理 priceText JavaScript 與相關活動票價",
+    "圖片最多保留 4 張",
+    "移除華山共用社群與徵才連結",
+    "performance 詳情頁正規化為表演"
+  ],
+  "frontendChanged": false,
+  "publishedDataChanged": false,
+  "workflowChanged": false,
+  "files": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "tests/test_huashan_detail_quality.py",
+    "docs/HUASHAN_DETAIL_CLEANUP_5C1_ZH-TW.md"
+  ]
+}
