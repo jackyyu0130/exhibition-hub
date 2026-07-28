@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=5.6">
+  <link rel="stylesheet" href="assets/styles.css?v=6.2">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -336,7 +336,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div><small>LOCATION</small><h2>依縣市與場館篩選</h2></div>
               <button class="filter-close-button" id="filterCloseButton" type="button" aria-label="關閉篩選">×</button>
             </div>
-            <p class="filter-sidebar-intro">展開縣市後，再選擇同一園區或場館。</p>
+            <p class="filter-sidebar-intro">先選縣市快速查看，或開啟完整場地面板搜尋與多選。</p>
+            <button class="venue-selector-launch" id="venueSelectorLaunch" type="button">
+              <span><small>VENUE SELECTOR</small><strong>搜尋或選擇展演場地</strong></span>
+              <span aria-hidden="true">↗</span>
+            </button>
+            <div class="venue-selected-preview" id="venueSelectedPreview" hidden></div>
             <div class="location-accordion" id="listingLocationAccordion"></div>
           </div>
         </aside>
@@ -364,6 +369,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
     </section>
+
+
+    <div class="venue-selector-backdrop" id="venueSelectorBackdrop" hidden></div>
+    <aside class="venue-selector-drawer" id="venueSelectorDrawer" aria-hidden="true" aria-labelledby="venueSelectorTitle">
+      <div class="venue-selector-head">
+        <div>
+          <p class="eyebrow">VENUE SELECTOR</p>
+          <h2 id="venueSelectorTitle">選擇展演場地</h2>
+          <p>依縣市、場地類型或常用別名，找到這次想去的地方。</p>
+        </div>
+        <button class="venue-selector-close" id="venueSelectorClose" type="button" aria-label="關閉場地選擇">×</button>
+      </div>
+      <label class="venue-selector-search">
+        <span aria-hidden="true">⌕</span>
+        <input id="venueSelectorSearch" type="search" placeholder="搜尋場館、園區、行政區或別名">
+      </label>
+      <div class="venue-selector-selected" id="venueSelectorSelected" hidden>
+        <div class="venue-selector-selected-head"><strong>已選場地</strong><button type="button" id="venueSelectorClear">清除全部</button></div>
+        <div class="venue-selector-chips" id="venueSelectorChips"></div>
+      </div>
+      <div class="venue-type-tabs" id="venueTypeTabs" aria-label="場地類型"></div>
+      <div class="venue-selector-list" id="venueSelectorList"></div>
+      <div class="venue-selector-footer">
+        <button class="venue-selector-reset" id="venueSelectorReset" type="button">清除全部</button>
+        <button class="venue-selector-apply" id="venueSelectorApply" type="button">查看展覽</button>
+      </div>
+    </aside>
 
     <section class="nearby-view app-view" id="nearbyView" hidden>
       <div class="view-hero nearby-view-hero">
@@ -458,6 +490,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=5.6"></script>
+  <script src="assets/app.js?v=6.2"></script>
 </body>
 </html>

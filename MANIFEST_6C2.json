@@ -1,0 +1,19 @@
+{
+  "stage": "6-C2",
+  "name": "北部多來源場館矩陣與前台展演場地選擇器",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "files": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "data/northern_venue_matrix.json",
+    "tests/test_northern_venue_matrix.py",
+    "tests/test_venue_selector_frontend.py",
+    "docs/NORTHERN_VENUE_MATRIX_FRONTEND_6C2_ZH-TW.md",
+    "tests/test_calendar_and_compact_categories.py",
+    "tests/test_explore_alignment_and_sort_control.py",
+    "tests/test_status_and_admission_filters.py"
+  ]
+}
