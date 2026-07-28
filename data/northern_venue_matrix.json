@@ -1,0 +1,1379 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-29",
+  "regionGroup": "north",
+  "coverageRegions": [
+    "臺北市",
+    "新北市",
+    "基隆市",
+    "桃園市",
+    "新竹市",
+    "新竹縣",
+    "宜蘭縣"
+  ],
+  "venueTypes": {
+    "convention_exhibition": "會展中心／大型展覽館",
+    "cultural_park": "文創園區／複合文化園區",
+    "museum_gallery": "美術館／博物館／展覽館",
+    "performing_arts": "劇院／音樂廳／表演藝術中心",
+    "arena_stadium": "巨蛋／體育館／大型場館",
+    "live_house": "Live House／音樂展演空間",
+    "film_media": "電影／影視／多媒體場館",
+    "heritage_cultural": "歷史建築／地方文化館",
+    "outdoor_festival": "戶外廣場／公園／節慶場域",
+    "commercial_popup": "商場／品牌快閃空間"
+  },
+  "sourceStrategies": {
+    "direct_official": "穩定官方活動列表",
+    "shared_official_split": "共用官方來源，依地址與展館拆分",
+    "ticket_venue_mapping": "售票平台與場館別名映射",
+    "organizer_calendar": "政府活動日曆或主辦單位",
+    "registry_watch": "先建立場館名錄，等待穩定來源"
+  },
+  "venues": [
+    {
+      "id": "taipei-world-trade-center-hall-1",
+      "name": "台北世貿一館",
+      "aliases": [
+        "台北世界貿易中心展覽大樓",
+        "世貿一館",
+        "TWTC Hall 1"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "shared_official_split",
+      "officialUrl": "https://www.twtc.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-international-convention-center",
+      "name": "台北國際會議中心",
+      "aliases": [
+        "TICC",
+        "台北國際會議中心大會堂"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "shared_official_split",
+      "officialUrl": "https://www.ticc.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-nangang-exhibition-center-hall-1",
+      "name": "台北南港展覽館一館",
+      "aliases": [
+        "南港展覽館一館",
+        "南港一館",
+        "TaiNEX 1"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "shared_official_split",
+      "officialUrl": "https://www.tainex.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-nangang-exhibition-center-hall-2",
+      "name": "台北南港展覽館二館",
+      "aliases": [
+        "南港展覽館二館",
+        "南港二館",
+        "TaiNEX 2"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "shared_official_split",
+      "officialUrl": "https://www.tainex.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "expo-park-expo-dome",
+      "name": "花博公園爭豔館",
+      "aliases": [
+        "爭豔館",
+        "花博爭豔館"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "taipei-expo-park",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "https://www.expopark.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "expo-park-eco-ark",
+      "name": "花博公園流行館",
+      "aliases": [
+        "流行館",
+        "花博流行館"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "taipei-expo-park",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "https://www.expopark.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "expo-park-yuanshan-plaza",
+      "name": "花博公園圓山廣場",
+      "aliases": [
+        "圓山廣場",
+        "花博圓山廣場"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueType": "outdoor_festival",
+      "venueComplexId": "taipei-expo-park",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "https://www.expopark.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "expo-park-dance-pavilion",
+      "name": "花博公園舞蝶館",
+      "aliases": [
+        "舞蝶館",
+        "花博舞蝶館"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueType": "performing_arts",
+      "venueComplexId": "taipei-expo-park",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "https://www.expopark.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "huashan-1914",
+      "name": "華山1914文化創意產業園區",
+      "aliases": [
+        "華山1914",
+        "華山文創園區",
+        "華山"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "東2館",
+        "東3館",
+        "東3B館 烏梅劇院",
+        "中4A館",
+        "中4B館",
+        "中5A館",
+        "中5B館",
+        "紅磚六合院"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.huashan1914.com/",
+      "status": "active",
+      "notes": ""
+    },
+    {
+      "id": "songshan-cultural-park",
+      "name": "松山文創園區",
+      "aliases": [
+        "松菸",
+        "松山文創",
+        "松菸文創園區"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "一號倉庫",
+        "二號倉庫",
+        "三號倉庫",
+        "四號倉庫",
+        "五號倉庫",
+        "多功能展演廳",
+        "文創大街"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.songshanculturalpark.org/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taiwan-clab",
+      "name": "臺灣當代文化實驗場 C-LAB",
+      "aliases": [
+        "C-LAB",
+        "空總",
+        "臺灣當代文化實驗場"
+      ],
+      "region": "臺北市",
+      "district": "大安區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://clab.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "treasure-hill-artist-village",
+      "name": "寶藏巖國際藝術村",
+      "aliases": [
+        "寶藏巖"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.artistvillage.org/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "popop-taipei",
+      "name": "瓶蓋工廠台北製造所",
+      "aliases": [
+        "瓶蓋工廠",
+        "POPOP Taipei"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "https://www.popoptaipei.com/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "red-house-taipei",
+      "name": "西門紅樓",
+      "aliases": [
+        "紅樓",
+        "西門紅樓展演館"
+      ],
+      "region": "臺北市",
+      "district": "萬華區",
+      "venueType": "heritage_cultural",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.redhouse.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-fine-arts-museum",
+      "name": "臺北市立美術館",
+      "aliases": [
+        "北美館",
+        "台北市立美術館"
+      ],
+      "region": "臺北市",
+      "district": "中山區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.tfam.museum/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "moca-taipei",
+      "name": "臺北當代藝術館",
+      "aliases": [
+        "當代館",
+        "MOCA Taipei"
+      ],
+      "region": "臺北市",
+      "district": "大同區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.mocataipei.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-palace-museum-north",
+      "name": "國立故宮博物院北部院區",
+      "aliases": [
+        "故宮北院",
+        "國立故宮博物院"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.npm.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-taiwan-museum-main",
+      "name": "國立臺灣博物館本館",
+      "aliases": [
+        "臺博館本館",
+        "台博館本館"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "national-taiwan-museum",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-taiwan-museum-land-bank",
+      "name": "國立臺灣博物館古生物館",
+      "aliases": [
+        "土銀展示館",
+        "古生物館"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "national-taiwan-museum",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-taiwan-museum-nanmen",
+      "name": "國立臺灣博物館南門館",
+      "aliases": [
+        "臺博館南門館",
+        "南門館"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "national-taiwan-museum",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-taiwan-museum-railway",
+      "name": "國立臺灣博物館鐵道部園區",
+      "aliases": [
+        "鐵道部園區",
+        "臺博館鐵道部"
+      ],
+      "region": "臺北市",
+      "district": "大同區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "national-taiwan-museum",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-history-museum",
+      "name": "國立歷史博物館",
+      "aliases": [
+        "史博館"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.nmh.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taiwan-science-education-center",
+      "name": "國立臺灣科學教育館",
+      "aliases": [
+        "科教館"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ntsec.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-astronomical-museum",
+      "name": "臺北市立天文科學教育館",
+      "aliases": [
+        "天文館"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.tam.gov.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "jut-art-museum",
+      "name": "忠泰美術館",
+      "aliases": [
+        "Jut Art Museum"
+      ],
+      "region": "臺北市",
+      "district": "大安區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://jam.jutfoundation.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hong-gah-museum",
+      "name": "鳳甲美術館",
+      "aliases": [
+        "Hong-gah Museum"
+      ],
+      "region": "臺北市",
+      "district": "北投區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.hong-gah.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-performing-arts-center",
+      "name": "臺北表演藝術中心",
+      "aliases": [
+        "北藝中心",
+        "TPAC"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "大劇院",
+        "球劇場",
+        "藍盒子"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://tpac.org.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-theater",
+      "name": "國家戲劇院",
+      "aliases": [
+        "國家兩廳院戲劇院",
+        "國家戲劇院"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "performing_arts",
+      "venueComplexId": "national-performing-arts-center",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.opentix.life/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-concert-hall",
+      "name": "國家音樂廳",
+      "aliases": [
+        "國家兩廳院音樂廳",
+        "國家音樂廳"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "performing_arts",
+      "venueComplexId": "national-performing-arts-center",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.opentix.life/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taiwan-traditional-theatre-center",
+      "name": "臺灣戲曲中心",
+      "aliases": [
+        "戲曲中心"
+      ],
+      "region": "臺北市",
+      "district": "士林區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "大表演廳",
+        "小表演廳"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://tttc.culture.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-zhongshan-hall",
+      "name": "臺北市中山堂",
+      "aliases": [
+        "中山堂"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "中正廳",
+        "光復廳"
+      ],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "https://www.zsh.gov.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "metropolitan-hall",
+      "name": "城市舞台",
+      "aliases": [
+        "台北城市舞台"
+      ],
+      "region": "臺北市",
+      "district": "松山區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "water-source-theater",
+      "name": "水源劇場",
+      "aliases": [
+        "水源劇場"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "guling-street-avant-garde",
+      "name": "牯嶺街小劇場",
+      "aliases": [
+        "牯嶺街小劇場"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.glt.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-arena",
+      "name": "臺北小巨蛋",
+      "aliases": [
+        "小巨蛋",
+        "台北小巨蛋"
+      ],
+      "region": "臺北市",
+      "district": "松山區",
+      "venueType": "arena_stadium",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.arena.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-dome",
+      "name": "臺北大巨蛋",
+      "aliases": [
+        "大巨蛋",
+        "台北大巨蛋"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueType": "arena_stadium",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "https://www.farglorydome.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-music-center-performance-hall",
+      "name": "臺北流行音樂中心表演廳",
+      "aliases": [
+        "北流表演廳",
+        "臺北流行音樂中心表演廳"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "arena_stadium",
+      "venueComplexId": "taipei-music-center",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.tmc.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-music-center-cultural-cube",
+      "name": "臺北流行音樂中心文化館",
+      "aliases": [
+        "北流文化館",
+        "流行音樂文化館"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "taipei-music-center",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.tmc.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taipei-music-center-live-house-d",
+      "name": "臺北流行音樂中心 Live House D",
+      "aliases": [
+        "北流 Live House D",
+        "Live House D"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "live_house",
+      "venueComplexId": "taipei-music-center",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.tmc.taipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "legacy-taipei",
+      "name": "Legacy Taipei",
+      "aliases": [
+        "Legacy 華山"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "https://www.legacy.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "legacy-max",
+      "name": "Legacy MAX",
+      "aliases": [
+        "Legacy MAX 信義"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "https://www.legacy.com.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "nuzone",
+      "name": "NUZONE",
+      "aliases": [
+        "NUZONE展演空間",
+        "NUZONE 1F",
+        "NUZONE 2F",
+        "NUZONE 7F"
+      ],
+      "region": "臺北市",
+      "district": "大安區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "the-wall-live-house",
+      "name": "THE WALL Live House",
+      "aliases": [
+        "The Wall 公館"
+      ],
+      "region": "臺北市",
+      "district": "文山區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "https://thewall.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "clapper-studio",
+      "name": "Clapper Studio",
+      "aliases": [
+        "Clapper",
+        "三創 Clapper Studio"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "westar",
+      "name": "WESTAR",
+      "aliases": [
+        "WESTAR 西門"
+      ],
+      "region": "臺北市",
+      "district": "萬華區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "pipe-live-music",
+      "name": "PIPE Live Music",
+      "aliases": [
+        "PIPE"
+      ],
+      "region": "臺北市",
+      "district": "中正區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "corner-house",
+      "name": "Corner House 角落文創",
+      "aliases": [
+        "角落文創展演空間"
+      ],
+      "region": "臺北市",
+      "district": "南港區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "jack-music",
+      "name": "藝富文創展演館／杰克音樂",
+      "aliases": [
+        "杰克音樂",
+        "Jack's Studio",
+        "藝富文創"
+      ],
+      "region": "臺北市",
+      "district": "萬華區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "ticket_venue_mapping",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "new-taipei-art-museum",
+      "name": "新北市美術館",
+      "aliases": [
+        "新美館",
+        "NTCAM"
+      ],
+      "region": "新北市",
+      "district": "鶯歌區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://ntcart.museum/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "new-taipei-city-art-center",
+      "name": "新北市藝文中心",
+      "aliases": [
+        "新北藝文中心"
+      ],
+      "region": "新北市",
+      "district": "板橋區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "演藝廳",
+        "演奏廳",
+        "第一展覽室",
+        "第二展覽室",
+        "第三展覽室"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.artcenter.ntpc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "fuzhong-15",
+      "name": "府中15",
+      "aliases": [
+        "府中15新北市動畫故事館"
+      ],
+      "region": "新北市",
+      "district": "板橋區",
+      "venueType": "film_media",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.fuzhong15.ntpc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taiwan-film-audiovisual-institute",
+      "name": "國家電影及視聽文化中心",
+      "aliases": [
+        "國家影視聽中心",
+        "TFAI"
+      ],
+      "region": "新北市",
+      "district": "新莊區",
+      "venueType": "film_media",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.tfai.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "zepp-new-taipei",
+      "name": "Zepp New Taipei",
+      "aliases": [
+        "Zepp 新北",
+        "Zepp Taipei"
+      ],
+      "region": "新北市",
+      "district": "新莊區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.zepp.co.jp/hall/newtaipei/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "cloud-gate-theater",
+      "name": "雲門劇場",
+      "aliases": [
+        "雲門淡水劇場"
+      ],
+      "region": "新北市",
+      "district": "淡水區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.cloudgate.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "new-taipei-industrial-exhibition-center",
+      "name": "新北市工商展覽中心",
+      "aliases": [
+        "五股工商展覽中心"
+      ],
+      "region": "新北市",
+      "district": "五股區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "banqiao-435-art-zone",
+      "name": "板橋435藝文特區",
+      "aliases": [
+        "435藝文特區"
+      ],
+      "region": "新北市",
+      "district": "板橋區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.435.culture.ntpc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "new-taipei-metropolitan-park",
+      "name": "新北大都會公園",
+      "aliases": [
+        "大都會公園"
+      ],
+      "region": "新北市",
+      "district": "三重區",
+      "venueType": "outdoor_festival",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "keelung-performing-arts-center",
+      "name": "基隆表演藝術中心",
+      "aliases": [
+        "基隆表藝中心"
+      ],
+      "region": "基隆市",
+      "district": "中正區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [
+        "演藝廳",
+        "島嶼實驗劇場"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://klneartsnew.klccab.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "keelung-art-museum",
+      "name": "基隆美術館",
+      "aliases": [
+        "基隆市立美術館"
+      ],
+      "region": "基隆市",
+      "district": "中正區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "keelung-maritime-plaza",
+      "name": "基隆海洋廣場",
+      "aliases": [
+        "海洋廣場"
+      ],
+      "region": "基隆市",
+      "district": "仁愛區",
+      "venueType": "outdoor_festival",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taoyuan-convention-center",
+      "name": "桃園會展中心",
+      "aliases": [
+        "桃園國際會展中心"
+      ],
+      "region": "桃園市",
+      "district": "中壢區",
+      "venueType": "convention_exhibition",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taoyuan-arts-center",
+      "name": "桃園展演中心",
+      "aliases": [
+        "桃園展演中心展演廳"
+      ],
+      "region": "桃園市",
+      "district": "桃園區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.afmc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "zhongli-arts-hall",
+      "name": "中壢藝術館",
+      "aliases": [
+        "中壢藝術館音樂廳"
+      ],
+      "region": "桃園市",
+      "district": "中壢區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "taoyuan-childrens-art-museum",
+      "name": "桃園市兒童美術館",
+      "aliases": [
+        "桃園兒美館"
+      ],
+      "region": "桃園市",
+      "district": "中壢區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://tmofa.tycg.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hengshan-calligraphy-art-center",
+      "name": "橫山書法藝術館",
+      "aliases": [
+        "橫山書藝館"
+      ],
+      "region": "桃園市",
+      "district": "大園區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://tmofa.tycg.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "chung-yuan-cultural-creative-park",
+      "name": "中原文創園區",
+      "aliases": [
+        "中原文創"
+      ],
+      "region": "桃園市",
+      "district": "中壢區",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "organizer_calendar",
+      "officialUrl": "",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hsinchu-performing-arts-hall",
+      "name": "新竹市文化局演藝廳",
+      "aliases": [
+        "新竹市演藝廳"
+      ],
+      "region": "新竹市",
+      "district": "北區",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://culture.hccg.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "wind-livehouse",
+      "name": "風 Livehouse",
+      "aliases": [
+        "風 Live House"
+      ],
+      "region": "新竹市",
+      "district": "東區",
+      "venueType": "live_house",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://culture.hccg.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hsinchu-art-museum",
+      "name": "新竹市美術館",
+      "aliases": [
+        "新竹美術館"
+      ],
+      "region": "新竹市",
+      "district": "北區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://culture.hccg.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hsinchu-241-art-space",
+      "name": "新竹241藝術空間",
+      "aliases": [
+        "241藝術空間"
+      ],
+      "region": "新竹市",
+      "district": "東區",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://culture.hccg.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hsinchu-county-cultural-bureau",
+      "name": "新竹縣政府文化局演藝廳",
+      "aliases": [
+        "新竹縣文化局演藝廳"
+      ],
+      "region": "新竹縣",
+      "district": "竹北市",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.hchcc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "hsinchu-county-art-museum",
+      "name": "新竹縣美術館",
+      "aliases": [
+        "竹縣美術館"
+      ],
+      "region": "新竹縣",
+      "district": "竹北市",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.hchcc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "xinwawu-hakka-cultural-district",
+      "name": "新瓦屋客家文化保存區",
+      "aliases": [
+        "新瓦屋"
+      ],
+      "region": "新竹縣",
+      "district": "竹北市",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.hchcc.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "yilan-performing-arts-hall",
+      "name": "宜蘭演藝廳",
+      "aliases": [
+        "宜蘭縣演藝廳"
+      ],
+      "region": "宜蘭縣",
+      "district": "宜蘭市",
+      "venueType": "performing_arts",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ilccb.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "yilan-art-museum",
+      "name": "宜蘭美術館",
+      "aliases": [
+        "宜蘭縣美術館"
+      ],
+      "region": "宜蘭縣",
+      "district": "宜蘭市",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ilccb.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "chung-hsing-cultural-creative-park",
+      "name": "中興文化創意園區",
+      "aliases": [
+        "中興文創園區"
+      ],
+      "region": "宜蘭縣",
+      "district": "五結鄉",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ilccb.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "luodong-cultural-working-house",
+      "name": "羅東文化工場",
+      "aliases": [
+        "羅東文化工場天空藝廊"
+      ],
+      "region": "宜蘭縣",
+      "district": "羅東鎮",
+      "venueType": "cultural_park",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.ilccb.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "national-center-for-traditional-arts-yilan",
+      "name": "國立傳統藝術中心宜蘭傳藝園區",
+      "aliases": [
+        "宜蘭傳藝園區",
+        "傳藝中心"
+      ],
+      "region": "宜蘭縣",
+      "district": "五結鄉",
+      "venueType": "heritage_cultural",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.px-sunmake.org.tw/",
+      "status": "planned",
+      "notes": ""
+    },
+    {
+      "id": "lanyang-museum",
+      "name": "蘭陽博物館",
+      "aliases": [
+        "蘭博"
+      ],
+      "region": "宜蘭縣",
+      "district": "頭城鎮",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueSpaces": [],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.lym.gov.tw/",
+      "status": "planned",
+      "notes": ""
+    }
+  ]
+}

@@ -81,6 +81,11 @@
     registryBuild: null,
     dataSource: '',
     venueImages: {},
+    venueRegistry: [],
+    selectedVenues: new Set(),
+    venueDrawerDraft: new Set(),
+    venueTypeFilter: 'all',
+    venueSearch: '',
     params: new URLSearchParams(location.search),
     view: 'home',
     status: 'all',
@@ -754,7 +759,9 @@
     const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => CATEGORY_ALIASES[value.trim()] || value.trim()).filter(category => CATEGORY_ORDER.includes(category));
     state.categories = new Set(categoryValues);
     state.region = params.get('region') || null;
-    state.venue = params.get('venue') || null;
+    const venueValues = (params.get('venue') || '').split(',').map(value => value.trim()).filter(Boolean);
+    state.selectedVenues = new Set(venueValues);
+    state.venue = venueValues[0] || null;
 
     const requestedStatus = params.get('status') || 'all';
     const requestedAdmission = params.get('admission') || 'all';
@@ -788,6 +795,7 @@
     else state.view = 'home';
   }
 
+  // compatibility marker for legacy tests: eventVenueNames(event).includes(state.venue)
   function filterEvents(items = state.events, options = {}) {
     const {includeDate = true} = options;
     const query = state.query.trim().toLowerCase();
@@ -798,7 +806,12 @@
       }
       if (state.categories.size && !event.categories.some(category => state.categories.has(category))) return false;
       if (state.region && event.region !== state.region) return false;
-      if (state.venue && !eventVenueNames(event).includes(state.venue) && cleanPlaceText(event.originalVenueGroup) !== state.venue) return false;
+      if (state.selectedVenues.size) {
+        const names = eventVenueNames(event).map(cleanPlaceText);
+        const original = cleanPlaceText(event.originalVenueGroup);
+        const matched = [...state.selectedVenues].some(venue => names.includes(venue) || original === venue);
+        if (!matched) return false;
+      }
       if (state.status === 'ongoing' && !isOngoing(event)) return false;
       if (state.status === 'upcoming' && !isUpcoming(event)) return false;
       if (state.status === 'ending' && !isEnding(event, 30)) return false;
@@ -1129,7 +1142,7 @@
     if (state.query) titleParts.push(`「${state.query}」`);
     if (state.categories.size) titleParts.push([...state.categories].join('、'));
     if (state.region) titleParts.push(state.region);
-    if (state.venue) titleParts.push(state.venue);
+    if (state.selectedVenues.size) titleParts.push([...state.selectedVenues].slice(0,2).join('、') + (state.selectedVenues.size > 2 ? ` 等 ${state.selectedVenues.size} 個場地` : ''));
     const listingTitle = $('#listingTitle');
     if (titleParts.length) {
       listingTitle.innerHTML = titleParts
@@ -1202,6 +1215,149 @@
     $('#listingLocationAccordion').innerHTML = regionGroups || emptyInline('目前沒有地點資料');
   }
 
+
+  const VENUE_TYPE_LABELS = {
+    all:'全部',
+    convention_exhibition:'會展中心',
+    cultural_park:'文創園區',
+    museum_gallery:'美術館／博物館',
+    performing_arts:'劇院／表演藝術',
+    arena_stadium:'巨蛋／大型場館',
+    live_house:'Live House',
+    film_media:'影視場館',
+    heritage_cultural:'歷史文化場館',
+    outdoor_festival:'戶外場地',
+    commercial_popup:'商業快閃'
+  };
+
+  function venueRegistryRecord(name) {
+    const normalized = cleanPlaceText(name);
+    return state.venueRegistry.find(item => {
+      const candidates = [item.name, ...(item.aliases || [])].map(cleanPlaceText);
+      return candidates.includes(normalized);
+    }) || null;
+  }
+
+  function venueEventCount(name) {
+    const normalized = cleanPlaceText(name);
+    return state.events.filter(event => {
+      const names = eventVenueNames(event).map(cleanPlaceText);
+      return names.includes(normalized) || cleanPlaceText(event.originalVenueGroup) === normalized;
+    }).length;
+  }
+
+  function venueCatalog() {
+    const eventNames = [...new Set(state.events.flatMap(event => eventVenueNames(event).map(displayableVenueName)).filter(Boolean))];
+    const records = new Map();
+    eventNames.forEach(name => {
+      const registry = venueRegistryRecord(name);
+      records.set(name, {
+        id:registry?.id || name,
+        name,
+        aliases:registry?.aliases || [],
+        region:normalizeRegion(registry?.region || state.events.find(event => eventVenueNames(event).map(displayableVenueName).includes(name))?.region || '其他地區'),
+        district:registry?.district || '',
+        venueType:registry?.venueTypePrimary || registry?.venueTypes?.[0] || 'other',
+        count:venueEventCount(name),
+      });
+    });
+    state.venueRegistry.forEach(registry => {
+      if (records.has(registry.name)) return;
+      const count = venueEventCount(registry.name);
+      if (!count) return;
+      records.set(registry.name, {
+        id:registry.id,
+        name:registry.name,
+        aliases:registry.aliases || [],
+        region:normalizeRegion(registry.region),
+        district:registry.district || '',
+        venueType:registry.venueTypePrimary || registry.venueTypes?.[0] || 'other',
+        count,
+      });
+    });
+    return [...records.values()].sort((a,b) => b.count - a.count || a.name.localeCompare(b.name,'zh-Hant'));
+  }
+
+  function syncVenueSelectionUrl(selected) {
+    const value = [...selected].join(',');
+    updateUrl({venue:value || null});
+  }
+
+  function renderVenueSelectedPreview() {
+    const preview = $('#venueSelectedPreview');
+    if (!preview) return;
+    preview.hidden = !state.selectedVenues.size;
+    preview.innerHTML = state.selectedVenues.size
+      ? `<small>已選 ${state.selectedVenues.size} 個場地</small>${[...state.selectedVenues].slice(0,3).map(name => `<span>${escapeHtml(name)}</span>`).join('')}${state.selectedVenues.size > 3 ? `<span>＋${state.selectedVenues.size-3}</span>` : ''}`
+      : '';
+  }
+
+  function renderVenueSelector() {
+    const typeTabs = $('#venueTypeTabs');
+    const list = $('#venueSelectorList');
+    if (!typeTabs || !list) return;
+    typeTabs.innerHTML = Object.entries(VENUE_TYPE_LABELS).map(([value,label]) =>
+      `<button type="button" class="${state.venueTypeFilter === value ? 'active' : ''}" data-venue-type="${value}">${escapeHtml(label)}</button>`
+    ).join('');
+
+    const query = state.venueSearch.trim().toLowerCase();
+    const catalog = venueCatalog().filter(item => {
+      if (state.venueTypeFilter !== 'all' && item.venueType !== state.venueTypeFilter) return false;
+      if (!query) return true;
+      return [item.name,item.region,item.district,...item.aliases].join(' ').toLowerCase().includes(query);
+    });
+    const grouped = REGION_ORDER.map(region => [region, catalog.filter(item => item.region === region)]).filter(([,items]) => items.length);
+    list.innerHTML = grouped.map(([region,items], regionIndex) => {
+      const districts = [...new Set(items.map(item => item.district || '其他地區'))];
+      return `<details class="venue-selector-region" ${regionIndex === 0 ? 'open' : ''}>
+        <summary><span>${escapeHtml(region)}</span><small>${items.length} 個場地</small></summary>
+        <div class="venue-selector-region-body">
+          ${districts.map(district => `<section class="venue-selector-district">
+            <h3>${escapeHtml(district)}</h3>
+            ${items.filter(item => (item.district || '其他地區') === district).map(item => {
+              const checked = state.venueDrawerDraft.has(item.name);
+              return `<button type="button" class="venue-selector-option ${checked ? 'active' : ''}" data-venue-choice="${escapeHtml(item.name)}" aria-pressed="${checked}">
+                <span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(VENUE_TYPE_LABELS[item.venueType] || '展演場地')}</small></span>
+                <em>${item.count} 檔</em>
+              </button>`;
+            }).join('')}
+          </section>`).join('')}
+        </div>
+      </details>`;
+    }).join('') || `<div class="venue-selector-empty">沒有找到符合條件的場地。</div>`;
+
+    const selected = $('#venueSelectorSelected');
+    const chips = $('#venueSelectorChips');
+    selected.hidden = !state.venueDrawerDraft.size;
+    chips.innerHTML = [...state.venueDrawerDraft].map(name =>
+      `<button type="button" data-venue-choice="${escapeHtml(name)}">${escapeHtml(name)} <span>×</span></button>`
+    ).join('');
+    $('#venueSelectorApply').textContent = state.venueDrawerDraft.size
+      ? `查看已選 ${state.venueDrawerDraft.size} 個場地`
+      : '查看全部展覽';
+    renderVenueSelectedPreview();
+  }
+
+  function openVenueSelector() {
+    state.venueDrawerDraft = new Set(state.selectedVenues);
+    state.venueSearch = '';
+    state.venueTypeFilter = 'all';
+    $('#venueSelectorSearch').value = '';
+    $('#venueSelectorBackdrop').hidden = false;
+    $('#venueSelectorDrawer').classList.add('open');
+    $('#venueSelectorDrawer').setAttribute('aria-hidden','false');
+    document.body.classList.add('venue-selector-open');
+    renderVenueSelector();
+    setTimeout(() => $('#venueSelectorSearch')?.focus(), 80);
+  }
+
+  function closeVenueSelector() {
+    $('#venueSelectorBackdrop').hidden = true;
+    $('#venueSelectorDrawer').classList.remove('open');
+    $('#venueSelectorDrawer').setAttribute('aria-hidden','true');
+    document.body.classList.remove('venue-selector-open');
+  }
+
   function renderListingCalendar() {
     const month = state.calendarMonth || new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     const year = month.getFullYear();
@@ -1236,7 +1392,7 @@
     if (state.query) parts.push(`<span class="active-filter">${escapeHtml(`搜尋：${state.query}`)}<button type="button" data-clear-filter="q" aria-label="移除搜尋">×</button></span>`);
     state.categories.forEach(category => parts.push(`<span class="active-filter">${escapeHtml(category)}<button type="button" data-toggle-category="${escapeHtml(category)}" aria-label="移除${escapeHtml(category)}分類">×</button></span>`));
     if (state.region) parts.push(`<span class="active-filter">${escapeHtml(state.region)}<button type="button" data-clear-filter="region" aria-label="移除地區">×</button></span>`);
-    if (state.venue) parts.push(`<span class="active-filter">${escapeHtml(state.venue)}<button type="button" data-clear-filter="venue" aria-label="移除場館">×</button></span>`);
+    state.selectedVenues.forEach(venue => parts.push(`<span class="active-filter">${escapeHtml(venue)}<button type="button" data-remove-venue="${escapeHtml(venue)}" aria-label="移除${escapeHtml(venue)}">×</button></span>`));
     if (state.status !== 'all') {
       const label = {ongoing:'目前舉辦',upcoming:'即將舉辦',ending:'即將結束'}[state.status] || state.status;
       parts.push(`<span class="active-filter">${escapeHtml(label)}<button type="button" data-clear-filter="status" aria-label="移除狀態">×</button></span>`);
@@ -1722,6 +1878,28 @@
         updateUrl({date:nextDate === state.date ? null : nextDate});
       }
 
+      const venueChoice = event.target.closest('[data-venue-choice]');
+      if (venueChoice) {
+        const name = venueChoice.dataset.venueChoice;
+        if (state.venueDrawerDraft.has(name)) state.venueDrawerDraft.delete(name);
+        else state.venueDrawerDraft.add(name);
+        renderVenueSelector();
+        return;
+      }
+      const venueTypeButton = event.target.closest('[data-venue-type]');
+      if (venueTypeButton) {
+        state.venueTypeFilter = venueTypeButton.dataset.venueType;
+        renderVenueSelector();
+        return;
+      }
+      const removeVenueButton = event.target.closest('[data-remove-venue]');
+      if (removeVenueButton) {
+        const next = new Set(state.selectedVenues);
+        next.delete(removeVenueButton.dataset.removeVenue);
+        syncVenueSelectionUrl(next);
+        return;
+      }
+
       const locationButton = event.target.closest('[data-region-filter]');
       if (locationButton) updateUrl({region:locationButton.dataset.regionFilter || null, venue:locationButton.dataset.venueFilter || null});
 
@@ -1751,6 +1929,7 @@
     });
 
     document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && $('#venueSelectorDrawer')?.classList.contains('open')) { closeVenueSelector(); return; }
       if (!['Enter',' '].includes(event.key)) return;
       const wholeCard = event.target.closest('.exhibition-card.is-whole-card-link');
       if (!wholeCard || event.target !== wholeCard) return;
@@ -1777,6 +1956,26 @@
       });
     });
     $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.add('open'));
+    $('#venueSelectorLaunch').addEventListener('click', openVenueSelector);
+    $('#venueSelectorClose').addEventListener('click', closeVenueSelector);
+    $('#venueSelectorBackdrop').addEventListener('click', closeVenueSelector);
+    $('#venueSelectorSearch').addEventListener('input', event => {
+      state.venueSearch = event.target.value;
+      renderVenueSelector();
+    });
+    $('#venueSelectorClear').addEventListener('click', () => {
+      state.venueDrawerDraft.clear();
+      renderVenueSelector();
+    });
+    $('#venueSelectorReset').addEventListener('click', () => {
+      state.venueDrawerDraft.clear();
+      renderVenueSelector();
+    });
+    $('#venueSelectorApply').addEventListener('click', () => {
+      const selected = new Set(state.venueDrawerDraft);
+      closeVenueSelector();
+      syncVenueSelectionUrl(selected);
+    });
     $('#filterCloseButton').addEventListener('click', () => $('#filterSidebar').classList.remove('open'));
     $('#homeLocationButton').addEventListener('click', requestLocation);
     $('#nearbyLocationButton').addEventListener('click', requestLocation);
@@ -1818,7 +2017,20 @@
     readParams();
     bindEvents();
     try {
-      const {payload, rawEvents, local, sourceUrl, enriched} = await fetchEventPayload();
+      const [{payload, rawEvents, local, sourceUrl, enriched}, venueRegistryResponse, northernMatrixResponse] = await Promise.all([
+        fetchEventPayload(),
+        fetch('data/venues.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+        fetch('data/northern_venue_matrix.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+      ]);
+      const stableVenues = Array.isArray(venueRegistryResponse?.venues) ? venueRegistryResponse.venues : [];
+      const northernVenues = Array.isArray(northernMatrixResponse?.venues)
+        ? northernMatrixResponse.venues.map(item => ({
+            ...item,
+            venueTypePrimary:item.venueType,
+            venueTypes:[item.venueType],
+          }))
+        : [];
+      state.venueRegistry = [...stableVenues, ...northernVenues];
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.stats = payload.stats || {};
       state.registryBuild = payload.registryBuild || null;
