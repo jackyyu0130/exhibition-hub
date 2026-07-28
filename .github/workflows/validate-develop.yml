@@ -340,47 +340,47 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-dry-run-collector-framework:
-  name: Dry run collector framework
-  if: >-
-    github.event_name == 'push' &&
-    contains(
-      github.event.head_commit.message,
-      '[dry-run-collectors]'
-    )
-  runs-on: ubuntu-latest
-  timeout-minutes: 10
+  dry-run-collector-framework:
+    name: Dry run collector framework
+    if: >-
+      github.event_name == 'push' &&
+      contains(
+        github.event.head_commit.message,
+        '[dry-run-collectors]'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-  steps:
-    - name: Checkout current branch
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
-        cache: pip
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Audit collector framework
-      run: |
-        set -o pipefail
+      - name: Audit collector framework
+        run: |
+          set -o pipefail
 
-        python scripts/run_collectors.py \
-          --audit-only \
-          --source-registry "data/source_registry.json" \
-          --report-output "collector-framework-audit.json" \
-          | tee collector-framework-summary.json
+          python scripts/run_collectors.py \
+            --audit-only \
+            --source-registry "data/source_registry.json" \
+            --report-output "collector-framework-audit.json" \
+            | tee collector-framework-summary.json
 
-    - name: Upload collector framework audit
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: collector-framework-audit-${{ github.run_number }}
-        path: |
-          collector-framework-audit.json
-          collector-framework-summary.json
-        if-no-files-found: warn
-        retention-days: 7
+      - name: Upload collector framework audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collector-framework-audit-${{ github.run_number }}
+          path: |
+            collector-framework-audit.json
+            collector-framework-summary.json
+          if-no-files-found: warn
+          retention-days: 7
