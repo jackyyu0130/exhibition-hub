@@ -11,6 +11,8 @@ REQUIRED_FILES = (
     ".nojekyll",
     "data/exhibitions.enriched.json",
     "data/exhibitions.json",
+    "data/venues.json",
+    "data/northern_venue_matrix.json",
 )
 OPTIONAL_FILES = ("CNAME",)
 REQUIRED_DIRECTORIES = ("assets",)

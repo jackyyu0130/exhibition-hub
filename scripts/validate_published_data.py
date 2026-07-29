@@ -8,6 +8,10 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
+from exhibition_hub.image_quality import (
+    is_facebook_url,
+    suspicious_image_reason,
+)
 
 LEGACY_CATEGORIES = {
     "歷史文化",
@@ -193,6 +197,35 @@ def evaluate(
         and event.get("longitude") is not None
         for event in events
     )
+    suspicious_images = []
+    facebook_references = []
+    for event in events:
+        event_id = str(event.get("id") or "")
+        for url in [
+            *(event.get("images") or []),
+            event.get("image"),
+        ]:
+            if not str(url or "").strip():
+                continue
+            reason = suspicious_image_reason(url)
+            if reason:
+                suspicious_images.append({
+                    "eventId": event_id,
+                    "url": str(url),
+                    "reason": reason,
+                })
+        for url in [
+            event.get("sourceUrl"),
+            event.get("officialUrl"),
+            event.get("ticketUrl"),
+            *(event.get("sourceUrls") or []),
+            *(event.get("externalUrls") or []),
+        ]:
+            if is_facebook_url(url):
+                facebook_references.append({
+                    "eventId": event_id,
+                    "url": str(url),
+                })
 
     source_reference_counts: Counter[
         tuple[str, str]
@@ -367,6 +400,12 @@ def evaluate(
         "sourceReferencesUnique": (
             not duplicate_source_references
         ),
+        "suspiciousImagesAbsent": (
+            not suspicious_images
+        ),
+        "facebookReferencesAbsent": (
+            not facebook_references
+        ),
     }
 
     if require_published:
@@ -457,6 +496,8 @@ def evaluate(
             "duplicateSourceReferences": (
                 duplicate_source_references
             ),
+            "suspiciousImages": suspicious_images,
+            "facebookReferences": facebook_references,
         },
     }
 

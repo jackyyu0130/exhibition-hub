@@ -3,7 +3,9 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-from .normalization import parse_date, unique_strings
+from ..image_quality import clean_image_urls
+
+from .normalization import parse_date, unique_strings, unique_urls
 
 
 _SOURCE_PREFERRED_FIELDS = (
@@ -92,9 +94,10 @@ def merge_events(
 
     source_images = source_event.get("images") or []
     existing_images = result.get("images") or []
-    images = unique_strings(
+    images, _rejected_images = clean_image_urls(unique_urls(
         [*source_images, *existing_images]
-    )[:10]
+    ))
+    images = images[:10]
     if images != existing_images:
         result["images"] = images
         result["image"] = (
@@ -130,7 +133,8 @@ def merge_events(
         list_fields.append("subVenueNames")
 
     for field_name in list_fields:
-        combined = unique_strings(
+        deduplicator = unique_urls if field_name == "sourceUrls" else unique_strings
+        combined = deduplicator(
             [
                 *(source_event.get(field_name) or []),
                 *(result.get(field_name) or []),

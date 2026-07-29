@@ -1,0 +1,37 @@
+{
+  "version": "6.4.0",
+  "name": "行動探索、官方圖片與分類完整修正版",
+  "frontendChanged": true,
+  "officialDataChanged": true,
+  "productionPipelineChanged": true,
+  "keyFixes": [
+    "修復官方圖片網址全形字元被 NFKC 改寫的根因",
+    "校正動漫最高祭、星際大戰華山限定快閃店與萌町園遊會官方主視覺",
+    "圖卡改顯示實際展覽分類並移除圖片左下角活動型態標籤",
+    "分離演唱會、音樂與音樂劇的分類規則",
+    "點擊品牌強制重新載入首頁與最新資料",
+    "新增手機版右側漢堡搜尋與篩選選單",
+    "手機首頁及探索頁改用精簡的篩選入口"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "data/curated-overrides.json",
+    "data/exhibitions.enriched.json",
+    "scripts/scraper.py",
+    "scripts/exhibition_hub/merging/normalization.py",
+    "scripts/exhibition_hub/merging/policy.py",
+    "scripts/exhibition_hub/merging/source_adapter.py",
+    "tests/test_v64_mobile_media_taxonomy.py",
+    "tests/test_url_integrity.py"
+  ],
+  "validation": {
+    "javascriptSyntax": "passed",
+    "pythonSyntax": "passed",
+    "jsonValidation": "passed",
+    "automatedTests": 317,
+    "automatedTestResult": "passed",
+    "pagesBuild": "passed"
+  }
+}

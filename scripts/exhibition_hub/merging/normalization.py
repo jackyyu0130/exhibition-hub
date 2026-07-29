@@ -7,7 +7,7 @@ from typing import Any, Iterable
 from urllib.parse import urlsplit, urlunsplit
 
 
-URL_NORMALIZATION_VERSION = "6.3.1"
+URL_NORMALIZATION_VERSION = "6.4.0"
 
 _BRACKET_PREFIX_RE = re.compile(
     r"^(?:【[^】]{1,40}】|\[[^\]]{1,40}\])\s*"
@@ -174,6 +174,23 @@ def unique_strings(values: Iterable[Any]) -> list[str]:
     seen: set[str] = set()
     for value in values:
         cleaned = clean_text(value)
+        if not cleaned or cleaned in seen:
+            continue
+        seen.add(cleaned)
+        result.append(cleaned)
+    return result
+
+
+def unique_urls(values: Iterable[Any]) -> list[str]:
+    """Deduplicate URL identifiers without applying prose-oriented NFKC."""
+    result: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        cleaned = re.sub(
+            r"[\x00-\x1f\x7f]+",
+            "",
+            str(value or "").strip(),
+        )
         if not cleaned or cleaned in seen:
             continue
         seen.add(cleaned)

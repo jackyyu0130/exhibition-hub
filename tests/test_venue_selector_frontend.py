@@ -33,5 +33,15 @@ class VenueSelectorFrontendTests(unittest.TestCase):
         self.assertIn("#fbf5ec", self.css)
         self.assertIn("@media (max-width: 760px)", self.css)
 
+    def test_selector_uses_cached_catalog_and_debounced_search(self):
+        self.assertIn("venueCatalogCache", self.js)
+        self.assertIn("rebuildVenueCatalogCache()", self.js)
+        self.assertIn("setTimeout(renderVenueSelector, 110)", self.js)
+        self.assertNotIn("function venueEventCount(name)", self.js)
+
+    def test_launch_uses_quiet_filter_icon(self):
+        self.assertIn('class="venue-selector-launch-icon"', self.html)
+        self.assertNotIn('<span aria-hidden="true">↗</span>', self.html)
+
 if __name__ == "__main__":
     unittest.main()

@@ -83,6 +83,15 @@ class ScraperPolicyTests(unittest.TestCase):
         self.assertTrue(all(not scraper.probable_content_image(url) for url in bad))
         self.assertTrue(scraper.probable_content_image("https://example.com/poster/exhibition-main.webp"))
 
+    def test_generic_interface_images_are_rejected(self):
+        bad = [
+            "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.6eff2c9.png",
+            "https://activity.ncku.edu.tw/images/coordinate.png",
+            "https://cloud.culture.tw/assets/images/BANNER_1200X630.jpg",
+            "https://s3.resource.opentix.life/default/opentixPageDefault.png",
+        ]
+        self.assertTrue(all(not scraper.probable_content_image(url) for url in bad))
+
     def test_final_publish_sanitizer_cannot_reintroduce_interface_images(self):
         interface_images = [
             "https://ws.th.gov.tw/002/TH/6/sites/pagebackimage/index_toplogo.png",

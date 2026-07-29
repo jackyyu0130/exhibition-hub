@@ -25,8 +25,50 @@
         "sourceUrl": "https://www.huashan1914.com/w/huashan1914/exhibition_26060620531407778",
         "sourceUrlVerified": true,
         "sourceUrlMatchScore": 1.0,
+        "category": "動漫",
+        "categories": [
+          "動漫",
+          "快閃店"
+        ],
         "images": [
           "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/KV_華山官網活動｜1920x1080.jpg"
+        ]
+      }
+    },
+    {
+      "title": "星際大戰華山限定快閃店_Mission Cantina",
+      "startDate": "2026-06-25",
+      "endDate": "2026-08-06",
+      "set": {
+        "sourceUrl": "https://www.huashan1914.com/w/huashan1914/exhibition_26061714315963638",
+        "sourceUrlVerified": true,
+        "sourceUrlMatchScore": 1.0,
+        "category": "動漫",
+        "categories": [
+          "動漫",
+          "快閃店"
+        ],
+        "images": [
+          "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/華山官網活動：JPG格式｜1920(W)-x-1080(H) (1).jpg"
+        ]
+      }
+    },
+    {
+      "title": "萌町園遊會 Kawaii Spot (小突兔x溫柔的大白狼沃爾夫)",
+      "startDate": "2026-07-11",
+      "endDate": "2026-08-09",
+      "set": {
+        "sourceUrl": "https://www.huashan1914.com/w/huashan1914/exhibition_26070312025827025",
+        "sourceUrlVerified": true,
+        "sourceUrlMatchScore": 1.0,
+        "category": "動漫",
+        "categories": [
+          "動漫",
+          "快閃店"
+        ],
+        "images": [
+          "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/日本宣傳素材-3-03.png",
+          "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/日本宣傳素材-3-09.png"
         ]
       }
     }
