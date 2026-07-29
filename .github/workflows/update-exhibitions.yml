@@ -80,6 +80,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Sanitize checked-in images before tests
+        run: |
+          python scripts/audit_event_images.py \
+            --fix \
+            data/exhibitions.json \
+            data/exhibitions.enriched.json \
+            --report /tmp/pretest-image-quality-audit.json
+
       - name: Run project tests before production data update
         run: python -m unittest discover -s tests -v
 
@@ -200,6 +208,16 @@ jobs:
           mkdir -p data/update-reports
           cp production-update-audit/production-publish-report.json data/update-reports/latest-huashan-update.json
 
+      - name: Sanitize published image and social references
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/audit_event_images.py \
+            --fix \
+            data/exhibitions.json \
+            data/exhibitions.enriched.json \
+            --report data/update-reports/image-quality-audit.json
+
       - name: Validate dynamic published production data
         shell: bash
         run: |
@@ -233,6 +251,7 @@ jobs:
             data/exhibitions.enriched.json
             data/geocode-cache.json
             data/update-reports/latest-huashan-update.json
+            data/update-reports/image-quality-audit.json
           )
 
           if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
@@ -244,6 +263,7 @@ jobs:
           cp data/exhibitions.json /tmp/exhibition-hub-production/exhibitions.json
           cp data/exhibitions.enriched.json /tmp/exhibition-hub-production/exhibitions.enriched.json
           cp data/update-reports/latest-huashan-update.json /tmp/exhibition-hub-production/latest-huashan-update.json
+          cp data/update-reports/image-quality-audit.json /tmp/exhibition-hub-production/image-quality-audit.json
           if [ -f data/geocode-cache.json ]; then
             cp data/geocode-cache.json /tmp/exhibition-hub-production/geocode-cache.json
           fi
@@ -259,6 +279,7 @@ jobs:
             cp /tmp/exhibition-hub-production/exhibitions.json data/exhibitions.json
             cp /tmp/exhibition-hub-production/exhibitions.enriched.json data/exhibitions.enriched.json
             cp /tmp/exhibition-hub-production/latest-huashan-update.json data/update-reports/latest-huashan-update.json
+            cp /tmp/exhibition-hub-production/image-quality-audit.json data/update-reports/image-quality-audit.json
             if [ -f /tmp/exhibition-hub-production/geocode-cache.json ]; then
               cp /tmp/exhibition-hub-production/geocode-cache.json data/geocode-cache.json
             fi

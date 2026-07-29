@@ -1,0 +1,22 @@
+{
+  "version": "6.3",
+  "name": "官方圖片、場館分類與選擇器效能修正版",
+  "frontendChanged": true,
+  "officialDataChanged": true,
+  "productionPipelineChanged": true,
+  "keyFixes": [
+    "Preserve full-width punctuation in official media URL paths",
+    "Correct Anime Max Festival official Huashan image",
+    "Reject generic interface, default, map, and social media images",
+    "Ship venue registries in the GitHub Pages artifact",
+    "Cache the venue catalogue and debounce venue search",
+    "Replace the diagonal venue selector arrow with a filter icon"
+  ],
+  "audit": {
+    "publishedEventCount": 2460,
+    "rejectedImageCandidates": 1492,
+    "affectedEvents": 1263,
+    "facebookReferenceEventsCleaned": 11,
+    "rejectedVenueImages": 11
+  }
+}

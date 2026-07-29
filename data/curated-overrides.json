@@ -16,6 +16,19 @@
         "region": "台北市",
         "unit": "阿波羅畫廊"
       }
+    },
+    {
+      "title": "動漫最高祭 Anime Max Festival",
+      "startDate": "2026-06-18",
+      "endDate": "2026-09-13",
+      "set": {
+        "sourceUrl": "https://www.huashan1914.com/w/huashan1914/exhibition_26060620531407778",
+        "sourceUrlVerified": true,
+        "sourceUrlMatchScore": 1.0,
+        "images": [
+          "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/KV_華山官網活動｜1920x1080.jpg"
+        ]
+      }
     }
   ]
 }

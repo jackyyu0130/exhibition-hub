@@ -1,3 +1,4 @@
+/* Exhibition Hub V6.3.1 — venue selector presentation hotfix. */
 :root {
   --bg: #f7f5f1;
   --surface: #ffffff;
@@ -4363,15 +4364,27 @@ body {
   letter-spacing: .14em;
 }
 .venue-selector-launch strong { display: block; font-family: "Noto Serif TC",serif; font-size: 13px; }
-.venue-selector-launch > span:last-child {
+.venue-selector-launch-icon {
   width: 31px;
   height: 31px;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
   border: 1px solid rgba(104,81,57,.2);
-  border-radius: 50%;
+  border-radius: 10px;
   background: rgba(255,255,255,.56);
+}
+.venue-selector-launch-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: #8b684c;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.venue-selector-launch-icon circle {
+  fill: #f8efe3;
 }
 .venue-selected-preview { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
 .venue-selected-preview small { width: 100%; color: var(--muted); font-size: 9px; }
@@ -4409,8 +4422,12 @@ body {
   box-shadow: -26px 0 70px rgba(44,32,22,.18);
   transform: translateX(105%);
   transition: transform .38s cubic-bezier(.2,.72,.2,1);
+  pointer-events: none;
 }
-.venue-selector-drawer.open { transform: translateX(0); }
+.venue-selector-drawer.open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
 body.venue-selector-open { overflow: hidden; }
 .venue-selector-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
 .venue-selector-head h2 { margin: 3px 0 8px; font-family: "Noto Serif TC",serif; font-size: clamp(25px,3vw,35px); }
@@ -4486,6 +4503,8 @@ body.venue-selector-open { overflow: hidden; }
   border: 1px solid rgba(107,82,57,.14);
   border-radius: 14px;
   background: rgba(255,250,243,.69);
+  content-visibility: auto;
+  contain-intrinsic-size: 52px 420px;
 }
 .venue-selector-region summary {
   min-height: 50px;

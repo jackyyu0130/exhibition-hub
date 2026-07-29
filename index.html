@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=6.2">
+  <link rel="stylesheet" href="assets/styles.css?v=6.3.1">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -339,7 +339,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <p class="filter-sidebar-intro">先選縣市快速查看，或開啟完整場地面板搜尋與多選。</p>
             <button class="venue-selector-launch" id="venueSelectorLaunch" type="button">
               <span><small>VENUE SELECTOR</small><strong>搜尋或選擇展演場地</strong></span>
-              <span aria-hidden="true">↗</span>
+              <span class="venue-selector-launch-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M4 7h10M18 7h2M4 17h2M10 17h10M4 12h4M12 12h8"></path>
+                  <circle cx="16" cy="7" r="2"></circle>
+                  <circle cx="8" cy="17" r="2"></circle>
+                  <circle cx="10" cy="12" r="2"></circle>
+                </svg>
+              </span>
             </button>
             <div class="venue-selected-preview" id="venueSelectedPreview" hidden></div>
             <div class="location-accordion" id="listingLocationAccordion"></div>
@@ -490,6 +497,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=6.2"></script>
+  <script src="assets/app.js?v=6.3.1"></script>
 </body>
 </html>

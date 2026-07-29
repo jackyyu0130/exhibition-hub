@@ -37,6 +37,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Sanitize checked-in images before tests
+        run: |
+          python scripts/audit_event_images.py \
+            --fix \
+            data/exhibitions.json \
+            data/exhibitions.enriched.json \
+            --report /tmp/pretest-image-quality-audit.json
+
       - name: Check Python syntax
         run: python -m compileall -q scripts tests
 

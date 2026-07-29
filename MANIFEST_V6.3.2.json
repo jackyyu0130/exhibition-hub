@@ -1,0 +1,14 @@
+{
+  "version": "6.3.2",
+  "name": "GitHub Actions 發布資料預先清洗修正版",
+  "baseVersion": "6.3.1",
+  "problem": "The pull request merge ref can contain newer main-branch data with legacy interface images before the V6.3 cleaning workflow has run.",
+  "fix": "Sanitize both published data files in the ephemeral Actions workspace before running the test suite.",
+  "files": [
+    ".github/workflows/validate-develop.yml",
+    ".github/workflows/update-exhibitions.yml",
+    "tests/test_production_update_workflow.py",
+    "tests/test_validate_develop_workflow.py",
+    "VERSION.txt"
+  ]
+}

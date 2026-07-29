@@ -1,3 +1,4 @@
+/* Exhibition Hub V6.3.1 — venue performance and image-source integrity hotfix. */
 (() => {
   'use strict';
 
@@ -86,6 +87,9 @@
     venueDrawerDraft: new Set(),
     venueTypeFilter: 'all',
     venueSearch: '',
+    venueRegistryIndex: new Map(),
+    venueCatalogCache: [],
+    venueSearchTimer: null,
     params: new URLSearchParams(location.search),
     view: 'home',
     status: 'all',
@@ -199,10 +203,12 @@
       const parsed = new URL(url);
       const host = parsed.hostname.toLowerCase();
       const path = decodeURIComponent(parsed.pathname).toLowerCase();
+      const asset = `${host}${path}${decodeURIComponent(parsed.search).toLowerCase()}`;
       if (/(?:^|\.)reurl\.cc$/i.test(host)) return false;
       if (/\.(?:gif|svg|ico)$/.test(path)) return false;
       const filename = path.split('/').pop() || '';
       if (/(?:^|[-_])default(?:[-_.]|$)|programinfodefault/i.test(filename)) return false;
+      if (/(?:\/_nuxt\/img\/(?:flags|linkto)\.|\/images?\/coordinate\.|maps\.googleapis\.com\/maps\/api\/staticmap|\{\{:defaultimg\}\}|opentixpagedefault|\/default\/(?:orgcover|orgbanner)\.|cloud\.culture\.tw\/assets\/images\/banner_1200x630\.|sharenav_(?:fb|twitter)|index_toplogo|top_icon_2|(?:^|[/_.-])sharelogo(?:[/_.-]|$)|filedisplay=(?:logo|icon)|\/images\/banner\/p-but\.png|\/banner_live\.png)/i.test(asset)) return false;
       return !/(?:^|[/_.-])(?:ajax[-_]?loader|loader|loading|spinner|progress|preload|placeholder|blank|spacer|pixel|sprite|favicon|avatar|qr[-_]?code|meta[-_]?image|post\.image|section[-_](?:api|extention|linebot))(?:[/_.-]|$)/i.test(path);
     } catch { return false; }
   }
@@ -1227,55 +1233,71 @@
     film_media:'影視場館',
     heritage_cultural:'歷史文化場館',
     outdoor_festival:'戶外場地',
-    commercial_popup:'商業快閃'
+    commercial_popup:'商業快閃',
+    other:'其他展演場地'
   };
 
   function venueRegistryRecord(name) {
-    const normalized = cleanPlaceText(name);
-    return state.venueRegistry.find(item => {
-      const candidates = [item.name, ...(item.aliases || [])].map(cleanPlaceText);
-      return candidates.includes(normalized);
-    }) || null;
+    return state.venueRegistryIndex.get(cleanPlaceText(name)) || null;
   }
 
-  function venueEventCount(name) {
-    const normalized = cleanPlaceText(name);
-    return state.events.filter(event => {
-      const names = eventVenueNames(event).map(cleanPlaceText);
-      return names.includes(normalized) || cleanPlaceText(event.originalVenueGroup) === normalized;
-    }).length;
+  function inferredVenueType(name, registry = null) {
+    const explicit = registry?.venueTypePrimary || registry?.venueTypes?.[0];
+    if (explicit && VENUE_TYPE_LABELS[explicit]) return explicit;
+    const text = cleanPlaceText(name);
+    const rules = [
+      ['cultural_park', /文創園區|文化創意產業園區|華山|松菸|松山文創|駁二/],
+      ['convention_exhibition', /展覽館|會展中心|世貿|展貿中心/],
+      ['museum_gallery', /美術館|博物館|藝廊|畫廊|藝術空間|文物館|紀念館/],
+      ['performing_arts', /劇院|劇場|演藝廳|音樂廳|歌劇院|文化中心/],
+      ['arena_stadium', /巨蛋|體育館|體育場|運動中心/],
+      ['live_house', /livehouse|live house|音樂空間|展演館/],
+      ['film_media', /影城|電影院|電影館|影視館/],
+      ['heritage_cultural', /古蹟|故居|歷史建築|文化資產/],
+      ['outdoor_festival', /公園|廣場|戶外|河濱/],
+      ['commercial_popup', /百貨|商場|購物中心|快閃/],
+    ];
+    return rules.find(([,pattern]) => pattern.test(text))?.[0] || 'other';
+  }
+
+  function rebuildVenueCatalogCache() {
+    const registryIndex = new Map();
+    state.venueRegistry.forEach(registry => {
+      [registry.name, ...(registry.aliases || [])].forEach(name => {
+        const normalized = cleanPlaceText(name);
+        if (normalized && !registryIndex.has(normalized)) registryIndex.set(normalized, registry);
+      });
+    });
+    state.venueRegistryIndex = registryIndex;
+    const records = new Map();
+    state.events.forEach(event => {
+      const seen = new Set();
+      [...eventVenueNames(event), event.originalVenueGroup].map(displayableVenueName).filter(Boolean).forEach(eventName => {
+        const registry = venueRegistryRecord(eventName);
+        const name = registry?.name || eventName;
+        const key = cleanPlaceText(name);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        const existing = records.get(key) || {
+          id:registry?.id || name,
+          name,
+          aliases:registry?.aliases || [],
+          region:normalizeRegion(registry?.region || event.region || '其他地區'),
+          district:registry?.district || '',
+          venueType:inferredVenueType(name, registry),
+          count:0,
+        };
+        existing.count += 1;
+        records.set(key, existing);
+      });
+    });
+    state.venueCatalogCache = [...records.values()]
+      .sort((a,b) => b.count - a.count || a.name.localeCompare(b.name,'zh-Hant'));
+    return state.venueCatalogCache;
   }
 
   function venueCatalog() {
-    const eventNames = [...new Set(state.events.flatMap(event => eventVenueNames(event).map(displayableVenueName)).filter(Boolean))];
-    const records = new Map();
-    eventNames.forEach(name => {
-      const registry = venueRegistryRecord(name);
-      records.set(name, {
-        id:registry?.id || name,
-        name,
-        aliases:registry?.aliases || [],
-        region:normalizeRegion(registry?.region || state.events.find(event => eventVenueNames(event).map(displayableVenueName).includes(name))?.region || '其他地區'),
-        district:registry?.district || '',
-        venueType:registry?.venueTypePrimary || registry?.venueTypes?.[0] || 'other',
-        count:venueEventCount(name),
-      });
-    });
-    state.venueRegistry.forEach(registry => {
-      if (records.has(registry.name)) return;
-      const count = venueEventCount(registry.name);
-      if (!count) return;
-      records.set(registry.name, {
-        id:registry.id,
-        name:registry.name,
-        aliases:registry.aliases || [],
-        region:normalizeRegion(registry.region),
-        district:registry.district || '',
-        venueType:registry.venueTypePrimary || registry.venueTypes?.[0] || 'other',
-        count,
-      });
-    });
-    return [...records.values()].sort((a,b) => b.count - a.count || a.name.localeCompare(b.name,'zh-Hant'));
+    return state.venueCatalogCache.length ? state.venueCatalogCache : rebuildVenueCatalogCache();
   }
 
   function syncVenueSelectionUrl(selected) {
@@ -1290,6 +1312,24 @@
     preview.innerHTML = state.selectedVenues.size
       ? `<small>已選 ${state.selectedVenues.size} 個場地</small>${[...state.selectedVenues].slice(0,3).map(name => `<span>${escapeHtml(name)}</span>`).join('')}${state.selectedVenues.size > 3 ? `<span>＋${state.selectedVenues.size-3}</span>` : ''}`
       : '';
+  }
+
+  function renderVenueSelectorSelection() {
+    $$('.venue-selector-option[data-venue-choice]', $('#venueSelectorList')).forEach(option => {
+      const checked = state.venueDrawerDraft.has(option.dataset.venueChoice);
+      option.classList.toggle('active', checked);
+      option.setAttribute('aria-pressed', String(checked));
+    });
+    const selected = $('#venueSelectorSelected');
+    const chips = $('#venueSelectorChips');
+    selected.hidden = !state.venueDrawerDraft.size;
+    chips.innerHTML = [...state.venueDrawerDraft].map(name =>
+      `<button type="button" data-venue-choice="${escapeHtml(name)}">${escapeHtml(name)} <span>×</span></button>`
+    ).join('');
+    $('#venueSelectorApply').textContent = state.venueDrawerDraft.size
+      ? `查看已選 ${state.venueDrawerDraft.size} 個場地`
+      : '查看全部展覽';
+    renderVenueSelectedPreview();
   }
 
   function renderVenueSelector() {
@@ -1326,16 +1366,7 @@
       </details>`;
     }).join('') || `<div class="venue-selector-empty">沒有找到符合條件的場地。</div>`;
 
-    const selected = $('#venueSelectorSelected');
-    const chips = $('#venueSelectorChips');
-    selected.hidden = !state.venueDrawerDraft.size;
-    chips.innerHTML = [...state.venueDrawerDraft].map(name =>
-      `<button type="button" data-venue-choice="${escapeHtml(name)}">${escapeHtml(name)} <span>×</span></button>`
-    ).join('');
-    $('#venueSelectorApply').textContent = state.venueDrawerDraft.size
-      ? `查看已選 ${state.venueDrawerDraft.size} 個場地`
-      : '查看全部展覽';
-    renderVenueSelectedPreview();
+    renderVenueSelectorSelection();
   }
 
   function openVenueSelector() {
@@ -1883,7 +1914,7 @@
         const name = venueChoice.dataset.venueChoice;
         if (state.venueDrawerDraft.has(name)) state.venueDrawerDraft.delete(name);
         else state.venueDrawerDraft.add(name);
-        renderVenueSelector();
+        renderVenueSelectorSelection();
         return;
       }
       const venueTypeButton = event.target.closest('[data-venue-type]');
@@ -1961,15 +1992,16 @@
     $('#venueSelectorBackdrop').addEventListener('click', closeVenueSelector);
     $('#venueSelectorSearch').addEventListener('input', event => {
       state.venueSearch = event.target.value;
-      renderVenueSelector();
+      clearTimeout(state.venueSearchTimer);
+      state.venueSearchTimer = setTimeout(renderVenueSelector, 110);
     });
     $('#venueSelectorClear').addEventListener('click', () => {
       state.venueDrawerDraft.clear();
-      renderVenueSelector();
+      renderVenueSelectorSelection();
     });
     $('#venueSelectorReset').addEventListener('click', () => {
       state.venueDrawerDraft.clear();
-      renderVenueSelector();
+      renderVenueSelectorSelection();
     });
     $('#venueSelectorApply').addEventListener('click', () => {
       const selected = new Set(state.venueDrawerDraft);
@@ -2039,6 +2071,7 @@
       state.venueImages = Object.fromEntries(Object.entries(payload.venueImages || {}).map(([venue, image]) => [venue, safeUrl(image)]).filter(([, image]) => isUsableImageUrl(image)));
       state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
       if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
+      rebuildVenueCatalogCache();
       renderCurrentView();
     } catch (error) {
       console.error(error);

@@ -11,13 +11,27 @@ class ProductionUpdateWorkflowTests(unittest.TestCase):
         cls.text = WORKFLOW.read_text(encoding="utf-8")
 
     def test_full_tests_run_before_data_mutation(self):
+        sanitize_index = self.text.index(
+            "Sanitize checked-in images before tests"
+        )
         tests_index = self.text.index(
             "Run project tests before production data update"
         )
         scraper_index = self.text.index(
             "Fetch and normalize Culture Ministry data"
         )
+        self.assertLess(sanitize_index, tests_index)
         self.assertLess(tests_index, scraper_index)
+
+    def test_checked_in_images_are_sanitized_before_tests(self):
+        self.assertIn(
+            "python scripts/audit_event_images.py",
+            self.text,
+        )
+        self.assertIn(
+            "/tmp/pretest-image-quality-audit.json",
+            self.text,
+        )
 
     def test_post_update_validation_is_count_independent(self):
         self.assertIn(
