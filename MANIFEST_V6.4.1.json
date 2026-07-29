@@ -1,0 +1,34 @@
+{
+  "version": "6.4.1",
+  "name": "手機抽屜穩定性、場館操作列與網站圖示修正版",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "recommendedPackage": "Exhibition-Hub-V6.4.1-mobile-drawer-hotfix.zip",
+  "commitAndPullRequestTitle": "Apply Exhibition Hub V6.4.1 mobile drawer stability fixes",
+  "keyFixes": [
+    "將手機抽屜移出 backdrop-filter 黏性導覽列",
+    "鎖定並還原背景捲動位置",
+    "阻止抽屜橫向溢出、橫向手勢與捲動鏈",
+    "分類與探索頁共用固定 CATEGORY_ORDER",
+    "主要導覽移至手機搜尋列下方",
+    "分類、日曆與地區場館使用不同暖奶茶分區色",
+    "地區第二層抽屜每次從頂端開啟",
+    "場館底部操作列納入 flex 版面，不再漂浮",
+    "使用票券展字 Logo 作為 48px favicon 與 Apple touch icon"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "assets/favicon-48.png",
+    "assets/apple-touch-icon.png",
+    "tests/test_v641_mobile_drawers.py"
+  ],
+  "validation": {
+    "javascriptSyntax": "passed",
+    "faviconDimensions": "passed",
+    "automatedTests": 325,
+    "automatedTestResult": "passed"
+  }
+}

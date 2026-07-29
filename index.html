@@ -10,13 +10,15 @@
   <meta id="metaOgDescription" property="og:description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
   <meta id="metaOgImage" property="og:image" content="">
   <link rel="canonical" href="./">
+  <link rel="icon" href="assets/favicon-48.png?v=6.4.1" sizes="48x48" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=6.4.1" sizes="180x180">
   <title>台灣展覽誌｜探索全台藝文展覽</title>
   <script id="structuredData" type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"台灣展覽誌"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=6.4.0">
+  <link rel="stylesheet" href="assets/styles.css?v=6.4.1">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -55,9 +57,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span></span><span></span><span></span>
       </button>
     </div>
+  </header>
 
-    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" hidden></div>
-    <aside class="mobile-menu" id="mobileMenu" hidden aria-hidden="true" aria-labelledby="mobileMenuTitle">
+  <div class="mobile-menu-backdrop" id="mobileMenuBackdrop" hidden></div>
+  <aside class="mobile-menu" id="mobileMenu" hidden aria-hidden="true" aria-labelledby="mobileMenuTitle">
       <div class="mobile-menu-head">
         <div>
           <p class="eyebrow">EXPLORE MENU</p>
@@ -71,6 +74,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <input id="mobileSearchInput" type="search" placeholder="搜尋展覽、場館、主辦方、歌手或演員">
         <button type="submit">搜尋</button>
       </form>
+
+      <nav class="mobile-menu-nav" aria-label="行動版主要導覽">
+        <a href="?view=all">探索展覽</a>
+        <a href="?view=nearby">附近展覽</a>
+        <a href="?view=favorites">我的收藏</a>
+      </nav>
 
       <section class="mobile-filter-section" id="mobileCategorySection">
         <div class="mobile-filter-section-head">
@@ -106,12 +115,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </section>
 
-      <nav class="mobile-menu-nav" aria-label="行動版主要導覽">
-        <a href="?view=all">探索展覽</a>
-        <a href="?view=nearby">附近展覽</a>
-        <a href="?view=favorites">我的收藏</a>
-      </nav>
-
       <section class="mobile-region-subpanel" id="mobileRegionPanel" aria-hidden="true" aria-labelledby="mobileRegionTitle">
         <div class="mobile-menu-head">
           <button class="mobile-subpanel-back" id="mobileRegionBack" type="button" aria-label="回上一層">←</button>
@@ -119,8 +122,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="mobile-region-options" id="mobileRegionOptions"></div>
       </section>
-    </aside>
-  </header>
+  </aside>
 
   <main id="app">
     <section class="home-view" id="homeView" hidden>
@@ -562,6 +564,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=6.4.0"></script>
+  <script src="assets/app.js?v=6.4.1"></script>
 </body>
 </html>
