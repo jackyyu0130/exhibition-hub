@@ -1,39 +1,56 @@
-Exhibition Hub V6.4.2｜最短安全更新流程
+Exhibition Hub V6.5.0｜最短安全更新流程
 
-建議檔案：
-Exhibition-Hub-V6.4.2-visual-regression-hotfix.zip
+建議下載：
+Exhibition-Hub-V6.5.0-hero-postcard-carousel-safe-update.zip
 
-1. GitHub Desktop 左上 Current Repository 選 exhibition-hub。
-2. 上方 Current Branch 切到 develop。
-3. 點 Fetch origin；若變成 Pull origin，再點 Pull origin。
-4. 確認左側顯示 0 changed files。
-5. macOS 最上方點 Branch → Update from main；若可按，點 Update develop。
-6. 解壓縮 Exhibition-Hub-V6.4.2-visual-regression-hotfix.zip。
-7. 開啟 ZIP 內 exhibition-hub-v6.4.2-visual-regression-hotfix。
-8. GitHub Desktop 點 Repository → Show in Finder。
-9. 把更新包「裡面的所有內容」貼到：
-   /Users/jacky_yu/Documents/GitHub/exhibition-hub
-10. Finder 詢問同名檔案時，勾全部套用，再點取代。
-11. 回 GitHub Desktop，確認仍為 develop。
-12. 確認左側不包含：
-    data/exhibitions.json
-    data/exhibitions.enriched.json
-13. Summary 輸入：
-    Apply Exhibition Hub V6.4.2 visual regression fixes
-14. Description 留白。
-15. 點 Commit to develop。
-16. 點 Push origin。
-17. GitHub 網頁 → exhibition-hub → Pull requests。
-18. 有開啟中的 develop → main PR 就點進去；沒有才點 New pull request。
-19. 設定 base: main、compare: develop。
-20. PR 標題輸入：
-    Apply Exhibition Hub V6.4.2 visual regression fixes
-21. 點 Create pull request。
-22. 等所有檢查綠色，再點 Merge pull request → Confirm merge。
-23. GitHub → Actions → Update data and deploy site。
-24. 確認最新 main 工作為綠色 Success。
-25. 等待 2～10 分鐘，開啟 https://twexhibition.com/。
-26. macOS Chrome 按 Command + Shift + R；手機建議用無痕分頁檢查。
+一、GitHub Desktop
+1. Current Repository：exhibition-hub
+2. Current Branch：develop
+3. 點 Fetch origin；若變 Pull origin，再點 Pull origin
+4. Repository → Show in Finder
+5. 解壓安全更新包，打開：
+   exhibition-hub-v6.5.0-hero-postcard-carousel-safe-update
+6. 將資料夾「裡面的內容」複製到 exhibition-hub 根目錄
+7. macOS 詢問時點 Replace／取代
+8. 確認 Changes 沒有 data/exhibitions.json、data/exhibitions.enriched.json
+9. Summary 輸入：
+   Apply Exhibition Hub V6.5.0 hero postcard carousel
+10. 點 Commit to develop
+11. 點 Push origin
 
-完整按鈕、網頁上傳備案、檢查及復原：
-REPLACEMENT_GUIDE_V6.4.2_ZH-TW.md
+二、Pull Request
+1. 點 Preview Pull Request
+2. base：main
+3. compare：develop
+4. PR 標題：
+   Apply Exhibition Hub V6.5.0 hero postcard carousel
+5. 點 Create pull request
+6. 等 All checks have passed
+7. 點 Merge pull request
+8. 點 Confirm merge
+
+三、正式部署
+1. GitHub 儲存庫上方點 Actions
+2. 左側點 Update data and deploy site
+3. 若沒有自動執行，點 Run workflow
+4. Branch 選 main
+5. 再點 Run workflow
+6. 等 Success
+7. 開啟 https://twexhibition.com/
+8. 按 Command + Shift + R
+
+四、前台確認
+- 桌機 Hero 同時兩組票券＋明信片
+- 左箭頭下一組，右箭頭上一組
+- 手機左滑下一組，右滑上一組
+- 手機首頁有日曆、分類、展區、免費
+- 手機探索卡片徽章文字置中
+
+五、復原
+- 尚未 Commit：Branch → Discard All Changes
+- 已 Commit 未 Push：History → 右鍵該提交 → Undo Commit
+- 已 Push 未合併：Pull Request → Close pull request
+- 已合併：該 Pull Request → Revert → 合併復原 PR
+
+完整路徑、GitHub 網頁上傳法、檢查與衝突處理：
+REPLACEMENT_GUIDE_V6.5.0_ZH-TW.md
