@@ -1,13 +1,13 @@
-Exhibition Hub V6.3｜最短安全更新流程
+Exhibition Hub V6.3.1｜最短安全更新流程
 
 1. GitHub Desktop 左上 Current Repository 選 exhibition-hub。
 2. 上方 Current Branch 選 develop；沒有 develop 才按 New Branch 建立並 Publish branch。
 3. 上方按 Fetch origin；若顯示 Pull origin，先按 Pull origin。
 4. Repository → Show in Finder。
-5. 解壓縮 Exhibition-Hub-V6.3-full-replacement.zip。
+5. 解壓縮 Exhibition-Hub-V6.3.1-full-replacement.zip。
 6. 打開 ZIP 內 exhibition-hub-main 資料夾，複製「裡面的全部內容」到本機 exhibition-hub 根目錄並覆蓋同名檔案；不要把外層資料夾再包進專案。
 7. GitHub Desktop 左側 Changes 檢查後，在 Summary 輸入：
-   Fix official images and venue selector V6.3
+   Fix V6.3.1 validation and frontend assets
 8. 點 Commit to develop，再點 Push origin。
 9. GitHub 網頁 → Actions → Validate development changes，等待必要檢查全綠。
 10. Pull requests → New pull request：
@@ -18,4 +18,4 @@ Exhibition Hub V6.3｜最短安全更新流程
 12. 開啟 https://twexhibition.com/，Mac 按 Cmd+Shift+R；Windows 按 Ctrl+F5。
 
 完整按鈕位置、網頁分批上傳、衝突、檢查與復原：
-REPLACEMENT_GUIDE_V6.3_ZH-TW.md
+REPLACEMENT_GUIDE_V6.3.1_ZH-TW.md

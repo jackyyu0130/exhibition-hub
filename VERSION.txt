@@ -1,4 +1,9 @@
-Taiwan Exhibition Journal V6.3
+Taiwan Exhibition Journal V6.3.1
+
+V6.3.1 修正重點：
+- 修正 develop 驗證時「新版測試已提交、舊版前端與 URL 程式仍留在分支」造成的 6 項失敗
+- 前端資產快取版本更新為 6.3.1，確保 GitHub Desktop 能辨識並提交 `index.html`、`app.js`、`styles.css`
+- URL 正規化加入 6.3.1 明確版本守門，保留全形 `｜` 並接受大寫 `HTTPS`
 
 V6.3 更新重點：
 - 修正 URL 合併正規化：圖片路徑不再經過 NFKC，保留華山官方檔名中的全形 `｜`

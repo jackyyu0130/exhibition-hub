@@ -7,6 +7,8 @@ from typing import Any, Iterable
 from urllib.parse import urlsplit, urlunsplit
 
 
+URL_NORMALIZATION_VERSION = "6.3.1"
+
 _BRACKET_PREFIX_RE = re.compile(
     r"^(?:【[^】]{1,40}】|\[[^\]]{1,40}\])\s*"
 )
@@ -66,10 +68,19 @@ def normalize_name(value: Any) -> str:
 
 
 def normalize_url(value: Any) -> str:
-    text = clean_text(value)
-    if not text.startswith(("http://", "https://")):
+    # URL paths are identifiers, not prose.  NFKC changes meaningful path
+    # characters (for example Huashan's full-width `｜` becomes ASCII `|`) and
+    # can turn a valid official image into a different, missing resource.
+    text = str(value or "").strip()
+    text = re.sub(r"[\x00-\x1f\x7f]+", "", text)
+    if not re.match(r"^https?://", text, re.IGNORECASE):
         return ""
-    parsed = urlsplit(text)
+    try:
+        parsed = urlsplit(text)
+    except ValueError:
+        return ""
+    if parsed.scheme.lower() not in {"http", "https"} or not parsed.netloc:
+        return ""
     host = parsed.netloc.lower()
     path = parsed.path.rstrip("/")
     return urlunsplit(

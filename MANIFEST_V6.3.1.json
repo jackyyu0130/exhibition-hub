@@ -1,0 +1,22 @@
+{
+  "version": "6.3.1",
+  "name": "develop 驗證與前端資產同步修正版",
+  "baseVersion": "6.3",
+  "frontendCacheVersion": "6.3.1",
+  "requiredHotfixFiles": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "scripts/exhibition_hub/merging/normalization.py",
+    "tests/test_url_integrity.py",
+    "tests/test_calendar_and_compact_categories.py",
+    "tests/test_explore_alignment_and_sort_control.py",
+    "tests/test_status_and_admission_filters.py"
+  ],
+  "expectedFixes": [
+    "Preserve full-width punctuation in Huashan official image paths",
+    "Accept uppercase HTTP and HTTPS schemes during URL matching",
+    "Commit frontend cache version 6.3.1 with the corresponding assets",
+    "Resolve the six develop validation failures shown by GitHub Actions"
+  ]
+}

@@ -1,6 +1,12 @@
-# Exhibition Hub V6.3／台灣展覽誌
+# Exhibition Hub V6.3.1／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
+
+## V6.3.1 驗證修正版
+
+- 修正 develop 上只有新版測試、對應程式仍停在舊版時產生的 6 個自動測試失敗。
+- 前端資產查詢版本更新為 `6.3.1`，確保 `index.html`、`assets/app.js`、`assets/styles.css` 一起提交。
+- URL 正規化明確保留華山圖片路徑的全形 `｜`，並正確處理大寫 `HTTPS`。
 
 ## V6.3 圖片、場館與效能修正版
 
@@ -39,7 +45,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V6.3_ZH-TW.md`](REPLACEMENT_GUIDE_V6.3_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V6.3.1_ZH-TW.md`](REPLACEMENT_GUIDE_V6.3.1_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，先提交到 `develop`，通過
