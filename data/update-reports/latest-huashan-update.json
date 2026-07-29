@@ -1,14 +1,14 @@
 {
   "mode": "production-publish-report",
   "published": true,
-  "publishedAt": "2026-07-28T17:27:32.134398+00:00",
+  "publishedAt": "2026-07-29T07:57:16.445339+00:00",
   "sourceId": "huashan-1914",
-  "currentEventCount": 2473,
-  "publishedEventCount": 2460,
-  "addedEventCount": 7,
-  "removedEventCount": 20,
-  "dropCount": 13,
-  "dropRatio": 0.005257,
+  "currentEventCount": 2494,
+  "publishedEventCount": 2494,
+  "addedEventCount": 15,
+  "removedEventCount": 15,
+  "dropCount": 0,
+  "dropRatio": 0.0,
   "safetyLimits": {
     "minimumEvents": 500,
     "maxDropCount": 250,
@@ -30,39 +30,42 @@
     "published": false
   },
   "hashes": {
-    "current": "b483b0c384cce852a13b4ac1a0cf60743024f834894181c8b59444f9b8c14e7e",
-    "preview": "1d0e7b6b34a9a84b9ac36d75421be0a33aa0da0b1d1d7f7e5e3714a6342c9bb1",
-    "published": "643ee1405dd2fcc6a829bfa83c86bc8b68b6aa01c1eacba730f91d970d029a5d"
+    "current": "fc9c21959f47b5f1495f0edcc75209bf88b33124b2807f83974906efabc1edd5",
+    "preview": "6e4f49e3f2c44f39b0a6e513e2b20dada25da3f3f5bc18fa0c1269d7e40a2326",
+    "published": "e16b2b9fe1651b4f606ae2deab25e92866ca1faf37ac3cfc13da200cdb734504"
   },
   "addedIds": [
-    "01afcec99e7f9245aeea8fe8",
     "69b06ece26b3242a48a9d9d4",
     "69e48794eb43c961d05406c8",
+    "6a0828bd647a40ec65297a57",
+    "6a194090eb437cf2219b95ed",
     "6a194564647a40ec65297a6d",
     "6a1ded2226b3243414cccde8",
+    "6a22689a647a40ec65297a7c",
     "6a28641026b3243414ccd045",
-    "6a3a4af7647a40ec65297aae"
+    "6a3a4af7647a40ec65297aae",
+    "6a3c363d26b3243414ccd5d2",
+    "6a3cdfeb647a40ec65297ac1",
+    "6a3ce085647a40ec65297ac3",
+    "6a4cbc52647a042a0eb890c8",
+    "6a5d8c1a647ad700eb56ccca",
+    "6a608124eb43f5f34e518845"
   ],
   "removedIds": [
-    "6942e23826b32416dc348d80",
     "69ae835ceb43d512a487f51e",
-    "69cd4fb426b3242a48a9dfe6",
-    "69cff2e426b3242a48a9e0cf",
+    "69b4434926b3242a48a9db6e",
+    "69b4434926b3242a48a9db6f",
+    "69cbfe1526b3242a48a9df66",
     "69e0a26a647abc72d0362362",
-    "69e65c2d26b3242a48a9e57c",
     "69e7e31926b3242a48a9e5c8",
-    "6a0c980726b3243414ccca01",
-    "6a21b01426b3243414cccecf",
-    "6a2301cf26b3243414cccf2d",
+    "69fe179626b3243414ccc6cb",
+    "6a19c72d26b3243414ccccf3",
+    "6a19c72e26b3243414ccccfd",
+    "6a1dbbca26b3243414cccdc4",
     "6a254ac0eb437cf2219b95fe",
-    "6a28476526b3243414ccd032",
     "6a28642a26b3243414ccd05c",
-    "6a2d8d4d26b3243414ccd2a7",
-    "6a3424d326b3243414ccd43f",
-    "6a3424d326b3243414ccd440",
+    "6a3181c626b3243414ccd35f",
     "6a34414826b3243414ccd45e",
-    "6a57bdbc26b32427d06041c5",
-    "6a60f84026b32427d0604232",
-    "6a60f84a26b32427d0604239"
+    "6a435f1826b32427d0603f64"
   ]
 }
