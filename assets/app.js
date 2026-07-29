@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.4.1 — mobile drawer stability, ordered categories, and favicon release. */
+/* Exhibition Hub V6.4.2 — venue tabs, brand fallback, ticket spacing, and mobile two-column cards. */
 (() => {
   'use strict';
 

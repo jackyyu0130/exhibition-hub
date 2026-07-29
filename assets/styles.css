@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.4.1 — mobile drawer stability and favicon release. */
+/* Exhibition Hub V6.4.2 — venue tabs, brand fallback, ticket spacing, and mobile two-column cards. */
 :root {
   --bg: #f7f5f1;
   --surface: #ffffff;
@@ -5005,4 +5005,160 @@ body {
   }
   .venue-selector-drawer.open { transform: translateX(0); }
   .venue-selector-footer { width: auto; }
+}
+
+/* Exhibition Hub V6.4.2 — post-deploy visual regression hotfixes */
+
+/* Keep the exact raster wordmark in the package, and retain a legible
+   text-and-ticket fallback if a stale Pages artifact ever misses the PNG. */
+.brand-logo-frame > img {
+  display: block;
+  flex: 0 0 auto;
+}
+.brand-logo-fallback {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  color: #2c2722;
+  white-space: nowrap;
+}
+.brand-logo-frame.logo-load-failed .brand-logo-fallback { display: flex; }
+.brand-logo-fallback > b {
+  width: 48px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 3px double #5e5145;
+  border-radius: 4px;
+  background: #f2e4cf;
+  font-family: "Noto Serif TC", serif;
+  font-size: 18px;
+  line-height: 1;
+}
+.brand-logo-fallback > span,
+.brand-logo-fallback strong,
+.brand-logo-fallback small { display: block; }
+.brand-logo-fallback strong {
+  font-family: "Noto Serif TC", serif;
+  font-size: 17px;
+  letter-spacing: .14em;
+}
+.brand-logo-fallback small {
+  margin-top: 3px;
+  color: #6f665e;
+  font-size: 7px;
+  letter-spacing: .13em;
+}
+
+/* The venue-type rail is structural chrome, not part of the scrollable venue
+   result list. Prevent the flex column from compressing it into thin arcs. */
+.venue-selector-search,
+.venue-selector-selected,
+.venue-type-tabs {
+  flex-shrink: 0;
+}
+.venue-type-tabs {
+  min-height: 38px;
+  align-items: center;
+  padding: 1px 0 3px;
+}
+.venue-type-tabs button {
+  height: 34px;
+  min-height: 34px;
+}
+
+/* Reveal a little more of tickets 02 and 03 while preserving the editorial
+   fan and keeping ticket 01 as the clear interaction target. */
+.hero-ticket-slot-2 {
+  width: 80%;
+  top: 84px;
+  right: 14px;
+  transform: rotate(-2.8deg);
+}
+.hero-ticket-slot-3 {
+  width: 69%;
+  top: 18px;
+  right: -3px;
+  transform: rotate(3deg);
+}
+
+/* The mobile Explore result view keeps two useful cards per row. Typography,
+   controls and badges are tightened without removing exhibition metadata. */
+@media (max-width: 760px) {
+  .listing-view .listing-content {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+  .listing-view .exhibition-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+  }
+  .listing-view .exhibition-card {
+    min-width: 0;
+    border-radius: 16px;
+  }
+  .listing-view .card-image { aspect-ratio: 1 / 1; }
+  .listing-view .card-body { padding: 11px 10px 13px; }
+  .listing-view .card-kicker {
+    gap: 5px;
+    font-size: 9px;
+  }
+  .listing-view .card-kicker span {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .listing-view .card-title {
+    min-height: 4.35em;
+    margin: 7px 0 8px;
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-line-clamp: 3;
+  }
+  .listing-view .card-meta {
+    gap: 3px;
+    font-size: 9px;
+    line-height: 1.45;
+  }
+  .listing-view .card-meta span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .listing-view .card-price {
+    margin-top: 8px;
+    font-size: 10px;
+  }
+  .listing-view .favorite-button {
+    width: 38px;
+    height: 38px;
+    top: 8px;
+    right: 8px;
+    font-size: 23px;
+  }
+  .listing-view .card-badges {
+    top: 8px;
+    left: 8px;
+    max-width: calc(100% - 50px);
+    gap: 4px;
+  }
+  .listing-view .card-badge {
+    min-height: 24px;
+    padding: 0 7px;
+    font-size: 8px;
+  }
+
+  .hero-ticket-slot-2 {
+    width: 86%;
+    top: 80px;
+    right: 3px;
+    transform: rotate(-2.7deg);
+  }
+  .hero-ticket-slot-3 {
+    width: 76%;
+    top: 14px;
+    right: -4px;
+    transform: rotate(3deg);
+  }
 }

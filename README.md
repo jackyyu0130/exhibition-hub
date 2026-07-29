@@ -1,6 +1,15 @@
-# Exhibition Hub V6.4.1／台灣展覽誌
+# Exhibition Hub V6.4.2／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
+
+## V6.4.2 品牌、場館分類、Hero 與手機雙欄修正版
+
+- 安全更新包納入 `assets/taiwan-exhibition-journal-logo-v10.png`，修正正式站左上角品牌圖消失；即使圖片載入失敗，也會顯示文字與票券備援標誌。
+- 場館選擇器的類型列禁止被壓縮，完整顯示「全部／會展中心／文創園區／美術館・博物館」等分類。
+- Hero 第二張票券向上露出更多內容，第三張同步調整位置與寬度，維持有層次的票券扇形。
+- 手機「探索全台展覽」結果改為每列兩張卡片，圖片維持 1:1，標題、徽章、收藏鍵與資料欄同步適配。
+- 本次不含 `data/exhibitions.json` 或 `data/exhibitions.enriched.json`，避免與每日資料更新產生衝突。
+- 前端資產快取版本更新為 `6.4.2`；JavaScript 語法及 330 項自動化測試全部通過。
 
 ## V6.4.1 手機選單穩定性與網站圖示修正版
 
@@ -67,7 +76,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V6.4.1_ZH-TW.md`](REPLACEMENT_GUIDE_V6.4.1_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V6.4.2_ZH-TW.md`](REPLACEMENT_GUIDE_V6.4.2_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，先提交到 `develop`，通過

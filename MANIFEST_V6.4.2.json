@@ -1,0 +1,36 @@
+{
+  "version": "6.4.2",
+  "name": "品牌、場館分類、Hero 票券與手機雙欄修正版",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "recommendedPackage": "Exhibition-Hub-V6.4.2-visual-regression-hotfix.zip",
+  "commitAndPullRequestTitle": "Apply Exhibition Hub V6.4.2 visual regression fixes",
+  "keyFixes": [
+    "安全更新包補回完整品牌 PNG 並提供載入失敗備援",
+    "場館類型列禁止被 flex 抽屜壓縮",
+    "Hero 第二與第三張票券增加可見範圍",
+    "手機探索展覽卡片改為一排兩張",
+    "前端資產統一使用 6.4.2 快取版本"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "assets/taiwan-exhibition-journal-logo-v10.png",
+    "assets/favicon-48.png",
+    "assets/apple-touch-icon.png",
+    "tests/test_v642_visual_regressions.py"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    "scripts/",
+    ".github/"
+  ],
+  "validation": {
+    "javascriptSyntax": "passed",
+    "brandAssetPresent": "passed",
+    "automatedTests": 330,
+    "automatedTestResult": "passed"
+  }
+}
