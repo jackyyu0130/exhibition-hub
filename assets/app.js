@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.4.0 — official media, taxonomy, and mobile discovery drawer. */
+/* Exhibition Hub V6.4.1 — mobile drawer stability, ordered categories, and favicon release. */
 (() => {
   'use strict';
 
@@ -115,6 +115,8 @@
     mobilePreviewTicket: null,
     mobileCategoriesExpanded: false,
     mobileDrawerSection: 'all',
+    viewportScrollY: 0,
+    viewportLockOwner: null,
     heroHasShuffled: false,
     lastRenderedDate: null,
     heroTransitionTimer: null,
@@ -128,6 +130,33 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+  function lockViewport(owner) {
+    if (state.viewportLockOwner === owner) return;
+    if (state.viewportLockOwner) return;
+    state.viewportScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+    state.viewportLockOwner = owner;
+    document.documentElement.classList.add('overlay-open');
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${state.viewportScrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+
+  function unlockViewport(owner) {
+    if (state.viewportLockOwner !== owner) return;
+    const restoreY = state.viewportScrollY;
+    state.viewportLockOwner = null;
+    state.viewportScrollY = 0;
+    document.documentElement.classList.remove('overlay-open');
+    document.body.style.removeProperty('position');
+    document.body.style.removeProperty('top');
+    document.body.style.removeProperty('left');
+    document.body.style.removeProperty('right');
+    document.body.style.removeProperty('width');
+    window.scrollTo({top:restoreY, left:0, behavior:'auto'});
+  }
 
   function escapeHtml(value = '') {
     return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
@@ -1432,7 +1461,9 @@
     $('#venueSelectorDrawer').classList.add('open');
     $('#venueSelectorDrawer').setAttribute('aria-hidden','false');
     document.body.classList.add('venue-selector-open');
+    lockViewport('venue-selector');
     renderVenueSelector();
+    $('#venueSelectorList').scrollTop = 0;
     setTimeout(() => $('#venueSelectorSearch')?.focus(), 80);
   }
 
@@ -1441,6 +1472,7 @@
     $('#venueSelectorDrawer').classList.remove('open');
     $('#venueSelectorDrawer').setAttribute('aria-hidden','true');
     document.body.classList.remove('venue-selector-open');
+    unlockViewport('venue-selector');
   }
 
   function renderListingCalendar() {
@@ -1476,10 +1508,7 @@
     const categoryOptions = $('#mobileCategoryOptions');
     if (!categoryOptions) return;
     const categoryCounts = countBy(state.events, event => event.categories);
-    const popularCategories = [...CATEGORY_ORDER]
-      .sort((left, right) => (categoryCounts[right] || 0) - (categoryCounts[left] || 0) || CATEGORY_ORDER.indexOf(left) - CATEGORY_ORDER.indexOf(right))
-      .slice(0, 4);
-    const categories = state.mobileCategoriesExpanded ? CATEGORY_ORDER : popularCategories;
+    const categories = state.mobileCategoriesExpanded ? CATEGORY_ORDER : CATEGORY_ORDER.slice(0, 4);
     categoryOptions.innerHTML = categories.map(category => `
       <div class="mobile-category-item">
         <button class="${state.categories.has(category) ? 'active' : ''}" type="button" data-toggle-category="${escapeHtml(category)}" aria-pressed="${state.categories.has(category)}">
@@ -1530,6 +1559,8 @@
     menu.setAttribute('aria-hidden', 'false');
     $('#mobileMenuButton').setAttribute('aria-expanded', 'true');
     document.body.classList.add('menu-open');
+    lockViewport('mobile-menu');
+    menu.scrollTop = 0;
     requestAnimationFrame(() => {
       menu.classList.add('open');
       backdrop.classList.add('open');
@@ -1538,7 +1569,13 @@
         calendar: $('#mobileCalendarSection'),
         location: $('#mobileLocationSection'),
       }[section];
-      target?.scrollIntoView({block:'start', behavior:'smooth'});
+      if (target) {
+        menu.scrollTo({
+          top: Math.max(0, target.offsetTop - 16),
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
     });
   }
 
@@ -1551,16 +1588,22 @@
     $('#mobileRegionPanel')?.setAttribute('aria-hidden', 'true');
     $('#mobileMenuButton')?.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('menu-open');
+    unlockViewport('mobile-menu');
     window.setTimeout(() => {
       if (menu && !menu.classList.contains('open')) menu.hidden = true;
       if (backdrop && !backdrop.classList.contains('open')) backdrop.hidden = true;
+      if (menu && !menu.classList.contains('open')) menu.scrollTop = 0;
     }, 340);
   }
 
   function openMobileRegionPanel() {
     renderMobileFilters();
-    $('#mobileRegionPanel').classList.add('open');
-    $('#mobileRegionPanel').setAttribute('aria-hidden', 'false');
+    const menu = $('#mobileMenu');
+    const panel = $('#mobileRegionPanel');
+    menu.scrollTo({top:0, left:0, behavior:'auto'});
+    panel.scrollTop = 0;
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
   }
 
   function closeMobileRegionPanel() {
@@ -1985,7 +2028,10 @@
 
     const submitSearch = input => {
       const query = input.value.trim();
-      if (query) navigateTo(`?view=all&q=${encodeURIComponent(query)}`);
+      if (query) {
+        if (input === $('#mobileSearchInput')) closeMobileMenu();
+        navigateTo(`?view=all&q=${encodeURIComponent(query)}`);
+      }
     };
     $('#navSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#navSearchInput'));});
     $('#mobileSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#mobileSearchInput'));});
@@ -2050,6 +2096,7 @@
         const isSameAppRoute = url.origin === location.origin && url.pathname === location.pathname && !url.hash;
         if (isSameAppRoute) {
           event.preventDefault();
+          if (internalLink.closest('#mobileMenu')) closeMobileMenu();
           navigateTo(url.href);
           return;
         }
