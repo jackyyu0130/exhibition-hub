@@ -26,6 +26,8 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator
 from urllib.parse import unquote, urljoin, urlparse
 
+from exhibition_hub.image_quality import suspicious_image_reason
+
 try:
     import requests
 except ModuleNotFoundError:  # Offline maintenance still works before dependencies are installed.
@@ -57,7 +59,7 @@ DEFAULT_GEOCODE_CACHE = Path("data/geocode-cache.json")
 DEFAULT_CURATED_OVERRIDES = Path("data/curated-overrides.json")
 DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonAction.do"
 TAIPEI_TZ = timezone(timedelta(hours=8))
-USER_AGENT = "TaiwanExhibitionJournal/5.0 (+https://github.com/jackyyu0130/exhibition-hub)"
+USER_AGENT = "TaiwanExhibitionJournal/6.3 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
@@ -726,6 +728,8 @@ def collect_image_urls(raw: dict[str, Any], show: dict[str, Any] | None = None, 
 
 
 def probable_content_image(url: str) -> bool:
+    if suspicious_image_reason(url):
+        return False
     parsed = urlparse(url)
     path = unquote(parsed.path).lower()
     if BAD_IMAGE_HINTS.search(path):

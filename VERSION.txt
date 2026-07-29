@@ -1,4 +1,16 @@
-Taiwan Exhibition Journal V5.0
+Taiwan Exhibition Journal V6.3
+
+V6.3 更新重點：
+- 修正 URL 合併正規化：圖片路徑不再經過 NFKC，保留華山官方檔名中的全形 `｜`
+- 「動漫最高祭 Anime Max Festival」改用華山官方頁提供的正確主視覺
+- 全量稽核 `exhibitions.json` 與 `exhibitions.enriched.json`，移除 1,492 個介面／預設／地圖圖片候選
+- 清除 11 檔活動殘留的 Facebook 外部參照及 11 張錯誤場館封面
+- 新增集中式圖片品質規則、稽核報告、發布前清洗及動態資料品質閘門
+- Pages 精簡建置加入 `data/venues.json` 與 `data/northern_venue_matrix.json`
+- 場館目錄與活動數改為一次性索引快取，搜尋增加 110ms debounce，選取時只更新必要 DOM
+- 場館類型缺少 registry 對應時使用保守名稱推斷，並保留「其他展演場地」入口
+- VENUE SELECTOR 的斜向箭頭改為低調的篩選滑桿圖示
+- 前端快取版本更新為 6.3
 
 更新重點：
 - Hero 抽卡按鈕移至紙張拼貼真正左上角，手機版同步避開第三張票券

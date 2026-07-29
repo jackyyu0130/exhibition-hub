@@ -1,6 +1,15 @@
-# Exhibition Hub V5.0／台灣展覽誌
+# Exhibition Hub V6.3／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
+
+## V6.3 圖片、場館與效能修正版
+
+- 修正華山圖片網址全形 `｜` 被改成半形 `|` 的問題；「動漫最高祭 Anime Max Festival」已改回華山官方主視覺。
+- 全量清洗 2,460 檔發布活動，移除 OPENTIX 旗幟、網站 Logo、分享按鈕、預設 Banner、地圖定位圖等非展覽圖片。
+- 每日更新在發布前會再次執行圖片品質與 Facebook 來源檢查；品質驗證未通過時不部署。
+- GitHub Pages 精簡建置現在會帶入 `data/venues.json` 與 `data/northern_venue_matrix.json`，場館類型不再全部退回「其他」。
+- 場館目錄、別名、活動數與類型改為載入後一次預先建立，搜尋增加 110ms debounce，修正展開與輸入延遲。
+- VENUE SELECTOR 入口改為低調的三段篩選圖示，取代突兀的斜向箭頭。
 
 ## 專案結構
 
@@ -30,11 +39,12 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V5.0_ZH-TW.md`](REPLACEMENT_GUIDE_V5.0_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V6.3_ZH-TW.md`](REPLACEMENT_GUIDE_V6.3_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
-儲存庫根目錄並覆蓋同名檔案，提交到 `main`，再執行
-**Actions → Update data and deploy site → Run workflow**。
+儲存庫根目錄並覆蓋同名檔案，先提交到 `develop`，通過
+**Validate development changes** 後合併至 `main`；接著由
+**Update data and deploy site** 完成正式部署。
 
 ## 保留原本 Hero 影片
 

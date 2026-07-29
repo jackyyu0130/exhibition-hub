@@ -1,15 +1,21 @@
-Exhibition Hub V5.0｜完整替換最短流程
+Exhibition Hub V6.3｜最短安全更新流程
 
-1. 先到 GitHub 專案首頁，點 Code → Download ZIP，保存舊版備份。
-2. 解壓縮 Exhibition-Hub-V5.0-full-replacement.zip。
-3. 複製 ZIP 內全部內容到儲存庫根目錄（與 index.html 同一層），覆蓋同名檔案。
-4. 保留你原有的 CNAME 與 assets/hero-video.mp4（替換包不會覆蓋這兩個檔案）。
-5. 提交到 main 分支；若用 GitHub Desktop，點 Commit to main → Push origin。
-6. GitHub 網頁點 Settings → Pages → Source: GitHub Actions。
-7. 點 Actions → Update data and deploy site → Run workflow → Branch: main → Run workflow。
-8. 等待綠色勾勾，再開啟網站並按 Ctrl+F5（Mac：Cmd+Shift+R）強制更新。
+1. GitHub Desktop 左上 Current Repository 選 exhibition-hub。
+2. 上方 Current Branch 選 develop；沒有 develop 才按 New Branch 建立並 Publish branch。
+3. 上方按 Fetch origin；若顯示 Pull origin，先按 Pull origin。
+4. Repository → Show in Finder。
+5. 解壓縮 Exhibition-Hub-V6.3-full-replacement.zip。
+6. 打開 ZIP 內 exhibition-hub-main 資料夾，複製「裡面的全部內容」到本機 exhibition-hub 根目錄並覆蓋同名檔案；不要把外層資料夾再包進專案。
+7. GitHub Desktop 左側 Changes 檢查後，在 Summary 輸入：
+   Fix official images and venue selector V6.3
+8. 點 Commit to develop，再點 Push origin。
+9. GitHub 網頁 → Actions → Validate development changes，等待必要檢查全綠。
+10. Pull requests → New pull request：
+    base: main
+    compare: develop
+    點 Create pull request → Merge pull request → Confirm merge。
+11. Actions → Update data and deploy site，等待綠色勾勾。
+12. 開啟 https://twexhibition.com/，Mac 按 Cmd+Shift+R；Windows 按 Ctrl+F5。
 
-不需要手動修改任何 HTML、CSS 或 JavaScript。
-
-所有點擊位置、替換路徑、合併衝突處理、核對清單與復原方式：
-REPLACEMENT_GUIDE_V5.0_ZH-TW.md
+完整按鈕位置、網頁分批上傳、衝突、檢查與復原：
+REPLACEMENT_GUIDE_V6.3_ZH-TW.md
