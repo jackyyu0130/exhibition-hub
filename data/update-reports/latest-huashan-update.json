@@ -1,7 +1,7 @@
 {
   "mode": "production-publish-report",
   "published": true,
-  "publishedAt": "2026-07-29T07:57:16.445339+00:00",
+  "publishedAt": "2026-07-29T10:21:10.938589+00:00",
   "sourceId": "huashan-1914",
   "currentEventCount": 2494,
   "publishedEventCount": 2494,
@@ -30,28 +30,11 @@
     "published": false
   },
   "hashes": {
-    "current": "fc9c21959f47b5f1495f0edcc75209bf88b33124b2807f83974906efabc1edd5",
-    "preview": "6e4f49e3f2c44f39b0a6e513e2b20dada25da3f3f5bc18fa0c1269d7e40a2326",
-    "published": "e16b2b9fe1651b4f606ae2deab25e92866ca1faf37ac3cfc13da200cdb734504"
+    "current": "35257dc08bf6aafec50f3de9318018ad0afdfd73c8e63d780d7244ff071ed058",
+    "preview": "ea586b71d9cb261fa79f37dfacd3a184e27a201adb10da1475f930f748a25778",
+    "published": "71a34c9f3eed4727d7c84ec08c78259e1ad7fa77b440c124f4ec002fe1d582a7"
   },
   "addedIds": [
-    "69b06ece26b3242a48a9d9d4",
-    "69e48794eb43c961d05406c8",
-    "6a0828bd647a40ec65297a57",
-    "6a194090eb437cf2219b95ed",
-    "6a194564647a40ec65297a6d",
-    "6a1ded2226b3243414cccde8",
-    "6a22689a647a40ec65297a7c",
-    "6a28641026b3243414ccd045",
-    "6a3a4af7647a40ec65297aae",
-    "6a3c363d26b3243414ccd5d2",
-    "6a3cdfeb647a40ec65297ac1",
-    "6a3ce085647a40ec65297ac3",
-    "6a4cbc52647a042a0eb890c8",
-    "6a5d8c1a647ad700eb56ccca",
-    "6a608124eb43f5f34e518845"
-  ],
-  "removedIds": [
     "69ae835ceb43d512a487f51e",
     "69b4434926b3242a48a9db6e",
     "69b4434926b3242a48a9db6f",
@@ -67,5 +50,22 @@
     "6a3181c626b3243414ccd35f",
     "6a34414826b3243414ccd45e",
     "6a435f1826b32427d0603f64"
+  ],
+  "removedIds": [
+    "69b06ece26b3242a48a9d9d4",
+    "69e48794eb43c961d05406c8",
+    "6a0828bd647a40ec65297a57",
+    "6a194090eb437cf2219b95ed",
+    "6a194564647a40ec65297a6d",
+    "6a1ded2226b3243414cccde8",
+    "6a22689a647a40ec65297a7c",
+    "6a28641026b3243414ccd045",
+    "6a3a4af7647a40ec65297aae",
+    "6a3c363d26b3243414ccd5d2",
+    "6a3cdfeb647a40ec65297ac1",
+    "6a3ce085647a40ec65297ac3",
+    "6a4cbc52647a042a0eb890c8",
+    "6a5d8c1a647ad700eb56ccca",
+    "6a608124eb43f5f34e518845"
   ]
 }
