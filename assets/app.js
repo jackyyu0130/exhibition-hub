@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.3.1 — venue performance and image-source integrity hotfix. */
+/* Exhibition Hub V6.4.0 — official media, taxonomy, and mobile discovery drawer. */
 (() => {
   'use strict';
 
@@ -113,6 +113,8 @@
     heroCursor: 0,
     heroLastKeys: [],
     mobilePreviewTicket: null,
+    mobileCategoriesExpanded: false,
+    mobileDrawerSection: 'all',
     heroHasShuffled: false,
     lastRenderedDate: null,
     heroTransitionTimer: null,
@@ -181,6 +183,12 @@
       const repeatedScheme = text.match(/^https?:\/\/[^/?#]+(https?:\/\/.+)$/i);
       if (repeatedScheme) text = repeatedScheme[1];
       if (text.startsWith('//')) text = `https:${text}`;
+      if (/^https?:\/\/media\.huashan1914\.com\//i.test(text)) {
+        text = text
+          .replace('KV_華山官網活動|1920x1080.jpg', 'KV_華山官網活動｜1920x1080.jpg')
+          .replace('華山官網活動:JPG格式|1920(W)-x-1080(H) (1).jpg', '華山官網活動：JPG格式｜1920(W)-x-1080(H) (1).jpg')
+          .replace('華山官網活動:JPG格式｜1920(W)-x-1080(H) (1).jpg', '華山官網活動：JPG格式｜1920(W)-x-1080(H) (1).jpg');
+      }
       const url = new URL(text, location.href);
       return ['http:','https:'].includes(url.protocol) ? url.href : '';
     } catch { return ''; }
@@ -235,6 +243,16 @@
     return alias ? REGION_ALIASES[alias] : '其他地區';
   }
 
+  const SINGER_CONCERT_PATTERN = /演唱會|巡迴演唱|世界巡演|巡演(?:台北|高雄|台中|臺北|臺中)?站|fan\s*concert|live\s+in\s+(?:taipei|kaohsiung|taichung)|(?:concert|tour)\s*(?:20\d{2})?/i;
+  const MUSIC_THEATRE_PATTERN = /音樂劇|歌劇|舞台劇|劇場|戲劇|讀劇|偶戲|馬戲/i;
+  const CLASSICAL_MUSIC_PATTERN = /音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|音樂祭/i;
+  const ANIME_CATEGORY_PATTERN = /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展|IP(?:展|祭|活動)/i;
+
+  function isSingerConcert(title = '', description = '', contentTypes = []) {
+    const text = `${title} ${description}`;
+    return contentTypes.includes('concert') || SINGER_CONCERT_PATTERN.test(text);
+  }
+
   function normalizeCategories(raw, title = '', description = '') {
     const rawValues = Array.isArray(raw) ? raw : raw !== undefined && raw !== null ? [raw] : [];
     const categories = [];
@@ -247,19 +265,36 @@
 
     const text = `${title} ${description}`;
     const keywordRules = [
+      ['演唱會', SINGER_CONCERT_PATTERN], ['表演', MUSIC_THEATRE_PATTERN], ['動漫', ANIME_CATEGORY_PATTERN],
       ['快閃店', /快閃店|快閃|期間限定|popup|pop-up/i], ['攝影', /攝影|影像展|photo(graphy)?/i],
-      ['動漫', /動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展/i], ['歷史', /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗/i],
+      ['歷史', /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗/i],
       ['自然', /自然史|科學|生態|植物|動物|天文|地質|海洋|環境教育/i], ['科技', /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i],
       ['設計', /設計|建築|工藝|時尚|家居|文具|design/i], ['舞蹈', /舞蹈|舞作|芭蕾/i],
-      ['音樂', /音樂|樂團|管弦|獨立音樂|音樂祭|音樂會/i], ['演唱會', /演唱會|巡迴演唱|live concert|concert/i], ['表演', /戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲/i],
-      ['電影', /電影|(?<!攝)影展|放映/i], ['市集', /市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
+      ['音樂', CLASSICAL_MUSIC_PATTERN], ['電影', /電影|(?<!攝)影展|放映/i], ['市集', /市集|嘉年華|展售|商品展|食品展|旅展|文創攤位/i],
       ['親子', /親子|兒童|家庭|幼兒/i], ['競賽', /競賽|比賽|大賽|徵件比賽/i],
       ['美術', /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會/i]
     ];
     keywordRules.forEach(([category, regex]) => {
-      if (regex.test(text) && !categories.includes(category)) categories.unshift(category);
+      if (regex.test(text) && !categories.includes(category)) categories.push(category);
     });
-    const cleaned = categories.filter(category => CATEGORY_ORDER.includes(category));
+    let cleaned = categories.filter(category => CATEGORY_ORDER.includes(category));
+    const prioritize = category => {
+      if (!cleaned.includes(category)) return;
+      cleaned = [category, ...cleaned.filter(item => item !== category)];
+    };
+    if (isSingerConcert(title, description)) {
+      cleaned = cleaned.filter(category => category !== '音樂');
+      if (!cleaned.includes('演唱會')) cleaned.unshift('演唱會');
+      prioritize('演唱會');
+    } else if (MUSIC_THEATRE_PATTERN.test(text)) {
+      cleaned = cleaned.filter(category => category !== '音樂');
+      if (!cleaned.includes('表演')) cleaned.unshift('表演');
+      prioritize('表演');
+    } else if (ANIME_CATEGORY_PATTERN.test(text)) {
+      prioritize('動漫');
+    } else if (CLASSICAL_MUSIC_PATTERN.test(text)) {
+      prioritize('音樂');
+    }
     return (cleaned.length ? cleaned : ['其他']).filter((category, index, array) => array.indexOf(category) === index).slice(0, 3);
   }
 
@@ -432,6 +467,13 @@
     return CONTENT_TYPE_LABELS[event?.contentType] || event?.categories?.[0] || '展覽';
   }
 
+  function eventDisplayCategory(event) {
+    return event?.categories?.find(category => !['快閃店','其他'].includes(category))
+      || event?.category
+      || event?.categories?.[0]
+      || '其他';
+  }
+
   function sourceVenueCount(items = state.events) {
     return new Set(items.map(event => cleanPlaceText(firstValue(event.originalVenueGroup, event.originalLocationName, event.venueGroup, event.locationName))).filter(Boolean)).size;
   }
@@ -458,10 +500,16 @@
     const rawCategories = firstValue(raw.categories, raw.categoryName, raw.category);
     const baseCategories = normalizeCategories(rawCategories, title, description);
     const mappedCategory = contentTypes.map(type => CONTENT_TYPE_CATEGORY_MAP[type]).find(Boolean) || CONTENT_TYPE_CATEGORY_MAP[contentType];
-    const categoryCandidates = mappedCategory === '演唱會'
-      ? baseCategories.filter(category => category !== '音樂')
-      : baseCategories;
-    const categories = [mappedCategory, ...categoryCandidates].filter(Boolean).filter((category, categoryIndex, array) => array.indexOf(category) === categoryIndex).slice(0, 3);
+    const concert = isSingerConcert(title, description, contentTypes);
+    let categoryCandidates = concert
+      ? ['演唱會', ...baseCategories.filter(category => category !== '音樂' && category !== '演唱會')]
+      : [...baseCategories];
+    if (mappedCategory === '快閃店' && categoryCandidates.some(category => !['快閃店','其他'].includes(category))) {
+      categoryCandidates = [...categoryCandidates, mappedCategory];
+    } else if (mappedCategory) {
+      categoryCandidates = [mappedCategory, ...categoryCandidates];
+    }
+    const categories = categoryCandidates.filter(Boolean).filter((category, categoryIndex, array) => array.indexOf(category) === categoryIndex).slice(0, 3);
     const imageCandidates = [
       ...flattenImageCandidates(raw.images), ...flattenImageCandidates(raw.imageCandidates),
       ...flattenImageCandidates(raw.image), ...flattenImageCandidates(raw.imageURL), ...flattenImageCandidates(raw.imageUrl),
@@ -497,6 +545,12 @@
       latitude, longitude, coordinateSource: firstValue(raw.coordinateSource, raw.coordinate_source),
       price: String(price || '票價請見活動頁面').trim(),
       unit: stripFacebookReferences(Array.isArray(raw.masterUnit) ? raw.masterUnit.join('、') : firstValue(raw.unit, raw.organizer, raw.showUnit, raw.masterUnit)),
+      searchText: [
+        raw.unit, raw.organizer, raw.showUnit, raw.masterUnit, raw.organizers,
+        raw.performer, raw.performers, raw.artist, raw.artists, raw.singer, raw.singers,
+        raw.actor, raw.actors, raw.cast, raw.castMembers, raw.presenter, raw.presenters,
+        raw.producer, raw.tags,
+      ].flatMap(value => Array.isArray(value) ? value : [value]).filter(Boolean).map(value => stripHtml(String(value))).join(' '),
       transitInfo: stripFacebookReferences(firstValue(raw.transitInfo, raw.transit)),
       hitRate: Number(raw.hitRate || 0),
       firstSeenAt: firstValue(raw.firstSeenAt, raw.first_seen_at),
@@ -718,7 +772,7 @@
         </a>
         <button class="favorite-button ${isFavorite(event) ? 'active' : ''}" type="button" data-favorite="${escapeHtml(eventKey(event))}" aria-label="${isFavorite(event) ? '取消收藏' : '加入收藏'}">${isFavorite(event) ? '♥' : '♡'}</button>
         <div class="card-body">
-          <div class="card-kicker"><span>${escapeHtml(eventContentTypeLabel(event))}</span><span>${escapeHtml(event.region)}</span></div>
+          <div class="card-kicker"><span>${escapeHtml(eventDisplayCategory(event))}</span><span>${escapeHtml(event.region)}</span></div>
           <a href="${eventHref(event)}"><h3 class="card-title">${escapeHtml(event.title)}</h3></a>
           <div class="card-meta"><span>${escapeHtml(dateRange(event))}</span><span>${escapeHtml(eventVenueCompactLabel(event))}</span></div>
           <div class="card-price ${isFree(event) ? 'free' : ''}">${escapeHtml(event.price)}</div>
@@ -807,7 +861,7 @@
     const query = state.query.trim().toLowerCase();
     return items.filter(event => {
       if (query) {
-        const haystack = [event.title,event.description,event.locationName,event.address,event.region,event.categories.join(' '),eventContentTypeLabel(event),eventVenueNames(event).join(' '),event.originalVenueGroup,event.price].join(' ').toLowerCase();
+        const haystack = [event.title,event.description,event.unit,event.searchText,event.locationName,event.address,event.region,event.categories.join(' '),eventContentTypeLabel(event),eventVenueNames(event).join(' '),event.originalVenueGroup,event.price].join(' ').toLowerCase();
         if (!haystack.includes(query)) return false;
       }
       if (state.categories.size && !event.categories.some(category => state.categories.has(category))) return false;
@@ -1418,6 +1472,102 @@
     } else $('#calendarSelectionText').textContent = '尚未選擇日期';
   }
 
+  function renderMobileFilters() {
+    const categoryOptions = $('#mobileCategoryOptions');
+    if (!categoryOptions) return;
+    const categoryCounts = countBy(state.events, event => event.categories);
+    const popularCategories = [...CATEGORY_ORDER]
+      .sort((left, right) => (categoryCounts[right] || 0) - (categoryCounts[left] || 0) || CATEGORY_ORDER.indexOf(left) - CATEGORY_ORDER.indexOf(right))
+      .slice(0, 4);
+    const categories = state.mobileCategoriesExpanded ? CATEGORY_ORDER : popularCategories;
+    categoryOptions.innerHTML = categories.map(category => `
+      <div class="mobile-category-item">
+        <button class="${state.categories.has(category) ? 'active' : ''}" type="button" data-toggle-category="${escapeHtml(category)}" aria-pressed="${state.categories.has(category)}">
+          <span>${CATEGORY_ICON[category] || CATEGORY_ICON['其他']}</span>
+        </button>
+        <strong>${escapeHtml(category)}</strong>
+        <small>${(categoryCounts[category] || 0).toLocaleString('zh-TW')} 檔</small>
+      </div>`).join('');
+    const expandButton = $('#mobileCategoryExpand');
+    expandButton.textContent = state.mobileCategoriesExpanded ? '收合分類' : '展開全部';
+    expandButton.setAttribute('aria-expanded', String(state.mobileCategoriesExpanded));
+
+    const month = state.calendarMonth || new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const year = month.getFullYear();
+    const monthIndex = month.getMonth();
+    $('#mobileCalendarMonthLabel').textContent = `${year} 年 ${monthIndex + 1} 月`;
+    const firstWeekday = new Date(year, monthIndex, 1).getDay();
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+    const todayKey = localDateKey(new Date());
+    const baseItems = filterEvents(state.events, {includeDate:false});
+    const cells = [];
+    for (let index = 0; index < firstWeekday; index += 1) cells.push('<span class="calendar-day empty" aria-hidden="true"></span>');
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const key = localDateKey(new Date(year, monthIndex, day));
+      const count = baseItems.reduce((total, event) => total + (eventOccursOn(event, key) ? 1 : 0), 0);
+      const classes = ['calendar-day'];
+      if (key === state.date) classes.push('selected');
+      else if (key === todayKey) classes.push('today');
+      if (count) classes.push('has-events');
+      cells.push(`<button type="button" class="${classes.join(' ')}" data-mobile-calendar-date="${key}" aria-label="${year}年${monthIndex+1}月${day}日，${count}檔展覽"><span>${day}</span>${count ? `<small>${count > 99 ? '99+' : count}</small>` : ''}</button>`);
+    }
+    $('#mobileCalendarGrid').innerHTML = cells.join('');
+
+    const regionCounts = countBy(state.events, event => event.region);
+    $('#mobileRegionOptions').innerHTML = REGION_ORDER
+      .filter(region => regionCounts[region])
+      .map(region => `<button type="button" class="${state.region === region ? 'active' : ''}" data-mobile-region-choice="${escapeHtml(region)}"><span>${escapeHtml(region)}</span><small>${regionCounts[region].toLocaleString('zh-TW')} 檔</small><i>›</i></button>`)
+      .join('') || emptyInline('目前沒有地區資料');
+  }
+
+  function openMobileMenu(section = 'all') {
+    state.mobileDrawerSection = section;
+    renderMobileFilters();
+    const menu = $('#mobileMenu');
+    const backdrop = $('#mobileMenuBackdrop');
+    menu.hidden = false;
+    backdrop.hidden = false;
+    menu.setAttribute('aria-hidden', 'false');
+    $('#mobileMenuButton').setAttribute('aria-expanded', 'true');
+    document.body.classList.add('menu-open');
+    requestAnimationFrame(() => {
+      menu.classList.add('open');
+      backdrop.classList.add('open');
+      const target = {
+        category: $('#mobileCategorySection'),
+        calendar: $('#mobileCalendarSection'),
+        location: $('#mobileLocationSection'),
+      }[section];
+      target?.scrollIntoView({block:'start', behavior:'smooth'});
+    });
+  }
+
+  function closeMobileMenu() {
+    const menu = $('#mobileMenu');
+    const backdrop = $('#mobileMenuBackdrop');
+    menu?.classList.remove('open');
+    backdrop?.classList.remove('open');
+    $('#mobileRegionPanel')?.classList.remove('open');
+    $('#mobileRegionPanel')?.setAttribute('aria-hidden', 'true');
+    $('#mobileMenuButton')?.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('menu-open');
+    window.setTimeout(() => {
+      if (menu && !menu.classList.contains('open')) menu.hidden = true;
+      if (backdrop && !backdrop.classList.contains('open')) backdrop.hidden = true;
+    }, 340);
+  }
+
+  function openMobileRegionPanel() {
+    renderMobileFilters();
+    $('#mobileRegionPanel').classList.add('open');
+    $('#mobileRegionPanel').setAttribute('aria-hidden', 'false');
+  }
+
+  function closeMobileRegionPanel() {
+    $('#mobileRegionPanel').classList.remove('open');
+    $('#mobileRegionPanel').setAttribute('aria-hidden', 'true');
+  }
+
   function renderActiveFilters() {
     const parts = [];
     if (state.query) parts.push(`<span class="active-filter">${escapeHtml(`搜尋：${state.query}`)}<button type="button" data-clear-filter="q" aria-label="移除搜尋">×</button></span>`);
@@ -1644,6 +1794,7 @@
     if (state.view === 'detail') renderDetail();
     if (state.view === 'favorites') renderFavorites();
     state.lastRenderedView = state.view;
+    renderMobileFilters();
     $('#loadingView').hidden = true;
     updateFooter();
   }
@@ -1666,9 +1817,7 @@
     history[replace ? 'replaceState' : 'pushState']({}, '', `${url.pathname}${url.search}${url.hash}`);
     readParams();
     renderCurrentView();
-    document.body.classList.remove('menu-open');
-    $('#mobileMenu').hidden = true;
-    $('#mobileMenuButton').setAttribute('aria-expanded', 'false');
+    closeMobileMenu();
     if (!preserveScroll) window.scrollTo({top:0, left:0, behavior:'auto'});
     return true;
   }
@@ -1802,11 +1951,36 @@
     window.addEventListener('pageshow', event => {
       if (event.persisted) replayHomeAnimations();
     });
+    $('#siteBrandLink').addEventListener('click', event => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.location.assign(new URL('./', window.location.href).href);
+    });
     $('#mobileMenuButton').addEventListener('click', () => {
       const open = $('#mobileMenuButton').getAttribute('aria-expanded') === 'true';
-      $('#mobileMenuButton').setAttribute('aria-expanded', String(!open));
-      $('#mobileMenu').hidden = open;
-      document.body.classList.toggle('menu-open', !open);
+      if (open) closeMobileMenu(); else openMobileMenu('all');
+    });
+    $('#mobileMenuClose').addEventListener('click', closeMobileMenu);
+    $('#mobileMenuBackdrop').addEventListener('click', closeMobileMenu);
+    $('#mobileCategoryExpand').addEventListener('click', () => {
+      state.mobileCategoriesExpanded = !state.mobileCategoriesExpanded;
+      renderMobileFilters();
+    });
+    $('#mobileCalendarClear').addEventListener('click', () => updateUrl({date:null}));
+    $('#mobileCalendarPrev').addEventListener('click', () => {
+      state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth()-1, 1);
+      renderMobileFilters();
+    });
+    $('#mobileCalendarNext').addEventListener('click', () => {
+      state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth()+1, 1);
+      renderMobileFilters();
+    });
+    $('#mobileRegionLaunch').addEventListener('click', openMobileRegionPanel);
+    $('#mobileRegionBack').addEventListener('click', closeMobileRegionPanel);
+    $('#mobileVenueLaunch').addEventListener('click', () => {
+      closeMobileMenu();
+      window.setTimeout(openVenueSelector, 180);
     });
 
     const submitSearch = input => {
@@ -1907,6 +2081,24 @@
       if (calendarButton) {
         const nextDate = calendarButton.dataset.calendarDate;
         updateUrl({date:nextDate === state.date ? null : nextDate});
+      }
+      const mobileCalendarButton = event.target.closest('[data-mobile-calendar-date]');
+      if (mobileCalendarButton) {
+        const nextDate = mobileCalendarButton.dataset.mobileCalendarDate;
+        updateUrl({date:nextDate === state.date ? null : nextDate});
+        return;
+      }
+      const openMobileFilterButton = event.target.closest('[data-open-mobile-filter]');
+      if (openMobileFilterButton) {
+        event.preventDefault();
+        openMobileMenu(openMobileFilterButton.dataset.openMobileFilter || 'all');
+        return;
+      }
+      const mobileRegionChoice = event.target.closest('[data-mobile-region-choice]');
+      if (mobileRegionChoice) {
+        const region = mobileRegionChoice.dataset.mobileRegionChoice;
+        updateUrl({region:state.region === region ? null : region, venue:null});
+        return;
       }
 
       const venueChoice = event.target.closest('[data-venue-choice]');

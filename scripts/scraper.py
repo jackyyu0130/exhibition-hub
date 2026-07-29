@@ -72,12 +72,12 @@ CATEGORY_CODE_MAP = {
 CATEGORY_FEEDS = tuple(CATEGORY_CODE_MAP)
 ALLOWED_CATEGORIES = (
     "快閃", "美術", "攝影", "設計", "動漫", "歷史文化", "自然科學", "親子",
-    "音樂", "表演", "舞蹈", "電影", "市集", "競賽", "科技", "其他",
+    "演唱會", "音樂", "表演", "舞蹈", "電影", "市集", "競賽", "科技", "其他",
 )
 CATEGORY_ALIASES = {
     "展覽": "美術", "展覽資訊": "美術", "藝術": "美術", "視覺藝術": "美術",
     "戲劇": "表演", "戲劇表演": "表演", "綜藝": "表演", "綜藝活動": "表演",
-    "音樂表演": "音樂", "獨立音樂": "音樂", "演唱會": "音樂",
+    "音樂表演": "音樂", "獨立音樂": "音樂", "演唱會": "演唱會",
     "講座資訊": "其他", "親子活動": "親子", "電影欣賞": "電影",
     "競賽活動": "競賽", "徵選活動": "其他", "徵選": "其他", "商展": "其他",
     "研習課程": "其他", "其他藝文資訊": "其他",
@@ -104,6 +104,7 @@ REGION_CENTERS: dict[str, tuple[float, float, float]] = {
 }
 
 KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
+    ("演唱會", re.compile(r"演唱會|巡迴演唱|世界巡演|巡演(?:台北|高雄|台中|臺北|臺中)?站|fan\s*concert|live\s+in\s+(?:taipei|kaohsiung|taichung)|(?:concert|tour)\s*(?:20\d{2})?", re.I)),
     ("快閃", re.compile(r"快閃|期間限定|popup|pop-up", re.I)),
     ("攝影", re.compile(r"攝影|影像展|photo(?:graphy)?", re.I)),
     ("動漫", re.compile(r"動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展", re.I)),
@@ -112,10 +113,10 @@ KEYWORD_RULES: list[tuple[str, re.Pattern[str]]] = [
     ("科技", re.compile(r"科技|人工智慧|\bAI\b|數位科技|半導體|資訊展|電腦展|機器人", re.I)),
     ("設計", re.compile(r"設計|建築|工藝|時尚|家居|文具|design", re.I)),
     ("舞蹈", re.compile(r"舞蹈|舞作|芭蕾", re.I)),
-    ("音樂", re.compile(r"音樂|演唱會|樂團|管弦|獨立音樂|concert", re.I)),
+    ("音樂", re.compile(r"音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|音樂祭", re.I)),
     ("表演", re.compile(r"戲劇|劇場|表演|歌劇|馬戲|音樂劇|偶戲", re.I)),
     ("電影", re.compile(r"電影|(?<!攝)影展|放映", re.I)),
-    ("市集", re.compile(r"市集|祭典|嘉年華|展售|商品展|食品展|旅展|文創攤位", re.I)),
+    ("市集", re.compile(r"市集|嘉年華|展售|商品展|食品展|旅展|文創攤位", re.I)),
     ("親子", re.compile(r"親子|兒童|家庭|幼兒", re.I)),
     ("競賽", re.compile(r"競賽|比賽|大賽|徵件比賽", re.I)),
     ("美術", re.compile(r"美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|視覺藝術|藝術博覽會|插畫博覽會", re.I)),
@@ -634,6 +635,30 @@ def normalize_categories(raw_category: Any, title: str, description: str, feed_c
             categories.insert(0, category)
 
     cleaned = [category for category in categories if category in ALLOWED_CATEGORIES and category != "其他"]
+    singer_concert = KEYWORD_RULES[0][1].search(combined)
+    music_theatre = re.search(r"音樂劇|歌劇|舞台劇|劇場|戲劇|讀劇|偶戲|馬戲", combined, re.I)
+    anime_event = re.search(r"動漫|動畫|漫畫|卡通|anime|公仔|角色展|模型展|IP(?:展|祭|活動)", combined, re.I)
+    classical_music = re.search(r"音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|音樂祭", combined, re.I)
+
+    def prioritize(category: str) -> None:
+        nonlocal cleaned
+        if category in cleaned:
+            cleaned = [category, *[item for item in cleaned if item != category]]
+
+    if singer_concert:
+        cleaned = [item for item in cleaned if item != "音樂"]
+        if "演唱會" not in cleaned:
+            cleaned.insert(0, "演唱會")
+        prioritize("演唱會")
+    elif music_theatre:
+        cleaned = [item for item in cleaned if item != "音樂"]
+        if "表演" not in cleaned:
+            cleaned.insert(0, "表演")
+        prioritize("表演")
+    elif anime_event:
+        prioritize("動漫")
+    elif classical_music:
+        prioritize("音樂")
     if not cleaned:
         cleaned = ["其他"] if saw_other or combined.strip() else ["其他"]
     return list(dict.fromkeys(cleaned))[:3]

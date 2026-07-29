@@ -7,8 +7,9 @@ from typing import Any, Mapping
 from exhibition_hub.classifiers.content_types import (
     classify_event,
 )
+from ..image_quality import clean_image_urls
 
-from .normalization import unique_strings
+from .normalization import unique_strings, unique_urls
 
 
 _HINT_TO_CATEGORY = {
@@ -88,12 +89,12 @@ def collector_record_to_event(
         or raw.get("detailUrl")
         or ""
     )
-    images = unique_strings(
+    images, _rejected_images = clean_image_urls(unique_urls(
         [
             raw.get("imageUrl"),
             *(raw.get("imageUrls") or []),
         ]
-    )
+    ))
     category = _HINT_TO_CATEGORY.get(
         str(raw.get("contentTypeHint") or ""),
         "其他",
@@ -129,7 +130,7 @@ def collector_record_to_event(
         "description": str(raw.get("description") or ""),
         "sourceUrl": official_url,
         "officialUrl": official_url,
-        "sourceUrls": unique_strings(
+        "sourceUrls": unique_urls(
             [
                 official_url,
                 *(raw.get("externalUrls") or []),

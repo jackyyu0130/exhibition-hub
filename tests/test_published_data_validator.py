@@ -156,6 +156,26 @@ class PublishedDataValidatorTests(unittest.TestCase):
             result["failedGateIds"],
         )
 
+    def test_generic_image_and_facebook_reference_are_rejected(self):
+        payload = build_payload()
+        payload["events"][0]["image"] = (
+            "https://www.opentix.life/_nuxt/img/flags.9c96e0ed.png"
+        )
+        payload["events"][0]["images"] = [payload["events"][0]["image"]]
+        payload["events"][0]["sourceUrls"] = [
+            "https://www.facebook.com/groups/example"
+        ]
+        payload["stats"]["multiImageCount"] = 0
+        result = evaluate(
+            payload,
+            minimum_events=1,
+            require_published=False,
+            source_id="",
+        )
+        self.assertFalse(result["passed"])
+        self.assertIn("suspiciousImagesAbsent", result["failedGateIds"])
+        self.assertIn("facebookReferencesAbsent", result["failedGateIds"])
+
 
 if __name__ == "__main__":
     unittest.main()

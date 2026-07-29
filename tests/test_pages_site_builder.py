@@ -23,6 +23,8 @@ class PagesSiteBuilderTests(unittest.TestCase):
             (root / "assets/app.js").write_text("ok", encoding="utf-8")
             (root / "data/exhibitions.enriched.json").write_text("{}", encoding="utf-8")
             (root / "data/exhibitions.json").write_text("{}", encoding="utf-8")
+            (root / "data/venues.json").write_text("{}", encoding="utf-8")
+            (root / "data/northern_venue_matrix.json").write_text("{}", encoding="utf-8")
             (root / "scripts/private.py").write_text("no", encoding="utf-8")
             (root / "docs/private.md").write_text("no", encoding="utf-8")
 
@@ -31,6 +33,8 @@ class PagesSiteBuilderTests(unittest.TestCase):
             self.assertTrue((output / "index.html").exists())
             self.assertTrue((output / "assets/app.js").exists())
             self.assertTrue((output / "data/exhibitions.enriched.json").exists())
+            self.assertTrue((output / "data/venues.json").exists())
+            self.assertTrue((output / "data/northern_venue_matrix.json").exists())
             self.assertFalse((output / "scripts").exists())
             self.assertFalse((output / "docs").exists())
             self.assertFalse((output / "tests").exists())

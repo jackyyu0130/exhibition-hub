@@ -1,21 +1,28 @@
-Exhibition Hub V6.3.1｜最短安全更新流程
+Exhibition Hub V6.4.0｜最短安全更新流程
+
+建議更新方式：先 develop、測試成功後再合併 main。
 
 1. GitHub Desktop 左上 Current Repository 選 exhibition-hub。
-2. 上方 Current Branch 選 develop；沒有 develop 才按 New Branch 建立並 Publish branch。
-3. 上方按 Fetch origin；若顯示 Pull origin，先按 Pull origin。
-4. Repository → Show in Finder。
-5. 解壓縮 Exhibition-Hub-V6.3.1-full-replacement.zip。
-6. 打開 ZIP 內 exhibition-hub-main 資料夾，複製「裡面的全部內容」到本機 exhibition-hub 根目錄並覆蓋同名檔案；不要把外層資料夾再包進專案。
-7. GitHub Desktop 左側 Changes 檢查後，在 Summary 輸入：
-   Fix V6.3.1 validation and frontend assets
-8. 點 Commit to develop，再點 Push origin。
-9. GitHub 網頁 → Actions → Validate development changes，等待必要檢查全綠。
-10. Pull requests → New pull request：
-    base: main
-    compare: develop
-    點 Create pull request → Merge pull request → Confirm merge。
-11. Actions → Update data and deploy site，等待綠色勾勾。
-12. 開啟 https://twexhibition.com/，Mac 按 Cmd+Shift+R；Windows 按 Ctrl+F5。
+2. 上方 Current Branch 切換 develop。
+3. 若出現未提交變更：
+   - 只看到 .DS_Store：取消勾選或在 Finder 刪除後再繼續。
+   - 有自己正在修改的檔案：先 Commit 到目前分支，不要直接覆蓋。
+4. 解壓縮 Exhibition-Hub-V6.4.0-full-replacement.zip。
+5. 開啟 ZIP 內 exhibition-hub-v6.4.0-full-replacement 資料夾，選取「裡面的所有內容」，貼到：
+   /Users/jacky_yu/Documents/GitHub/exhibition-hub
+6. Finder 詢問同名檔案時，選「全部取代」；不要把外層資料夾再套進 repository。
+7. 回 GitHub Desktop，確認 Current Branch 仍是 develop。
+8. 左下 Summary 輸入：
+   Apply Exhibition Hub V6.4.0 mobile filters and media fixes
+9. 點 Commit to develop。
+10. 點 Push origin。
+11. GitHub 網頁 → exhibition-hub → Pull requests → 開啟這次 develop PR。
+12. 等所有檢查綠色，再點 Merge pull request → Confirm merge。
+13. GitHub → Actions → Update data and deploy site，確認 main 的最新執行為綠色 Success。
+14. 點執行結果中的 https://twexhibition.com/，或等待 2～10 分鐘後重新載入。
+15. 瀏覽器使用無痕視窗，或強制重新整理：
+    macOS：Command + Shift + R
+    Windows：Ctrl + F5
 
-完整按鈕位置、網頁分批上傳、衝突、檢查與復原：
-REPLACEMENT_GUIDE_V6.3.1_ZH-TW.md
+完整按鈕位置、GitHub 網頁上傳備案、檢查項目、衝突處理與復原方法：
+REPLACEMENT_GUIDE_V6.4.0_ZH-TW.md
