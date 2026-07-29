@@ -1,4 +1,9 @@
-Taiwan Exhibition Journal V6.3.1
+Taiwan Exhibition Journal V6.3.2
+
+V6.3.2 修正重點：
+- GitHub Actions 在執行測試前先清洗 PR 合併來源中的舊 Banner／介面圖片
+- 已用造成錯誤的原始資料重現 1,459 個候選，清洗後降為 0 並通過發布資料測試
+- develop 與正式部署工作流程同步加入相同預先清洗步驟
 
 V6.3.1 修正重點：
 - 修正 develop 驗證時「新版測試已提交、舊版前端與 URL 程式仍留在分支」造成的 6 項失敗
