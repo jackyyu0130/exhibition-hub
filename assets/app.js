@@ -117,6 +117,8 @@
     lastRenderedDate: null,
     heroTransitionTimer: null,
     heroAutoAdvanceTimer: null,
+    heroIntroTimer: null,
+    heroHasEntered: false,
     filterResultsTimer: null,
     lastHomeFilterKey: '',
     revealObserver: null,
@@ -1042,13 +1044,19 @@
     if (!stack) return;
     window.clearTimeout(state.heroTransitionTimer);
     window.clearTimeout(state.heroAutoAdvanceTimer);
+    window.clearTimeout(state.heroIntroTimer);
     const pool = heroPool();
     if (!pool.length) return;
     const firstIndex = heroIndex();
     const secondIndex = heroIndex(1);
     const thirdIndex = heroIndex(2);
+    const isIntro = !settle && !state.heroHasEntered;
     state.mobilePreviewTicket = null;
-    stack.className = settle ? 'hero-ticket-stack is-resetting' : 'hero-ticket-stack';
+    stack.className = settle
+      ? 'hero-ticket-stack is-resetting'
+      : isIntro
+        ? 'hero-ticket-stack is-entering'
+        : 'hero-ticket-stack';
     stack.innerHTML = [
       heroTicketSlideMarkup(pool[firstIndex], 1, firstIndex + 1, '', heroPoseIndex(firstIndex)),
       heroTicketSlideMarkup(pool[secondIndex], 2, secondIndex + 1, '', heroPoseIndex(secondIndex)),
@@ -1056,6 +1064,11 @@
     ].join('');
     if (settle) {
       requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.remove('is-resetting')));
+    } else if (isIntro) {
+      state.heroHasEntered = true;
+      state.heroIntroTimer = window.setTimeout(() => {
+        stack.classList.remove('is-entering');
+      }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 3400);
     }
     updateHeroStatus();
     scheduleHeroAutoAdvance();
