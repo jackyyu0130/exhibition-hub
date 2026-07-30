@@ -6396,3 +6396,152 @@ body {
     transition: none !important;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R9 — smaller translucent arrows, fixed type scale,
+   slower motion, and higher mobile front ticket
+   ====================================================================== */
+.hero-ticket-slide {
+  transition:
+    left 1.4s cubic-bezier(.22,.72,.18,1),
+    top 1.4s cubic-bezier(.22,.72,.18,1),
+    bottom 1.4s cubic-bezier(.22,.72,.18,1),
+    width 1.4s cubic-bezier(.22,.72,.18,1),
+    opacity .95s ease;
+}
+.hero-ticket-stack.is-resetting .hero-ticket-slide,
+.hero-ticket-stack.is-resetting .hero-ticket-card {
+  transition: none !important;
+}
+
+/* Keep every visible ticket on one consistent typography scale. */
+.hero-ticket-slide .ticket-main {
+  margin: 8px 0 7px;
+  grid-template-columns: 44px minmax(0,1fr);
+  gap: 10px;
+}
+.hero-ticket-slide .ticket-index {
+  font-size: 32px;
+}
+.hero-ticket-slide .ticket-main h2 {
+  margin: 0 0 3px;
+  font-size: 17px;
+  line-height: 1.28;
+}
+.hero-ticket-slide .ticket-main small,
+.hero-ticket-slide .ticket-main p,
+.hero-ticket-slide .ticket-topline,
+.hero-ticket-slide .ticket-footer {
+  font-size: 8.6px;
+}
+.hero-ticket-slot-2 .ticket-main,
+.hero-ticket-slot-3 .ticket-main {
+  grid-template-columns: 44px minmax(0,1fr);
+  gap: 10px;
+}
+.hero-ticket-slot-2 .ticket-index,
+.hero-ticket-slot-3 .ticket-index {
+  font-size: 32px;
+}
+.hero-ticket-slot-2 .ticket-main h2,
+.hero-ticket-slot-3 .ticket-main h2 {
+  font-size: 17px;
+}
+.hero-ticket-slot-2 .ticket-main small,
+.hero-ticket-slot-2 .ticket-main p,
+.hero-ticket-slot-2 .ticket-topline,
+.hero-ticket-slot-2 .ticket-footer,
+.hero-ticket-slot-3 .ticket-main small,
+.hero-ticket-slot-3 .ticket-main p,
+.hero-ticket-slot-3 .ticket-topline,
+.hero-ticket-slot-3 .ticket-footer {
+  font-size: 8.6px;
+}
+
+/* Arrow controls: half-size, translucent by default, solid on hover. */
+.hero-carousel-arrow {
+  width: 32px;
+  height: 32px;
+  border-color: rgba(116,91,65,.2);
+  background: rgba(255,251,245,.5);
+  color: rgba(111,82,59,.66);
+  box-shadow: 0 8px 18px rgba(61,44,28,.08);
+  font-size: 20px;
+  opacity: .58;
+  backdrop-filter: blur(8px);
+  transition:
+    opacity .24s ease,
+    background .24s ease,
+    color .24s ease,
+    border-color .24s ease,
+    box-shadow .24s ease,
+    transform .24s ease;
+}
+.hero-carousel-arrow:hover,
+.hero-carousel-arrow:focus-visible {
+  opacity: 1;
+  background: rgba(255,251,245,.98);
+  color: #6f523b;
+  border-color: rgba(143,95,60,.42);
+  box-shadow: 0 10px 22px rgba(61,44,28,.14);
+  transform: translateY(-50%);
+}
+.hero-carousel-arrow:disabled {
+  opacity: .3;
+}
+.hero-carousel-next {
+  left: -48px;
+}
+.hero-carousel-previous {
+  right: -48px;
+}
+
+@media (max-width: 1120px) {
+  .hero-carousel-next { left: -42px; }
+  .hero-carousel-previous { right: -42px; }
+}
+
+@media (max-width: 760px) {
+  /* Move the front ticket upward so it overlaps the second ticket slightly. */
+  .hero-ticket-slot-1,
+  .hero-ticket-stack.is-moving-next .hero-ticket-promote-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-incoming-previous {
+    left: 16%;
+    top: 198px;
+    width: 84%;
+  }
+
+  /* Keep mobile ticket typography consistent across all three layers. */
+  .hero-ticket-slide .ticket-main,
+  .hero-ticket-slot-2 .ticket-main,
+  .hero-ticket-slot-3 .ticket-main {
+    margin: 6px 0 5px;
+    grid-template-columns: 34px minmax(0,1fr);
+    gap: 7px;
+  }
+  .hero-ticket-slide .ticket-index,
+  .hero-ticket-slot-2 .ticket-index,
+  .hero-ticket-slot-3 .ticket-index {
+    font-size: 25px;
+  }
+  .hero-ticket-slide .ticket-main h2,
+  .hero-ticket-slot-2 .ticket-main h2,
+  .hero-ticket-slot-3 .ticket-main h2 {
+    font-size: 11px;
+    line-height: 1.23;
+  }
+  .hero-ticket-slide .ticket-main small,
+  .hero-ticket-slide .ticket-main p,
+  .hero-ticket-slide .ticket-topline,
+  .hero-ticket-slide .ticket-footer,
+  .hero-ticket-slot-2 .ticket-main small,
+  .hero-ticket-slot-2 .ticket-main p,
+  .hero-ticket-slot-2 .ticket-topline,
+  .hero-ticket-slot-2 .ticket-footer,
+  .hero-ticket-slot-3 .ticket-main small,
+  .hero-ticket-slot-3 .ticket-main p,
+  .hero-ticket-slot-3 .ticket-topline,
+  .hero-ticket-slot-3 .ticket-footer {
+    font-size: 5.8px;
+  }
+}
