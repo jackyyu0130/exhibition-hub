@@ -14,7 +14,7 @@ class V642VisualRegressionTests(unittest.TestCase):
             (ROOT / "assets" / "taiwan-exhibition-journal-logo-v10.png").is_file()
         )
         self.assertIn(
-            "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r4",
+            "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r5",
             HTML,
         )
         self.assertIn('class="brand-logo-fallback"', HTML)
@@ -72,10 +72,10 @@ class V642VisualRegressionTests(unittest.TestCase):
 
     def test_all_frontend_assets_share_the_same_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r4",
-            "assets/app.js?v=6.5.0-r4",
-            "assets/favicon-48.png?v=6.5.0-r4",
-            "assets/apple-touch-icon.png?v=6.5.0-r4",
+            "assets/styles.css?v=6.5.0-r5",
+            "assets/app.js?v=6.5.0-r5",
+            "assets/favicon-48.png?v=6.5.0-r5",
+            "assets/apple-touch-icon.png?v=6.5.0-r5",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)

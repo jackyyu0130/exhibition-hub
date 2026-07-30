@@ -1,0 +1,48 @@
+{
+  "version": "6.5.0-R5",
+  "name": "Hero 與頁尾細節修正版",
+  "baseVersion": "6.5.0-R3",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "recommendedPackage": "Exhibition-Hub-V6.5.0-R5-hero-home-footer-safe-update.zip",
+  "fullReplacementPackage": "Exhibition-Hub-V6.5.0-R5-full-replacement.zip",
+  "commitAndPullRequestTitle": "Apply Exhibition Hub V6.5.0-R5 hero and footer refinement",
+  "releasePurpose": "Refine the Refine the Hero postcard and ticket scale/placement, remove carousel settling jitter, simplify footer social presentation, and keep the update limited to frontend assets and alignment tests.",
+  "keyFixes": [
+    "Desktop Hero postcard shifts further toward the upper-left while the main ticket shifts lower-right with lighter overlap",
+    "Main ticket becomes flatter and slightly longer to feel closer to a real admission ticket",
+    "Desktop left and right carousel controls sit further outside the visual frame",
+    "Mobile Hero keeps the same composition logic without showing arrow buttons",
+    "Queued and background ticket groups keep stronger soft blur until they move forward",
+    "Mobile home quick-action tiles now use four layered warm color families to reduce visual fatigue",
+    "Footer now includes Facebook, Instagram, Threads and Mail outbound links",
+    "Frontend cache version is bumped to 6.5.0-r5"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/styles.css",
+    "VERSION.txt",
+    "MANIFEST_V6.5.0-R5.json",
+    "tests/test_status_and_admission_filters.py",
+    "tests/test_v650_postcard_carousel.py",
+    "tests/test_v642_visual_regressions.py",
+    "tests/test_v641_mobile_drawers.py",
+    "tests/test_calendar_and_compact_categories.py",
+    "tests/test_v650_r2_cumulative_release.py",
+    "tests/test_explore_alignment_and_sort_control.py"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    ".github/",
+    "all generated exhibition JSON files"
+  ],
+  "validation": {
+    "javascriptSyntax": "not-separately-executed-static-html-site",
+    "pythonSyntax": "passed-via-unittest-discovery",
+    "automatedTests": 346,
+    "automatedTestResult": "passed-local-check",
+    "safePackageContainsDataDirectory": false,
+    "safePackageContainsWorkflowDirectory": false
+  }
+}
