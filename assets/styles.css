@@ -6610,3 +6610,82 @@ body {
     animation: none !important;
   }
 }
+
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R10.1 — fixed Threads mark and unified hero stamp
+   ====================================================================== */
+
+/* Footer: use the official Threads mark reference image, centered like the other icons. */
+.footer-social-icon img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  object-fit: contain;
+}
+.footer-social-icon[aria-label="Threads"] img {
+  width: 19px;
+  height: 19px;
+}
+
+/* Hero: lock the "展" watermark to one constant size in every visible slot.
+   This removes the extra shrink/jump after the ticket finishes moving. */
+.hero-ticket-slide .ticket-watermark,
+.hero-ticket-slot-1 .ticket-watermark,
+.hero-ticket-slot-2 .ticket-watermark,
+.hero-ticket-slot-3 .ticket-watermark,
+.hero-ticket-stack.is-moving-next .ticket-watermark,
+.hero-ticket-stack.is-moving-previous .ticket-watermark,
+.hero-ticket-stack.is-entering .ticket-watermark {
+  width: 72px !important;
+  height: 72px !important;
+  right: 18px !important;
+  top: 34px !important;
+  transform: rotate(-11deg) !important;
+}
+.hero-ticket-slide .ticket-watermark::before,
+.hero-ticket-slot-1 .ticket-watermark::before,
+.hero-ticket-slot-2 .ticket-watermark::before,
+.hero-ticket-slot-3 .ticket-watermark::before {
+  inset: 6px;
+}
+.hero-ticket-slide .ticket-watermark b,
+.hero-ticket-slot-1 .ticket-watermark b,
+.hero-ticket-slot-2 .ticket-watermark b,
+.hero-ticket-slot-3 .ticket-watermark b {
+  font-size: 25px !important;
+}
+.hero-ticket-slide .ticket-watermark i,
+.hero-ticket-slot-1 .ticket-watermark i,
+.hero-ticket-slot-2 .ticket-watermark i,
+.hero-ticket-slot-3 .ticket-watermark i {
+  margin-top: 2px;
+  font-size: 7px !important;
+}
+
+@media (max-width: 760px) {
+  .hero-ticket-slide .ticket-watermark,
+  .hero-ticket-slot-1 .ticket-watermark,
+  .hero-ticket-slot-2 .ticket-watermark,
+  .hero-ticket-slot-3 .ticket-watermark,
+  .hero-ticket-stack.is-moving-next .ticket-watermark,
+  .hero-ticket-stack.is-moving-previous .ticket-watermark,
+  .hero-ticket-stack.is-entering .ticket-watermark {
+    width: 56px !important;
+    height: 56px !important;
+    right: 12px !important;
+    top: 26px !important;
+  }
+  .hero-ticket-slide .ticket-watermark b,
+  .hero-ticket-slot-1 .ticket-watermark b,
+  .hero-ticket-slot-2 .ticket-watermark b,
+  .hero-ticket-slot-3 .ticket-watermark b {
+    font-size: 20px !important;
+  }
+  .hero-ticket-slide .ticket-watermark i,
+  .hero-ticket-slot-1 .ticket-watermark i,
+  .hero-ticket-slot-2 .ticket-watermark i,
+  .hero-ticket-slot-3 .ticket-watermark i {
+    font-size: 6px !important;
+  }
+}
