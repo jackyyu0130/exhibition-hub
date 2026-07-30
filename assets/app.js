@@ -993,12 +993,8 @@
     return ((absoluteIndex % 3) + 3) % 3 + 1;
   }
 
-  function heroPairMarkup(event, slot, itemNumber, motionClass = '', poseIndex = heroPoseIndex(itemNumber - 1)) {
-    return `<article class="hero-exhibit-pair hero-pair-slot-${slot} ${motionClass}" data-ticket-key="${escapeHtml(eventKey(event))}" data-pose="${poseIndex}">
-      <a class="hero-postcard" href="${eventHref(event)}" aria-label="查看展覽圖片與資訊：${escapeHtml(event.title)}">
-        ${imageMarkup(event, 'hero-postcard-image')}
-        <span class="hero-postcard-caption"><b>${escapeHtml(event.title)}</b><small>${escapeHtml(event.region || eventVenueCompactLabel(event))}</small></span>
-      </a>
+  function heroTicketSlideMarkup(event, slot, itemNumber, motionClass = '', poseIndex = heroPoseIndex(itemNumber - 1)) {
+    return `<article class="hero-ticket-slide hero-ticket-slot-${slot} ${motionClass}" data-ticket-key="${escapeHtml(eventKey(event))}" data-pose="${poseIndex}">
       ${heroTicketMarkup(event, itemNumber)}
     </article>`;
   }
@@ -1024,9 +1020,8 @@
   function updateHeroStatus() {
     const status = $('#heroCarouselStatus');
     if (!status || !state.heroPool.length) return;
-    const first = heroIndex();
-    const second = heroIndex(1);
-    status.textContent = `目前顯示第 ${first + 1} 與第 ${second + 1} 組，共 ${state.heroPool.length} 組`;
+    const visible = [heroIndex(), heroIndex(1), heroIndex(2)].map(index => index + 1);
+    status.textContent = `目前顯示第 ${visible.join('、')} 張票券，共 ${state.heroPool.length} 張`;
   }
 
   function renderHeroTickets() {
@@ -1037,11 +1032,13 @@
     if (!pool.length) return;
     const firstIndex = heroIndex();
     const secondIndex = heroIndex(1);
+    const thirdIndex = heroIndex(2);
     state.mobilePreviewTicket = null;
     stack.className = 'hero-ticket-stack';
     stack.innerHTML = [
-      heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, '', heroPoseIndex(firstIndex)),
-      heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, '', heroPoseIndex(secondIndex))
+      heroTicketSlideMarkup(pool[firstIndex], 1, firstIndex + 1, '', heroPoseIndex(firstIndex)),
+      heroTicketSlideMarkup(pool[secondIndex], 2, secondIndex + 1, '', heroPoseIndex(secondIndex)),
+      heroTicketSlideMarkup(pool[thirdIndex], 3, thirdIndex + 1, '', heroPoseIndex(thirdIndex))
     ].join('');
     updateHeroStatus();
   }
@@ -1049,26 +1046,29 @@
   function changeHeroPair(direction) {
     const stack = $('#heroTicketStack');
     const pool = heroPool();
-    if (!stack || pool.length < 2 || state.heroAnimating) return;
+    if (!stack || pool.length < 3 || state.heroAnimating) return;
     const motion = direction > 0 ? 'next' : 'previous';
     const firstIndex = heroIndex();
     const secondIndex = heroIndex(1);
-    const incomingIndex = direction > 0 ? heroIndex(2) : heroIndex(-1);
+    const thirdIndex = heroIndex(2);
+    const incomingIndex = direction > 0 ? heroIndex(3) : heroIndex(-1);
     state.heroAnimating = true;
     state.mobilePreviewTicket = null;
     $('#heroNextButton')?.setAttribute('disabled', '');
     $('#heroPreviousButton')?.setAttribute('disabled', '');
     if (direction > 0) {
       stack.innerHTML = [
-        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-exit-next', heroPoseIndex(firstIndex)),
-        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-promote-next', heroPoseIndex(secondIndex)),
-        heroPairMarkup(pool[incomingIndex], 3, incomingIndex + 1, 'hero-pair-incoming-next', heroPoseIndex(incomingIndex))
+        heroTicketSlideMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-ticket-exit-next', heroPoseIndex(firstIndex)),
+        heroTicketSlideMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-ticket-promote-next', heroPoseIndex(secondIndex)),
+        heroTicketSlideMarkup(pool[thirdIndex], 3, thirdIndex + 1, 'hero-ticket-demote-next', heroPoseIndex(thirdIndex)),
+        heroTicketSlideMarkup(pool[incomingIndex], 4, incomingIndex + 1, 'hero-ticket-incoming-next', heroPoseIndex(incomingIndex))
       ].join('');
     } else {
       stack.innerHTML = [
-        heroPairMarkup(pool[incomingIndex], 0, incomingIndex + 1, 'hero-pair-incoming-previous', heroPoseIndex(incomingIndex)),
-        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-demote-previous', heroPoseIndex(firstIndex)),
-        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-exit-previous', heroPoseIndex(secondIndex))
+        heroTicketSlideMarkup(pool[incomingIndex], 0, incomingIndex + 1, 'hero-ticket-incoming-previous', heroPoseIndex(incomingIndex)),
+        heroTicketSlideMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-ticket-demote-previous-a', heroPoseIndex(firstIndex)),
+        heroTicketSlideMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-ticket-demote-previous-b', heroPoseIndex(secondIndex)),
+        heroTicketSlideMarkup(pool[thirdIndex], 3, thirdIndex + 1, 'hero-ticket-exit-previous', heroPoseIndex(thirdIndex))
       ].join('');
     }
     requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.add(`is-moving-${motion}`)));
@@ -1078,7 +1078,7 @@
       $('#heroNextButton')?.removeAttribute('disabled');
       $('#heroPreviousButton')?.removeAttribute('disabled');
       renderHeroTickets();
-    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 760);
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 720);
   }
 
   const HOME_STATUS_COPY = {

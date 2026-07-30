@@ -1,0 +1,32 @@
+{
+  "version": "6.5.0-R7",
+  "name": "三張票券 Hero 與緊湊頁尾修正版",
+  "baseVersion": "6.5.0-R6",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "recommendedPackage": "Exhibition-Hub-V6.5.0-R7-three-ticket-hero-compact-footer-safe-update.zip",
+  "releasePurpose": "Restore the hero to a three-ticket carousel without postcards, bring the arrows back, make the left arrow advance and the right arrow go backward, and compact the footer layout so the page height feels tighter.",
+  "keyFixes": [
+    "Hero removes exhibition postcards and returns to a three-ticket composition",
+    "Desktop arrows are restored outside the hero frame",
+    "Left arrow advances to the next ticket group; right arrow returns to the previous group",
+    "Ticket motion now follows a ticket queue: front ticket leaves, middle tickets move forward, and a new ticket enters from the right",
+    "Ticket proportions are adjusted to feel more like real admission tickets",
+    "Mobile hero keeps the same three-ticket logic with swipe interaction",
+    "Footer columns are reorganized and vertical whitespace is reduced",
+    "Frontend cache version is bumped to 6.5.0-r7"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "VERSION.txt",
+    "MANIFEST_V6.5.0-R7.json"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    ".github/",
+    "tests/"
+  ]
+}
