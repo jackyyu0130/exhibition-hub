@@ -1,3 +1,24 @@
-Exhibition Hub V6.5.0-R5
+# Taiwan Exhibition Journal — V6.5.0-R3
 
-This release refines the Hero postcard/ticket composition, removes the small settling jitter during carousel transitions, and simplifies the footer social area into icon-only Facebook/Instagram/Threads with Mail shown below.
+這個版本是 **Hero 票券輪播微調版**，重點是改善首頁 Hero 區塊中「票券＋明信片」的視覺構圖與互動表現。
+
+## 這次更新內容
+
+- Hero 左右箭頭改為 `＜ / ＞` 視覺樣式，並外移至框外。
+- 票券比例調整得更扁、更長，更接近真實票券。
+- 票券與明信片重疊量降低，不再彼此遮擋太多。
+- 第二組與未登場卡片加入輕微模糊，移動到前景時恢復清晰。
+- 三種票券／明信片擺放姿態會依序輪替使用。
+- 切換時加入更自然的角度變化感。
+- 手機版同步調整票券尺寸與擺位。
+- 保留 R2 既有的滑動切換、四個首頁快捷入口與華山修復。
+
+## 建議使用方式
+
+如果你目前正式站已經是 **V6.5.0-R2**，請直接使用：
+
+- `Exhibition-Hub-V6.5.0-R3-ticket-carousel-refinement-safe-update.zip`
+
+如果你想整包覆蓋，也可以使用：
+
+- `Exhibition-Hub-V6.5.0-R3-full-replacement.zip`
