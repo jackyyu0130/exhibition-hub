@@ -5632,3 +5632,170 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-exhibit-pair { transition-duration: .01ms !important; }
 }
+
+
+/* ==========================================================================
+   Exhibition Hub V6.5.0-R6 — external controls and bottom-aligned hero ticket
+   ========================================================================== */
+@media (min-width: 761px) {
+  .hero-visual {
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+  }
+  .hero-paper-collage {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+  .hero-visual > .hero-carousel-arrow {
+    top: 50%;
+  }
+  .hero-visual > .hero-carousel-next { left: -72px; }
+  .hero-visual > .hero-carousel-previous { right: -72px; }
+
+  .hero-pair-slot-1 {
+    left: 2%;
+    top: 8%;
+    width: 88%;
+    height: 78%;
+  }
+  .hero-pair-slot-2 {
+    left: 58%;
+    top: 4%;
+    width: 48%;
+    height: 66%;
+  }
+  .hero-pair-slot-3 {
+    left: 112%;
+    top: 5%;
+    width: 48%;
+    height: 66%;
+  }
+  .hero-exhibit-pair[data-pose="1"] {
+    --postcard-left: 0%;
+    --postcard-top: -3%;
+    --postcard-width: 72%;
+    --postcard-rotate: -4.2deg;
+    --ticket-left: 18%;
+    --ticket-top: 78%;
+    --ticket-width: 88%;
+    --ticket-rotate: -1deg;
+  }
+  .hero-exhibit-pair[data-pose="2"] {
+    --postcard-left: 2%;
+    --postcard-top: -2%;
+    --postcard-width: 60%;
+    --postcard-rotate: 3.4deg;
+    --ticket-left: 25%;
+    --ticket-top: 22%;
+    --ticket-width: 76%;
+    --ticket-rotate: 1.3deg;
+  }
+  .hero-exhibit-pair[data-pose="3"] {
+    --postcard-left: 1%;
+    --postcard-top: 0%;
+    --postcard-width: 63%;
+    --postcard-rotate: -2.2deg;
+    --ticket-left: 20%;
+    --ticket-top: 70%;
+    --ticket-width: 84%;
+    --ticket-rotate: -1.1deg;
+  }
+  .hero-exhibit-pair .hero-ticket-card {
+    min-height: 92px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+  .hero-ticket-stack.is-moving-next .hero-pair-promote-next,
+  .hero-ticket-stack.is-moving-previous .hero-pair-incoming-previous {
+    left: 2%;
+    top: 8%;
+    width: 88%;
+    height: 78%;
+  }
+  .hero-ticket-stack.is-moving-next .hero-pair-incoming-next,
+  .hero-ticket-stack.is-moving-previous .hero-pair-demote-previous {
+    left: 58%;
+    top: 4%;
+    width: 48%;
+    height: 66%;
+  }
+}
+
+/* The pair is re-rendered after each movement. Keeping transforms static avoids
+   the tiny settle/jump after the final frame while blur and position still animate. */
+.hero-postcard,
+.hero-exhibit-pair .hero-ticket-card {
+  transition: filter .56s ease, box-shadow .2s ease, opacity .56s ease;
+}
+
+@media (max-width: 760px) {
+  .hero-pair-slot-1 {
+    left: 1%;
+    top: 7%;
+    width: 98%;
+    height: 84%;
+  }
+  .hero-pair-slot-2 {
+    left: 53%;
+    top: 4%;
+    width: 53%;
+    height: 66%;
+  }
+  .hero-pair-slot-3 {
+    left: 108%;
+    top: 6%;
+    width: 53%;
+    height: 66%;
+  }
+  .hero-exhibit-pair[data-pose="1"] {
+    --postcard-left: 0%;
+    --postcard-top: -3%;
+    --postcard-width: 73%;
+    --postcard-rotate: -3.8deg;
+    --ticket-left: 16%;
+    --ticket-top: 79%;
+    --ticket-width: 90%;
+    --ticket-rotate: -.8deg;
+  }
+  .hero-exhibit-pair[data-pose="2"] {
+    --postcard-left: 2%;
+    --postcard-top: -2%;
+    --postcard-width: 61%;
+    --postcard-rotate: 3.2deg;
+    --ticket-left: 25%;
+    --ticket-top: 22%;
+    --ticket-width: 76%;
+    --ticket-rotate: 1.2deg;
+  }
+  .hero-exhibit-pair[data-pose="3"] {
+    --postcard-left: 1%;
+    --postcard-top: 0%;
+    --postcard-width: 64%;
+    --postcard-rotate: -2deg;
+    --ticket-left: 18%;
+    --ticket-top: 72%;
+    --ticket-width: 86%;
+    --ticket-rotate: -1deg;
+  }
+  .hero-exhibit-pair .hero-ticket-card {
+    min-height: 74px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  .hero-ticket-stack.is-moving-next .hero-pair-promote-next,
+  .hero-ticket-stack.is-moving-previous .hero-pair-incoming-previous {
+    left: 1%;
+    top: 7%;
+    width: 98%;
+    height: 84%;
+  }
+  .hero-ticket-stack.is-moving-next .hero-pair-incoming-next,
+  .hero-ticket-stack.is-moving-previous .hero-pair-demote-previous {
+    left: 53%;
+    top: 4%;
+    width: 53%;
+    height: 66%;
+  }
+}
