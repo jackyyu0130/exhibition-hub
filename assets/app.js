@@ -1037,7 +1037,7 @@
     }, 15000);
   }
 
-  function renderHeroTickets() {
+  function renderHeroTickets({settle = false} = {}) {
     const stack = $('#heroTicketStack');
     if (!stack) return;
     window.clearTimeout(state.heroTransitionTimer);
@@ -1048,12 +1048,15 @@
     const secondIndex = heroIndex(1);
     const thirdIndex = heroIndex(2);
     state.mobilePreviewTicket = null;
-    stack.className = 'hero-ticket-stack';
+    stack.className = settle ? 'hero-ticket-stack is-resetting' : 'hero-ticket-stack';
     stack.innerHTML = [
       heroTicketSlideMarkup(pool[firstIndex], 1, firstIndex + 1, '', heroPoseIndex(firstIndex)),
       heroTicketSlideMarkup(pool[secondIndex], 2, secondIndex + 1, '', heroPoseIndex(secondIndex)),
       heroTicketSlideMarkup(pool[thirdIndex], 3, thirdIndex + 1, '', heroPoseIndex(thirdIndex))
     ].join('');
+    if (settle) {
+      requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.remove('is-resetting')));
+    }
     updateHeroStatus();
     scheduleHeroAutoAdvance();
   }
@@ -1093,8 +1096,8 @@
       state.heroAnimating = false;
       $('#heroNextButton')?.removeAttribute('disabled');
       $('#heroPreviousButton')?.removeAttribute('disabled');
-      renderHeroTickets();
-    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 760);
+      renderHeroTickets({settle:true});
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 1450);
   }
 
   const HOME_STATUS_COPY = {
