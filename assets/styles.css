@@ -6546,34 +6546,67 @@ body {
   }
 }
 
+
 /* ======================================================================
-   Exhibition Hub V6.5.0-R9.1 — lock the ticket stamp to the ticket card
+   Exhibition Hub V6.5.0-R10 — corrected Threads icon and slow hero intro
    ====================================================================== */
-/*
-   Every queue position now uses the exact same stamp size and offsets.
-   This prevents the stamp from resizing/repositioning when a ticket is
-   rebuilt from a back slot into the front slot after the slide finishes.
-*/
-.hero-ticket-slide .ticket-watermark,
-.hero-ticket-slot-0 .ticket-watermark,
-.hero-ticket-slot-1 .ticket-watermark,
-.hero-ticket-slot-2 .ticket-watermark,
-.hero-ticket-slot-3 .ticket-watermark,
-.hero-ticket-slot-4 .ticket-watermark {
-  width: 66px;
-  height: 66px;
-  right: 16px;
-  top: 36px;
-  transform: translate3d(0,0,0) rotate(-11deg);
-  transform-origin: center center;
-  transition: none !important;
-  animation: none !important;
-  backface-visibility: hidden;
-  will-change: auto;
+
+/* Footer social icon: keep all icons optically centered, including Threads. */
+.footer-social-icon svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  display: block;
 }
-.hero-ticket-slide .ticket-watermark::before,
-.hero-ticket-slide .ticket-watermark b,
-.hero-ticket-slide .ticket-watermark i {
-  transition: none !important;
-  animation: none !important;
+.footer-social-icon[aria-label="Threads"] svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Hero first-load entrance: three tickets glide in slowly from right to left. */
+.hero-ticket-stack.is-entering .hero-ticket-slot-1 {
+  animation: ticket-slide-r10-enter 2.45s cubic-bezier(.18,.72,.18,1) both;
+}
+.hero-ticket-stack.is-entering .hero-ticket-slot-2 {
+  animation: ticket-slide-r10-enter 2.45s .22s cubic-bezier(.18,.72,.18,1) both;
+}
+.hero-ticket-stack.is-entering .hero-ticket-slot-3 {
+  animation: ticket-slide-r10-enter 2.45s .44s cubic-bezier(.18,.72,.18,1) both;
+}
+@keyframes ticket-slide-r10-enter {
+  from {
+    opacity: 0;
+    transform: translateX(138%) rotate(3.2deg);
+    filter: blur(2px);
+  }
+  55% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-ticket-stack.is-entering .hero-ticket-slot-1 {
+    animation-duration: 2.2s;
+  }
+  .hero-ticket-stack.is-entering .hero-ticket-slot-2 {
+    animation-duration: 2.2s;
+    animation-delay: .2s;
+  }
+  .hero-ticket-stack.is-entering .hero-ticket-slot-3 {
+    animation-duration: 2.2s;
+    animation-delay: .38s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticket-stack.is-entering .hero-ticket-slot-1,
+  .hero-ticket-stack.is-entering .hero-ticket-slot-2,
+  .hero-ticket-stack.is-entering .hero-ticket-slot-3 {
+    animation: none !important;
+  }
 }
