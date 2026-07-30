@@ -116,6 +116,7 @@
     viewportLockOwner: null,
     lastRenderedDate: null,
     heroTransitionTimer: null,
+    heroAutoAdvanceTimer: null,
     filterResultsTimer: null,
     lastHomeFilterKey: '',
     revealObserver: null,
@@ -1024,10 +1025,23 @@
     status.textContent = `目前顯示第 ${visible.join('、')} 張票券，共 ${state.heroPool.length} 張`;
   }
 
+  function scheduleHeroAutoAdvance() {
+    window.clearTimeout(state.heroAutoAdvanceTimer);
+    if (!state.heroPool.length || state.heroPool.length < 2) return;
+    state.heroAutoAdvanceTimer = window.setTimeout(() => {
+      if (document.hidden || state.heroAnimating) {
+        scheduleHeroAutoAdvance();
+        return;
+      }
+      changeHeroPair(1);
+    }, 15000);
+  }
+
   function renderHeroTickets() {
     const stack = $('#heroTicketStack');
     if (!stack) return;
     window.clearTimeout(state.heroTransitionTimer);
+    window.clearTimeout(state.heroAutoAdvanceTimer);
     const pool = heroPool();
     if (!pool.length) return;
     const firstIndex = heroIndex();
@@ -1041,12 +1055,14 @@
       heroTicketSlideMarkup(pool[thirdIndex], 3, thirdIndex + 1, '', heroPoseIndex(thirdIndex))
     ].join('');
     updateHeroStatus();
+    scheduleHeroAutoAdvance();
   }
 
   function changeHeroPair(direction) {
     const stack = $('#heroTicketStack');
     const pool = heroPool();
     if (!stack || pool.length < 3 || state.heroAnimating) return;
+    window.clearTimeout(state.heroAutoAdvanceTimer);
     const motion = direction > 0 ? 'next' : 'previous';
     const firstIndex = heroIndex();
     const secondIndex = heroIndex(1);
@@ -1078,7 +1094,7 @@
       $('#heroNextButton')?.removeAttribute('disabled');
       $('#heroPreviousButton')?.removeAttribute('disabled');
       renderHeroTickets();
-    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 720);
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 760);
   }
 
   const HOME_STATUS_COPY = {
@@ -2047,6 +2063,13 @@
       state.heroSwipeBlockClickUntil = performance.now() + 480;
       changeHeroPair(deltaX < 0 ? 1 : -1);
     }, {passive:true});
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        window.clearTimeout(state.heroAutoAdvanceTimer);
+        return;
+      }
+      if ($('#heroTicketStack')?.children.length) scheduleHeroAutoAdvance();
+    });
 
     $('#datePicker').addEventListener('change', event => {state.date = event.target.value || null; renderHome();});
     $('#filterResultsClear').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();$('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
