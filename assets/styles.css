@@ -6545,3 +6545,35 @@ body {
     font-size: 5.8px;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R9.1 — lock the ticket stamp to the ticket card
+   ====================================================================== */
+/*
+   Every queue position now uses the exact same stamp size and offsets.
+   This prevents the stamp from resizing/repositioning when a ticket is
+   rebuilt from a back slot into the front slot after the slide finishes.
+*/
+.hero-ticket-slide .ticket-watermark,
+.hero-ticket-slot-0 .ticket-watermark,
+.hero-ticket-slot-1 .ticket-watermark,
+.hero-ticket-slot-2 .ticket-watermark,
+.hero-ticket-slot-3 .ticket-watermark,
+.hero-ticket-slot-4 .ticket-watermark {
+  width: 66px;
+  height: 66px;
+  right: 16px;
+  top: 36px;
+  transform: translate3d(0,0,0) rotate(-11deg);
+  transform-origin: center center;
+  transition: none !important;
+  animation: none !important;
+  backface-visibility: hidden;
+  will-change: auto;
+}
+.hero-ticket-slide .ticket-watermark::before,
+.hero-ticket-slide .ticket-watermark b,
+.hero-ticket-slide .ticket-watermark i {
+  transition: none !important;
+  animation: none !important;
+}
