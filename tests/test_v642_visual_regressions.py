@@ -14,7 +14,7 @@ class V642VisualRegressionTests(unittest.TestCase):
             (ROOT / "assets" / "taiwan-exhibition-journal-logo-v10.png").is_file()
         )
         self.assertIn(
-            "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r6",
+            "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r7",
             HTML,
         )
         self.assertIn('class="brand-logo-fallback"', HTML)
@@ -41,14 +41,15 @@ class V642VisualRegressionTests(unittest.TestCase):
         self.assertIn("flex-shrink: 0", shared_rule.group(1))
         self.assertIn("min-height: 38px", tabs_rule.group(1))
 
-    def test_hero_shows_two_ticket_and_postcard_pairs(self):
-        self.assertIn("Exhibition Hub V6.5.0", CSS)
-        self.assertIn(".hero-exhibit-pair", CSS)
-        self.assertIn(".hero-postcard", CSS)
-        self.assertIn(".hero-pair-slot-1", CSS)
-        self.assertIn(".hero-pair-slot-2", CSS)
+    def test_hero_shows_three_ticket_queue(self):
+        self.assertIn("Exhibition Hub V6.5.0-R7", CSS)
+        self.assertIn(".hero-ticket-slide", CSS)
+        self.assertIn(".hero-ticket-slot-1", CSS)
+        self.assertIn(".hero-ticket-slot-2", CSS)
+        self.assertIn(".hero-ticket-slot-3", CSS)
         self.assertIn(".hero-carousel-next", CSS)
         self.assertIn(".hero-carousel-previous", CSS)
+        self.assertNotIn("hero-postcard-image", (ROOT / "assets" / "app.js").read_text(encoding="utf-8"))
 
     def test_mobile_explore_cards_use_two_compact_columns(self):
         mobile_block = CSS
@@ -72,10 +73,10 @@ class V642VisualRegressionTests(unittest.TestCase):
 
     def test_all_frontend_assets_share_the_same_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r6",
-            "assets/app.js?v=6.5.0-r6",
-            "assets/favicon-48.png?v=6.5.0-r6",
-            "assets/apple-touch-icon.png?v=6.5.0-r6",
+            "assets/styles.css?v=6.5.0-r7",
+            "assets/app.js?v=6.5.0-r7",
+            "assets/favicon-48.png?v=6.5.0-r7",
+            "assets/apple-touch-icon.png?v=6.5.0-r7",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)

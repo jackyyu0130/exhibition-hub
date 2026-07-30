@@ -80,11 +80,14 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn("cardMarkup(event,{motionIndex:index,revealIndex:index})", self.app)
         self.assertIn("filter-card-reveal-v39", self.css)
 
-    def test_hero_uses_manual_ticket_and_postcard_carousel(self):
+    def test_hero_uses_manual_three_ticket_carousel(self):
         self.assertIn('id="heroNextButton"', self.html)
         self.assertIn('id="heroPreviousButton"', self.html)
-        self.assertIn("function heroPairMarkup", self.app)
+        self.assertIn("function heroTicketSlideMarkup", self.app)
         self.assertIn("function changeHeroPair(direction)", self.app)
+        self.assertIn("const thirdIndex = heroIndex(2)", self.app)
+        self.assertIn("hero-ticket-slot-3", self.css)
+        self.assertNotIn("hero-postcard-image", self.app)
         self.assertIn("changeHeroPair(deltaX < 0 ? 1 : -1)", self.app)
         self.assertNotIn("const HERO_ROTATION_MS", self.app)
         self.assertNotIn("heroShuffleButton", self.app)
