@@ -5164,7 +5164,7 @@ body {
 }
 
 /* ==========================================================================
-   Exhibition Hub V6.5.0-R2 — ticket + exhibition postcard carousel
+   Exhibition Hub V6.5.0-R3 — refined ticket + exhibition postcard carousel
    ========================================================================== */
 
 .mobile-home-quick-actions { display: none; }
@@ -5177,71 +5177,127 @@ body {
   position: absolute;
   inset: 0;
   width: auto;
-  overflow: hidden;
+  overflow: visible;
   touch-action: pan-y;
 }
 .hero-exhibit-pair {
+  --postcard-left: 0%;
+  --postcard-top: 2%;
+  --postcard-width: 48%;
+  --postcard-rotate: -4deg;
+  --ticket-left: 17%;
+  --ticket-top: 23%;
+  --ticket-width: 84%;
+  --ticket-rotate: -1.4deg;
   position: absolute;
-  height: 56%;
+  height: 58%;
   opacity: 1;
   transform: translateZ(0);
   transition:
-    left .72s cubic-bezier(.2,.76,.2,1),
-    top .72s cubic-bezier(.2,.76,.2,1),
-    width .72s cubic-bezier(.2,.76,.2,1),
+    left .76s cubic-bezier(.2,.76,.2,1),
+    top .76s cubic-bezier(.2,.76,.2,1),
+    width .76s cubic-bezier(.2,.76,.2,1),
     opacity .56s ease,
-    transform .72s cubic-bezier(.2,.76,.2,1);
+    transform .76s cubic-bezier(.2,.76,.2,1);
   will-change: left, top, width, opacity, transform;
 }
 .hero-pair-slot-0 {
-  left: -76%;
-  top: 36%;
-  width: 72%;
-  z-index: 8;
+  left: -78%;
+  top: 35%;
+  width: 70%;
+  z-index: 7;
   opacity: 0;
 }
 .hero-pair-slot-1 {
-  left: 2%;
-  top: 36%;
-  width: 72%;
+  left: 5%;
+  top: 37%;
+  width: 74%;
   z-index: 8;
 }
 .hero-pair-slot-2 {
-  left: 39%;
-  top: 3%;
-  width: 60%;
-  z-index: 4;
+  left: 45%;
+  top: 6%;
+  width: 56%;
+  z-index: 5;
 }
 .hero-pair-slot-3 {
-  left: 104%;
-  top: 3%;
-  width: 60%;
+  left: 102%;
+  top: 8%;
+  width: 56%;
   z-index: 4;
   opacity: 0;
 }
-.hero-postcard {
+.hero-exhibit-pair[data-pose="1"] {
+  --postcard-left: 1%;
+  --postcard-top: 3%;
+  --postcard-width: 48%;
+  --postcard-rotate: -4.6deg;
+  --ticket-left: 18%;
+  --ticket-top: 24%;
+  --ticket-width: 84%;
+  --ticket-rotate: -1.6deg;
+}
+.hero-exhibit-pair[data-pose="2"] {
+  --postcard-left: 6%;
+  --postcard-top: 0%;
+  --postcard-width: 45%;
+  --postcard-rotate: 4deg;
+  --ticket-left: 15%;
+  --ticket-top: 20%;
+  --ticket-width: 86%;
+  --ticket-rotate: 1.8deg;
+}
+.hero-exhibit-pair[data-pose="3"] {
+  --postcard-left: 2%;
+  --postcard-top: 6%;
+  --postcard-width: 47%;
+  --postcard-rotate: -2.6deg;
+  --ticket-left: 19%;
+  --ticket-top: 26%;
+  --ticket-width: 83%;
+  --ticket-rotate: -2.2deg;
+}
+.hero-postcard,
+.hero-exhibit-pair .hero-ticket-card {
   position: absolute;
+  transition:
+    transform .76s cubic-bezier(.2,.76,.2,1),
+    filter .56s ease,
+    box-shadow .56s ease,
+    opacity .56s ease;
+}
+.hero-postcard {
   z-index: 0;
-  left: 0;
-  top: 0;
-  width: 54%;
+  left: var(--postcard-left);
+  top: var(--postcard-top);
+  width: var(--postcard-width);
   aspect-ratio: 3 / 2;
   overflow: hidden;
-  border: 7px solid rgba(255,251,245,.98);
-  border-bottom-width: 22px;
-  border-radius: 7px;
+  border: 6px solid rgba(255,251,245,.98);
+  border-bottom-width: 18px;
+  border-radius: 8px;
   background: #ede1d3;
   color: var(--ink);
-  box-shadow: 0 14px 30px rgba(63,45,29,.18);
-  transform: rotate(-5.2deg);
+  box-shadow: 0 14px 30px rgba(63,45,29,.16);
+  transform: rotate(var(--postcard-rotate));
   transform-origin: center;
 }
-.hero-pair-slot-2 .hero-postcard,
-.hero-pair-slot-3 .hero-postcard { transform: rotate(4.5deg); }
+.hero-postcard::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(171,123,90,.16);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 4px rgba(171,123,90,.06);
+  pointer-events: none;
+}
 .hero-postcard-image,
 .hero-postcard-image.smart-image {
   position: absolute;
-  inset: 0 0 15px;
+  inset: 0 0 12px;
   display: block;
   overflow: hidden;
   background: #e7d9c9;
@@ -5254,16 +5310,16 @@ body {
 .hero-postcard-caption {
   position: absolute;
   z-index: 2;
-  right: 4px;
-  bottom: 2px;
-  left: 4px;
+  right: 6px;
+  bottom: 3px;
+  left: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 7px;
   color: #62564a;
   font-size: 6px;
-  line-height: 1.15;
+  line-height: 1.12;
   white-space: nowrap;
 }
 .hero-postcard-caption b {
@@ -5274,100 +5330,128 @@ body {
 }
 .hero-postcard-caption small { flex: 0 0 auto; font-size: inherit; }
 .hero-exhibit-pair .hero-ticket-card {
-  position: absolute;
   z-index: 1;
-  left: 17%;
-  top: 21%;
-  width: 83%;
-  min-height: 146px;
-  padding: 14px 17px;
-  border-radius: 15px;
-  box-shadow: 0 18px 38px rgba(51,37,24,.18);
-  transform: rotate(-1.4deg);
+  left: var(--ticket-left);
+  top: var(--ticket-top);
+  width: var(--ticket-width);
+  min-height: 128px;
+  padding: 11px 18px;
+  border-radius: 16px;
+  box-shadow: 0 18px 36px rgba(51,37,24,.16);
+  transform: rotate(var(--ticket-rotate));
   transform-origin: center;
 }
-.hero-pair-slot-2 .hero-ticket-card,
-.hero-pair-slot-3 .hero-ticket-card { transform: rotate(2.2deg); }
 .hero-exhibit-pair .hero-ticket-card:hover {
-  box-shadow: 0 22px 44px rgba(51,37,24,.23);
-  transform: rotate(0deg) translateY(-3px);
+  box-shadow: 0 22px 42px rgba(51,37,24,.22);
+  transform: translateY(-2px) rotate(var(--ticket-rotate));
 }
 .hero-exhibit-pair .hero-ticket-card .ticket-main {
-  margin: 9px 0;
-  grid-template-columns: 42px minmax(0,1fr);
+  margin: 7px 0;
+  grid-template-columns: 38px minmax(0,1fr);
   gap: 9px;
 }
-.hero-exhibit-pair .hero-ticket-card .ticket-index { font-size: 30px; }
+.hero-exhibit-pair .hero-ticket-card .ticket-index { font-size: 28px; }
 .hero-exhibit-pair .hero-ticket-card .ticket-main h2 {
-  margin: 3px 0;
-  font-size: 14px;
-  line-height: 1.35;
+  margin: 2px 0;
+  font-size: 12.5px;
+  line-height: 1.34;
 }
 .hero-exhibit-pair .hero-ticket-card .ticket-main small,
 .hero-exhibit-pair .hero-ticket-card .ticket-main p,
 .hero-exhibit-pair .hero-ticket-card .ticket-topline,
-.hero-exhibit-pair .hero-ticket-card .ticket-footer { font-size: 8px; }
+.hero-exhibit-pair .hero-ticket-card .ticket-footer { font-size: 7.5px; }
+.hero-pair-slot-2 .hero-postcard,
+.hero-pair-slot-2 .hero-ticket-card {
+  filter: blur(1.1px) saturate(.94);
+}
+.hero-pair-slot-3 .hero-postcard,
+.hero-pair-slot-3 .hero-ticket-card,
+.hero-pair-slot-0 .hero-postcard,
+.hero-pair-slot-0 .hero-ticket-card {
+  filter: blur(2.2px) saturate(.9);
+}
 
 .hero-ticket-stack.is-moving-next .hero-pair-exit-next {
-  left: -76%;
+  left: -78%;
   opacity: 0;
-  transform: rotate(-2deg);
+  transform: rotate(-1.8deg);
 }
 .hero-ticket-stack.is-moving-next .hero-pair-promote-next {
-  left: 2%;
-  top: 36%;
-  width: 72%;
+  left: 5%;
+  top: 37%;
+  width: 74%;
   z-index: 8;
+  transform: rotate(-1.1deg);
+}
+.hero-ticket-stack.is-moving-next .hero-pair-promote-next .hero-postcard,
+.hero-ticket-stack.is-moving-next .hero-pair-promote-next .hero-ticket-card {
+  filter: blur(0px) saturate(1);
 }
 .hero-ticket-stack.is-moving-next .hero-pair-incoming-next {
-  left: 39%;
-  top: 3%;
-  width: 60%;
+  left: 45%;
+  top: 6%;
+  width: 56%;
   opacity: 1;
+  transform: rotate(1.4deg);
+}
+.hero-ticket-stack.is-moving-next .hero-pair-incoming-next .hero-postcard,
+.hero-ticket-stack.is-moving-next .hero-pair-incoming-next .hero-ticket-card {
+  filter: blur(1.1px) saturate(.94);
 }
 .hero-ticket-stack.is-moving-previous .hero-pair-incoming-previous {
-  left: 2%;
-  top: 36%;
-  width: 72%;
+  left: 5%;
+  top: 37%;
+  width: 74%;
   opacity: 1;
+  transform: rotate(1.2deg);
+}
+.hero-ticket-stack.is-moving-previous .hero-pair-incoming-previous .hero-postcard,
+.hero-ticket-stack.is-moving-previous .hero-pair-incoming-previous .hero-ticket-card {
+  filter: blur(0px) saturate(1);
 }
 .hero-ticket-stack.is-moving-previous .hero-pair-demote-previous {
-  left: 39%;
-  top: 3%;
-  width: 60%;
-  z-index: 4;
+  left: 45%;
+  top: 6%;
+  width: 56%;
+  z-index: 5;
+  transform: rotate(-1deg);
+}
+.hero-ticket-stack.is-moving-previous .hero-pair-demote-previous .hero-postcard,
+.hero-ticket-stack.is-moving-previous .hero-pair-demote-previous .hero-ticket-card {
+  filter: blur(1.1px) saturate(.94);
 }
 .hero-ticket-stack.is-moving-previous .hero-pair-exit-previous {
-  left: 104%;
+  left: 102%;
   opacity: 0;
-  transform: rotate(2deg);
+  transform: rotate(1.8deg);
 }
 .hero-carousel-arrow {
   position: absolute;
   z-index: 12;
   top: 50%;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(116,91,65,.25);
+  border: 1px solid rgba(116,91,65,.24);
   border-radius: 50%;
-  background: rgba(255,251,245,.92);
+  background: rgba(255,251,245,.94);
   color: #6f523b;
-  box-shadow: 0 10px 25px rgba(61,44,28,.12);
-  font-size: 21px;
+  box-shadow: 0 12px 25px rgba(61,44,28,.12);
+  font-size: 28px;
   line-height: 1;
+  font-weight: 500;
   transform: translateY(-50%);
   backdrop-filter: blur(8px);
 }
 .hero-carousel-arrow:hover {
-  border-color: rgba(143,95,60,.45);
+  border-color: rgba(143,95,60,.44);
   background: #f3e4d2;
-  transform: translateY(-50%) scale(1.06);
+  transform: translateY(-50%) scale(1.05);
 }
 .hero-carousel-arrow:disabled { opacity: .45; cursor: wait; }
-.hero-carousel-next { left: 5px; }
-.hero-carousel-previous { right: 5px; }
+.hero-carousel-next { left: -22px; }
+.hero-carousel-previous { right: -22px; }
 .hero-carousel-status {
   position: absolute;
   width: 1px;
@@ -5379,80 +5463,112 @@ body {
 
 @media (max-width: 760px) {
   .hero-ticket-stage {
-    height: 405px;
+    height: 392px;
   }
   .hero-carousel-arrow { display: none; }
   .hero-pair-slot-0 {
-    left: -94%;
-    top: 39%;
-    width: 88%;
+    left: -96%;
+    top: 41%;
+    width: 86%;
   }
   .hero-pair-slot-1 {
-    left: 1%;
-    top: 39%;
-    width: 88%;
+    left: 2%;
+    top: 42%;
+    width: 86%;
   }
   .hero-pair-slot-2 {
-    left: 36%;
-    top: 3%;
-    width: 64%;
+    left: 38%;
+    top: 8%;
+    width: 62%;
   }
   .hero-pair-slot-3 {
     left: 104%;
-    top: 3%;
-    width: 64%;
+    top: 10%;
+    width: 62%;
   }
-  .hero-ticket-stack.is-moving-next .hero-pair-exit-next { left: -94%; }
+  .hero-ticket-stack.is-moving-next .hero-pair-exit-next { left: -96%; }
   .hero-ticket-stack.is-moving-next .hero-pair-promote-next {
-    left: 1%;
-    top: 39%;
-    width: 88%;
+    left: 2%;
+    top: 42%;
+    width: 86%;
   }
   .hero-ticket-stack.is-moving-next .hero-pair-incoming-next {
-    left: 36%;
-    top: 3%;
-    width: 64%;
+    left: 38%;
+    top: 8%;
+    width: 62%;
   }
   .hero-ticket-stack.is-moving-previous .hero-pair-incoming-previous {
-    left: 1%;
-    top: 39%;
-    width: 88%;
+    left: 2%;
+    top: 42%;
+    width: 86%;
   }
   .hero-ticket-stack.is-moving-previous .hero-pair-demote-previous {
-    left: 36%;
-    top: 3%;
-    width: 64%;
+    left: 38%;
+    top: 8%;
+    width: 62%;
   }
   .hero-ticket-stack.is-moving-previous .hero-pair-exit-previous { left: 104%; }
+  .hero-exhibit-pair[data-pose="1"] {
+    --postcard-left: 1%;
+    --postcard-top: 3%;
+    --postcard-width: 51%;
+    --postcard-rotate: -4deg;
+    --ticket-left: 12%;
+    --ticket-top: 24%;
+    --ticket-width: 88%;
+    --ticket-rotate: -1.4deg;
+  }
+  .hero-exhibit-pair[data-pose="2"] {
+    --postcard-left: 5%;
+    --postcard-top: 0%;
+    --postcard-width: 48%;
+    --postcard-rotate: 3.5deg;
+    --ticket-left: 11%;
+    --ticket-top: 22%;
+    --ticket-width: 89%;
+    --ticket-rotate: 1.6deg;
+  }
+  .hero-exhibit-pair[data-pose="3"] {
+    --postcard-left: 2%;
+    --postcard-top: 5%;
+    --postcard-width: 50%;
+    --postcard-rotate: -2.3deg;
+    --ticket-left: 14%;
+    --ticket-top: 25%;
+    --ticket-width: 86%;
+    --ticket-rotate: -2deg;
+  }
   .hero-postcard {
-    width: 58%;
     border-width: 5px;
-    border-bottom-width: 18px;
+    border-bottom-width: 15px;
+  }
+  .hero-postcard::after {
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    right: 9px;
   }
   .hero-exhibit-pair .hero-ticket-card {
-    left: 15%;
-    top: 18%;
-    width: 85%;
-    min-height: 112px;
-    padding: 10px 11px;
+    min-height: 98px;
+    padding: 8px 11px;
     border-radius: 12px;
   }
   .hero-exhibit-pair .hero-ticket-card .ticket-main {
-    margin: 6px 0;
-    grid-template-columns: 32px minmax(0,1fr);
+    margin: 5px 0;
+    grid-template-columns: 28px minmax(0,1fr);
     gap: 7px;
   }
-  .hero-exhibit-pair .hero-ticket-card .ticket-index { font-size: 24px; }
+  .hero-exhibit-pair .hero-ticket-card .ticket-index { font-size: 21px; }
   .hero-exhibit-pair .hero-ticket-card .ticket-main h2 {
-    font-size: 11px;
-    line-height: 1.32;
+    font-size: 10px;
+    line-height: 1.28;
   }
   .hero-exhibit-pair .hero-ticket-card .ticket-main small,
   .hero-exhibit-pair .hero-ticket-card .ticket-main p,
   .hero-exhibit-pair .hero-ticket-card .ticket-topline,
-  .hero-exhibit-pair .hero-ticket-card .ticket-footer { font-size: 6.5px; }
-  .hero-exhibit-pair .hero-ticket-card .ticket-watermark { transform: scale(.74); transform-origin: center; }
-  .hero-postcard-caption { font-size: 5.5px; }
+  .hero-exhibit-pair .hero-ticket-card .ticket-footer { font-size: 6px; }
+  .hero-exhibit-pair .hero-ticket-card .ticket-watermark { transform: scale(.68); transform-origin: center; }
+  .hero-postcard-caption { font-size: 5px; }
 
   .home-view .discovery-panel .panel-topline,
   .home-view .filter-workbench,

@@ -1,0 +1,44 @@
+{
+  "version": "6.5.0-R3",
+  "name": "Hero 票券輪播構圖與動態微調版",
+  "baseVersion": "6.5.0-R2",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "recommendedPackage": "Exhibition-Hub-V6.5.0-R3-ticket-carousel-refinement-safe-update.zip",
+  "fullReplacementPackage": "Exhibition-Hub-V6.5.0-R3-full-replacement.zip",
+  "commitAndPullRequestTitle": "Apply Exhibition Hub V6.5.0-R3 ticket carousel refinement",
+  "releasePurpose": "Refine the Hero ticket and postcard carousel layout, arrow style, overlap, blur depth and rotating poses while keeping the R2 mobile shortcuts and Huashan recovery intact.",
+  "keyFixes": [
+    "Desktop Hero arrows use angle-bracket styling and sit outside the card frame",
+    "Hero ticket cards are slightly flatter and wider for a more realistic ticket ratio",
+    "Ticket and postcard overlap is reduced on both desktop and mobile",
+    "Back pair and incoming pair use soft blur depth until they move forward",
+    "Three rotating composition poses cycle through visible and queued pairs",
+    "Promotion and demotion transitions now include a subtle angle change",
+    "Keep mobile swipe navigation and four home quick actions from R2",
+    "Bump frontend cache version to 6.5.0-r3 for reliable production refresh"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "VERSION.txt",
+    "MANIFEST_V6.5.0-R3.json",
+    "tests/test_v650_postcard_carousel.py",
+    "tests/test_v650_r2_cumulative_release.py"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    ".github/",
+    "all generated exhibition JSON files"
+  ],
+  "validation": {
+    "javascriptSyntax": "passed",
+    "pythonSyntax": "passed",
+    "automatedTests": 2,
+    "automatedTestResult": "passed",
+    "safePackageContainsDataDirectory": false,
+    "safePackageContainsWorkflowDirectory": false
+  }
+}
