@@ -49,9 +49,9 @@ class StatusAndAdmissionFilterTests(unittest.TestCase):
         self.assertIn('font-size: 12.5px;', CSS)
         self.assertIn('min-height: 39px;', CSS)
 
-    def test_cache_version_is_r3(self):
-        self.assertIn('assets/styles.css?v=6.5.0-r3', HTML)
-        self.assertIn('assets/app.js?v=6.5.0-r3', HTML)
+    def test_cache_version_is_642(self):
+        self.assertIn('assets/styles.css?v=6.5.0-r4', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r4', HTML)
 
 
 if __name__ == '__main__':

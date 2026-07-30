@@ -9,12 +9,12 @@ CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
 
 
 class V650PostcardCarouselTests(unittest.TestCase):
-    def test_frontend_assets_share_v650r3_cache_version(self):
+    def test_frontend_assets_share_v650r4_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r3",
-            "assets/app.js?v=6.5.0-r3",
-            "assets/favicon-48.png?v=6.5.0-r3",
-            "assets/apple-touch-icon.png?v=6.5.0-r3",
+            "assets/styles.css?v=6.5.0-r4",
+            "assets/app.js?v=6.5.0-r4",
+            "assets/favicon-48.png?v=6.5.0-r4",
+            "assets/apple-touch-icon.png?v=6.5.0-r4",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)
@@ -41,14 +41,14 @@ class V650PostcardCarouselTests(unittest.TestCase):
         self.assertIn("$('#heroNextButton')?.addEventListener", APP)
         self.assertIn("changeHeroPair(1);", APP)
         self.assertIn("changeHeroPair(-1);", APP)
-        self.assertIn(".hero-carousel-next { left: -22px; }", CSS)
-        self.assertIn(".hero-carousel-previous { right: -22px; }", CSS)
+        self.assertIn(".hero-carousel-next { left: -74px; }", CSS)
+        self.assertIn(".hero-carousel-previous { right: -74px; }", CSS)
 
     def test_back_pair_and_incoming_pair_gain_depth_blur(self):
         self.assertIn('.hero-pair-slot-2 .hero-postcard,', CSS)
-        self.assertIn('filter: blur(1.1px) saturate(.94);', CSS)
+        self.assertIn('filter: blur(1.8px) saturate(.93);', CSS)
         self.assertIn('.hero-pair-slot-3 .hero-postcard,', CSS)
-        self.assertIn('filter: blur(2.2px) saturate(.9);', CSS)
+        self.assertIn('filter: blur(3px) saturate(.88);', CSS)
         self.assertIn('.hero-ticket-stack.is-moving-next .hero-pair-promote-next .hero-postcard,', CSS)
         self.assertIn('filter: blur(0px) saturate(1);', CSS)
 

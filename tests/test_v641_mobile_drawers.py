@@ -78,8 +78,8 @@ class V641MobileDrawerTests(unittest.TestCase):
 
     def test_favicon_assets_are_versioned_and_include_touch_icon(self):
         for marker in (
-            "assets/favicon-48.png?v=6.5.0-r3",
-            "assets/apple-touch-icon.png?v=6.5.0-r3",
+            "assets/favicon-48.png?v=6.5.0-r4",
+            "assets/apple-touch-icon.png?v=6.5.0-r4",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)
