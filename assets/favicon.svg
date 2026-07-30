@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="台灣展覽誌">
+  <rect width="128" height="128" rx="26" fill="#f7f0e6"/>
+  <path d="M18 35h92v16a13 13 0 0 0 0 26v16H18V77a13 13 0 0 0 0-26V35Z" fill="#fffaf3" stroke="#403c37" stroke-width="4"/>
+  <path d="M24 41h80v12a10 10 0 0 0 0 22v12H24V75a10 10 0 0 0 0-22V41Z" fill="none" stroke="#6b655e" stroke-width="1.5"/>
+  <path d="M88 39v50" fill="none" stroke="#5a554f" stroke-width="2" stroke-dasharray="5 5"/>
+  <text x="54" y="77" fill="#3c3935" font-family="'Noto Serif TC','Songti TC','PMingLiU',serif" font-size="39" text-anchor="middle">展</text>
+</svg>
