@@ -1,0 +1,39 @@
+{
+  "version": "6.5.0-R1",
+  "name": "華山 CI 與完整詳情補抓修正版",
+  "baseVersion": "6.5.0",
+  "frontendChanged": false,
+  "officialDataChanged": false,
+  "productionPipelineChanged": true,
+  "recommendedPackage": "Exhibition-Hub-V6.5.0-R1-huashan-ci-hotfix-safe-update.zip",
+  "fullReplacementPackage": "Exhibition-Hub-V6.5.0-R1-full-replacement.zip",
+  "commitAndPullRequestTitle": "Fix Exhibition Hub V6.5.0-R1 Huashan CI and detail recovery",
+  "keyFixes": [
+    "Restore five Huashan HTML fixtures omitted from the V6.5.0 safe package",
+    "Retry only transiently failed Huashan detail pages after the initial batch",
+    "Keep the full_detail_coverage gate strict for persistent failures",
+    "Expose detail attempt, retry, recovery, and final failure metrics"
+  ],
+  "importantPaths": [
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "scripts/run_collectors.py",
+    "tests/test_huashan_detail_collector.py",
+    "tests/fixtures/huashan_listing_page1.html",
+    "tests/fixtures/huashan_listing_page2.html",
+    "tests/fixtures/huashan_detail_chiikawa.html",
+    "tests/fixtures/huashan_detail_osamu.html",
+    "tests/fixtures/huashan_detail_popup.html"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    ".github/",
+    "assets/",
+    "index.html"
+  ],
+  "validation": {
+    "pythonSyntax": "passed",
+    "automatedTests": 341,
+    "automatedTestResult": "passed",
+    "fullDetailGate": "preserved"
+  }
+}

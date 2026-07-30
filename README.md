@@ -1,6 +1,14 @@
-# Exhibition Hub V6.5.0／台灣展覽誌
+# Exhibition Hub V6.5.0-R1／台灣展覽誌
 
 這是一套可直接部署到 GitHub Pages 的純前端展覽網站，不需要 Node.js 或建置工具。
+
+## V6.5.0-R1 華山 CI 與完整詳情補抓修正版
+
+- 補回 V6.5.0 安全更新包漏傳的 5 個華山 HTML 測試樣本，修正 GitHub Actions 的 3 個 failures 與 4 個 errors。
+- 華山完整詳情抓取若只有個別頁面暫時逾時，會先完成其餘活動，再只對失敗頁進行一次補抓，不會重抓整批活動。
+- 仍維持 `full_detail_coverage` 嚴格安全閘門；補抓後仍失敗時會保留前一版正式資料，不會發布缺少詳情的資料。
+- 報告新增 `detailAttemptCount`、`detailRetryRounds` 與 `detailRecoveredCount`，可直接辨識補抓是否成功。
+- R1 不變更 V6.5.0 前端設計與展覽資料；完整 341 項自動化測試全部通過。
 
 ## V6.5.0 Hero 票券明信片輪播與手機快捷篩選版
 
@@ -87,7 +95,7 @@ exhibition-hub/
 ## 完整替換
 
 完整逐步操作、每一個點擊位置、檔案路徑、驗證與復原方式，請見
-[`REPLACEMENT_GUIDE_V6.5.0_ZH-TW.md`](REPLACEMENT_GUIDE_V6.5.0_ZH-TW.md)。
+[`REPLACEMENT_GUIDE_V6.5.0-R1_ZH-TW.md`](REPLACEMENT_GUIDE_V6.5.0-R1_ZH-TW.md)。
 
 最短流程：解壓縮後，把 ZIP 內的內容（不是外層資料夾）複製到 GitHub
 儲存庫根目錄並覆蓋同名檔案，先提交到 `develop`，通過

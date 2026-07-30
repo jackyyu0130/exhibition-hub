@@ -1,56 +1,66 @@
-Exhibition Hub V6.5.0｜最短安全更新流程
+Exhibition Hub V6.5.0-R1｜華山 CI 與完整詳情補抓修正版
 
 建議下載：
-Exhibition-Hub-V6.5.0-hero-postcard-carousel-safe-update.zip
+Exhibition-Hub-V6.5.0-R1-huashan-ci-hotfix-safe-update.zip
 
-一、GitHub Desktop
+一、目前進度
+1. V6.5.0 前端檔案已在 GitHub develop。
+2. R1 修正華山 CI 漏檔與單筆詳情頁暫時逾時。
+3. 不會改動 data/exhibitions.json 或 data/exhibitions.enriched.json。
+4. R1 通過後才將 develop 合併至 main，正式前台才會更新。
+
+二、GitHub Desktop
 1. Current Repository：exhibition-hub
 2. Current Branch：develop
 3. 點 Fetch origin；若變 Pull origin，再點 Pull origin
 4. Repository → Show in Finder
 5. 解壓安全更新包，打開：
-   exhibition-hub-v6.5.0-hero-postcard-carousel-safe-update
+   exhibition-hub-v6.5.0-r1-huashan-ci-hotfix-safe-update
 6. 將資料夾「裡面的內容」複製到 exhibition-hub 根目錄
 7. macOS 詢問時點 Replace／取代
-8. 確認 Changes 沒有 data/exhibitions.json、data/exhibitions.enriched.json
+8. 確認 Changes 不包含：
+   data/exhibitions.json
+   data/exhibitions.enriched.json
+   data/geocode-cache.json
 9. Summary 輸入：
-   Apply Exhibition Hub V6.5.0 hero postcard carousel
+   Fix Exhibition Hub V6.5.0-R1 Huashan CI and detail recovery
 10. 點 Commit to develop
 11. 點 Push origin
 
-二、Pull Request
+三、Pull Request
 1. 點 Preview Pull Request
 2. base：main
 3. compare：develop
 4. PR 標題：
-   Apply Exhibition Hub V6.5.0 hero postcard carousel
+   Fix Exhibition Hub V6.5.0-R1 Huashan CI and detail recovery
 5. 點 Create pull request
 6. 等 All checks have passed
 7. 點 Merge pull request
 8. 點 Confirm merge
 
-三、正式部署
+四、正式部署
 1. GitHub 儲存庫上方點 Actions
 2. 左側點 Update data and deploy site
-3. 若沒有自動執行，點 Run workflow
-4. Branch 選 main
-5. 再點 Run workflow
-6. 等 Success
-7. 開啟 https://twexhibition.com/
-8. 按 Command + Shift + R
+3. 確認最新一筆 main 工作自動開始
+4. 若沒有，點 Run workflow
+5. Branch 選 main
+6. 再點 Run workflow
+7. 等 Success
+8. 開啟 https://twexhibition.com/
+9. 按 Command + Shift + R
 
-四、前台確認
-- 桌機 Hero 同時兩組票券＋明信片
-- 左箭頭下一組，右箭頭上一組
-- 手機左滑下一組，右滑上一組
-- 手機首頁有日曆、分類、展區、免費
-- 手機探索卡片徽章文字置中
+五、應看到的結果
+- Validate development changes：341 tests passed
+- 華山完整抓取遇到單筆暫時逾時會在整批後補抓
+- 補抓成功：detailFailureCount = 0
+- 補抓仍失敗：full_detail_coverage 擋下發布，正式資料維持原版
+- V6.5.0 Hero 與手機快捷篩選設計保持不變
 
-五、復原
+六、復原
 - 尚未 Commit：Branch → Discard All Changes
-- 已 Commit 未 Push：History → 右鍵該提交 → Undo Commit
+- 已 Commit 未 Push：History → 右鍵 R1 提交 → Undo Commit
 - 已 Push 未合併：Pull Request → Close pull request
-- 已合併：該 Pull Request → Revert → 合併復原 PR
+- 已合併：該 Pull Request → Revert → 建立並合併復原 PR
 
-完整路徑、GitHub 網頁上傳法、檢查與衝突處理：
-REPLACEMENT_GUIDE_V6.5.0_ZH-TW.md
+完整路徑、GitHub 網頁操作、檢查與衝突處理：
+REPLACEMENT_GUIDE_V6.5.0-R1_ZH-TW.md
