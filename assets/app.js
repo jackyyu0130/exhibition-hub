@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0 — postcard ticket carousel and mobile quick filters. */
+/* Exhibition Hub V6.5.0-R2 — cumulative postcard carousel, mobile shortcuts, and Huashan recovery release. */
 (() => {
   'use strict';
 

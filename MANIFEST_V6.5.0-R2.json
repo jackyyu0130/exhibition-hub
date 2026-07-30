@@ -1,0 +1,56 @@
+{
+  "version": "6.5.0-R2",
+  "name": "Hero 明信片輪播＋華山 CI 累積修復版",
+  "baseVersion": "6.5.0-R1",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": true,
+  "recommendedPackage": "Exhibition-Hub-V6.5.0-R2-cumulative-repair-safe-update.zip",
+  "fullReplacementPackage": "Exhibition-Hub-V6.5.0-R2-full-replacement.zip",
+  "commitAndPullRequestTitle": "Apply Exhibition Hub V6.5.0-R2 cumulative repair",
+  "releasePurpose": "Combine the V6.5.0 frontend and V6.5.0-R1 Huashan recovery files into one safe package so a V6.4.2 production checkout can be upgraded in one pass.",
+  "keyFixes": [
+    "Desktop Hero shows two ticket and official-image postcard pairs at once",
+    "Remove the shuffle control and 15-second automatic rotation",
+    "Left arrow advances and right arrow returns to the previous pair",
+    "Next pair enters from right to left while the second pair moves forward",
+    "Mobile Hero uses left/right swipe navigation and hides desktop arrows",
+    "Mobile ticket height and title typography are reduced",
+    "Mobile home replaces the large filter workbench with calendar/category/area/free shortcuts",
+    "Mobile Explore badges for newest/ending/free are centered",
+    "Restore Huashan CI fixtures and retry transient detail failures once",
+    "Bump frontend cache version to 6.5.0-r2 for reliable production refresh"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "assets/taiwan-exhibition-journal-logo-v10.png",
+    "assets/favicon-48.png",
+    "assets/apple-touch-icon.png",
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "scripts/run_collectors.py",
+    "tests/test_v650_postcard_carousel.py",
+    "tests/test_v650_r2_cumulative_release.py",
+    "tests/test_huashan_detail_collector.py",
+    "tests/fixtures/huashan_listing_page1.html",
+    "tests/fixtures/huashan_listing_page2.html",
+    "tests/fixtures/huashan_detail_chiikawa.html",
+    "tests/fixtures/huashan_detail_osamu.html",
+    "tests/fixtures/huashan_detail_popup.html"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    ".github/",
+    "all generated exhibition JSON files"
+  ],
+  "validation": {
+    "javascriptSyntax": "passed",
+    "pythonSyntax": "passed",
+    "automatedTests": 345,
+    "automatedTestResult": "passed",
+    "safePackageContainsDataDirectory": false,
+    "fullDetailGate": "preserved",
+    "safePackageContainsWorkflowDirectory": false
+  }
+}
