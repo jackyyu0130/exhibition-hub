@@ -14,7 +14,7 @@ class V642VisualRegressionTests(unittest.TestCase):
             (ROOT / "assets" / "taiwan-exhibition-journal-logo-v10.png").is_file()
         )
         self.assertIn(
-            "assets/taiwan-exhibition-journal-logo-v10.png?v=6.4.2",
+            "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r2",
             HTML,
         )
         self.assertIn('class="brand-logo-fallback"', HTML)
@@ -63,7 +63,9 @@ class V642VisualRegressionTests(unittest.TestCase):
         self.assertIn("width: 69%", slot_three.group(1))
 
     def test_mobile_explore_cards_use_two_compact_columns(self):
-        mobile_block = CSS[CSS.rindex("@media (max-width: 760px)"):]
+        anchor = "/* The mobile Explore result view keeps two useful cards per row."
+        self.assertIn(anchor, CSS)
+        mobile_block = CSS[CSS.index(anchor):]
         grid_rule = re.search(
             r"\.listing-view \.exhibition-grid\s*\{(.*?)\}",
             mobile_block,
@@ -84,10 +86,10 @@ class V642VisualRegressionTests(unittest.TestCase):
 
     def test_all_frontend_assets_share_the_same_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.4.2",
-            "assets/app.js?v=6.4.2",
-            "assets/favicon-48.png?v=6.4.2",
-            "assets/apple-touch-icon.png?v=6.4.2",
+            "assets/styles.css?v=6.5.0-r2",
+            "assets/app.js?v=6.5.0-r2",
+            "assets/favicon-48.png?v=6.5.0-r2",
+            "assets/apple-touch-icon.png?v=6.5.0-r2",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)
