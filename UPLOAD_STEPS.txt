@@ -1,19 +1,10 @@
-Exhibition Hub V6.5.0-R2 最短更新流程
+【V6.5.0-R3 安全更新包上傳重點】
 
-請使用：
-Exhibition-Hub-V6.5.0-R2-cumulative-repair-safe-update.zip
-
-1. GitHub Desktop 切換到 exhibition-hub／develop。
-2. Fetch origin；若顯示 Pull origin，再點一次。
-3. 確認 No local changes。
-4. 解壓 R2 安全更新包。
-5. 將解壓資料夾「裡面的內容」複製到 exhibition-hub 根目錄並取代同名檔案。
-6. Changes 不應包含 data/exhibitions.json、data/exhibitions.enriched.json、data/geocode-cache.json。
-7. Summary 輸入：Apply Exhibition Hub V6.5.0-R2 cumulative repair
-8. Commit to develop → Push origin。
-9. 建立 develop → main Pull Request，標題同上。
-10. 等 Validate development changes 與 Run project tests 全綠後再合併。
-11. Actions → Update data and deploy site → 確認 main 工作 Success。
-12. 開啟 https://twexhibition.com/，Mac Chrome 按 Command + Shift + R。
-
-完整檢查與復原方式請看：REPLACEMENT_GUIDE_V6.5.0-R2_ZH-TW.md
+1. 解壓縮後，不要把最外層資料夾整包放進 repo。
+2. 只把裡面的 index.html、assets、tests、VERSION.txt、MANIFEST_V6.5.0-R3.json 覆蓋進去。
+3. GitHub Desktop 看到變更後：
+   - Commit message：Apply Exhibition Hub V6.5.0-R3 ticket carousel refinement
+   - Push origin
+4. 到 GitHub 開 Pull Request：develop → main
+5. Checks 通過後再 Merge
+6. Merge 完等正式站更新，再用 Command + Shift + R 強制重新整理

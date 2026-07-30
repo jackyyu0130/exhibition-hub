@@ -9,12 +9,12 @@ CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
 
 
 class V650PostcardCarouselTests(unittest.TestCase):
-    def test_frontend_assets_share_v650_cache_version(self):
+    def test_frontend_assets_share_v650r3_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r2",
-            "assets/app.js?v=6.5.0-r2",
-            "assets/favicon-48.png?v=6.5.0-r2",
-            "assets/apple-touch-icon.png?v=6.5.0-r2",
+            "assets/styles.css?v=6.5.0-r3",
+            "assets/app.js?v=6.5.0-r3",
+            "assets/favicon-48.png?v=6.5.0-r3",
+            "assets/apple-touch-icon.png?v=6.5.0-r3",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)
@@ -24,20 +24,33 @@ class V650PostcardCarouselTests(unittest.TestCase):
         self.assertNotIn("再抽一組觀展靈感", HTML)
         self.assertNotIn("HERO_ROTATION_MS", APP)
 
-    def test_two_ticket_and_postcard_pairs_are_rendered(self):
+    def test_two_ticket_and_postcard_pairs_are_rendered_with_rotating_poses(self):
         self.assertIn("function heroPairMarkup", APP)
+        self.assertIn("function heroPoseIndex", APP)
+        self.assertIn('data-pose="${poseIndex}"', APP)
         self.assertIn("heroPairMarkup(pool[firstIndex], 1", APP)
         self.assertIn("heroPairMarkup(pool[secondIndex], 2", APP)
+        self.assertIn("heroPoseIndex(incomingIndex)", APP)
         self.assertIn("hero-postcard-image", APP)
 
-    def test_desktop_arrow_direction_matches_product_copy(self):
+    def test_desktop_arrows_use_angle_brackets_outside_the_frame(self):
         self.assertIn('id="heroNextButton"', HTML)
         self.assertIn('id="heroPreviousButton"', HTML)
+        self.assertIn('&lt;</span>', HTML)
+        self.assertIn('&gt;</span>', HTML)
         self.assertIn("$('#heroNextButton')?.addEventListener", APP)
         self.assertIn("changeHeroPair(1);", APP)
         self.assertIn("changeHeroPair(-1);", APP)
-        self.assertIn(".hero-carousel-next { left: 5px; }", CSS)
-        self.assertIn(".hero-carousel-previous { right: 5px; }", CSS)
+        self.assertIn(".hero-carousel-next { left: -22px; }", CSS)
+        self.assertIn(".hero-carousel-previous { right: -22px; }", CSS)
+
+    def test_back_pair_and_incoming_pair_gain_depth_blur(self):
+        self.assertIn('.hero-pair-slot-2 .hero-postcard,', CSS)
+        self.assertIn('filter: blur(1.1px) saturate(.94);', CSS)
+        self.assertIn('.hero-pair-slot-3 .hero-postcard,', CSS)
+        self.assertIn('filter: blur(2.2px) saturate(.9);', CSS)
+        self.assertIn('.hero-ticket-stack.is-moving-next .hero-pair-promote-next .hero-postcard,', CSS)
+        self.assertIn('filter: blur(0px) saturate(1);', CSS)
 
     def test_mobile_swipe_left_is_next_and_right_is_previous(self):
         self.assertIn("changeHeroPair(deltaX < 0 ? 1 : -1)", APP)

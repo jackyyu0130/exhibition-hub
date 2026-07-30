@@ -989,8 +989,12 @@
     </a>`;
   }
 
-  function heroPairMarkup(event, slot, itemNumber, motionClass = '') {
-    return `<article class="hero-exhibit-pair hero-pair-slot-${slot} ${motionClass}" data-ticket-key="${escapeHtml(eventKey(event))}">
+  function heroPoseIndex(absoluteIndex) {
+    return ((absoluteIndex % 3) + 3) % 3 + 1;
+  }
+
+  function heroPairMarkup(event, slot, itemNumber, motionClass = '', poseIndex = heroPoseIndex(itemNumber - 1)) {
+    return `<article class="hero-exhibit-pair hero-pair-slot-${slot} ${motionClass}" data-ticket-key="${escapeHtml(eventKey(event))}" data-pose="${poseIndex}">
       <a class="hero-postcard" href="${eventHref(event)}" aria-label="查看展覽圖片與資訊：${escapeHtml(event.title)}">
         ${imageMarkup(event, 'hero-postcard-image')}
         <span class="hero-postcard-caption"><b>${escapeHtml(event.title)}</b><small>${escapeHtml(event.region || eventVenueCompactLabel(event))}</small></span>
@@ -1036,8 +1040,8 @@
     state.mobilePreviewTicket = null;
     stack.className = 'hero-ticket-stack';
     stack.innerHTML = [
-      heroPairMarkup(pool[firstIndex], 1, firstIndex + 1),
-      heroPairMarkup(pool[secondIndex], 2, secondIndex + 1)
+      heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, '', heroPoseIndex(firstIndex)),
+      heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, '', heroPoseIndex(secondIndex))
     ].join('');
     updateHeroStatus();
   }
@@ -1056,15 +1060,15 @@
     $('#heroPreviousButton')?.setAttribute('disabled', '');
     if (direction > 0) {
       stack.innerHTML = [
-        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-exit-next'),
-        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-promote-next'),
-        heroPairMarkup(pool[incomingIndex], 3, incomingIndex + 1, 'hero-pair-incoming-next')
+        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-exit-next', heroPoseIndex(firstIndex)),
+        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-promote-next', heroPoseIndex(secondIndex)),
+        heroPairMarkup(pool[incomingIndex], 3, incomingIndex + 1, 'hero-pair-incoming-next', heroPoseIndex(incomingIndex))
       ].join('');
     } else {
       stack.innerHTML = [
-        heroPairMarkup(pool[incomingIndex], 0, incomingIndex + 1, 'hero-pair-incoming-previous'),
-        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-demote-previous'),
-        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-exit-previous')
+        heroPairMarkup(pool[incomingIndex], 0, incomingIndex + 1, 'hero-pair-incoming-previous', heroPoseIndex(incomingIndex)),
+        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-demote-previous', heroPoseIndex(firstIndex)),
+        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-exit-previous', heroPoseIndex(secondIndex))
       ].join('');
     }
     requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.add(`is-moving-${motion}`)));
