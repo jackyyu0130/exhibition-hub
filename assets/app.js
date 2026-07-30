@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.4.2 — venue tabs, brand fallback, ticket spacing, and mobile two-column cards. */
+/* Exhibition Hub V6.5.0-R2 — cumulative postcard carousel, mobile shortcuts, and Huashan recovery release. */
 (() => {
   'use strict';
 
@@ -41,7 +41,6 @@
     '演唱會':7, '表演':8, '舞蹈':9, '電影':10, '市集':11,
     '科技':12, '競賽':13, '快閃店':14, '其他':15,
   };
-  const HERO_ROTATION_MS = 15000;
   const NEARBY_RADIUS_KM = 10;
   const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'其他','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'其他'};
   const CATEGORY_ALIASES = {
@@ -104,20 +103,17 @@
     map: null,
     markers: null,
     calendarMonth: null,
-    heroTimer: null,
-    heroTimerStartedAt: 0,
-    heroRemainingMs: HERO_ROTATION_MS,
-    heroPaused: false,
-    heroPointerInside: false,
-    heroFocusInside: false,
     heroCursor: 0,
-    heroLastKeys: [],
+    heroPool: [],
+    heroAnimating: false,
+    heroSwipeStartX: null,
+    heroSwipeStartY: null,
+    heroSwipeBlockClickUntil: 0,
     mobilePreviewTicket: null,
     mobileCategoriesExpanded: false,
     mobileDrawerSection: 'all',
     viewportScrollY: 0,
     viewportLockOwner: null,
-    heroHasShuffled: false,
     lastRenderedDate: null,
     heroTransitionTimer: null,
     filterResultsTimer: null,
@@ -980,88 +976,105 @@
     return [...withImages, ...sorted.filter(event => !event.image)].filter((event, index, arr) => arr.findIndex(other => eventKey(other) === eventKey(event)) === index).slice(0, count);
   }
 
-  function heroTicketMarkup(event, slot) {
-    const label = slot === 0 ? '觀展靈感' : slot === 1 ? '編輯精選' : '下一站推薦';
-    return `<a class="hero-ticket-card hero-ticket-slot-${slot + 1}" href="${eventHref(event)}" data-ticket-key="${escapeHtml(eventKey(event))}" aria-expanded="false" aria-label="查看展覽：${escapeHtml(event.title)}">
+  function heroTicketMarkup(event, itemNumber) {
+    return `<a class="hero-ticket-card" href="${eventHref(event)}" data-ticket-key="${escapeHtml(eventKey(event))}" aria-expanded="false" aria-label="查看展覽：${escapeHtml(event.title)}">
       <span class="ticket-watermark" aria-hidden="true"><b>展</b><i>TEJ</i></span>
       <span class="ticket-perforation" aria-hidden="true"></span>
       <div class="ticket-topline"><span>TAIWAN EXHIBITION</span><span>ADMIT ONE</span></div>
       <div class="ticket-main">
-        <span class="ticket-index">${String(slot + 1).padStart(2,'0')}</span>
-        <div><small>${label} · ${escapeHtml(eventContentTypeLabel(event))}</small><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(dateRange(event))} · ${escapeHtml(eventVenueCompactLabel(event))}</p></div>
+        <span class="ticket-index">${String(itemNumber).padStart(2,'0')}</span>
+        <div><small>觀展靈感 · ${escapeHtml(eventContentTypeLabel(event))}</small><h2>${escapeHtml(event.title)}</h2><p>${escapeHtml(dateRange(event))} · ${escapeHtml(eventVenueCompactLabel(event))}</p></div>
       </div>
       <div class="ticket-footer"><span>EXHIBITION JOURNAL</span><span class="barcode">|||| ||| ||||</span></div>
     </a>`;
   }
 
-  function randomHeroPicks(pool) {
-    const previous = new Set(state.heroLastKeys);
-    const fresh = pool.filter(event => !previous.has(eventKey(event)));
-    const source = fresh.length >= 3 ? fresh : pool;
-    const shuffled = [...source].sort(() => Math.random() - .5);
-    const picks = [];
-    for (const event of shuffled) {
-      if (!picks.some(item => eventKey(item) === eventKey(event))) picks.push(event);
-      if (picks.length === Math.min(3, pool.length)) break;
-    }
-    state.heroLastKeys = picks.map(eventKey);
-    return picks;
+  function heroPairMarkup(event, slot, itemNumber, motionClass = '') {
+    return `<article class="hero-exhibit-pair hero-pair-slot-${slot} ${motionClass}" data-ticket-key="${escapeHtml(eventKey(event))}">
+      <a class="hero-postcard" href="${eventHref(event)}" aria-label="查看展覽圖片與資訊：${escapeHtml(event.title)}">
+        ${imageMarkup(event, 'hero-postcard-image')}
+        <span class="hero-postcard-caption"><b>${escapeHtml(event.title)}</b><small>${escapeHtml(event.region || eventVenueCompactLabel(event))}</small></span>
+      </a>
+      ${heroTicketMarkup(event, itemNumber)}
+    </article>`;
   }
 
-  function renderHeroTickets({animate = true} = {}) {
+  function heroPool() {
+    const base = state.events.filter(event => (isOngoing(event) || isUpcoming(event)) && event.image);
+    const fallback = state.events.filter(event => isOngoing(event) || isUpcoming(event));
+    const pool = selectFeatured(base.length >= 4 ? base : fallback.length ? fallback : state.events, Math.min(48, state.events.length));
+    const signature = pool.map(eventKey).join('|');
+    const currentSignature = state.heroPool.map(eventKey).join('|');
+    if (signature !== currentSignature) {
+      state.heroPool = pool;
+      state.heroCursor = 0;
+    }
+    return state.heroPool;
+  }
+
+  function heroIndex(offset = 0) {
+    const length = state.heroPool.length;
+    return length ? (state.heroCursor + offset + length) % length : 0;
+  }
+
+  function updateHeroStatus() {
+    const status = $('#heroCarouselStatus');
+    if (!status || !state.heroPool.length) return;
+    const first = heroIndex();
+    const second = heroIndex(1);
+    status.textContent = `目前顯示第 ${first + 1} 與第 ${second + 1} 組，共 ${state.heroPool.length} 組`;
+  }
+
+  function renderHeroTickets() {
     const stack = $('#heroTicketStack');
     if (!stack) return;
     window.clearTimeout(state.heroTransitionTimer);
-    const base = state.events.filter(event => isOngoing(event) || isUpcoming(event));
-    const pool = selectFeatured(base.length ? base : state.events, Math.min(48, state.events.length));
+    const pool = heroPool();
     if (!pool.length) return;
-    const picks = randomHeroPicks(pool);
-    const apply = () => {
-      state.mobilePreviewTicket = null;
-      stack.innerHTML = picks.map(heroTicketMarkup).join('');
-      stack.classList.remove('is-changing');
-      requestAnimationFrame(() => stack.classList.add('is-entering'));
-      state.heroTransitionTimer = window.setTimeout(() => stack.classList.remove('is-entering'), 2350);
-    };
-    if (animate && stack.children.length) {
-      stack.classList.add('is-changing');
-      state.heroTransitionTimer = window.setTimeout(apply, 720);
-    } else apply();
+    const firstIndex = heroIndex();
+    const secondIndex = heroIndex(1);
+    state.mobilePreviewTicket = null;
+    stack.className = 'hero-ticket-stack';
+    stack.innerHTML = [
+      heroPairMarkup(pool[firstIndex], 1, firstIndex + 1),
+      heroPairMarkup(pool[secondIndex], 2, secondIndex + 1)
+    ].join('');
+    updateHeroStatus();
   }
 
-  function ensureHeroRotation(delay = state.heroRemainingMs) {
-    if (state.heroTimer || state.heroPaused || document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    state.heroRemainingMs = Math.max(250, Math.min(delay || HERO_ROTATION_MS, HERO_ROTATION_MS));
-    state.heroTimerStartedAt = performance.now();
-    state.heroTimer = window.setTimeout(() => {
-      state.heroTimer = null;
-      state.heroRemainingMs = HERO_ROTATION_MS;
-      if (state.view === 'home' && !document.hidden && !state.heroPaused) renderHeroTickets();
-      ensureHeroRotation(HERO_ROTATION_MS);
-    }, state.heroRemainingMs);
-  }
-
-  function resetHeroRotation() {
-    if (state.heroTimer) window.clearTimeout(state.heroTimer);
-    state.heroTimer = null;
-    state.heroRemainingMs = HERO_ROTATION_MS;
-    if (!state.heroPaused) ensureHeroRotation(HERO_ROTATION_MS);
-  }
-
-  function pauseHeroRotation() {
-    state.heroPaused = true;
-    if (!state.heroTimer) return;
-    const elapsed = performance.now() - state.heroTimerStartedAt;
-    state.heroRemainingMs = Math.max(250, state.heroRemainingMs - elapsed);
-    window.clearTimeout(state.heroTimer);
-    state.heroTimer = null;
-  }
-
-  function resumeHeroRotation() {
-    if (!state.heroPaused) return;
-    if (state.heroPointerInside || state.heroFocusInside || document.hidden) return;
-    state.heroPaused = false;
-    ensureHeroRotation(state.heroRemainingMs || HERO_ROTATION_MS);
+  function changeHeroPair(direction) {
+    const stack = $('#heroTicketStack');
+    const pool = heroPool();
+    if (!stack || pool.length < 2 || state.heroAnimating) return;
+    const motion = direction > 0 ? 'next' : 'previous';
+    const firstIndex = heroIndex();
+    const secondIndex = heroIndex(1);
+    const incomingIndex = direction > 0 ? heroIndex(2) : heroIndex(-1);
+    state.heroAnimating = true;
+    state.mobilePreviewTicket = null;
+    $('#heroNextButton')?.setAttribute('disabled', '');
+    $('#heroPreviousButton')?.setAttribute('disabled', '');
+    if (direction > 0) {
+      stack.innerHTML = [
+        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-exit-next'),
+        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-promote-next'),
+        heroPairMarkup(pool[incomingIndex], 3, incomingIndex + 1, 'hero-pair-incoming-next')
+      ].join('');
+    } else {
+      stack.innerHTML = [
+        heroPairMarkup(pool[incomingIndex], 0, incomingIndex + 1, 'hero-pair-incoming-previous'),
+        heroPairMarkup(pool[firstIndex], 1, firstIndex + 1, 'hero-pair-demote-previous'),
+        heroPairMarkup(pool[secondIndex], 2, secondIndex + 1, 'hero-pair-exit-previous')
+      ].join('');
+    }
+    requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.add(`is-moving-${motion}`)));
+    state.heroTransitionTimer = window.setTimeout(() => {
+      state.heroCursor = heroIndex(direction);
+      state.heroAnimating = false;
+      $('#heroNextButton')?.removeAttribute('disabled');
+      $('#heroPreviousButton')?.removeAttribute('disabled');
+      renderHeroTickets();
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 760);
   }
 
   const HOME_STATUS_COPY = {
@@ -1138,8 +1151,7 @@
     if (paperDate) paperDate.textContent = updated
       ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')}`
       : localDateKey(new Date()).replaceAll('-', '.');
-    if (!$('#heroTicketStack').children.length) renderHeroTickets({animate:false});
-    ensureHeroRotation();
+    if (!$('#heroTicketStack').children.length) renderHeroTickets();
 
     renderCategoryStrip();
     renderHomeFilterResults(homeFilterItems);
@@ -1936,18 +1948,7 @@
     }
     $$('[data-reveal-sequence], [data-motion-group], [data-split-reveal], [data-fade-reveal]', home)
       .forEach(group => group.classList.remove('is-in-view'));
-    const ticketStack = $('#heroTicketStack');
-    if (ticketStack?.children.length) {
-      window.clearTimeout(state.heroTransitionTimer);
-      ticketStack.classList.remove('is-changing','is-entering');
-      void ticketStack.offsetWidth;
-      requestAnimationFrame(() => ticketStack.classList.add('is-entering'));
-      state.heroTransitionTimer = window.setTimeout(() => ticketStack.classList.remove('is-entering'), 2350);
-    }
-    if (!document.hidden) {
-      state.heroPaused = state.heroPointerInside || state.heroFocusInside;
-      resetHeroRotation();
-    }
+    if (!$('#heroTicketStack')?.children.length) renderHeroTickets();
     void home.offsetWidth;
   }
 
@@ -1966,30 +1967,8 @@
     updateScrollControls();
     $('#backToTopButton')?.addEventListener('click', () => window.scrollTo({top:0,left:0,behavior:'smooth'}));
     window.addEventListener('popstate', () => { readParams(); renderCurrentView(); window.scrollTo({top:0,left:0,behavior:'auto'}); });
-    const heroVisual = $('.hero-visual');
-    heroVisual?.addEventListener('pointerenter', () => {
-      state.heroPointerInside = true;
-      pauseHeroRotation();
-    });
-    heroVisual?.addEventListener('pointerleave', () => {
-      state.heroPointerInside = false;
-      resumeHeroRotation();
-    });
-    heroVisual?.addEventListener('focusin', () => {
-      state.heroFocusInside = true;
-      pauseHeroRotation();
-    });
-    heroVisual?.addEventListener('focusout', event => {
-      if (heroVisual.contains(event.relatedTarget)) return;
-      state.heroFocusInside = false;
-      resumeHeroRotation();
-    });
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) pauseHeroRotation();
-      else {
-        resumeHeroRotation();
-        replayHomeAnimations();
-      }
+      if (!document.hidden) replayHomeAnimations();
     });
     window.addEventListener('pageshow', event => {
       if (event.persisted) replayHomeAnimations();
@@ -2036,19 +2015,34 @@
     $('#navSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#navSearchInput'));});
     $('#mobileSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#mobileSearchInput'));});
     $('#heroSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#heroSearchInput'));});
-    $('#heroShuffleButton').addEventListener('click', event => {
+    $('#heroNextButton')?.addEventListener('click', event => {
       event.preventDefault();
-      event.stopPropagation();
-      const button = $('#heroShuffleButton');
-      if (button.disabled) return;
-      button.disabled = true;
-      button.setAttribute('aria-busy', 'true');
-      state.heroHasShuffled = true;
-      $('#heroShuffleText').textContent = '再抽一組觀展靈感';
-      renderHeroTickets({animate:true});
-      resetHeroRotation();
-      setTimeout(() => { button.disabled = false; button.removeAttribute('aria-busy'); }, 820);
+      changeHeroPair(1);
     });
+    $('#heroPreviousButton')?.addEventListener('click', event => {
+      event.preventDefault();
+      changeHeroPair(-1);
+    });
+    const heroCarousel = $('#heroCarousel');
+    heroCarousel?.addEventListener('pointerdown', event => {
+      if (!window.matchMedia('(max-width: 760px) and (pointer: coarse)').matches) return;
+      state.heroSwipeStartX = event.clientX;
+      state.heroSwipeStartY = event.clientY;
+    }, {passive:true});
+    heroCarousel?.addEventListener('pointercancel', () => {
+      state.heroSwipeStartX = null;
+      state.heroSwipeStartY = null;
+    });
+    heroCarousel?.addEventListener('pointerup', event => {
+      if (state.heroSwipeStartX == null || state.heroSwipeStartY == null) return;
+      const deltaX = event.clientX - state.heroSwipeStartX;
+      const deltaY = event.clientY - state.heroSwipeStartY;
+      state.heroSwipeStartX = null;
+      state.heroSwipeStartY = null;
+      if (Math.abs(deltaX) < 42 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) return;
+      state.heroSwipeBlockClickUntil = performance.now() + 480;
+      changeHeroPair(deltaX < 0 ? 1 : -1);
+    }, {passive:true});
 
     $('#datePicker').addEventListener('change', event => {state.date = event.target.value || null; renderHome();});
     $('#filterResultsClear').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();$('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
@@ -2062,6 +2056,11 @@
     });
 
     document.addEventListener('click', event => {
+      if (event.target.closest('#heroCarousel') && performance.now() < state.heroSwipeBlockClickUntil) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       const tappedHeroTicket = event.target.closest('.hero-ticket-card');
       const touchTicketMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
       if (tappedHeroTicket && touchTicketMode) {
@@ -2075,7 +2074,6 @@
           tappedHeroTicket.classList.add('is-touch-preview');
           tappedHeroTicket.setAttribute('aria-expanded', 'true');
           state.mobilePreviewTicket = ticketKey;
-          pauseHeroRotation();
           return;
         }
         state.mobilePreviewTicket = null;
@@ -2085,10 +2083,6 @@
           ticket.setAttribute('aria-expanded', 'false');
         });
         state.mobilePreviewTicket = null;
-        state.heroPointerInside = false;
-        state.heroFocusInside = false;
-        state.heroPaused = false;
-        resetHeroRotation();
       }
       const internalLink = event.target.closest('a[href]');
       if (internalLink && !event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && !internalLink.target && !internalLink.hasAttribute('download')) {

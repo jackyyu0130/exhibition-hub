@@ -668,6 +668,7 @@ class Huashan1914Collector(BaseCollector):
         *,
         fetch_details: bool | None = None,
         detail_limit: int | None = None,
+        detail_retry_rounds: int | None = None,
     ) -> None:
         self.fetch_details = (
             _truthy_env("EXHIBITION_HUB_HUASHAN_FETCH_DETAILS")
@@ -680,9 +681,20 @@ class Huashan1914Collector(BaseCollector):
             if detail_limit is None
             else max(0, int(detail_limit))
         )
+        env_retry_rounds = os.getenv(
+            "EXHIBITION_HUB_HUASHAN_DETAIL_RETRY_ROUNDS",
+            os.getenv("EXHIBITION_HUB_DETAIL_RETRY_ROUNDS", "1"),
+        )
+        self.detail_retry_rounds = (
+            max(0, int(env_retry_rounds or 0))
+            if detail_retry_rounds is None
+            else max(0, int(detail_retry_rounds))
+        )
         self.last_listing_pages = 0
         self.last_detail_requested = 0
+        self.last_detail_attempts = 0
         self.last_detail_success = 0
+        self.last_detail_recovered = 0
         self.last_detail_failures: list[str] = []
 
     @classmethod
@@ -833,7 +845,9 @@ class Huashan1914Collector(BaseCollector):
         total_pages = 1
         self.last_listing_pages = 0
         self.last_detail_requested = 0
+        self.last_detail_attempts = 0
         self.last_detail_success = 0
+        self.last_detail_recovered = 0
         self.last_detail_failures = []
 
         for page in range(1, self.max_pages + 1):
@@ -868,22 +882,44 @@ class Huashan1914Collector(BaseCollector):
         enriched_by_url: dict[str, dict[str, Any]] = {
             str(record["detailUrl"]): record for record in records
         }
-        for record in selected:
+        pending_failures: list[tuple[dict[str, Any], Exception]] = []
+
+        def fetch_detail(record: dict[str, Any]) -> None:
             detail_url = str(record["detailUrl"])
+            self.last_detail_attempts += 1
+            response = client.get(detail_url)
+            enriched_by_url[detail_url] = self.parse_detail(
+                response.text,
+                detail_url=response.url or detail_url,
+                listing=record,
+            )
+
+        for record in selected:
             try:
-                response = client.get(detail_url)
-                enriched_by_url[detail_url] = self.parse_detail(
-                    response.text,
-                    detail_url=response.url or detail_url,
-                    listing=record,
-                )
+                fetch_detail(record)
                 self.last_detail_success += 1
             except Exception as exc:
-                self.last_detail_failures.append(
-                    f"{record.get('sourceEventId')}: {type(exc).__name__}: {exc}"
-                )
-                record["detailFetched"] = False
-                record["detailError"] = f"{type(exc).__name__}: {exc}"
+                pending_failures.append((record, exc))
+
+        for _round in range(self.detail_retry_rounds):
+            if not pending_failures:
+                break
+            retrying = pending_failures
+            pending_failures = []
+            for record, _previous_error in retrying:
+                try:
+                    fetch_detail(record)
+                    self.last_detail_success += 1
+                    self.last_detail_recovered += 1
+                except Exception as exc:
+                    pending_failures.append((record, exc))
+
+        for record, exc in pending_failures:
+            self.last_detail_failures.append(
+                f"{record.get('sourceEventId')}: {type(exc).__name__}: {exc}"
+            )
+            record["detailFetched"] = False
+            record["detailError"] = f"{type(exc).__name__}: {exc}"
         return [enriched_by_url[str(record["detailUrl"])] for record in records]
 
     def normalize_record(
@@ -901,14 +937,17 @@ class Huashan1914Collector(BaseCollector):
 
     def run(self, source: CollectorSource, client: Any) -> CollectorRunReport:
         report = super().run(source, client)
-        report.fetched_pages = self.last_listing_pages + self.last_detail_requested
+        report.fetched_pages = self.last_listing_pages + self.last_detail_attempts
         detail_records = [record.raw for record in report.records if record.raw.get("detailFetched")]
         report.metrics = {
             "listingPagesFetched": self.last_listing_pages,
             "detailEnabled": self.fetch_details,
             "detailLimit": self.detail_limit,
             "detailRequestedCount": self.last_detail_requested,
+            "detailAttemptCount": self.last_detail_attempts,
+            "detailRetryRounds": self.detail_retry_rounds,
             "detailSuccessCount": self.last_detail_success,
+            "detailRecoveredCount": self.last_detail_recovered,
             "detailFailureCount": len(self.last_detail_failures),
             "detailCoverage": {
                 "image": sum(bool(item.get("imageUrl")) for item in detail_records),

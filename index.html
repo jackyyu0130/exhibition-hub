@@ -10,15 +10,15 @@
   <meta id="metaOgDescription" property="og:description" content="探索全台正在舉辦、即將開展與你附近的藝文展覽。">
   <meta id="metaOgImage" property="og:image" content="">
   <link rel="canonical" href="./">
-  <link rel="icon" href="assets/favicon-48.png?v=6.4.2" sizes="48x48" type="image/png">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=6.4.2" sizes="180x180">
+  <link rel="icon" href="assets/favicon-48.png?v=6.5.0-r2" sizes="48x48" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=6.5.0-r2" sizes="180x180">
   <title>台灣展覽誌｜探索全台藝文展覽</title>
   <script id="structuredData" type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"台灣展覽誌"}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="assets/styles.css?v=6.4.2">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r2">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -38,7 +38,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="nav-shell">
       <a class="brand" id="siteBrandLink" href="./" data-force-home-reload aria-label="重新載入台灣展覽誌首頁">
         <span class="brand-logo-frame" aria-hidden="true">
-          <img src="assets/taiwan-exhibition-journal-logo-v10.png?v=6.4.2" alt="" onerror="this.hidden=true;this.closest('.brand-logo-frame').classList.add('logo-load-failed')">
+          <img src="assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r2" alt="" onerror="this.hidden=true;this.closest('.brand-logo-frame').classList.add('logo-load-failed')">
           <span class="brand-logo-fallback">
             <b>展</b>
             <span><strong>台灣展覽誌</strong><small>TAIWAN EXHIBITION JOURNAL</small></span>
@@ -206,13 +206,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="paper-tape tape-two"></span>
           </div>
           <div class="hero-counter-overlay" aria-hidden="true"></div>
-          <div class="hero-ticket-stage">
-            <button class="hero-shuffle-button" id="heroShuffleButton" type="button">
-              <span class="shuffle-icon" aria-hidden="true">↻</span>
-              <span id="heroShuffleText">從右側抽出今天的觀展靈感</span>
+          <div class="hero-ticket-stage" id="heroCarousel" role="region" aria-roledescription="carousel" aria-label="展覽票券與明信片推薦">
+            <button class="hero-carousel-arrow hero-carousel-next" id="heroNextButton" type="button" aria-label="顯示下一組展覽">
+              <span aria-hidden="true">←</span>
             </button>
-            <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-label="隨機推薦三檔展覽"></div>
-            <div class="hero-ticket-hint" aria-hidden="true"><span></span> 每 15 秒換一組推薦・懸浮即暫停</div>
+            <div class="hero-ticket-stack" id="heroTicketStack" aria-live="polite" aria-atomic="true"></div>
+            <button class="hero-carousel-arrow hero-carousel-previous" id="heroPreviousButton" type="button" aria-label="顯示上一組展覽">
+              <span aria-hidden="true">→</span>
+            </button>
+            <div class="hero-carousel-status" id="heroCarouselStatus" aria-live="polite"></div>
           </div>
         </div>
       </section>
@@ -223,6 +225,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <p class="eyebrow">EXPLORE BY MOOD</p>
             <h2>循著今日心緒，遇見一場展覽</h2>
           </div>
+        </div>
+
+        <div class="mobile-home-quick-actions" aria-label="快速尋找展覽">
+          <button type="button" data-open-mobile-filter="calendar"><span>日曆</span><small>選擇日期</small></button>
+          <button type="button" data-open-mobile-filter="category"><span>分類</span><small>選擇類型</small></button>
+          <button type="button" data-open-mobile-filter="location"><span>展區</span><small>地區與場館</small></button>
+          <a href="?view=all&amp;admission=free"><span>免費</span><small>免費入場</small></a>
         </div>
 
         <div class="filter-workbench">
@@ -263,10 +272,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 
         <div class="category-strip reveal-sequence" id="categoryStrip" data-reveal-sequence aria-label="展覽分類"></div>
-        <button class="mobile-home-filter-launch" type="button" data-open-mobile-filter="category">
-          <span><small>CATEGORY &amp; FILTER</small><strong>分類、日曆與地點篩選</strong></span>
-          <i aria-hidden="true">›</i>
-        </button>
       </section>
 
 
@@ -568,6 +573,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=6.4.2"></script>
+  <script src="assets/app.js?v=6.5.0-r2"></script>
 </body>
 </html>

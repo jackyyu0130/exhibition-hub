@@ -1,0 +1,35 @@
+{
+  "version": "6.5.0",
+  "name": "Hero 票券明信片輪播與手機快捷篩選版",
+  "frontendChanged": true,
+  "officialDataChanged": false,
+  "productionPipelineChanged": false,
+  "recommendedPackage": "Exhibition-Hub-V6.5.0-hero-postcard-carousel-safe-update.zip",
+  "fullReplacementPackage": "Exhibition-Hub-V6.5.0-full-replacement.zip",
+  "commitAndPullRequestTitle": "Apply Exhibition Hub V6.5.0 hero postcard carousel",
+  "keyFixes": [
+    "桌機 Hero 一次呈現兩組展覽票券與圖片明信片",
+    "桌機左箭頭顯示下一組、右箭頭顯示上一組",
+    "手機向左滑顯示下一組、向右滑顯示上一組",
+    "手機首頁改為日曆、分類、展區、免費四個快捷入口",
+    "手機探索卡片徽章置中",
+    "移除抽卡按鈕與十五秒自動輪播"
+  ],
+  "importantPaths": [
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "tests/test_frontend.py",
+    "tests/test_v650_postcard_carousel.py"
+  ],
+  "excludedFromSafePackage": [
+    "data/",
+    "scripts/",
+    ".github/"
+  ],
+  "validation": {
+    "javascriptSyntax": "passed",
+    "automatedTests": 339,
+    "automatedTestResult": "passed"
+  }
+}
