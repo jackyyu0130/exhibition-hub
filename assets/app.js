@@ -1401,6 +1401,23 @@
     });
     state.venueRegistryIndex = registryIndex;
     const records = new Map();
+    // Seed the selector with every venue that the confirmed nationwide matrix marks as retained.
+    // Venues without a currently collected event stay visible as disabled reference entries.
+    state.venueRegistry.filter(registry => registry?.confirmed).forEach(registry => {
+      const name = displayableVenueName(registry.name);
+      const key = cleanPlaceText(name);
+      if (!key || records.has(key)) return;
+      records.set(key, {
+        id:registry.id || name,
+        name,
+        aliases:registry.aliases || [],
+        region:normalizeRegion(registry.region || '其他地區'),
+        district:registry.district || '',
+        venueType:inferredVenueType(name, registry),
+        count:0,
+        confirmed:true,
+      });
+    });
     state.events.forEach(event => {
       const seen = new Set();
       [...eventVenueNames(event), event.originalVenueGroup].map(displayableVenueName).filter(Boolean).forEach(eventName => {
@@ -1487,9 +1504,10 @@
             <h3>${escapeHtml(district)}</h3>
             ${items.filter(item => (item.district || '其他地區') === district).map(item => {
               const checked = state.venueDrawerDraft.has(item.name);
-              return `<button type="button" class="venue-selector-option ${checked ? 'active' : ''}" data-venue-choice="${escapeHtml(item.name)}" aria-pressed="${checked}">
+              const unavailable = item.count === 0;
+              return `<button type="button" class="venue-selector-option ${checked ? 'active' : ''} ${unavailable ? 'is-unavailable' : ''}" data-venue-choice="${escapeHtml(item.name)}" aria-pressed="${checked}" ${unavailable ? 'disabled aria-disabled="true"' : ''}>
                 <span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(VENUE_TYPE_LABELS[item.venueType] || '展演場地')}</small></span>
-                <em>${item.count} 檔</em>
+                <em>${unavailable ? '尚無展覽' : `${item.count} 檔`}</em>
               </button>`;
             }).join('')}
           </section>`).join('')}
@@ -2325,20 +2343,25 @@
     readParams();
     bindEvents();
     try {
-      const [{payload, rawEvents, local, sourceUrl, enriched}, venueRegistryResponse, northernMatrixResponse] = await Promise.all([
+      const [{payload, rawEvents, local, sourceUrl, enriched}, venueRegistryResponse, northernMatrixResponse, taiwanMatrixResponse] = await Promise.all([
         fetchEventPayload(),
         fetch('data/venues.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
         fetch('data/northern_venue_matrix.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+        fetch('data/taiwan_venue_matrix.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
       ]);
       const stableVenues = Array.isArray(venueRegistryResponse?.venues) ? venueRegistryResponse.venues : [];
-      const northernVenues = Array.isArray(northernMatrixResponse?.venues)
-        ? northernMatrixResponse.venues.map(item => ({
+      const normalizeMatrixVenues = response => Array.isArray(response?.venues)
+        ? response.venues.map(item => ({
             ...item,
             venueTypePrimary:item.venueType,
             venueTypes:[item.venueType],
           }))
         : [];
-      state.venueRegistry = [...stableVenues, ...northernVenues];
+      const northernVenues = normalizeMatrixVenues(northernMatrixResponse);
+      const confirmedTaiwanVenues = normalizeMatrixVenues(taiwanMatrixResponse);
+      // Existing stable and northern records remain first so their curated aliases and active status win.
+      // The confirmed nationwide matrix then extends coverage to west, south, east and missing northern venues.
+      state.venueRegistry = [...stableVenues, ...northernVenues, ...confirmedTaiwanVenues];
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.stats = payload.stats || {};
       state.registryBuild = payload.registryBuild || null;

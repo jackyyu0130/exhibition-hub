@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-01",
+  "sourceWorkbook": "台灣展覽誌_全台場館矩陣與1-9階段總檢視_V1.1.xlsx",
+  "confirmationRule": "僅匯入確認狀態為「保留」的列",
+  "totalVenues": 235,
+  "matrices": [
+    {
+      "id": "north",
+      "label": "北部",
+      "file": "data/venue_matrix_north.json",
+      "venueCount": 122,
+      "coverageRegions": [
+        "臺北市",
+        "新北市",
+        "基隆市",
+        "桃園市",
+        "新竹市",
+        "新竹縣",
+        "宜蘭縣",
+        "連江縣"
+      ]
+    },
+    {
+      "id": "west",
+      "label": "西部",
+      "file": "data/venue_matrix_west.json",
+      "venueCount": 44,
+      "coverageRegions": [
+        "苗栗縣",
+        "臺中市",
+        "彰化縣",
+        "南投縣",
+        "雲林縣",
+        "金門縣"
+      ]
+    },
+    {
+      "id": "south",
+      "label": "南部",
+      "file": "data/venue_matrix_south.json",
+      "venueCount": 49,
+      "coverageRegions": [
+        "嘉義市",
+        "嘉義縣",
+        "臺南市",
+        "高雄市",
+        "屏東縣",
+        "澎湖縣"
+      ]
+    },
+    {
+      "id": "east",
+      "label": "東部",
+      "file": "data/venue_matrix_east.json",
+      "venueCount": 20,
+      "coverageRegions": [
+        "花蓮縣",
+        "臺東縣"
+      ]
+    }
+  ]
+}

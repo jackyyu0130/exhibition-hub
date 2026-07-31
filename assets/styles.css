@@ -6689,3 +6689,71 @@ body {
     font-size: 6px !important;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R10.2 — mobile ticket footer + social icon parity
+   ====================================================================== */
+
+/* Keep the footer line and barcode visible on every Hero ticket layer. */
+@media (max-width: 760px) {
+  .hero-ticket-slot-1 .ticket-footer,
+  .hero-ticket-slot-2 .ticket-footer,
+  .hero-ticket-slot-3 .ticket-footer,
+  .hero-ticket-stack.is-moving-next .ticket-footer,
+  .hero-ticket-stack.is-moving-previous .ticket-footer,
+  .hero-ticket-stack.is-entering .ticket-footer {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 5.8px !important;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .hero-ticket-slot-1 .ticket-footer .barcode,
+  .hero-ticket-slot-2 .ticket-footer .barcode,
+  .hero-ticket-slot-3 .ticket-footer .barcode {
+    display: inline-block !important;
+    letter-spacing: .025em;
+    white-space: nowrap;
+  }
+}
+
+/* Match Facebook and Threads to Instagram's optical icon size. */
+.footer-social-icon[aria-label="Facebook"] svg,
+.footer-social-icon[aria-label="Instagram"] svg,
+.footer-social-icon[aria-label="Threads"] img {
+  width: 18px !important;
+  height: 18px !important;
+  display: block;
+  flex: 0 0 18px;
+  object-fit: contain;
+  transform-origin: center;
+}
+
+/* Facebook's glyph occupies less of its viewBox; a slight optical correction
+   keeps the visible mark equal to the Instagram outline without changing the circle. */
+.footer-social-icon[aria-label="Facebook"] svg {
+  transform: scale(1.08);
+}
+
+.footer-social-icon[aria-label="Instagram"] svg,
+.footer-social-icon[aria-label="Threads"] img {
+  transform: none;
+}
+
+/* Confirmed matrix entries with no current event remain visible but cannot be selected. */
+.venue-selector-option.is-unavailable,
+.venue-selector-option:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  filter: saturate(.72);
+}
+
+.venue-selector-option.is-unavailable:hover,
+.venue-selector-option:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
