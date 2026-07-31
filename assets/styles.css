@@ -7002,3 +7002,64 @@ body {
     animation: none !important;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R10.4 — curated feed and low-cost rendering
+   ====================================================================== */
+
+/* The carousel now animates the whole stack with the Web Animations API.
+   Keep individual ticket poses static so old transition layers cannot force
+   repeated layout, blur, or width calculations. */
+.hero-ticket-stage,
+.hero-ticket-stage .hero-ticket-stack {
+  contain: layout paint style;
+}
+.hero-ticket-stage .hero-ticket-stack {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.hero-ticket-stage .hero-ticket-slide,
+.hero-ticket-stage .hero-ticket-card,
+.hero-ticket-stack.is-resetting .hero-ticket-slide,
+.hero-ticket-stack.is-resetting .hero-ticket-card {
+  transition: none !important;
+  filter: none !important;
+  backface-visibility: hidden;
+}
+.hero-ticket-stage .hero-ticket-slide {
+  will-change: auto !important;
+}
+.hero-ticket-stack.is-entering .hero-ticket-slide {
+  will-change: transform, opacity !important;
+  animation-duration: 1.35s !important;
+  filter: none !important;
+}
+.hero-ticket-stack.is-entering .hero-ticket-slot-2 { animation-delay: .10s !important; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-3 { animation-delay: .20s !important; }
+
+/* Listing cards use one decoded foreground image. The duplicated blur image is
+   reserved for the large detail poster only. */
+.exhibition-card .smart-image-frame,
+.nearby-result-card .smart-image-frame,
+.nearby-mini-card .smart-image-frame,
+.venue-tile .smart-image-frame {
+  background: linear-gradient(145deg, #ded2c1, #b4aa9c);
+  overflow: hidden;
+}
+.exhibition-card .smart-image-foreground,
+.nearby-result-card .smart-image-foreground,
+.nearby-mini-card .smart-image-foreground,
+.venue-tile .smart-image-foreground {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Prevent old hover layers from causing large repaints while scrolling. */
+@media (hover: none), (pointer: coarse) {
+  .exhibition-card,
+  .venue-tile,
+  .favorite-button,
+  .hero-ticket-card {
+    transition-duration: 0s !important;
+  }
+}

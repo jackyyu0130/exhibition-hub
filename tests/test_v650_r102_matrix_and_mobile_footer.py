@@ -11,7 +11,7 @@ CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
 class V650R102MatrixAndMobileFooterTests(unittest.TestCase):
     def test_confirmed_four_region_matrices_have_expected_counts(self):
         expected = {
-            "north": ("venue_matrix_north.json", 122),
+            "north": ("venue_matrix_north.json", 123),
             "west": ("venue_matrix_west.json", 44),
             "south": ("venue_matrix_south.json", 49),
             "east": ("venue_matrix_east.json", 20),
@@ -28,18 +28,18 @@ class V650R102MatrixAndMobileFooterTests(unittest.TestCase):
                 self.assertTrue(venue["confirmed"])
                 self.assertNotIn(venue["id"], ids)
                 ids.add(venue["id"])
-        self.assertEqual(total, 235)
+        self.assertEqual(total, 236)
 
     def test_combined_matrix_matches_confirmed_workbook(self):
         payload = json.loads((ROOT / "data" / "taiwan_venue_matrix.json").read_text(encoding="utf-8"))
         self.assertEqual(payload["stats"], {
-            "totalVenues": 235,
-            "north": 122,
+            "totalVenues": 236,
+            "north": 123,
             "west": 44,
             "south": 49,
             "east": 20,
         })
-        self.assertEqual(len(payload["venues"]), 235)
+        self.assertEqual(len(payload["venues"]), 236)
         self.assertIn("全台場館矩陣與1-9階段總檢視_V1.1.xlsx", payload["confirmationSource"])
 
     def test_frontend_loads_confirmed_nationwide_matrix_after_existing_registries(self):

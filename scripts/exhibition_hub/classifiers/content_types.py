@@ -141,6 +141,7 @@ POP_CULTURE_KEYWORDS = (
     "聲優",
     "寶可夢",
     "吉伊卡哇",
+    "chiikawa",
     "三麗鷗",
     "迪士尼",
     "ip展",
@@ -280,10 +281,14 @@ def classify_content_types(
         title,
         ART_EXHIBITION_TITLE_KEYWORDS,
     )
+    # Source category arrays are often noisy (for example a natural-history
+    # exhibition may also arrive with the generic "動漫" code). Pop-culture
+    # is therefore promoted only by a strong title signal, never by a stray
+    # secondary source category.
     has_pop_culture = _contains_any(
-        f"{title} {' '.join(categories)}",
+        title,
         POP_CULTURE_KEYWORDS,
-    ) or "動漫" in categories
+    )
     primary_category = _clean(
         event.get("category")
     )

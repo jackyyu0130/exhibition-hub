@@ -11,8 +11,8 @@ CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
 class V650PostcardCarouselTests(unittest.TestCase):
     def test_frontend_assets_share_v650r7_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r10.3",
-            "assets/app.js?v=6.5.0-r10.3",
+            "assets/styles.css?v=6.5.0-r10.4",
+            "assets/app.js?v=6.5.0-r10.4",
             "assets/favicon-48.png?v=6.5.0-r7",
             "assets/apple-touch-icon.png?v=6.5.0-r7",
         ):
@@ -32,7 +32,9 @@ class V650PostcardCarouselTests(unittest.TestCase):
         self.assertIn("heroTicketSlideMarkup(pool[firstIndex], 1", APP)
         self.assertIn("heroTicketSlideMarkup(pool[secondIndex], 2", APP)
         self.assertIn("heroTicketSlideMarkup(pool[thirdIndex], 3", APP)
-        self.assertIn("heroTicketSlideMarkup(pool[incomingIndex], 4", APP)
+        self.assertNotIn("heroTicketSlideMarkup(pool[incomingIndex], 4", APP)
+        self.assertIn("stack.animate(", APP)
+        self.assertIn("renderHeroTickets();", APP)
         self.assertNotIn("hero-postcard-image", APP)
         self.assertNotIn("function heroPairMarkup", APP)
 

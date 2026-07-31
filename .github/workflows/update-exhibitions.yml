@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - data/exhibitions.json
       - data/exhibitions.enriched.json
+      - data/exhibitions.curated.json
       - data/geocode-cache.json
       - data/update-reports/**
 
@@ -86,6 +87,7 @@ jobs:
             --fix \
             data/exhibitions.json \
             data/exhibitions.enriched.json \
+            data/exhibitions.curated.json \
             --report /tmp/pretest-image-quality-audit.json
 
       - name: Run project tests before production data update
@@ -218,6 +220,30 @@ jobs:
             data/exhibitions.enriched.json \
             --report data/update-reports/image-quality-audit.json
 
+      - name: Build curated public feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_curated_feed.py \
+            --input data/exhibitions.enriched.json \
+            --matrix data/taiwan_venue_matrix.json \
+            --output data/exhibitions.curated.json \
+            --report data/update-reports/curated-feed-report.json
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path("data/exhibitions.curated.json").read_text(encoding="utf-8"))
+          events = payload.get("events") or []
+          if len(events) < 100:
+              raise SystemExit(f"Curated feed unexpectedly small: {len(events)}")
+          if any(not event.get("sourceUrl") for event in events):
+              raise SystemExit("Curated feed contains event without outbound link")
+          if any(not (event.get("image") or event.get("images")) for event in events):
+              raise SystemExit("Curated feed contains event without image")
+          print(f"Curated public feed ready: {len(events)} events")
+          PY
+
       - name: Validate dynamic published production data
         shell: bash
         run: |
@@ -249,9 +275,11 @@ jobs:
           TRACKED_PATHS=(
             data/exhibitions.json
             data/exhibitions.enriched.json
+            data/exhibitions.curated.json
             data/geocode-cache.json
             data/update-reports/latest-huashan-update.json
             data/update-reports/image-quality-audit.json
+            data/update-reports/curated-feed-report.json
           )
 
           if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
@@ -262,8 +290,10 @@ jobs:
           mkdir -p /tmp/exhibition-hub-production
           cp data/exhibitions.json /tmp/exhibition-hub-production/exhibitions.json
           cp data/exhibitions.enriched.json /tmp/exhibition-hub-production/exhibitions.enriched.json
+          cp data/exhibitions.curated.json /tmp/exhibition-hub-production/exhibitions.curated.json
           cp data/update-reports/latest-huashan-update.json /tmp/exhibition-hub-production/latest-huashan-update.json
           cp data/update-reports/image-quality-audit.json /tmp/exhibition-hub-production/image-quality-audit.json
+          cp data/update-reports/curated-feed-report.json /tmp/exhibition-hub-production/curated-feed-report.json
           if [ -f data/geocode-cache.json ]; then
             cp data/geocode-cache.json /tmp/exhibition-hub-production/geocode-cache.json
           fi
@@ -278,8 +308,10 @@ jobs:
             mkdir -p data/update-reports
             cp /tmp/exhibition-hub-production/exhibitions.json data/exhibitions.json
             cp /tmp/exhibition-hub-production/exhibitions.enriched.json data/exhibitions.enriched.json
+            cp /tmp/exhibition-hub-production/exhibitions.curated.json data/exhibitions.curated.json
             cp /tmp/exhibition-hub-production/latest-huashan-update.json data/update-reports/latest-huashan-update.json
             cp /tmp/exhibition-hub-production/image-quality-audit.json data/update-reports/image-quality-audit.json
+            cp /tmp/exhibition-hub-production/curated-feed-report.json data/update-reports/curated-feed-report.json
             if [ -f /tmp/exhibition-hub-production/geocode-cache.json ]; then
               cp /tmp/exhibition-hub-production/geocode-cache.json data/geocode-cache.json
             fi
