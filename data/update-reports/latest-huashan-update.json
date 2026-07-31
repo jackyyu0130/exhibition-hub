@@ -1,14 +1,14 @@
 {
   "mode": "production-publish-report",
   "published": true,
-  "publishedAt": "2026-07-31T18:04:51.892471+00:00",
+  "publishedAt": "2026-07-31T20:42:20.543672+00:00",
   "sourceId": "huashan-1914",
-  "currentEventCount": 2502,
-  "publishedEventCount": 2476,
-  "addedEventCount": 1,
-  "removedEventCount": 27,
-  "dropCount": 26,
-  "dropRatio": 0.010392,
+  "currentEventCount": 2476,
+  "publishedEventCount": 2481,
+  "addedEventCount": 9,
+  "removedEventCount": 4,
+  "dropCount": 0,
+  "dropRatio": 0.0,
   "safetyLimits": {
     "minimumEvents": 500,
     "maxDropCount": 250,
@@ -30,40 +30,25 @@
     "published": false
   },
   "hashes": {
-    "current": "0ba66288bc25b8a90df1428f9561001777878b110309f360e0f266abd2fcc63d",
-    "preview": "7a97b836f3ea6c501d0c98c9b71658057c9b4e088286808bf05912a09ef2e5ce",
-    "published": "ac1b32c305f77ce1a957622c0b5fecb6b8e494193c39cca9886065baf82327d2"
+    "current": "1231fafa020becd273a23a099b7c87df1fe25946b9ee45a046d26f7471edb132",
+    "preview": "3d7997128bc8530041251610c2155af816ab6499f311f1a2826dba25d18cacca",
+    "published": "db05f9fc3ec394bf3881c46712398c567372872aafd861aaa852d689d6c41dc8"
   },
   "addedIds": [
-    "8559b5ff33edebd377caa732"
+    "69ae835ceb43d512a487f51e",
+    "69c8b14feb43f81479e547f3",
+    "69e7e31926b3242a48a9e5c8",
+    "6a28642a26b3243414ccd05c",
+    "6a34414826b3243414ccd45e",
+    "6a6acc63eb43f5f34e51885b",
+    "6a6c15cbeb43f5f34e51885d",
+    "6a6c465526b32427d0604301",
+    "6a6c5c7e647ad700eb56ccda"
   ],
   "removedIds": [
-    "6942e23826b32416dc348d80",
-    "69bd7dd526b3242a48a9dd18",
-    "69c8b14feb43f81479e547f3",
-    "69cd4fb426b3242a48a9dfe6",
-    "69cff2e426b3242a48a9e0cf",
-    "69e65c2d26b3242a48a9e57c",
-    "69e7adc726b3242a48a9e595",
-    "69e8ff1b26b3242a48a9e5db",
-    "6a061ea526b3243414ccc903",
-    "6a0c980726b3243414ccca01",
-    "6a14815026b3243414cccb45",
-    "6a1875c626b3243414cccc42",
-    "6a20817d26b3243414ccce91",
-    "6a21b01426b3243414cccecf",
-    "6a2301cf26b3243414cccf2d",
-    "6a28476526b3243414ccd032",
-    "6a2d8d4d26b3243414ccd2a7",
-    "6a30306e26b3243414ccd2ea",
-    "6a32d35226b3243414ccd3ca",
-    "6a32ef9f26b3243414ccd3e7",
-    "6a3424d326b3243414ccd43f",
-    "6a3424d326b3243414ccd440",
-    "6a45485726b32427d0604023",
-    "6a456b3726b32427d06040b5",
-    "6a57bdbc26b32427d06041c5",
-    "6a60f84026b32427d0604232",
-    "6a60f84a26b32427d0604239"
+    "69b06ece26b3242a48a9d9d4",
+    "69e48794eb43c961d05406c8",
+    "6a194564647a40ec65297a6d",
+    "6a3a4af7647a40ec65297aae"
   ]
 }
