@@ -7063,3 +7063,90 @@ body {
     transition-duration: 0s !important;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R10.5 — per-ticket carousel + scroll performance
+   ====================================================================== */
+
+/* Never animate the whole stack. Each ticket changes only transform/opacity. */
+.hero-ticket-stage .hero-ticket-stack {
+  transform: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  will-change: auto !important;
+}
+
+.hero-ticket-stage .hero-ticket-stack.is-r105-moving .hero-ticket-slide {
+  transition:
+    transform .92s cubic-bezier(.22,.72,.18,1),
+    opacity .70s ease !important;
+  will-change: transform, opacity !important;
+  pointer-events: none;
+}
+
+.hero-ticket-stage .hero-ticket-stack:not(.is-r105-moving) .hero-ticket-slide {
+  transition: none !important;
+  will-change: auto !important;
+}
+
+/* Remove the most expensive live blur layers from elements that stay on screen
+   while the page scrolls. Keep the same warm translucent appearance with solid
+   alpha backgrounds instead. */
+.site-header,
+.hero-ticket-stage .hero-ticket-card,
+.ticket-card,
+.hero-shuffle-button,
+.hero-carousel-arrow,
+.venue-selector-backdrop,
+.mobile-menu-backdrop,
+.venue-selector-footer,
+.venue-image-label {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.site-header {
+  background: rgba(247,245,241,.985) !important;
+}
+
+.hero-ticket-stage .hero-ticket-card {
+  background: rgba(255,253,249,.99) !important;
+  box-shadow: 0 12px 28px rgba(43,31,21,.13) !important;
+}
+
+.hero-paper-collage {
+  box-shadow: 0 16px 38px rgba(48,38,28,.11) !important;
+}
+
+.motion-card,
+.reveal-sequence .reveal-item {
+  will-change: auto !important;
+}
+
+/* Touch devices receive a calmer page outside the requested Hero motion. */
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
+  .exhibition-card,
+  .venue-tile,
+  .nearby-result-card,
+  .favorite-button {
+    box-shadow: none !important;
+  }
+
+  .motion-card,
+  .reveal-sequence .reveal-item {
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .hero-ticket-stage .hero-ticket-stack.is-r105-moving .hero-ticket-slide {
+    transition:
+      transform .82s cubic-bezier(.22,.72,.18,1),
+      opacity .62s ease !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticket-stage .hero-ticket-stack.is-r105-moving .hero-ticket-slide {
+    transition: none !important;
+  }
+}

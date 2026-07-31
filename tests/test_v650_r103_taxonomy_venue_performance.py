@@ -32,12 +32,15 @@ class R103TaxonomyVenuePerformanceTests(unittest.TestCase):
         self.assertTrue(records['藝富文創展演館／杰克音樂']['confirmed'])
 
     def test_hero_uses_transform_only_final_override(self):
-        marker = 'Exhibition Hub V6.5.0-R10.4'
+        marker = 'Exhibition Hub V6.5.0-R10.5'
         self.assertIn(marker, CSS)
         block = CSS.split(marker, 1)[1]
         self.assertIn('transition: none !important', block)
         self.assertIn('will-change: auto !important', block)
-        self.assertIn('stack.animate', APP)
+        self.assertIn('is-r105-moving', APP)
+        self.assertIn('moveSlot(first, 1, 0)', APP)
+        function = APP.split("function changeHeroPair(direction)", 1)[1].split("const HOME_STATUS_COPY", 1)[0]
+        self.assertNotIn('stack.animate', function)
         self.assertIn('IntersectionObserver', APP)
         self.assertIn('state.heroPaused', APP)
 

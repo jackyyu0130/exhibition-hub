@@ -16,8 +16,8 @@ NORTH = json.loads((ROOT / 'data' / 'venue_matrix_north.json').read_text(encodin
 
 class R104CuratedFeedAndDeployTests(unittest.TestCase):
     def test_cache_version_and_curated_source_are_active(self):
-        self.assertIn('assets/styles.css?v=6.5.0-r10.4', INDEX)
-        self.assertIn('assets/app.js?v=6.5.0-r10.4', INDEX)
+        self.assertIn('assets/styles.css?v=6.5.0-r10.5', INDEX)
+        self.assertIn('assets/app.js?v=6.5.0-r10.5', INDEX)
         curated_pos = APP.index("data/exhibitions.curated.json")
         enriched_pos = APP.index("data/exhibitions.enriched.json")
         self.assertLess(curated_pos, enriched_pos)
@@ -84,9 +84,11 @@ class R104CuratedFeedAndDeployTests(unittest.TestCase):
     def test_performance_path_uses_lightweight_feed_and_animation(self):
         self.assertIn('listingRenderLimit: 48', APP)
         self.assertIn('Math.min(18, state.events.length)', APP)
-        self.assertIn("typeof stack.animate !== 'function'", APP)
-        self.assertIn("{duration:220", APP)
-        self.assertIn("{duration:480", APP)
+        self.assertIn("requestAnimationFrame", APP)
+        self.assertIn("is-r105-moving", APP)
+        self.assertIn("moveSlot(first, 1, 0)", APP)
+        self.assertNotIn("cache:'no-store'", APP)
+        self.assertIn("cache:'no-cache'", APP)
         self.assertIn('transition: none !important', CSS)
         self.assertIn('content-visibility: auto', CSS)
         self.assertIn('Build curated public feed', WORKFLOW)
