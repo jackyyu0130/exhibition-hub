@@ -16,7 +16,7 @@
         "宜蘭縣",
         "連江縣"
       ],
-      "venueCount": 122,
+      "venueCount": 123,
       "file": "data/venue_matrix_north.json"
     },
     {
@@ -78,8 +78,8 @@
     "registry_watch": "先建立場館名錄，等待穩定來源"
   },
   "stats": {
-    "totalVenues": 235,
-    "north": 122,
+    "totalVenues": 236,
+    "north": 123,
     "west": 44,
     "south": 49,
     "east": 20
@@ -447,6 +447,32 @@
       "officialUrl": "https://www.tfam.museum/",
       "status": "planned",
       "notes": "",
+      "confirmed": true
+    },
+    {
+      "id": "fubon-art-museum",
+      "name": "富邦美術館",
+      "aliases": [
+        "富邦美術館1樓",
+        "富邦美術館2樓",
+        "Fubon Art Museum"
+      ],
+      "region": "臺北市",
+      "district": "信義區",
+      "regionGroup": "north",
+      "subregion": "north-core",
+      "priority": "P1",
+      "venueType": "museum_gallery",
+      "venueComplexId": "",
+      "venueComplexName": "",
+      "venueSpaces": [
+        "1樓展覽空間",
+        "2樓展覽空間"
+      ],
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.fubonartmuseum.org/",
+      "status": "planned",
+      "notes": "將樓層名稱統一映射至富邦美術館，不把「1樓」當成獨立場館",
       "confirmed": true
     },
     {

@@ -9,10 +9,17 @@ import shutil
 REQUIRED_FILES = (
     "index.html",
     ".nojekyll",
+    "data/exhibitions.curated.json",
     "data/exhibitions.enriched.json",
     "data/exhibitions.json",
     "data/venues.json",
     "data/northern_venue_matrix.json",
+    "data/taiwan_venue_matrix.json",
+    "data/venue_matrix_manifest.json",
+    "data/venue_matrix_north.json",
+    "data/venue_matrix_west.json",
+    "data/venue_matrix_south.json",
+    "data/venue_matrix_east.json",
 )
 OPTIONAL_FILES = ("CNAME",)
 REQUIRED_DIRECTORIES = ("assets",)

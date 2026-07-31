@@ -14,8 +14,8 @@ class R103TaxonomyVenuePerformanceTests(unittest.TestCase):
         self.assertIn('function primaryCategoryFor', APP)
         self.assertIn("return '演唱會';", APP)
         self.assertIn("return '音樂';", APP)
-        self.assertIn("FILM_CATEGORY_PATTERN.test(text)", APP)
-        self.assertIn("MUSIC_THEATRE_PATTERN.test(text)", APP)
+        self.assertIn("FILM_CATEGORY_PATTERN.test(titleText)", APP)
+        self.assertIn("MUSIC_THEATRE_PATTERN.test(titleText)", APP)
         self.assertIn("state.categories.has(eventPrimaryCategory(event))", APP)
 
     def test_region_filter_uses_canonical_venue_regions(self):
@@ -32,17 +32,17 @@ class R103TaxonomyVenuePerformanceTests(unittest.TestCase):
         self.assertTrue(records['藝富文創展演館／杰克音樂']['confirmed'])
 
     def test_hero_uses_transform_only_final_override(self):
-        marker = 'Exhibition Hub V6.5.0-R10.3'
+        marker = 'Exhibition Hub V6.5.0-R10.4'
         self.assertIn(marker, CSS)
         block = CSS.split(marker, 1)[1]
-        self.assertIn('transition:\n    transform 1.3s', block)
+        self.assertIn('transition: none !important', block)
         self.assertIn('will-change: auto !important', block)
-        self.assertIn('backdrop-filter: none !important', block)
+        self.assertIn('stack.animate', APP)
         self.assertIn('IntersectionObserver', APP)
         self.assertIn('state.heroPaused', APP)
 
     def test_long_listing_is_batched(self):
-        self.assertIn('listingRenderLimit: 72', APP)
+        self.assertIn('listingRenderLimit: 48', APP)
         self.assertIn('const visibleItems = items.slice(0, state.listingRenderLimit)', APP)
         self.assertIn("button.id = 'listingLoadMore'", APP)
         self.assertIn('content-visibility: auto', CSS)
