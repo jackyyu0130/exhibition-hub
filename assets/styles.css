@@ -7150,3 +7150,48 @@ body {
     transition: none !important;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R10.6 — stable Hero hover and touch preview
+   ====================================================================== */
+
+/* Older R7 hover rules used a pre-R10 coordinate system. Once R10.3 switched
+   ticket positioning to --hero-x / --hero-y, those old hover transforms could
+   pull any ticket into the wrong place. Hover, keyboard focus and touch preview
+   must preserve the current carousel slot coordinates. */
+.hero-ticket-stage .hero-ticket-slide:hover,
+.hero-ticket-stage .hero-ticket-slide:focus-within {
+  transform: translate3d(var(--hero-x, 0%), var(--hero-y, 0px), 0) !important;
+  opacity: var(--hero-opacity, 1) !important;
+  z-index: var(--hero-z, 1) !important;
+  box-shadow: none !important;
+}
+
+/* Keep the ticket itself visually stable as well. No lift, translation or
+   rotation replacement is allowed while the pointer is over the ticket. */
+.hero-ticket-stage .hero-ticket-slide:hover .hero-ticket-card,
+.hero-ticket-stage .hero-ticket-slide:focus-within .hero-ticket-card,
+.hero-ticket-stage .hero-ticket-card:hover,
+.hero-ticket-stage .hero-ticket-card.is-touch-preview {
+  transform: translateZ(0) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+  box-shadow: 0 12px 28px rgba(43,31,21,.13) !important;
+}
+
+/* Mobile browsers may keep :hover active after a tap. Explicitly lock the
+   variable-based slot pose on coarse pointers so the first-tap preview cannot
+   reproduce the desktop jump. Swipe navigation remains unchanged. */
+@media (hover: none), (pointer: coarse) {
+  .hero-ticket-stage .hero-ticket-slide:hover,
+  .hero-ticket-stage .hero-ticket-slide:focus-within {
+    transform: translate3d(var(--hero-x, 0%), var(--hero-y, 0px), 0) !important;
+    opacity: var(--hero-opacity, 1) !important;
+    z-index: var(--hero-z, 1) !important;
+    box-shadow: none !important;
+  }
+
+  .hero-ticket-stage .hero-ticket-card.is-touch-preview,
+  .hero-ticket-stage .hero-ticket-card:hover {
+    transform: translateZ(0) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+    box-shadow: 0 12px 28px rgba(43,31,21,.13) !important;
+  }
+}
