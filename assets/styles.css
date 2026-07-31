@@ -6757,3 +6757,248 @@ body {
   transform: none;
   box-shadow: none;
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R10.3 — taxonomy, venue-region and performance fix
+   ====================================================================== */
+
+/* Hero performance: animate only compositor-friendly transforms and opacity.
+   All visible tickets keep one physical size, so text never resizes mid-motion. */
+.hero-ticket-slide {
+  left: 0 !important;
+  top: 0 !important;
+  bottom: auto !important;
+  width: 66% !important;
+  opacity: var(--hero-opacity, 1) !important;
+  z-index: var(--hero-z, 1);
+  transform: translate3d(var(--hero-x, 0%), var(--hero-y, 0px), 0);
+  transition:
+    transform 1.3s cubic-bezier(.22,.72,.18,1),
+    opacity .85s ease !important;
+  will-change: auto !important;
+  backface-visibility: hidden;
+  contain: layout style;
+}
+.hero-ticket-slide .hero-ticket-card {
+  width: 100%;
+  filter: none !important;
+  backface-visibility: hidden;
+}
+.hero-ticket-stack.is-moving-next .hero-ticket-slide,
+.hero-ticket-stack.is-moving-previous .hero-ticket-slide,
+.hero-ticket-stack.is-entering .hero-ticket-slide {
+  will-change: transform, opacity !important;
+}
+.hero-ticket-stack.is-resetting .hero-ticket-slide,
+.hero-ticket-stack.is-resetting .hero-ticket-card {
+  transition: none !important;
+}
+
+.hero-ticket-slot-0 {
+  --hero-x: -115.15%;
+  --hero-y: 86px;
+  --hero-opacity: 0;
+  --hero-z: 1;
+}
+.hero-ticket-slot-1 {
+  --hero-x: 46.97%;
+  --hero-y: 240px;
+  --hero-opacity: 1;
+  --hero-z: 7;
+}
+.hero-ticket-slot-2 {
+  --hero-x: 24.24%;
+  --hero-y: 86px;
+  --hero-opacity: .98;
+  --hero-z: 5;
+}
+.hero-ticket-slot-3 {
+  --hero-x: 90.91%;
+  --hero-y: 24px;
+  --hero-opacity: .94;
+  --hero-z: 4;
+}
+.hero-ticket-slot-4 {
+  --hero-x: 172.73%;
+  --hero-y: 64px;
+  --hero-opacity: 0;
+  --hero-z: 1;
+}
+
+.hero-ticket-stack.is-moving-next .hero-ticket-exit-next {
+  --hero-x: -115.15%;
+  --hero-y: 86px;
+  --hero-opacity: 0;
+  --hero-z: 1;
+}
+.hero-ticket-stack.is-moving-next .hero-ticket-promote-next,
+.hero-ticket-stack.is-moving-previous .hero-ticket-incoming-previous {
+  --hero-x: 46.97%;
+  --hero-y: 240px;
+  --hero-opacity: 1;
+  --hero-z: 7;
+}
+.hero-ticket-stack.is-moving-next .hero-ticket-demote-next,
+.hero-ticket-stack.is-moving-previous .hero-ticket-demote-previous-a {
+  --hero-x: 24.24%;
+  --hero-y: 86px;
+  --hero-opacity: .98;
+  --hero-z: 5;
+}
+.hero-ticket-stack.is-moving-next .hero-ticket-incoming-next,
+.hero-ticket-stack.is-moving-previous .hero-ticket-demote-previous-b {
+  --hero-x: 90.91%;
+  --hero-y: 24px;
+  --hero-opacity: .94;
+  --hero-z: 4;
+}
+.hero-ticket-stack.is-moving-previous .hero-ticket-exit-previous {
+  --hero-x: 172.73%;
+  --hero-y: 64px;
+  --hero-opacity: 0;
+  --hero-z: 1;
+}
+
+/* Replace the earlier blur-based intro with a transform-only entrance. */
+.hero-ticket-stack.is-entering .hero-ticket-slot-1,
+.hero-ticket-stack.is-entering .hero-ticket-slot-2,
+.hero-ticket-stack.is-entering .hero-ticket-slot-3 {
+  animation-name: ticket-slide-r103-enter !important;
+  animation-duration: 2.15s !important;
+  animation-timing-function: cubic-bezier(.18,.72,.18,1) !important;
+  animation-fill-mode: both !important;
+  filter: none !important;
+}
+.hero-ticket-stack.is-entering .hero-ticket-slot-1 { animation-delay: 0s !important; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-2 { animation-delay: .16s !important; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-3 { animation-delay: .32s !important; }
+@keyframes ticket-slide-r103-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(var(--hero-x) + 155%), var(--hero-y), 0);
+  }
+  to {
+    opacity: var(--hero-opacity, 1);
+    transform: translate3d(var(--hero-x), var(--hero-y), 0);
+  }
+}
+
+/* Arrow blur was repainting during ticket movement. Keep the translucent look
+   without a live backdrop-filter. */
+.hero-carousel-arrow {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+@media (max-width: 1120px) and (min-width: 761px) {
+  .hero-ticket-slide { width: 70% !important; }
+  .hero-ticket-slot-0,
+  .hero-ticket-stack.is-moving-next .hero-ticket-exit-next {
+    --hero-x: -114.29%; --hero-y: 92px;
+  }
+  .hero-ticket-slot-1,
+  .hero-ticket-stack.is-moving-next .hero-ticket-promote-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-incoming-previous {
+    --hero-x: 38.57%; --hero-y: 236px;
+  }
+  .hero-ticket-slot-2,
+  .hero-ticket-stack.is-moving-next .hero-ticket-demote-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-demote-previous-a {
+    --hero-x: 17.14%; --hero-y: 92px;
+  }
+  .hero-ticket-slot-3,
+  .hero-ticket-stack.is-moving-next .hero-ticket-incoming-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-demote-previous-b {
+    --hero-x: 81.43%; --hero-y: 28px;
+  }
+  .hero-ticket-slot-4,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-exit-previous {
+    --hero-x: 160%; --hero-y: 66px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-ticket-slide { width: 84% !important; }
+  .hero-ticket-slot-0,
+  .hero-ticket-stack.is-moving-next .hero-ticket-exit-next {
+    --hero-x: -109.52%; --hero-y: 94px;
+  }
+  .hero-ticket-slot-1,
+  .hero-ticket-stack.is-moving-next .hero-ticket-promote-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-incoming-previous {
+    --hero-x: 19.05%; --hero-y: 198px;
+  }
+  .hero-ticket-slot-2,
+  .hero-ticket-stack.is-moving-next .hero-ticket-demote-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-demote-previous-a {
+    --hero-x: 8.33%; --hero-y: 102px;
+  }
+  .hero-ticket-slot-3,
+  .hero-ticket-stack.is-moving-next .hero-ticket-incoming-next,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-demote-previous-b {
+    --hero-x: 58.33%; --hero-y: 46px;
+  }
+  .hero-ticket-slot-4,
+  .hero-ticket-stack.is-moving-previous .hero-ticket-exit-previous {
+    --hero-x: 128.57%; --hero-y: 82px;
+  }
+  .hero-ticket-stack.is-entering .hero-ticket-slot-1,
+  .hero-ticket-stack.is-entering .hero-ticket-slot-2,
+  .hero-ticket-stack.is-entering .hero-ticket-slot-3 {
+    animation-duration: 1.9s !important;
+  }
+}
+
+/* Full venue registry entries are visible under their canonical county/city.
+   Entries without a current event stay visible but disabled. */
+.venue-filter-option.is-unavailable,
+.venue-filter-option:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  filter: saturate(.7);
+}
+.venue-filter-option.is-unavailable:hover,
+.venue-filter-option:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+.venue-filter-option.is-unavailable small {
+  min-width: 58px;
+  font-size: 10px;
+}
+
+/* Reduce off-screen card rendering cost in long result lists. */
+.exhibition-card,
+.venue-tile,
+.nearby-result-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 430px;
+}
+.listing-load-more {
+  display: block;
+  min-width: 220px;
+  margin: 34px auto 8px;
+  padding: 13px 22px;
+  border: 1px solid rgba(117,88,61,.24);
+  border-radius: 999px;
+  background: rgba(255,251,245,.82);
+  color: #6f523b;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.listing-load-more:hover {
+  transform: translateY(-2px);
+  background: #f3e4d2;
+  border-color: rgba(117,88,61,.42);
+}
+.listing-load-more[hidden] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticket-slide,
+  .hero-ticket-stack.is-entering .hero-ticket-slide {
+    transition: none !important;
+    animation: none !important;
+  }
+}
