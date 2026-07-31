@@ -1118,62 +1118,98 @@
   function changeHeroPair(direction) {
     const stack = $('#heroTicketStack');
     const pool = heroPool();
-    if (!stack || pool.length < 3 || state.heroAnimating) return;
+    if (!stack || pool.length < 4 || state.heroAnimating) return;
+
     window.clearTimeout(state.heroAutoAdvanceTimer);
     window.clearTimeout(state.heroTransitionTimer);
+    window.clearTimeout(state.heroIntroTimer);
     state.heroAnimating = true;
     state.mobilePreviewTicket = null;
     $('#heroNextButton')?.setAttribute('disabled', '');
     $('#heroPreviousButton')?.setAttribute('disabled', '');
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const finish = () => {
       state.heroAnimating = false;
+      stack.classList.remove('is-r105-moving');
       $('#heroNextButton')?.removeAttribute('disabled');
       $('#heroPreviousButton')?.removeAttribute('disabled');
       updateHeroStatus();
       scheduleHeroAutoAdvance();
     };
-    const swap = () => {
+
+    const first = stack.querySelector('.hero-ticket-slot-1');
+    const second = stack.querySelector('.hero-ticket-slot-2');
+    const third = stack.querySelector('.hero-ticket-slot-3');
+
+    if (!first || !second || !third) {
       state.heroCursor = heroIndex(direction);
       renderHeroTickets({settle:true});
-    };
-
-    if (reducedMotion || typeof stack.animate !== 'function') {
-      swap();
       finish();
       return;
     }
 
-    // Animate the group once instead of rebuilding four tickets and animating
-    // left/top/width on every card. Only transform and opacity reach the GPU.
-    const exitX = direction > 0 ? '-18px' : '18px';
-    const enterX = direction > 0 ? '22px' : '-22px';
-    const outgoing = stack.animate([
-      {transform:'translate3d(0,0,0)', opacity:1},
-      {transform:`translate3d(${exitX},0,0)`, opacity:0.58},
-    ], {duration:220, easing:'ease-in', fill:'forwards'});
-
-    outgoing.onfinish = () => {
-      outgoing.cancel();
-      swap();
-      const incoming = stack.animate([
-        {transform:`translate3d(${enterX},0,0)`, opacity:0.58},
-        {transform:'translate3d(0,0,0)', opacity:1},
-      ], {duration:480, easing:'cubic-bezier(.22,.7,.24,1)', fill:'both'});
-      incoming.onfinish = () => { incoming.cancel(); finish(); };
-      incoming.oncancel = finish;
-      state.heroTransitionTimer = window.setTimeout(() => {
-        incoming.cancel();
-        finish();
-      }, 650);
-    };
-    outgoing.oncancel = finish;
-    state.heroTransitionTimer = window.setTimeout(() => {
-      outgoing.cancel();
-      swap();
+    const nextCursor = heroIndex(direction);
+    const incomingIndex = direction > 0 ? heroIndex(3) : heroIndex(-1);
+    const incomingSlot = direction > 0 ? 4 : 0;
+    const template = document.createElement('template');
+    template.innerHTML = heroTicketSlideMarkup(
+      pool[incomingIndex],
+      incomingSlot,
+      incomingIndex + 1,
+      '',
+      heroPoseIndex(incomingIndex)
+    ).trim();
+    const incoming = template.content.firstElementChild;
+    if (!incoming) {
+      state.heroCursor = nextCursor;
+      renderHeroTickets({settle:true});
       finish();
-    }, 900);
+      return;
+    }
+
+    stack.classList.remove('is-entering', 'is-resetting', 'is-moving-next', 'is-moving-previous');
+    try {
+      stack.getAnimations({subtree:true}).forEach(animation => animation.cancel());
+    } catch {}
+
+    stack.appendChild(incoming);
+    void stack.offsetWidth;
+    stack.classList.add('is-r105-moving');
+
+    const moveSlot = (node, from, to) => {
+      node.classList.remove(`hero-ticket-slot-${from}`);
+      node.classList.add(`hero-ticket-slot-${to}`);
+    };
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = reducedMotion ? 40 : 940;
+    const outgoing = direction > 0 ? first : third;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (direction > 0) {
+          // Left button / next:
+          // first exits left, second becomes first, third becomes second,
+          // and one new ticket enters from the right as the third ticket.
+          moveSlot(first, 1, 0);
+          moveSlot(second, 2, 1);
+          moveSlot(third, 3, 2);
+          moveSlot(incoming, 4, 3);
+        } else {
+          // Right button / previous: exact reverse motion.
+          moveSlot(third, 3, 4);
+          moveSlot(second, 2, 3);
+          moveSlot(first, 1, 2);
+          moveSlot(incoming, 0, 1);
+        }
+      });
+    });
+
+    state.heroTransitionTimer = window.setTimeout(() => {
+      outgoing.remove();
+      state.heroCursor = nextCursor;
+      finish();
+    }, duration);
   }
 
   const HOME_STATUS_COPY = {
@@ -2159,11 +2195,15 @@
   }
 
   function bindEvents() {
+    let scrollControlFrame = 0;
     const updateScrollControls = () => {
+      scrollControlFrame = 0;
       $('#siteHeader')?.classList.toggle('scrolled', scrollY > 12);
       $('#backToTopButton')?.classList.toggle('is-visible', scrollY > Math.max(520, innerHeight * .72));
     };
-    window.addEventListener('scroll', updateScrollControls, {passive:true});
+    window.addEventListener('scroll', () => {
+      if (!scrollControlFrame) scrollControlFrame = requestAnimationFrame(updateScrollControls);
+    }, {passive:true});
     updateScrollControls();
     $('#backToTopButton')?.addEventListener('click', () => window.scrollTo({top:0,left:0,behavior:'smooth'}));
     window.addEventListener('popstate', () => { readParams(); renderCurrentView(); window.scrollTo({top:0,left:0,behavior:'auto'}); });
@@ -2500,7 +2540,7 @@
     const failures = [];
     for (const source of sources) {
       try {
-        const response = await fetch(source.url, {cache:'no-store'});
+        const response = await fetch(source.url, {cache:'no-cache'});
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const payload = await response.json();
         const rawEvents = Array.isArray(payload) ? payload : payload.events || payload.data || payload.result || [];
@@ -2520,9 +2560,9 @@
     try {
       const [{payload, rawEvents, local, sourceUrl, enriched, curated}, venueRegistryResponse, northernMatrixResponse, taiwanMatrixResponse] = await Promise.all([
         fetchEventPayload(),
-        fetch('data/venues.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
-        fetch('data/northern_venue_matrix.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
-        fetch('data/taiwan_venue_matrix.json', {cache:'no-store'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+        fetch('data/venues.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+        fetch('data/northern_venue_matrix.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+        fetch('data/taiwan_venue_matrix.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
       ]);
       const stableVenues = Array.isArray(venueRegistryResponse?.venues) ? venueRegistryResponse.venues : [];
       const normalizeMatrixVenues = response => Array.isArray(response?.venues)
