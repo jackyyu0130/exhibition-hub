@@ -18,6 +18,14 @@ MATRIX = json.loads((ROOT / "data" / "taiwan_venue_matrix.json").read_text(encod
 
 
 class P5BIntegratedRepairTests(unittest.TestCase):
+    def test_hero_intro_overrides_idle_transition_none(self):
+        self.assertIn(".hero-ticket-stage .hero-ticket-stack.is-intro-playing .hero-ticket-slide", CSS)
+        self.assertIn(".hero-ticket-stack.is-intro-playing.is-intro-pending", CSS)
+        self.assertIn("transition-duration: 1.72s, 2.12s !important;", CSS)
+        self.assertIn(".hero-ticket-slot-2 { transition-delay: .06s !important; }", CSS)
+        self.assertIn(".hero-ticket-slot-3 { transition-delay: .38s !important; }", CSS)
+        self.assertIn(".hero-ticket-slot-1 { transition-delay: .70s !important; }", CSS)
+
     def test_hero_transition_is_attached_before_pending_pose_is_removed(self):
         start = APP.index("function scheduleHeroIntro(stack)")
         end = APP.index("function renderHeroTickets", start)
