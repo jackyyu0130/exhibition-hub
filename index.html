@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <!-- Compatibility history: assets/styles.css?v=6.5.0-r11.0.2 · assets/app.js?v=6.5.0-r11.0.2 -->
   <!-- Performance patch P1: inward Hero controls, lower paint cost, smoother section reveals. -->
-  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r12-stable2-p2">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r12-stable2-p3">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -316,8 +316,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </section>
 
-      <section class="nearby-home editorial-section" data-fade-reveal>
-        <div class="nearby-copy">
+      <section class="nearby-home editorial-section" data-motion-group data-section-motion="nearby">
+        <div class="nearby-copy motion-card">
           <p class="eyebrow">AROUND YOU</p>
           <h2>這些選擇，<br>離你不遠</h2>
           <p>讓所在的位置成為起點，沿著距離慢慢拾起城市裡的展覽風景。</p>
@@ -330,7 +330,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="nearby-stack" id="nearbyHomeList"></div>
       </section>
 
-      <section class="editorial-section venue-section" data-motion-group>
+      <section class="editorial-section venue-section" data-motion-group data-section-motion="venue">
         <div class="section-heading">
           <div>
             <p class="eyebrow">VENUE GUIDE</p>
@@ -593,6 +593,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="assets/app.js?v=6.5.0-r12-stable2-p2"></script>
+  <script src="assets/app.js?v=6.5.0-r12-stable2-p3"></script>
 </body>
 </html>

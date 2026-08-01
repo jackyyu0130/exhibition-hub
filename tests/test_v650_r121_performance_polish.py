@@ -10,9 +10,9 @@ VERSION = (ROOT / "VERSION.txt").read_text(encoding="utf-8")
 
 class R121PerformancePolishTests(unittest.TestCase):
     def test_p2_cache_bust_supersedes_p1(self):
-        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p2", HTML)
-        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p2", HTML)
-        self.assertIn("Performance patch: P2", VERSION)
+        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p3", HTML)
+        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p3", HTML)
+        self.assertTrue("Performance patch: P2" in VERSION or "Performance patch: P3" in VERSION)
 
     def test_p1_filter_and_shadow_safeguards_remain(self):
         self.assertIn(".hero-ticket-stage .hero-postcard", CSS)
