@@ -1,31 +1,31 @@
 {
-  "generatedAt": "2026-08-01T12:54:25.406644+00:00",
+  "generatedAt": "2026-08-01T16:16:38.721165+00:00",
   "mode": "fix",
   "reports": [
     {
       "path": "data/exhibitions.json",
-      "eventCount": 2502,
+      "eventCount": 2414,
       "fixApplied": true,
       "affectedEventCount": 0,
       "rejectedImageCount": 0,
       "rejectedByReason": {},
       "facebookReferenceEventCount": 0,
-      "missingImageCountBefore": 752,
-      "missingImageCountAfter": 752,
+      "missingImageCountBefore": 695,
+      "missingImageCountAfter": 695,
       "rejectedVenueImageCount": 0,
       "rejectedVenueImages": [],
       "affectedEvents": []
     },
     {
       "path": "data/exhibitions.enriched.json",
-      "eventCount": 2563,
+      "eventCount": 2476,
       "fixApplied": true,
       "affectedEventCount": 0,
       "rejectedImageCount": 0,
       "rejectedByReason": {},
       "facebookReferenceEventCount": 12,
-      "missingImageCountBefore": 751,
-      "missingImageCountAfter": 751,
+      "missingImageCountBefore": 694,
+      "missingImageCountAfter": 694,
       "rejectedVenueImageCount": 0,
       "rejectedVenueImages": [],
       "affectedEvents": []
