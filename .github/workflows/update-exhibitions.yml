@@ -197,6 +197,7 @@ jobs:
             --source-registry "data/source_registry.json" \
             --output "production-update-audit/official-sources-preview.json" \
             --report "data/update-reports/official-source-batch.json" \
+            --diff-output "production-update-audit/official-sources-diff.json" \
             --audit-dir "production-update-audit/official-sources"
 
       - name: Finalize safe production data
@@ -207,7 +208,7 @@ jobs:
           python scripts/finalize_source_publish.py \
             --current "data/exhibitions.enriched.json" \
             --preview "production-update-audit/official-sources-preview.json" \
-            --diff "production-update-audit/publish-diff.json" \
+            --diff "production-update-audit/official-sources-diff.json" \
             --source-run "production-update-audit/huashan-source-run.json" \
             --quality-report "production-update-audit/quality-report.json" \
             --source-id "huashan-1914" \
