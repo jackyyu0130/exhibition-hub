@@ -1,2 +1,3 @@
 Taiwan Exhibition Journal V6.5.0-R12 STABLE2
 Baseline lineage: Taiwan Exhibition Journal V6.5.0-R7
+Performance patch: P1 (inward Hero controls and scroll-paint optimization)
