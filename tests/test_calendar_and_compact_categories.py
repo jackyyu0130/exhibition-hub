@@ -82,8 +82,8 @@ class CalendarAndCompactCategoryTests(unittest.TestCase):
         )
 
     def test_frontend_cache_version_is_642(self):
-        self.assertIn("assets/styles.css?v=6.5.0-r11.0", HTML)
-        self.assertIn("assets/app.js?v=6.5.0-r11.0", HTML)
+        self.assertIn("assets/styles.css?v=6.5.0-r11.0.2", HTML)
+        self.assertIn("assets/app.js?v=6.5.0-r11.0.2", HTML)
 
 
 if __name__ == "__main__":

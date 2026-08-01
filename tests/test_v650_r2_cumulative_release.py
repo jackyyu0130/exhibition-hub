@@ -14,8 +14,8 @@ MANIFEST = json.loads((ROOT / "MANIFEST_V6.5.0-R7.json").read_text(encoding="utf
 class V650R2CumulativeReleaseTests(unittest.TestCase):
     def test_r7_cache_bust_is_applied_to_all_frontend_assets(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r11.0",
-            "assets/app.js?v=6.5.0-r11.0",
+            "assets/styles.css?v=6.5.0-r11.0.2",
+            "assets/app.js?v=6.5.0-r11.0.2",
             "assets/favicon-48.png?v=6.5.0-r7",
             "assets/apple-touch-icon.png?v=6.5.0-r7",
             "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r7",

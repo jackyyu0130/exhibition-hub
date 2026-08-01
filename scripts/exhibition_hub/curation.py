@@ -279,7 +279,7 @@ def public_categories(event: Mapping[str, Any]) -> list[str]:
     elif COMPETITION_RE.search(title):
         primary = "競賽"
     else:
-        primary = next((value for value in existing if value not in {"講座", "研習"}), "其他")
+        primary = next((value for value in existing if value not in {"講座", "研習", "動漫"}), "其他")
 
     secondary: list[str] = []
     text = f"{title} {description}"
@@ -393,7 +393,21 @@ def build_curated_payload(
         event["images"] = clean_images[:10]
         event["image"] = clean_images[0]
         if venue:
-            event["publicVenueId"] = venue.get("id")
+            canonical_venue_id = _clean(venue.get("id"))
+            event["publicVenueId"] = canonical_venue_id
+            if canonical_venue_id:
+                event["venueId"] = canonical_venue_id
+                existing_venue_ids = event.get("venueIds")
+                if not isinstance(existing_venue_ids, list):
+                    existing_venue_ids = []
+                event["venueIds"] = list(dict.fromkeys([
+                    canonical_venue_id,
+                    *[
+                        _clean(value)
+                        for value in existing_venue_ids
+                        if _clean(value)
+                    ],
+                ]))
             event["publicVenuePriority"] = venue.get("priority")
             event["publicVenueType"] = venue.get("venueType")
         event["publicCurationReason"] = reason
