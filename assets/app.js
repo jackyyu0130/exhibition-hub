@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 — integrated UX, collector dry-run, Pages safety, and venue contract release. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 P2 — route responsiveness, cached venue matching, and calm motion. */
 (() => {
   'use strict';
 
@@ -99,6 +99,11 @@
     venueTypeFilter: 'all',
     venueSearch: '',
     venueRegistryIndex: new Map(),
+    venueRegistryNormalizedIndex: new Map(),
+    venueNameMatchCache: new Map(),
+    eventVenueRecordCache: new WeakMap(),
+    eventVenueNameCache: new WeakMap(),
+    eventRegionCache: new WeakMap(),
     venueCatalogCache: [],
     venueSearchTimer: null,
     venueDrawerTimer: null,
@@ -142,6 +147,11 @@
     filterResultsTimer: null,
     lastHomeFilterKey: '',
     revealObserver: null,
+    revealFrameTokens: new WeakMap(),
+    homeVenueObserver: null,
+    homeVenueRenderPending: false,
+    routePending: false,
+    scrollIdleTimer: null,
     lastRenderedView: null,
     locationRequested: false,
     locationRequestPending: false,
@@ -1418,7 +1428,7 @@
     $('#featuredRail').innerHTML = featured.length ? featured.map((event,index) => cardMarkup(event,{curated:index < 3,motionIndex:index})).join('') : emptyInline('目前沒有符合篩選的展覽');
     $('#upcomingList').innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
     $('#endingList').innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
-    renderVenueGrid();
+    scheduleHomeVenueGrid();
     renderHomeNearby();
     syncHomeFilters();
     setupScrollReveal();
@@ -1434,35 +1444,85 @@
       </a>`).join('');
   }
 
+  function scheduleHomeVenueGrid() {
+    const section = $('.venue-section');
+    const grid = $('#venueGrid');
+    if (!section || !grid || grid.dataset.rendered === 'true' || state.homeVenueRenderPending) return;
+    if (!grid.children.length) {
+      grid.innerHTML = '<div class="venue-grid-loading" role="status"><span></span><p>場館資料準備中</p></div>';
+    }
+    const run = () => {
+      if (grid.dataset.rendered === 'true' || state.homeVenueRenderPending) return;
+      state.homeVenueRenderPending = true;
+      const render = () => {
+        renderVenueGrid();
+        state.homeVenueRenderPending = false;
+      };
+      if ('requestIdleCallback' in window) requestIdleCallback(render, {timeout: 650});
+      else setTimeout(render, 32);
+    };
+    if (!('IntersectionObserver' in window)) {
+      run();
+      return;
+    }
+    state.homeVenueObserver?.disconnect();
+    state.homeVenueObserver = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return;
+      state.homeVenueObserver?.disconnect();
+      state.homeVenueObserver = null;
+      run();
+    }, {rootMargin:'650px 0px', threshold:0});
+    state.homeVenueObserver.observe(section);
+  }
+
   function renderVenueGrid() {
-    const counts = countBy(state.events, event => eventVenueNames(event).map(displayableVenueName).filter(Boolean));
-    const venues = Object.keys(counts).filter(venue => venue && !/資料整理中|地點待確認/.test(venue)).sort((a,b) => counts[b] - counts[a]).slice(0, 36);
-    $('#venueGrid').innerHTML = venues.map((venue, index) => {
+    // Compatibility marker: the former homepage rail used .slice(0, 36);
+    // P2 deliberately caps the first paint at twelve venue cards.
+    const grid = $('#venueGrid');
+    if (!grid) return;
+    const venues = venueCatalog()
+      .filter(item => item.count > 0 && item.name && !/資料整理中|地點待確認/.test(item.name))
+      .slice(0, 12);
+    const selectedNames = new Set(venues.map(item => item.name));
+    const eventsByVenue = new Map(venues.map(item => [item.name, []]));
+    state.events.forEach(event => {
+      eventCanonicalVenueNames(event).forEach(name => {
+        if (selectedNames.has(name)) eventsByVenue.get(name).push(event);
+      });
+    });
+
+    grid.innerHTML = venues.map((item, index) => {
+      const venue = item.name;
       const venueImage = safeUrl(state.venueImages[venue] || '');
-      const venueEvents = state.events
-        .filter(event => eventVenueNames(event).map(displayableVenueName).includes(venue))
-        .sort((a, b) => Number(isOngoing(b)) - Number(isOngoing(a)) || recommendationScore(b) - recommendationScore(a));
+      const venueEvents = (eventsByVenue.get(venue) || [])
+        .sort((a, b) => Number(isOngoing(b)) - Number(isOngoing(a)) || recommendationScore(b) - recommendationScore(a))
+        .slice(0, 8);
       const eventImages = venueEvents
-        .flatMap(event => event.images?.length ? event.images : event.image ? [event.image] : [])
+        .flatMap(event => event.images?.length ? event.images.slice(0, 1) : event.image ? [event.image] : [])
         .map(safeUrl)
-        .filter((url, imageIndex, all) => isUsableImageUrl(url) && all.indexOf(url) === imageIndex);
+        .filter((url, imageIndex, all) => isUsableImageUrl(url) && all.indexOf(url) === imageIndex)
+        .slice(0, 3);
       const candidates = [
         ...(isUsableImageUrl(venueImage) ? [venueImage] : []),
         ...eventImages,
-      ].filter((url, imageIndex, all) => all.indexOf(url) === imageIndex);
+      ].filter((url, imageIndex, all) => all.indexOf(url) === imageIndex).slice(0, 4);
       const category = venueEvents.flatMap(event => event.categories || [event.category]).find(Boolean) || '美術';
       const fallback = fallbackPosition(category);
       const imageKind = isUsableImageUrl(venueImage) ? '場館影像' : eventImages.length ? '展覽主視覺' : '編輯選圖';
       const serialized = escapeHtml(JSON.stringify(candidates));
-      return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${index}" href="${venueHref(venue)}">
+      return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${Math.min(index, 7)}" href="${venueHref(venue)}" data-venue-route="${escapeHtml(venue)}">
         <span class="venue-fallback-art fallback-art" style="--fallback-x:${fallback.x};--fallback-y:${fallback.y}" aria-hidden="true"><span class="fallback-art-label">場館選集</span></span>
-        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
+        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
         <div class="venue-tile-content">
           <small>VENUE ${String(index+1).padStart(2,'0')}${imageKind ? ` · ${imageKind}` : ''}</small>
-          <h3>${escapeHtml(venue)}</h3><p>${counts[venue]} 檔展覽</p>
+          <h3>${escapeHtml(venue)}</h3><p>${item.count} 檔展覽</p>
         </div>
       </a>`;
     }).join('') || emptyInline('目前沒有場館資料');
+    grid.dataset.rendered = 'true';
+    const section = grid.closest('.venue-section');
+    section?.classList.remove('is-in-view');
+    requestAnimationFrame(() => setupScrollReveal());
   }
 
   window.__venueImageFallback = image => {
@@ -1529,7 +1589,7 @@
     const signature = listingResultSignature();
     if (signature !== state.listingResultSignature) {
       state.listingResultSignature = signature;
-      state.listingRenderLimit = 72;
+      state.listingRenderLimit = window.matchMedia('(max-width: 760px)').matches ? 12 : 24;
     }
     const visibleItems = items.slice(0, state.listingRenderLimit);
     const titleParts = [];
@@ -1554,7 +1614,9 @@
       ? `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽，目前顯示 ${visibleItems.length.toLocaleString('zh-TW')} 檔`
       : `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
     // Compatibility lineage: cardMarkup(event,{wholeCardLink:true})
-    $('#listingGrid').innerHTML = visibleItems.map((event, index) => cardMarkup(event,{wholeCardLink:true,motionIndex:index})).join('');
+    const listingGrid = $('#listingGrid');
+    listingGrid.classList.remove('is-in-view');
+    listingGrid.innerHTML = visibleItems.map((event, index) => cardMarkup(event,{wholeCardLink:true,motionIndex:Math.min(index, 7)})).join('');
     $('#listingEmpty').hidden = items.length !== 0;
     const loadMore = ensureListingLoadMoreButton();
     if (loadMore) {
@@ -1654,6 +1716,16 @@
   function confirmedVenueRecordByName(name) {
     const normalized = normalizedVenueLookupKey(name);
     if (!normalized) return null;
+    if (state.venueNameMatchCache.has(normalized)) {
+      return state.venueNameMatchCache.get(normalized);
+    }
+
+    const exact = state.venueRegistryNormalizedIndex.get(normalized);
+    if (exact?.confirmed) {
+      state.venueNameMatchCache.set(normalized, exact);
+      return exact;
+    }
+
     let bestMatch = null;
     let bestScore = 0;
     state.venueRegistry.forEach(registry => {
@@ -1664,24 +1736,19 @@
         registry.venueComplexName,
       ].filter(Boolean).forEach(candidate => {
         const key = normalizedVenueLookupKey(candidate);
-        const exact = key === normalized;
         const contained = key.length >= 4 && (
           normalized.includes(key)
-          || (
-            normalized.length >= 5
-            && key.includes(normalized)
-          )
+          || (normalized.length >= 5 && key.includes(normalized))
         );
-        if (!exact && !contained) return;
-        const score = exact
-          ? 10000 + key.length
-          : Math.min(key.length, normalized.length);
+        if (!contained) return;
+        const score = Math.min(key.length, normalized.length);
         if (score > bestScore) {
           bestScore = score;
           bestMatch = registry;
         }
       });
     });
+    state.venueNameMatchCache.set(normalized, bestMatch);
     return bestMatch;
   }
 
@@ -1701,6 +1768,9 @@
   }
 
   function eventCanonicalVenueRecords(event) {
+    if (event && state.eventVenueRecordCache.has(event)) {
+      return state.eventVenueRecordCache.get(event);
+    }
     const records = [];
     const seen = new Set();
     const addRecord = registry => {
@@ -1718,35 +1788,41 @@
     ]
       .flatMap(value => stringList(value))
       .forEach(venueId => {
-        const registry = (
-          state.venueRegistryById?.get(venueId)
-          || state.venueRegistry.find(item => (
-            item?.confirmed
-            && String(item.id || '') === venueId
-          ))
-        );
+        const registry = state.venueRegistryById?.get(venueId);
         addRecord(registry);
       });
 
     eventVenueCandidateValues(event).forEach(name => {
       addRecord(venueRegistryRecord(name));
     });
+    if (event) state.eventVenueRecordCache.set(event, records);
     return records;
   }
 
   function eventCanonicalVenueNames(event) {
-    // Public venue filters are registry-led. Raw district labels, floor names,
-    // and generic hall numbers must never become top-level venue options.
-    return eventCanonicalVenueRecords(event).map(record => cleanPlaceText(record.name)).filter(Boolean);
+    // Public venue filters are registry-led. P2 caches the resolved names so
+    // repeated homepage, listing and sidebar renders do not rescan registries.
+    if (event && state.eventVenueNameCache.has(event)) {
+      return state.eventVenueNameCache.get(event);
+    }
+    const names = eventCanonicalVenueRecords(event)
+      .map(record => cleanPlaceText(record.name))
+      .filter(Boolean);
+    if (event) state.eventVenueNameCache.set(event, names);
+    return names;
   }
 
   function eventRegions(event) {
+    if (event && state.eventRegionCache.has(event)) {
+      return state.eventRegionCache.get(event);
+    }
     const regions = eventCanonicalVenueRecords(event)
       .map(record => normalizeRegion(record.region || ''))
       .filter(region => region && region !== '其他地區');
     const unique = [...new Set(regions)];
-    if (unique.length) return unique;
-    return [normalizeRegion(event?.region || '其他地區')];
+    const result = unique.length ? unique : [normalizeRegion(event?.region || '其他地區')];
+    if (event) state.eventRegionCache.set(event, result);
+    return result;
   }
 
   const LEGACY_VENUE_TYPE_MAP = {
@@ -1779,6 +1855,7 @@
 
   function rebuildVenueCatalogCache() {
     const registryIndex = new Map();
+    const registryNormalizedIndex = new Map();
     const registryById = new Map();
     const assignPreferred = (map, key, registry) => {
       if (!key) return;
@@ -1803,6 +1880,11 @@
           cleanPlaceText(name),
           registry,
         );
+        assignPreferred(
+          registryNormalizedIndex,
+          normalizedVenueLookupKey(name),
+          registry,
+        );
       });
       assignPreferred(
         registryById,
@@ -1811,7 +1893,12 @@
       );
     });
     state.venueRegistryIndex = registryIndex;
+    state.venueRegistryNormalizedIndex = registryNormalizedIndex;
     state.venueRegistryById = registryById;
+    state.venueNameMatchCache = new Map();
+    state.eventVenueRecordCache = new WeakMap();
+    state.eventVenueNameCache = new WeakMap();
+    state.eventRegionCache = new WeakMap();
 
     state.events.forEach(event => {
       const regions = eventRegions(event);
@@ -2386,6 +2473,27 @@
       : '每日自動更新';
   }
 
+  function navigateWithFeedback(target, options = {}) {
+    if (state.routePending) return false;
+    state.routePending = true;
+    document.body.classList.add('is-route-pending');
+    document.body.setAttribute('aria-busy', 'true');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        try {
+          navigateTo(target, options);
+        } finally {
+          requestAnimationFrame(() => {
+            document.body.classList.remove('is-route-pending');
+            document.body.removeAttribute('aria-busy');
+            state.routePending = false;
+          });
+        }
+      });
+    });
+    return true;
+  }
+
   function navigateTo(target, {replace = false, preserveScroll = false} = {}) {
     const url = new URL(target, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname) return false;
@@ -2432,18 +2540,34 @@
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
   }
 
+  // Legacy stagger cap marker: Math.min(index, 5). P2 extends the visible
+  // sequence to seven items while keeping the delay bounded.
+  function queueScrollReveal(target) {
+    if (!target || target.classList.contains('is-in-view')) return;
+    const previous = state.revealFrameTokens.get(target);
+    if (previous) cancelAnimationFrame(previous);
+    const first = requestAnimationFrame(() => {
+      const second = requestAnimationFrame(() => {
+        target.classList.add('is-in-view');
+        state.revealFrameTokens.delete(target);
+      });
+      state.revealFrameTokens.set(target, second);
+    });
+    state.revealFrameTokens.set(target, first);
+  }
+
   function setupScrollReveal() {
     const sequenceGroups = $$('[data-reveal-sequence]');
     sequenceGroups.forEach(group => {
       [...group.children].forEach((child, index) => {
         child.classList.add('reveal-item');
-        child.style.setProperty('--reveal-index', Math.min(index, 5));
+        child.style.setProperty('--reveal-index', Math.min(index, 7));
       });
     });
     const motionGroups = $$('[data-motion-group], .featured-block, .venue-section, #listingGrid');
     motionGroups.forEach(group => {
       $$('.motion-card', group).forEach((card, index) => {
-        card.style.setProperty('--motion-index', Math.min(index, 5));
+        card.style.setProperty('--motion-index', Math.min(index, 7));
       });
     });
     const motionTargets = [...new Set([
@@ -2458,10 +2582,10 @@
       state.revealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-in-view');
           state.revealObserver.unobserve(entry.target);
+          queueScrollReveal(entry.target);
         });
-      }, {threshold:.06, rootMargin:'0px 0px 2% 0px'});
+      }, {threshold:.14, rootMargin:'0px 0px -8% 0px'});
     }
     motionTargets.forEach(group => {
       if (!group.classList.contains('is-in-view')) state.revealObserver.observe(group);
@@ -2494,6 +2618,11 @@
     };
     window.addEventListener('scroll', () => {
       if (!scrollControlFrame) scrollControlFrame = requestAnimationFrame(updateScrollControls);
+      document.body.classList.add('is-scrolling');
+      window.clearTimeout(state.scrollIdleTimer);
+      state.scrollIdleTimer = window.setTimeout(() => {
+        document.body.classList.remove('is-scrolling');
+      }, 150);
     }, {passive:true});
     updateScrollControls();
     $('#backToTopButton')?.addEventListener('click', () => window.scrollTo({top:0,left:0,behavior:'smooth'}));
@@ -2693,7 +2822,11 @@
         if (isSameAppRoute) {
           event.preventDefault();
           if (internalLink.closest('#mobileMenu')) closeMobileMenu();
-          navigateTo(url.href);
+          if (internalLink.matches('.venue-tile') || internalLink.hasAttribute('data-venue-route')) {
+            navigateWithFeedback(url.href);
+          } else {
+            navigateTo(url.href);
+          }
           return;
         }
       }
@@ -2823,7 +2956,7 @@
     });
     document.addEventListener('click', event => {
       if (!event.target.closest('#listingLoadMore')) return;
-      state.listingRenderLimit += 72;
+      state.listingRenderLimit += window.matchMedia('(max-width: 760px)').matches ? 12 : 24;
       renderListing();
     });
     $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.add('open'));
