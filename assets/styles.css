@@ -7195,3 +7195,23 @@ body {
     box-shadow: 0 12px 28px rgba(43,31,21,.13) !important;
   }
 }
+
+/* Exhibition Hub V6.5.0-R10.9 — integrated alignment */
+@media (min-width: 1025px) {
+  .hero-ticket-stage .hero-ticket-slide { width: min(66%, 860px) !important; }
+  .hero-ticket-stage .hero-ticket-slot-1 { --hero-x: 36% !important; --hero-y: 250px !important; }
+  .hero-ticket-stage .hero-ticket-slot-2 { --hero-x: 18% !important; --hero-y: 38px !important; }
+  .hero-ticket-stage .hero-ticket-slot-3 { --hero-x: 49% !important; --hero-y: 92px !important; }
+  .hero-ticket-stage .hero-ticket-slot-4 { --hero-x: 112% !important; }
+  .hero-ticket-stage .hero-ticket-slot-0 { --hero-x: -112% !important; }
+}
+@media (min-width: 761px) and (max-width: 1024px) {
+  .hero-ticket-stage .hero-ticket-slide { width: min(69%, 760px) !important; }
+  .hero-ticket-stage .hero-ticket-slot-1 { --hero-x: 29% !important; }
+  .hero-ticket-stage .hero-ticket-slot-2 { --hero-x: 10% !important; }
+  .hero-ticket-stage .hero-ticket-slot-3 { --hero-x: 42% !important; }
+}
+@media (max-width: 760px) {
+  #mobileCategorySection, #mobileCalendarSection, #mobileLocationSection { scroll-margin-top: 132px; }
+}
+

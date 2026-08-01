@@ -34,7 +34,7 @@ class R105CarouselPerformanceTests(unittest.TestCase):
         self.assertRegex(CSS, r"\.site-header,[\s\S]*?backdrop-filter:\s*none\s*!important")
 
     def test_cache_version_bumped(self):
-        self.assertIn("6.5.0-r10.6", INDEX)
+        self.assertIn("6.5.0-r10.9", INDEX)
 
 
 if __name__ == "__main__":

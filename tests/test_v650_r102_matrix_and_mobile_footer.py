@@ -48,7 +48,7 @@ class V650R102MatrixAndMobileFooterTests(unittest.TestCase):
         self.assertIn("state.venueRegistry = [...stableVenues, ...northernVenues, ...confirmedTaiwanVenues]", APP)
         self.assertIn("state.venueRegistry.filter(registry => registry?.confirmed)", APP)
         self.assertIn("unavailable = item.count === 0", APP)
-        self.assertIn("尚無展覽", APP)
+        self.assertIn("尚無展演", APP)
 
     def test_mobile_all_three_tickets_show_journal_footer_and_barcode(self):
         for selector in (
