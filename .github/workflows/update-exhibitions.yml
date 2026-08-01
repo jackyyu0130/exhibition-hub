@@ -61,7 +61,7 @@ jobs:
               if printf '%s\n' "$CHANGED_FILES" | grep -qx "data/source_registry.json"; then
                 RUN_UPDATE=true
                 REASON="source-registry-activation"
-              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(.github/workflows/update-exhibitions\.yml|scripts/validate_published_data\.py)$'; then
+              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(.github/workflows/update-exhibitions\.yml|scripts/validate_published_data\.py|scripts/run_official_source_batch\.py|scripts/exhibition_hub/collectors/official_sites\.py|scripts/exhibition_hub/collectors/__init__\.py)$'; then
                 RUN_UPDATE=true
                 REASON="production-pipeline-recovery"
               fi
@@ -187,6 +187,18 @@ jobs:
             --excluded-output "production-update-audit/publish-excluded.json" \
             | tee production-update-audit/publish-preview-summary.json
 
+      - name: Collect and merge active official venue sources
+        if: steps.mode.outputs.run_update == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/run_official_source_batch.py \
+            --base "production-update-audit/publish-preview.json" \
+            --source-registry "data/source_registry.json" \
+            --output "production-update-audit/official-sources-preview.json" \
+            --report "data/update-reports/official-source-batch.json" \
+            --audit-dir "production-update-audit/official-sources"
+
       - name: Finalize safe production data
         if: steps.mode.outputs.run_update == 'true'
         shell: bash
@@ -194,7 +206,7 @@ jobs:
           set -o pipefail
           python scripts/finalize_source_publish.py \
             --current "data/exhibitions.enriched.json" \
-            --preview "production-update-audit/publish-preview.json" \
+            --preview "production-update-audit/official-sources-preview.json" \
             --diff "production-update-audit/publish-diff.json" \
             --source-run "production-update-audit/huashan-source-run.json" \
             --quality-report "production-update-audit/quality-report.json" \
@@ -280,6 +292,7 @@ jobs:
             data/update-reports/latest-huashan-update.json
             data/update-reports/image-quality-audit.json
             data/update-reports/curated-feed-report.json
+            data/update-reports/official-source-batch.json
           )
 
           if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
@@ -294,6 +307,7 @@ jobs:
           cp data/update-reports/latest-huashan-update.json /tmp/exhibition-hub-production/latest-huashan-update.json
           cp data/update-reports/image-quality-audit.json /tmp/exhibition-hub-production/image-quality-audit.json
           cp data/update-reports/curated-feed-report.json /tmp/exhibition-hub-production/curated-feed-report.json
+          cp data/update-reports/official-source-batch.json /tmp/exhibition-hub-production/official-source-batch.json
           if [ -f data/geocode-cache.json ]; then
             cp data/geocode-cache.json /tmp/exhibition-hub-production/geocode-cache.json
           fi
@@ -312,6 +326,7 @@ jobs:
             cp /tmp/exhibition-hub-production/latest-huashan-update.json data/update-reports/latest-huashan-update.json
             cp /tmp/exhibition-hub-production/image-quality-audit.json data/update-reports/image-quality-audit.json
             cp /tmp/exhibition-hub-production/curated-feed-report.json data/update-reports/curated-feed-report.json
+            cp /tmp/exhibition-hub-production/official-source-batch.json data/update-reports/official-source-batch.json
             if [ -f /tmp/exhibition-hub-production/geocode-cache.json ]; then
               cp /tmp/exhibition-hub-production/geocode-cache.json data/geocode-cache.json
             fi

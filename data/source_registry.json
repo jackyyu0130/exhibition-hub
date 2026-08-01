@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-29",
+  "updatedAt": "2026-08-01",
   "description": "台灣展覽誌全台活動來源登錄表。此檔只管理資料來源，不直接儲存活動。",
   "coverageRegions": [
     "基隆市",
@@ -139,8 +139,8 @@
       "layer": "venue_official",
       "sourceType": "venue_website",
       "parser": "songshan_list_detail",
-      "status": "planned",
-      "enabled": false,
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
       "priority": 90,
       "refreshHours": 12,
@@ -159,21 +159,25 @@
       "venueIds": [
         "songshan-cultural-park"
       ],
-      "notes": "6-C 已建立列表與詳情頁 Collector，維持 planned／disabled，通過候選資料與去重檢查後於 6-G 統一評估正式啟用。"
+      "notes": "R11.0 正式啟用。每日兩次抓取列表與詳情；未達最低完整筆數時保留上一版資料。",
+      "minimumRecords": 5,
+      "listingUrls": [
+        "https://www.songshanculturalpark.org/exhibition"
+      ]
     },
     {
       "id": "pier-2",
       "name": "駁二藝術特區",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "generic_list_detail",
-      "status": "planned",
-      "enabled": false,
+      "parser": "official_site_configured",
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
       "priority": 90,
       "refreshHours": 12,
       "officialUrl": "https://pier2.org/",
-      "listingUrl": "",
+      "listingUrl": "https://pier2.org/exhibition/",
       "coverageRegions": [
         "高雄市"
       ],
@@ -187,21 +191,42 @@
       "venueIds": [
         "pier-2-art-center"
       ],
-      "notes": "待確認活動列表與詳情頁解析規則。"
+      "notes": "R11.0 第一批官方來源；來源頁結構異常時隔離該來源並保留既有資料。",
+      "listingUrls": [
+        "https://pier2.org/exhibition/",
+        "https://pier2.org/activity/"
+      ],
+      "detailPathPatterns": [
+        "^/(?:exhibition|activity)/info/\\d+/?$"
+      ],
+      "maxListingPages": 4,
+      "minimumRecords": 2,
+      "venueName": "駁二藝術特區",
+      "regionCanonical": "高雄市",
+      "address": "高雄市鹽埕區大勇路1號",
+      "subVenueKeywords": [
+        "大勇區",
+        "蓬萊區",
+        "大義區",
+        "P2倉庫",
+        "C5倉庫",
+        "B3倉庫"
+      ],
+      "sourceCategory": "駁二官方活動"
     },
     {
       "id": "taipei-music-center",
       "name": "臺北流行音樂中心",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "generic_list_detail",
-      "status": "planned",
-      "enabled": false,
+      "parser": "official_site_configured",
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
       "priority": 90,
       "refreshHours": 6,
-      "officialUrl": "",
-      "listingUrl": "",
+      "officialUrl": "https://www.tmc.taipei/",
+      "listingUrl": "https://www.tmc.taipei/tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXRlc3QifQ%3D%3D",
       "coverageRegions": [
         "臺北市"
       ],
@@ -214,21 +239,41 @@
       "venueIds": [
         "taipei-music-center"
       ],
-      "notes": "正式網址與解析入口確認後再啟用。"
+      "notes": "R11.0 第一批官方來源；來源失敗或完整資料不足時不覆蓋既有資料。",
+      "listingUrls": [
+        "https://www.tmc.taipei/tw/blog/show?filter=eyJkaXJlY3Rpb24iOiJsYXRlc3QifQ%3D%3D"
+      ],
+      "detailPathPatterns": [
+        "^/tw/blog/show/[^/?#]+/?$"
+      ],
+      "maxListingPages": 3,
+      "minimumRecords": 4,
+      "venueName": "臺北流行音樂中心",
+      "regionCanonical": "臺北市",
+      "address": "臺北市南港區市民大道八段99號",
+      "subVenueKeywords": [
+        "表演廳",
+        "文化館",
+        "Live House A",
+        "Live House C",
+        "Live House D",
+        "戶外表演空間"
+      ],
+      "sourceCategory": "北流官方活動"
     },
     {
       "id": "kaohsiung-music-center",
       "name": "高雄流行音樂中心",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "generic_list_detail",
-      "status": "planned",
-      "enabled": false,
+      "parser": "official_site_configured",
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
       "priority": 90,
       "refreshHours": 6,
       "officialUrl": "https://kpmc.com.tw/",
-      "listingUrl": "",
+      "listingUrl": "https://kpmc.com.tw/program/",
       "coverageRegions": [
         "高雄市"
       ],
@@ -241,7 +286,27 @@
       "venueIds": [
         "kaohsiung-music-center"
       ],
-      "notes": "待確認活動列表與詳情頁解析規則。"
+      "notes": "R11.0 第一批官方來源；來源失敗或完整資料不足時不覆蓋既有資料。",
+      "listingUrls": [
+        "https://kpmc.com.tw/program/"
+      ],
+      "detailPathPatterns": [
+        "^/program/(?!$)[^/?#]+/?$"
+      ],
+      "maxListingPages": 3,
+      "minimumRecords": 2,
+      "venueName": "高雄流行音樂中心",
+      "regionCanonical": "高雄市",
+      "address": "高雄市鹽埕區真愛路1號",
+      "subVenueKeywords": [
+        "海音館",
+        "LIVE WAREHOUSE",
+        "後台 Backstage Live",
+        "珊瑚礁群",
+        "海風廣場",
+        "鯨魚堤岸"
+      ],
+      "sourceCategory": "高流官方節目"
     },
     {
       "id": "national-taiwan-museum-of-fine-arts",
@@ -273,14 +338,14 @@
       "name": "臺南市美術館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "generic_list_detail",
-      "status": "planned",
-      "enabled": false,
+      "parser": "official_site_configured",
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
       "priority": 85,
       "refreshHours": 24,
       "officialUrl": "https://www.tnam.museum/",
-      "listingUrl": "",
+      "listingUrl": "https://www.tnam.museum/exhibition/current",
       "coverageRegions": [
         "臺南市"
       ],
@@ -291,7 +356,26 @@
       "venueIds": [
         "tainan-art-museum"
       ],
-      "notes": "待確認展覽列表與詳情頁解析規則。"
+      "notes": "R11.0 第一批官方來源；只發布具日期、主視覺與官方詳情頁的展覽。",
+      "listingUrls": [
+        "https://www.tnam.museum/exhibition/current",
+        "https://www.tnam.museum/exhibition/upcoming"
+      ],
+      "detailPathPatterns": [
+        "^/exhibition/exhibition/detail/\\d+/?$"
+      ],
+      "maxListingPages": 2,
+      "minimumRecords": 2,
+      "venueName": "臺南市美術館",
+      "regionCanonical": "臺南市",
+      "address": "臺南市中西區南門路37號",
+      "subVenueKeywords": [
+        "1館",
+        "2館",
+        "一館",
+        "二館"
+      ],
+      "sourceCategory": "南美館官方展覽"
     },
     {
       "id": "weiwuying",
@@ -319,6 +403,52 @@
         "weiwuying"
       ],
       "notes": "待確認活動列表與詳情頁解析規則。"
+    },
+    {
+      "id": "taipei-performing-arts-center",
+      "name": "臺北表演藝術中心",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "official_site_configured",
+      "status": "active",
+      "enabled": true,
+      "trustLevel": "official",
+      "priority": 90,
+      "refreshHours": 12,
+      "officialUrl": "https://tpac.org.taipei/",
+      "listingUrl": "https://tpac.org.taipei/program",
+      "listingUrls": [
+        "https://tpac.org.taipei/program"
+      ],
+      "detailPathPatterns": [
+        "^/program/\\d+/?$"
+      ],
+      "maxListingPages": 5,
+      "minimumRecords": 5,
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "performance",
+        "concert",
+        "dance",
+        "festival"
+      ],
+      "venueIds": [
+        "taipei-performing-arts-center"
+      ],
+      "venueName": "臺北表演藝術中心",
+      "regionCanonical": "臺北市",
+      "address": "臺北市士林區劍潭路1號",
+      "subVenueKeywords": [
+        "大劇院",
+        "球劇場",
+        "藍盒子",
+        "戶外廣場"
+      ],
+      "sourceCategory": "北藝中心官方節目",
+      "excludeTitlePattern": "節目取消|取消演出",
+      "notes": "R11.0 第一批官方來源；取消節目與不完整資料不進入正式公開資料。"
     }
   ]
 }

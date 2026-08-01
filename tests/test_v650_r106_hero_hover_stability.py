@@ -8,8 +8,8 @@ INDEX = (ROOT / "index.html").read_text(encoding="utf-8")
 
 class R106HeroHoverStabilityTests(unittest.TestCase):
     def test_frontend_cache_version_is_r106(self):
-        self.assertIn("assets/styles.css?v=6.5.0-r10.9", INDEX)
-        self.assertIn("assets/app.js?v=6.5.0-r10.9", INDEX)
+        self.assertIn("assets/styles.css?v=6.5.0-r11.0", INDEX)
+        self.assertIn("assets/app.js?v=6.5.0-r11.0", INDEX)
 
     def test_hover_preserves_variable_based_slot_position(self):
         marker = "Exhibition Hub V6.5.0-R10.6"
