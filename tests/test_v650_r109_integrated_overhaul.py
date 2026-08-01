@@ -11,7 +11,7 @@ MATRIX = json.loads((ROOT / "data" / "taiwan_venue_matrix.json").read_text(encod
 
 class R109IntegratedOverhaulTests(unittest.TestCase):
     def test_version(self):
-        self.assertIn("6.5.0-r10.9", HTML)
+        self.assertIn("6.5.0-r11.0", HTML)
     def test_search(self):
         self.assertIn("canonicalVenueQueryTarget", APP)
         self.assertIn("'松煙':'松山文創園區'", APP)

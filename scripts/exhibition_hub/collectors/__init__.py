@@ -87,5 +87,35 @@ if collector_registry.get(SongshanCulturalParkCollector.source_id) is None:
     collector_registry.register(
         SongshanCulturalParkCollector,
         priority=90,
-        enabled=False,
+        enabled=True,
     )
+
+# R11.0 official-site collectors. Source-level enabled/status remains governed
+# by data/source_registry.json; registry entries only expose implemented classes.
+from .official_sites import (
+    OFFICIAL_SITE_COLLECTORS,
+    ConfiguredOfficialSiteCollector,
+    KaohsiungMusicCenterCollector,
+    Pier2ArtCenterCollector,
+    TainanArtMuseumCollector,
+    TaipeiMusicCenterCollector,
+    TaipeiPerformingArtsCenterCollector,
+)
+
+__all__.extend([
+    "ConfiguredOfficialSiteCollector",
+    "TaipeiMusicCenterCollector",
+    "KaohsiungMusicCenterCollector",
+    "TainanArtMuseumCollector",
+    "TaipeiPerformingArtsCenterCollector",
+    "Pier2ArtCenterCollector",
+])
+
+for _official_collector_type in OFFICIAL_SITE_COLLECTORS:
+    if collector_registry.get(_official_collector_type.source_id) is None:
+        collector_registry.register(
+            _official_collector_type,
+            priority=90,
+            enabled=True,
+        )
+

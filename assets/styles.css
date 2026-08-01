@@ -7215,3 +7215,162 @@ body {
   #mobileCategorySection, #mobileCalendarSection, #mobileLocationSection { scroll-margin-top: 132px; }
 }
 
+/* ======================================================================
+   Exhibition Hub V6.5.0-R11.0 — ticket selection and smooth home motion
+   ====================================================================== */
+
+.hero-ticket-stage .hero-ticket-slide {
+  transition:
+    transform .92s cubic-bezier(.22,.72,.18,1),
+    opacity .62s ease,
+    z-index 0s linear !important;
+}
+
+.hero-ticket-stage .hero-ticket-card {
+  position: relative;
+  isolation: isolate;
+  transform-origin: center center;
+  transition:
+    transform .28s cubic-bezier(.22,.72,.18,1),
+    box-shadow .28s ease !important;
+}
+
+.hero-ticket-stage .hero-ticket-slide.is-ticket-active,
+.hero-ticket-stage .hero-ticket-slide:focus-within {
+  z-index: 80 !important;
+  opacity: 1 !important;
+}
+
+.hero-ticket-stage .hero-ticket-slide.is-ticket-active .hero-ticket-card,
+.hero-ticket-stage .hero-ticket-slide:focus-within .hero-ticket-card,
+.hero-ticket-stage .hero-ticket-card.is-touch-preview {
+  transform: translateZ(0) scale(1.035) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+  box-shadow: 0 20px 44px rgba(43,31,21,.19) !important;
+}
+
+.hero-ticket-stage .hero-ticket-card::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: -1;
+  border: 1px solid rgba(180,111,69,0);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.hero-ticket-stage .hero-ticket-slide.is-ticket-active .hero-ticket-card::after,
+.hero-ticket-stage .hero-ticket-card.is-touch-preview::after {
+  animation: hero-ticket-choice-ring .52s ease-out both;
+}
+
+@keyframes hero-ticket-choice-ring {
+  0% {
+    opacity: 0;
+    transform: scale(.985);
+    border-color: rgba(180,111,69,0);
+  }
+  42% {
+    opacity: .85;
+    border-color: rgba(180,111,69,.42);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.055);
+    border-color: rgba(180,111,69,0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-ticket-stage .hero-ticket-slide:hover {
+    z-index: 80 !important;
+    opacity: 1 !important;
+  }
+
+  .hero-ticket-stage .hero-ticket-slide:hover .hero-ticket-card {
+    transform: translateZ(0) scale(1.035) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+    box-shadow: 0 20px 44px rgba(43,31,21,.19) !important;
+  }
+}
+
+/* Replace long clip-path reveals with compositor-friendly opacity/transform.
+   Delays are capped so a long rail never spends several seconds animating. */
+[data-motion-group] .motion-card,
+.featured-block .motion-card,
+.venue-section .motion-card,
+[data-reveal-sequence] > .reveal-item,
+[data-split-reveal] > *,
+[data-fade-reveal] {
+  clip-path: none !important;
+  filter: none !important;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0) !important;
+  transition-property: opacity, transform !important;
+  transition-duration: .48s, .56s !important;
+  transition-timing-function: ease, cubic-bezier(.22,.72,.18,1) !important;
+  transition-delay: min(
+    calc(var(--motion-index, var(--reveal-index, 0)) * 36ms),
+    180ms
+  ) !important;
+  will-change: auto !important;
+}
+
+[data-motion-group].is-in-view .motion-card,
+.featured-block.is-in-view .motion-card,
+.venue-section.is-in-view .motion-card,
+[data-reveal-sequence].is-in-view > .reveal-item,
+[data-split-reveal].is-in-view > *,
+[data-fade-reveal].is-in-view {
+  clip-path: none !important;
+  opacity: 1;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+[data-motion-group].is-in-view .exhibition-card:hover,
+.featured-block.is-in-view .exhibition-card:hover {
+  transform: translate3d(0, -4px, 0) !important;
+}
+
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  [data-motion-group] .motion-card,
+  .featured-block .motion-card,
+  .venue-section .motion-card,
+  [data-reveal-sequence] > .reveal-item,
+  [data-split-reveal] > *,
+  [data-fade-reveal] {
+    transform: translate3d(0, 8px, 0) !important;
+    transition-duration: .34s, .4s !important;
+    transition-delay: min(
+      calc(var(--motion-index, var(--reveal-index, 0)) * 22ms),
+      88ms
+    ) !important;
+  }
+
+  .hero-ticket-stage .hero-ticket-slide.is-ticket-active {
+    z-index: 80 !important;
+  }
+
+  .hero-ticket-stage .hero-ticket-slide.is-ticket-active .hero-ticket-card,
+  .hero-ticket-stage .hero-ticket-card.is-touch-preview {
+    transform: translateZ(0) scale(1.025) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticket-stage .hero-ticket-card,
+  .hero-ticket-stage .hero-ticket-card::after,
+  [data-motion-group] .motion-card,
+  .featured-block .motion-card,
+  .venue-section .motion-card,
+  [data-reveal-sequence] > .reveal-item,
+  [data-split-reveal] > *,
+  [data-fade-reveal] {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .hero-ticket-stage .hero-ticket-slide.is-ticket-active .hero-ticket-card,
+  .hero-ticket-stage .hero-ticket-card.is-touch-preview {
+    transform: translateZ(0) scale(1.012) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+  }
+}
+

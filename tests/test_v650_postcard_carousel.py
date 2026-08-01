@@ -11,8 +11,8 @@ CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
 class V650PostcardCarouselTests(unittest.TestCase):
     def test_frontend_assets_share_v650r7_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r10.9",
-            "assets/app.js?v=6.5.0-r10.9",
+            "assets/styles.css?v=6.5.0-r11.0",
+            "assets/app.js?v=6.5.0-r11.0",
             "assets/favicon-48.png?v=6.5.0-r7",
             "assets/apple-touch-icon.png?v=6.5.0-r7",
         ):

@@ -1158,7 +1158,7 @@
     window.clearTimeout(state.heroTransitionTimer);
     window.clearTimeout(state.heroIntroTimer);
     state.heroAnimating = true;
-    state.mobilePreviewTicket = null;
+    clearHeroTicketInteraction();
     $('#heroNextButton')?.setAttribute('disabled', '');
     $('#heroPreviousButton')?.setAttribute('disabled', '');
 
@@ -2218,10 +2218,19 @@
     sequenceGroups.forEach(group => {
       [...group.children].forEach((child, index) => {
         child.classList.add('reveal-item');
-        child.style.setProperty('--reveal-index', index);
+        child.style.setProperty('--reveal-index', Math.min(index, 5));
       });
     });
-    const motionTargets = [...sequenceGroups, ...$$('[data-motion-group], [data-split-reveal], [data-fade-reveal]')];
+    const motionGroups = $$('[data-motion-group], .featured-block, .venue-section');
+    motionGroups.forEach(group => {
+      $$('.motion-card', group).forEach((card, index) => {
+        card.style.setProperty('--motion-index', Math.min(index, 5));
+      });
+    });
+    const motionTargets = [...new Set([
+      ...sequenceGroups,
+      ...$$('[data-motion-group], [data-split-reveal], [data-fade-reveal]'),
+    ])];
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       motionTargets.forEach(group => group.classList.add('is-in-view'));
       return;
@@ -2233,7 +2242,7 @@
           entry.target.classList.add('is-in-view');
           state.revealObserver.unobserve(entry.target);
         });
-      }, {threshold:.12, rootMargin:'0px 0px -5% 0px'});
+      }, {threshold:.06, rootMargin:'0px 0px 2% 0px'});
     }
     motionTargets.forEach(group => {
       if (!group.classList.contains('is-in-view')) state.revealObserver.observe(group);
@@ -2250,12 +2259,10 @@
     $$('[data-reveal-sequence], [data-motion-group], [data-split-reveal], [data-fade-reveal]', home)
       .forEach(group => group.classList.remove('is-in-view'));
     if (!$('#heroTicketStack')?.children.length) renderHeroTickets();
-    void home.offsetWidth;
   }
 
   function replayHomeAnimations() {
     if (state.view !== 'home' || $('#homeView')?.hidden) return;
-    resetHomeAnimations();
     requestAnimationFrame(() => setupScrollReveal());
   }
 
@@ -2329,6 +2336,30 @@
       changeHeroPair(-1);
     });
     const heroCarousel = $('#heroCarousel');
+    const fineHeroPointer = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    heroCarousel?.addEventListener('pointerover', event => {
+      if (!fineHeroPointer()) return;
+      const slide = event.target.closest('.hero-ticket-slide');
+      if (!slide || !heroCarousel.contains(slide)) return;
+      if (event.relatedTarget && slide.contains(event.relatedTarget)) return;
+      activateHeroTicketInteraction(slide);
+    });
+    heroCarousel?.addEventListener('pointerout', event => {
+      if (!fineHeroPointer()) return;
+      const slide = event.target.closest('.hero-ticket-slide');
+      if (!slide || (event.relatedTarget && slide.contains(event.relatedTarget))) return;
+      slide.classList.remove('is-ticket-active');
+    });
+    heroCarousel?.addEventListener('focusin', event => {
+      const slide = event.target.closest('.hero-ticket-slide');
+      if (slide) activateHeroTicketInteraction(slide);
+    });
+    heroCarousel?.addEventListener('focusout', event => {
+      const slide = event.target.closest('.hero-ticket-slide');
+      if (slide && (!event.relatedTarget || !slide.contains(event.relatedTarget))) {
+        slide.classList.remove('is-ticket-active');
+      }
+    });
     const pauseHero = () => {
       state.heroPaused = true;
       window.clearTimeout(state.heroAutoAdvanceTimer);
@@ -2400,24 +2431,15 @@
       const touchTicketMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
       if (tappedHeroTicket && touchTicketMode) {
         const ticketKey = tappedHeroTicket.dataset.ticketKey;
+        const tappedSlide = tappedHeroTicket.closest('.hero-ticket-slide');
         if (state.mobilePreviewTicket !== ticketKey || !tappedHeroTicket.classList.contains('is-touch-preview')) {
           event.preventDefault();
-          $$('.hero-ticket-card.is-touch-preview').forEach(ticket => {
-            ticket.classList.remove('is-touch-preview');
-            ticket.setAttribute('aria-expanded', 'false');
-          });
-          tappedHeroTicket.classList.add('is-touch-preview');
-          tappedHeroTicket.setAttribute('aria-expanded', 'true');
-          state.mobilePreviewTicket = ticketKey;
+          activateHeroTicketInteraction(tappedSlide, {touch:true});
           return;
         }
         state.mobilePreviewTicket = null;
       } else if (touchTicketMode && state.mobilePreviewTicket) {
-        $$('.hero-ticket-card.is-touch-preview').forEach(ticket => {
-          ticket.classList.remove('is-touch-preview');
-          ticket.setAttribute('aria-expanded', 'false');
-        });
-        state.mobilePreviewTicket = null;
+        clearHeroTicketInteraction();
       }
       const internalLink = event.target.closest('a[href]');
       if (internalLink && !event.defaultPrevented && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && !internalLink.target && !internalLink.hasAttribute('download')) {
