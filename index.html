@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700;900&display=optional" rel="stylesheet">
   <!-- Compatibility history: assets/styles.css?v=6.5.0-r11.0.2 · assets/app.js?v=6.5.0-r11.0.2 -->
   <!-- Performance patch P1: inward Hero controls, lower paint cost, smoother section reveals. -->
-  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r12-stable2-p4">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r12-stable2-p5a">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var loaded=false;function load(){if(loaded)return;loaded=true;
@@ -337,8 +337,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <h2>從一座場館，展開城市漫遊</h2>
           </div>
           <div class="section-controls venue-controls">
-            <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="-1" aria-label="向左瀏覽場館">←</button>
-            <button class="icon-button" type="button" data-scroll-target="venueGrid" data-dir="1" aria-label="向右瀏覽場館">→</button>
+            <button class="icon-button" type="button" data-scroll-target="venueGrid" data-scroll-step="0.94" data-dir="-1" aria-label="向左瀏覽場館">←</button>
+            <button class="icon-button" type="button" data-scroll-target="venueGrid" data-scroll-step="0.94" data-dir="1" aria-label="向右瀏覽場館">→</button>
           </div>
         </div>
         <div class="venue-grid" id="venueGrid" aria-label="熱門場館，可左右滑動"></div>
@@ -474,7 +474,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="venue-selector-selected-head"><strong>已選場地</strong><button type="button" id="venueSelectorClear">清除全部</button></div>
         <div class="venue-selector-chips" id="venueSelectorChips"></div>
       </div>
-      <div class="venue-type-tabs" id="venueTypeTabs" aria-label="場地類型"></div>
+      <div class="venue-type-tabs-shell">
+        <button class="venue-type-scroll-button" type="button" data-scroll-target="venueTypeTabs" data-scroll-step="0.62" data-dir="-1" aria-label="向左瀏覽場地類型">←</button>
+        <div class="venue-type-tabs" id="venueTypeTabs" aria-label="場地類型，可左右滑動" tabindex="0"></div>
+        <button class="venue-type-scroll-button" type="button" data-scroll-target="venueTypeTabs" data-scroll-step="0.62" data-dir="1" aria-label="向右瀏覽場地類型">→</button>
+      </div>
       <div class="venue-selector-list" id="venueSelectorList"></div>
       <div class="venue-selector-footer">
         <button class="venue-selector-reset" id="venueSelectorReset" type="button">清除全部</button>
@@ -592,6 +596,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/app.js?v=6.5.0-r12-stable2-p4"></script>
+  <script src="assets/app.js?v=6.5.0-r12-stable2-p5a"></script>
 </body>
 </html>

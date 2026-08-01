@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 P4 — staged hero hydration, lazy map assets, and predecoded home media. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 P5-A — interaction rails and restored right-entry Hero motion. */
 (() => {
   'use strict';
 
@@ -1361,7 +1361,7 @@
         stack.classList.remove('is-intro-playing');
         stack.classList.add('is-intro-complete');
         state.heroIntroComplete = true;
-      }, 1780);
+      }, 2180);
     };
     begin();
   }
@@ -1658,14 +1658,53 @@
     }, {delayMs, timeoutMs:4600});
   }
 
+  function hydrateVenueRailPage(grid, pageIndex) {
+    if (!grid) return;
+    const safePage = Math.max(0, Math.min(Number(grid.dataset.pageCount || 1) - 1, pageIndex));
+    const start = safePage * 12;
+    const end = start + 12;
+    $$('img[data-venue-src]', grid).forEach(image => {
+      const itemIndex = Number(image.dataset.venueCardIndex || -1);
+      if (itemIndex < start || itemIndex >= end) return;
+      const source = image.dataset.venueSrc;
+      if (!source) return;
+      image.src = source;
+      image.removeAttribute('data-venue-src');
+      image.loading = safePage <= 1 ? 'eager' : 'lazy';
+    });
+  }
+
+  function hydrateVenueRailForDirection(grid, direction = 0) {
+    if (!grid) return;
+    const width = Math.max(1, grid.clientWidth);
+    const currentPage = Math.round(grid.scrollLeft / width);
+    const targetPage = Math.max(0, currentPage + Math.sign(direction));
+    hydrateVenueRailPage(grid, targetPage);
+    hydrateVenueRailPage(grid, targetPage + 1);
+  }
+
+  function bindVenueRailHydration(grid) {
+    if (!grid || grid.dataset.hydrationBound === 'true') return;
+    grid.dataset.hydrationBound = 'true';
+    let frame = 0;
+    grid.addEventListener('scroll', () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        hydrateVenueRailForDirection(grid, 0);
+      });
+    }, {passive:true});
+  }
+
   function renderVenueGrid() {
-    // Compatibility marker: the former homepage rail used .slice(0, 36);
-    // P2 deliberately caps the first paint at twelve venue cards.
     const grid = $('#venueGrid');
     if (!grid) return;
+    // Three visible rows × four columns form one screen. Thirty-six records
+    // provide three useful screens while only the first twelve images join the
+    // initial decode queue.
     const venues = venueCatalog()
       .filter(item => item.count > 0 && item.name && !/資料整理中|地點待確認/.test(item.name))
-      .slice(0, 12);
+      .slice(0, 36);
     const eventsByVenue = state.homeVenueEventIndex;
 
     grid.innerHTML = venues.map((item, index) => {
@@ -1687,9 +1726,13 @@
       const fallback = fallbackPosition(category);
       const imageKind = isUsableImageUrl(venueImage) ? '場館影像' : eventImages.length ? '展覽主視覺' : '編輯選圖';
       const serialized = escapeHtml(JSON.stringify(candidates));
-      return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${Math.min(index, 7)}" href="${venueHref(venue)}" data-venue-route="${escapeHtml(venue)}">
+      const primaryImage = candidates[0] || '';
+      const sourceAttribute = index < 12
+        ? `src="${escapeHtml(primaryImage)}"`
+        : `data-venue-src="${escapeHtml(primaryImage)}"`;
+      return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${Math.min(index % 12, 7)}" href="${venueHref(venue)}" data-venue-route="${escapeHtml(venue)}" data-venue-card-index="${index}">
         <span class="venue-fallback-art fallback-art" style="--fallback-x:${fallback.x};--fallback-y:${fallback.y}" aria-hidden="true"><span class="fallback-art-label">場館選集</span></span>
-        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
+        ${candidates.length ? `<img ${sourceAttribute} data-venue-card-index="${index}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
         <div class="venue-tile-content">
           <small>VENUE ${String(index+1).padStart(2,'0')}${imageKind ? ` · ${imageKind}` : ''}</small>
           <h3>${escapeHtml(venue)}</h3><p>${item.count} 檔展覽</p>
@@ -1697,6 +1740,10 @@
       </a>`;
     }).join('') || emptyInline('目前沒有場館資料');
     grid.dataset.rendered = 'true';
+    grid.dataset.pageCount = String(Math.max(1, Math.ceil(venues.length / 12)));
+    grid.scrollLeft = 0;
+    bindVenueRailHydration(grid);
+    hydrateVenueRailPage(grid, 0);
     const section = grid.closest('.venue-section');
     section?.classList.remove('is-in-view');
     const mediaPromise = prepareSectionMedia(grid, {limit:12, concurrency:1});
@@ -2490,7 +2537,7 @@
       return;
     }
     updatePageMetadata(event);
-    const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 6);
+    const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 10);
     const mapUrl = googleMapsUrl(event);
     const externalUrl = event.sourceUrl || '';
     $('#detailContent').innerHTML = `
@@ -2516,7 +2563,16 @@
           <div class="detail-description"><h2>展覽介紹</h2><p>${escapeHtml(event.description || '目前沒有完整介紹，請前往官方活動頁面查看最新資訊。')}</p></div>
         </article>
       </div>
-      ${related.length ? `<section class="detail-related"><p class="eyebrow">YOU MAY ALSO LIKE</p><h2>附近或相似的展覽</h2><div class="featured-rail">${related.map(cardMarkup).join('')}</div></section>` : ''}`;
+      ${related.length ? `<section class="detail-related">
+        <div class="detail-related-heading">
+          <div><p class="eyebrow">YOU MAY ALSO LIKE</p><h2>附近或相似的展覽</h2></div>
+          <div class="section-controls detail-related-controls" aria-label="切換附近或相似的展覽">
+            <button class="icon-button" type="button" data-scroll-target="detailRelatedRail" data-scroll-step="0.9" data-dir="-1" aria-label="向左瀏覽相似展覽">←</button>
+            <button class="icon-button" type="button" data-scroll-target="detailRelatedRail" data-scroll-step="0.9" data-dir="1" aria-label="向右瀏覽相似展覽">→</button>
+          </div>
+        </div>
+        <div class="featured-rail detail-related-rail" id="detailRelatedRail" role="region" aria-label="附近或相似的展覽，可左右滑動" tabindex="0">${related.map(cardMarkup).join('')}</div>
+      </section>` : ''}`;
   }
 
   function detailMeta(label, value) { return `<div class="detail-meta-row"><small>${label}</small><strong>${escapeHtml(value || '—')}</strong></div>`; }
@@ -3107,7 +3163,10 @@
       const scrollButton = event.target.closest('[data-scroll-target]');
       if (scrollButton) {
         const target = document.getElementById(scrollButton.dataset.scrollTarget);
-        target?.scrollBy({left:Number(scrollButton.dataset.dir)*target.clientWidth*.85,behavior:'smooth'});
+        const direction = Number(scrollButton.dataset.dir) || 0;
+        const step = Number(scrollButton.dataset.scrollStep || .85);
+        if (target?.id === 'venueGrid') hydrateVenueRailForDirection(target, direction);
+        target?.scrollBy({left:direction * target.clientWidth * step,behavior:'smooth'});
       }
       const favoriteButton = event.target.closest('[data-favorite],[data-detail-favorite]');
       if (favoriteButton) {

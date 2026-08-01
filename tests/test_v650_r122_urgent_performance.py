@@ -25,7 +25,9 @@ class R122UrgentPerformanceTests(unittest.TestCase):
         self.assertIn("function scheduleHomeVenueGrid({delayMs = 0, onRendered = null} = {})", APP)
         self.assertIn("scheduleCalmHomeTask", APP)
         self.assertIn("state.homeVenueEventIndex", APP)
-        self.assertIn(".slice(0, 12)", APP)
+        self.assertIn(".slice(0, 36)", APP)
+        self.assertIn("index < 12", APP)
+        self.assertIn("function hydrateVenueRailPage", APP)
         self.assertIn('grid.dataset.rendered = \'true\'', APP)
 
     def test_venue_route_paints_feedback_before_render(self):
@@ -44,8 +46,8 @@ class R122UrgentPerformanceTests(unittest.TestCase):
         self.assertTrue("rootMargin:'0px 0px -8% 0px'" in APP or "rootMargin:'0px 0px -3% 0px'" in APP)
 
     def test_release_marker(self):
-        self.assertIn("Performance patch: P4", VERSION)
-        self.assertIn("STABLE2 P4", APP.splitlines()[0])
+        self.assertIn("Interaction patch: P5-A", VERSION)
+        self.assertIn("STABLE2 P5-A", APP.splitlines()[0])
 
 
 if __name__ == "__main__":

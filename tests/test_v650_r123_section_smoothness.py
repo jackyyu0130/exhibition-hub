@@ -31,9 +31,9 @@ class R123SectionSmoothnessTests(unittest.TestCase):
         self.assertIn("prepareSectionMedia(grid, {limit:12, concurrency:1})", APP)
 
     def test_cache_bust_and_version_mark_latest_patch(self):
-        self.assertIn('assets/styles.css?v=6.5.0-r12-stable2-p4', HTML)
-        self.assertIn('assets/app.js?v=6.5.0-r12-stable2-p4', HTML)
-        self.assertIn('Performance patch: P4', VERSION)
+        self.assertIn('assets/styles.css?v=6.5.0-r12-stable2-p5a', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r12-stable2-p5a', HTML)
+        self.assertIn('Interaction patch: P5-A', VERSION)
 
 
 if __name__ == '__main__':

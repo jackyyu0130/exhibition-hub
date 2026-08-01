@@ -63,10 +63,10 @@ class R125P4DeepPerformanceTests(unittest.TestCase):
         self.assertIn("state.scrollClassActive", APP)
 
     def test_release_and_cache_mark_p4(self):
-        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p4", HTML)
-        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p4", HTML)
-        self.assertIn("Performance patch: P4", VERSION)
-        self.assertIn("STABLE2 P4", APP.splitlines()[0])
+        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p5a", HTML)
+        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p5a", HTML)
+        self.assertIn("Interaction patch: P5-A", VERSION)
+        self.assertIn("STABLE2 P5-A", APP.splitlines()[0])
 
 
 if __name__ == "__main__":
