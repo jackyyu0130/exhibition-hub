@@ -516,6 +516,22 @@
     return fallback.length ? fallback : [];
   }
 
+  function eventVenueCandidateValues(event) {
+    return [
+      event?.venueNames,
+      event?.unmatchedVenueValues,
+      event?.venueName,
+      event?.originalVenueGroup,
+      event?.originalLocationName,
+      event?.venueGroup,
+      event?.locationName,
+    ]
+      .flatMap(value => stringList(value))
+      .filter((value, index, array) => (
+        value && array.indexOf(value) === index
+      ));
+  }
+
   function eventVenueLabel(event, separator = '、') {
     const names = eventVenueNames(event);
     return names.length ? names.join(separator) : '地點待確認';
@@ -611,6 +627,7 @@
       location: String(venueGroup || '地點待確認').trim(),
       venueGroup, venueDetail, venueNames,
       venueName: String(firstValue(raw.venueName, venueNames[0], venueGroup)).trim(),
+      publicVenueId: String(raw.publicVenueId || '').trim(),
       venueId: String(raw.venueId || '').trim(),
       venueIds: stringList(raw.venueIds),
       venueMatches: Array.isArray(raw.venueMatches) ? raw.venueMatches : [],
@@ -1552,38 +1569,91 @@
     return cleanPlaceText(value).replace(/臺/g,'台').replace(/[\s　()（）\-_/／・·,，.。:：;；|｜]+/g,'').toLowerCase();
   }
 
-  function venueRegistryRecord(name) {
-    const cleanName=cleanPlaceText(name);
-    const direct=state.venueRegistryIndex.get(cleanName);
-    if(direct) return direct;
-    const normalized=normalizedVenueLookupKey(cleanName);
-    let bestMatch=null,bestScore=0;
-    state.venueRegistry.forEach(registry=>{
-      if(!registry?.confirmed) return;
-      [registry.name,...(registry.aliases||[]),registry.venueComplexName].filter(Boolean).forEach(candidate=>{
-        const key=normalizedVenueLookupKey(candidate);
-        const exact=key===normalized;
-        const contained=key.length>=4&&(normalized.includes(key)||(normalized.length>=5&&key.includes(normalized)));
-        if(!exact&&!contained) return;
-        const score=exact?10000+key.length:Math.min(key.length,normalized.length);
-        if(score>bestScore){bestScore=score;bestMatch=registry;}
+  function venueRecordPriority(record) {
+    if (record?.confirmed) return 30;
+    if (record?.status === 'active') return 20;
+    return 10;
+  }
+
+  function confirmedVenueRecordByName(name) {
+    const normalized = normalizedVenueLookupKey(name);
+    if (!normalized) return null;
+    let bestMatch = null;
+    let bestScore = 0;
+    state.venueRegistry.forEach(registry => {
+      if (!registry?.confirmed) return;
+      [
+        registry.name,
+        ...(registry.aliases || []),
+        registry.venueComplexName,
+      ].filter(Boolean).forEach(candidate => {
+        const key = normalizedVenueLookupKey(candidate);
+        const exact = key === normalized;
+        const contained = key.length >= 4 && (
+          normalized.includes(key)
+          || (
+            normalized.length >= 5
+            && key.includes(normalized)
+          )
+        );
+        if (!exact && !contained) return;
+        const score = exact
+          ? 10000 + key.length
+          : Math.min(key.length, normalized.length);
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = registry;
+        }
       });
     });
-    if(bestMatch) return bestMatch;
-    const rule=VENUE_ALIAS_RULES.find(([pattern])=>pattern.test(cleanName));
-    return rule?state.venueRegistryIndex.get(rule[1])||null:null;
+    return bestMatch;
+  }
+
+  function venueRegistryRecord(name) {
+    const cleanName = cleanPlaceText(name);
+    const direct = state.venueRegistryIndex.get(cleanName);
+    if (direct?.confirmed) return direct;
+
+    const confirmed = confirmedVenueRecordByName(cleanName);
+    if (confirmed) return confirmed;
+
+    const rule = VENUE_ALIAS_RULES.find(
+      ([pattern]) => pattern.test(cleanName)
+    );
+    if (!rule) return null;
+    return confirmedVenueRecordByName(rule[1]);
   }
 
   function eventCanonicalVenueRecords(event) {
     const records = [];
     const seen = new Set();
-    eventVenueNames(event).forEach(name => {
-      const registry = venueRegistryRecord(name);
-      if (!registry) return;
+    const addRecord = registry => {
+      if (!registry?.confirmed) return;
       const key = registry.id || cleanPlaceText(registry.name);
       if (!key || seen.has(key)) return;
       seen.add(key);
       records.push(registry);
+    };
+
+    [
+      event?.publicVenueId,
+      event?.venueId,
+      ...(event?.venueIds || []),
+    ]
+      .flatMap(value => stringList(value))
+      .forEach(venueId => {
+        const registry = (
+          state.venueRegistryById?.get(venueId)
+          || state.venueRegistry.find(item => (
+            item?.confirmed
+            && String(item.id || '') === venueId
+          ))
+        );
+        addRecord(registry);
+      });
+
+    eventVenueCandidateValues(event).forEach(name => {
+      addRecord(venueRegistryRecord(name));
     });
     return records;
   }
@@ -1633,39 +1703,92 @@
 
   function rebuildVenueCatalogCache() {
     const registryIndex = new Map();
+    const registryById = new Map();
+    const assignPreferred = (map, key, registry) => {
+      if (!key) return;
+      const existing = map.get(key);
+      if (
+        !existing
+        || venueRecordPriority(registry)
+          > venueRecordPriority(existing)
+      ) {
+        map.set(key, registry);
+      }
+    };
+
     state.venueRegistry.forEach(registry => {
-      [registry.name, ...(registry.aliases || [])].forEach(name => {
-        const normalized = cleanPlaceText(name);
-        if (normalized && !registryIndex.has(normalized)) registryIndex.set(normalized, registry);
+      [
+        registry.name,
+        ...(registry.aliases || []),
+        registry.venueComplexName,
+      ].filter(Boolean).forEach(name => {
+        assignPreferred(
+          registryIndex,
+          cleanPlaceText(name),
+          registry,
+        );
       });
+      assignPreferred(
+        registryById,
+        String(registry.id || '').trim(),
+        registry,
+      );
     });
     state.venueRegistryIndex = registryIndex;
+    state.venueRegistryById = registryById;
+
     state.events.forEach(event => {
       const regions = eventRegions(event);
-      if (regions.length === 1 && regions[0] !== '其他地區') event.region = regions[0];
+      if (
+        regions.length === 1
+        && regions[0] !== '其他地區'
+      ) {
+        event.region = regions[0];
+      }
     });
+
     const records = new Map();
-    // Seed the selector with every venue that the confirmed nationwide matrix marks as retained.
-    // Venues without a currently collected event stay visible as disabled reference entries.
-    state.venueRegistry.filter(registry => registry?.confirmed).forEach(registry => {
-      const name = displayableVenueName(registry.name);
-      const key = cleanPlaceText(name);
-      if (!key || records.has(key)) return;
-      records.set(key, {
-        id:registry.id || name,
-        name,
-        aliases:registry.aliases || [],
-        region:normalizeRegion(registry.region || '其他地區'),
-        district:registry.district || '',
-        venueType:inferredVenueType(name, registry),
-        count:0,
-        confirmed:true,
+    state.venueRegistry
+      .filter(registry => registry?.confirmed)
+      .forEach(registry => {
+        const name = displayableVenueName(registry.name);
+        const key = cleanPlaceText(name);
+        if (!key || records.has(key)) return;
+        records.set(key, {
+          id: registry.id || name,
+          name,
+          aliases: registry.aliases || [],
+          region: normalizeRegion(
+            registry.region || '其他地區'
+          ),
+          district: registry.district || '',
+          venueType: inferredVenueType(name, registry),
+          count: 0,
+          confirmed: true,
+        });
       });
-    });
+
+    let matchedEventCount = 0;
+    let unmatchedEventCount = 0;
+    const unmatchedSamples = [];
+
     state.events.forEach(event => {
+      const canonicalRecords = eventCanonicalVenueRecords(event);
+      if (canonicalRecords.length) {
+        matchedEventCount += 1;
+      } else {
+        unmatchedEventCount += 1;
+        if (unmatchedSamples.length < 20) {
+          unmatchedSamples.push({
+            id: event.id,
+            title: event.title,
+            venueValues: eventVenueCandidateValues(event),
+          });
+        }
+      }
+
       const seen = new Set();
-      eventCanonicalVenueNames(event).map(displayableVenueName).filter(Boolean).forEach(eventName => {
-        const registry = venueRegistryRecord(eventName);
+      canonicalRecords.forEach(registry => {
         if (!registry?.confirmed) return;
         const name = displayableVenueName(registry.name);
         const key = cleanPlaceText(name);
@@ -1677,8 +1800,22 @@
         records.set(key, existing);
       });
     });
+
+    state.venueMatchDiagnostics = {
+      eventCount: state.events.length,
+      matchedEventCount,
+      unmatchedEventCount,
+      unmatchedSamples,
+    };
+    window.__venueMatchDiagnostics = state.venueMatchDiagnostics;
+
     state.venueCatalogCache = [...records.values()]
-      .sort((a,b) => b.count - a.count || a.name.localeCompare(b.name,'zh-Hant'));
+      .sort(
+        (a, b) => (
+          b.count - a.count
+          || a.name.localeCompare(b.name, 'zh-Hant')
+        )
+      );
     return state.venueCatalogCache;
   }
 

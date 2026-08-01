@@ -16,8 +16,8 @@ NORTH = json.loads((ROOT / 'data' / 'venue_matrix_north.json').read_text(encodin
 
 class R104CuratedFeedAndDeployTests(unittest.TestCase):
     def test_cache_version_and_curated_source_are_active(self):
-        self.assertIn('assets/styles.css?v=6.5.0-r11.0', INDEX)
-        self.assertIn('assets/app.js?v=6.5.0-r11.0', INDEX)
+        self.assertIn('assets/styles.css?v=6.5.0-r11.0.2', INDEX)
+        self.assertIn('assets/app.js?v=6.5.0-r11.0.2', INDEX)
         curated_pos = APP.index("data/exhibitions.curated.json")
         enriched_pos = APP.index("data/exhibitions.enriched.json")
         self.assertLess(curated_pos, enriched_pos)

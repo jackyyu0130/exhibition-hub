@@ -73,8 +73,8 @@ class V642VisualRegressionTests(unittest.TestCase):
 
     def test_all_frontend_assets_share_the_same_cache_version(self):
         for marker in (
-            "assets/styles.css?v=6.5.0-r11.0",
-            "assets/app.js?v=6.5.0-r11.0",
+            "assets/styles.css?v=6.5.0-r11.0.2",
+            "assets/app.js?v=6.5.0-r11.0.2",
             "assets/favicon-48.png?v=6.5.0-r7",
             "assets/apple-touch-icon.png?v=6.5.0-r7",
         ):
