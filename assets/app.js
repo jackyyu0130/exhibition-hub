@@ -59,8 +59,19 @@
     [/臺?中國家歌劇院|台中歌劇院/i,'臺中國家歌劇院'],
     [/臺?北表演藝術中心|北藝中心/i,'臺北表演藝術中心'],
     [/國家兩廳院|國家音樂廳|國家戲劇院/i,'國家兩廳院'],
-    [/富邦美術館(?:1樓|2樓|一樓|二樓|展覽空間)?|Fubon Art Museum/i,'富邦美術館']
+    [/富邦美術館(?:1樓|2樓|一樓|二樓|展覽空間)?|Fubon Art Museum/i,'富邦美術館'],
+    [/松山菸廠|松煙|松菸(?:文創園區)?|松山文創(?:園區)?/i,'松山文創園區'],
+    [/華山(?:1914)?(?:文化創意產業園區|文創園區|東\d+館|中\d+[A-Z]?館|紅磚六合院)?/i,'華山1914文化創意產業園區'],
+    [/臺?北流行音樂中心|北流(?:中心)?/i,'臺北流行音樂中心']
   ];
+
+  const VENUE_SEARCH_ALIASES = {
+    '松菸':'松山文創園區', '松煙':'松山文創園區', '松山菸廠':'松山文創園區',
+    '松山文創':'松山文創園區', '華山':'華山1914文化創意產業園區',
+    '北美館':'臺北市立美術館', '國美館':'國立臺灣美術館',
+    '北流':'臺北流行音樂中心', '衛武營':'衛武營國家藝術文化中心',
+    '兩廳院':'國家兩廳院', '北藝中心':'臺北表演藝術中心'
+  };
   const REGION_ORDER = ['台北市','新北市','基隆市','桃園市','新竹市','新竹縣','苗栗縣','台中市','彰化縣','南投縣','雲林縣','嘉義市','嘉義縣','台南市','高雄市','屏東縣','宜蘭縣','花蓮縣','台東縣','澎湖縣','金門縣','連江縣','其他地區'];
   const REGION_ALIASES = {'臺北市':'台北市','臺中市':'台中市','臺南市':'台南市','臺東縣':'台東縣'};
   const REGION_CENTERS = {
@@ -283,7 +294,7 @@
   const FILM_CATEGORY_PATTERN = /電影|影展|放映|映後|影像節|紀錄片|短片節|動畫影展/i;
   const GENERAL_MUSIC_PATTERN = /音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|音樂祭|音樂節|專場|不插電|現場演出|live\s*house/i;
   const CLASSICAL_MUSIC_PATTERN = /音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|鋼琴|小提琴|大提琴|國樂|演奏會/i;
-  const ANIME_CATEGORY_PATTERN = /動漫|動畫展|漫畫|電玩|遊戲展|anime|公仔|角色展|模型展|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦A夢|三麗鷗|迪士尼|IP(?:展|祭)/i;
+  const ANIME_CATEGORY_PATTERN = /動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦A夢|三麗鷗|迪士尼|皮克斯|史努比|姆明|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime/i;
   const NATURAL_CATEGORY_PATTERN = /自然史|生態|植物|動物|天文|地質|海洋|環境教育|科學館/i;
   const HISTORY_CATEGORY_PATTERN = /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗|紀念/i;
   const TECHNOLOGY_CATEGORY_PATTERN = /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i;
@@ -921,14 +932,37 @@
     else state.view = 'home';
   }
 
+  function canonicalVenueQueryTarget(query='') {
+    const trimmed=cleanPlaceText(query);
+    if(!trimmed) return '';
+    if(VENUE_SEARCH_ALIASES[trimmed]) return VENUE_SEARCH_ALIASES[trimmed];
+    const normalized=normalizedVenueLookupKey(trimmed);
+    let best='',score=0;
+    venueCatalog().forEach(item=>[item.name,...(item.aliases||[])].filter(Boolean).forEach(candidate=>{
+      const key=normalizedVenueLookupKey(candidate);
+      const exact=key===normalized;
+      const partial=normalized.length>=2&&(key.includes(normalized)||normalized.includes(key));
+      if(!exact&&!partial) return;
+      const next=exact?10000+key.length:Math.min(key.length,normalized.length);
+      if(next>score){score=next;best=item.name;}
+    }));
+    return best;
+  }
+
   // compatibility marker for legacy tests: eventVenueNames(event).includes(state.venue)
   function filterEvents(items = state.events, options = {}) {
     const {includeDate = true} = options;
     const query = state.query.trim().toLowerCase();
+    const venueQueryTarget = canonicalVenueQueryTarget(state.query);
     return items.filter(event => {
       if (query) {
-        const haystack = [event.title,event.description,event.unit,event.searchText,event.locationName,event.address,event.region,event.categories.join(' '),eventContentTypeLabel(event),eventVenueNames(event).join(' '),event.originalVenueGroup,event.price].join(' ').toLowerCase();
-        if (!haystack.includes(query)) return false;
+        if (venueQueryTarget) {
+          const targetKey=normalizedVenueLookupKey(venueQueryTarget);
+          if(!eventCanonicalVenueNames(event).map(normalizedVenueLookupKey).includes(targetKey)) return false;
+        } else {
+          const haystack=[event.title,event.unit,event.searchText,event.locationName,event.address,event.region,event.categories.join(' '),eventContentTypeLabel(event),eventVenueNames(event).join(' '),event.originalVenueGroup,event.price,event.description].join(' ').toLowerCase();
+          if(!haystack.includes(query)) return false;
+        }
       }
       if (state.categories.size && !state.categories.has(eventPrimaryCategory(event))) return false;
       if (state.region && !eventRegions(event).includes(state.region)) return false;
@@ -1490,7 +1524,7 @@
           <button class="venue-filter-option ${state.region === region && !state.venue ? 'active' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter=""><span>全部 ${escapeHtml(region)}</span><small>${regionEvents.length}</small></button>
           ${venues.length ? venues.map(venue => {
             const unavailable = venue.count === 0;
-            return `<button class="venue-filter-option ${state.venue === venue.name ? 'active' : ''} ${unavailable ? 'is-unavailable' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter="${escapeHtml(venue.name)}" ${unavailable ? 'disabled aria-disabled="true"' : ''}><span title="${escapeHtml(venue.name)}">${escapeHtml(venue.name)}</span><small>${unavailable ? '尚無展覽' : venue.count}</small></button>`;
+            return `<button class="venue-filter-option ${state.venue === venue.name ? 'active' : ''} ${unavailable ? 'is-unavailable' : ''}" type="button" data-region-filter="${escapeHtml(region)}" data-venue-filter="${escapeHtml(venue.name)}" ${unavailable ? 'disabled aria-disabled="true"' : ''}><span title="${escapeHtml(venue.name)}">${escapeHtml(venue.name)}</span><small>${unavailable ? '尚無展演' : venue.count}</small></button>`;
           }).join('') : '<p class="region-no-venue">目前沒有已登錄場館</p>'}
         </div>
       </details>`;
@@ -1514,8 +1548,30 @@
     other:'其他展演場地'
   };
 
+  function normalizedVenueLookupKey(value = '') {
+    return cleanPlaceText(value).replace(/臺/g,'台').replace(/[\s　()（）\-_/／・·,，.。:：;；|｜]+/g,'').toLowerCase();
+  }
+
   function venueRegistryRecord(name) {
-    return state.venueRegistryIndex.get(cleanPlaceText(name)) || null;
+    const cleanName=cleanPlaceText(name);
+    const direct=state.venueRegistryIndex.get(cleanName);
+    if(direct) return direct;
+    const normalized=normalizedVenueLookupKey(cleanName);
+    let bestMatch=null,bestScore=0;
+    state.venueRegistry.forEach(registry=>{
+      if(!registry?.confirmed) return;
+      [registry.name,...(registry.aliases||[]),registry.venueComplexName].filter(Boolean).forEach(candidate=>{
+        const key=normalizedVenueLookupKey(candidate);
+        const exact=key===normalized;
+        const contained=key.length>=4&&(normalized.includes(key)||(normalized.length>=5&&key.includes(normalized)));
+        if(!exact&&!contained) return;
+        const score=exact?10000+key.length:Math.min(key.length,normalized.length);
+        if(score>bestScore){bestScore=score;bestMatch=registry;}
+      });
+    });
+    if(bestMatch) return bestMatch;
+    const rule=VENUE_ALIAS_RULES.find(([pattern])=>pattern.test(cleanName));
+    return rule?state.venueRegistryIndex.get(rule[1])||null:null;
   }
 
   function eventCanonicalVenueRecords(event) {
@@ -1689,7 +1745,7 @@
               const unavailable = item.count === 0;
               return `<button type="button" class="venue-selector-option ${checked ? 'active' : ''} ${unavailable ? 'is-unavailable' : ''}" data-venue-choice="${escapeHtml(item.name)}" aria-pressed="${checked}" ${unavailable ? 'disabled aria-disabled="true"' : ''}>
                 <span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(VENUE_TYPE_LABELS[item.venueType] || '展演場地')}</small></span>
-                <em>${unavailable ? '尚無展覽' : `${item.count} 檔`}</em>
+                <em>${unavailable ? '尚無展演' : `${item.count} 檔`}</em>
               </button>`;
             }).join('')}
           </section>`).join('')}
@@ -1797,6 +1853,15 @@
       .join('') || emptyInline('目前沒有地區資料');
   }
 
+  function mobileDrawerTargetOffset(menu,target) {
+    if(!menu||!target) return 0;
+    const header=menu.querySelector('.mobile-menu-header,.mobile-drawer-header,.mobile-menu-top,header');
+    const headerHeight=header?.getBoundingClientRect().height||96;
+    const menuRect=menu.getBoundingClientRect();
+    const targetRect=target.getBoundingClientRect();
+    return Math.max(0,menu.scrollTop+targetRect.top-menuRect.top-headerHeight-20);
+  }
+
   function openMobileMenu(section = 'all') {
     state.mobileDrawerSection = section;
     renderMobileFilters();
@@ -1819,9 +1884,9 @@
       }[section];
       if (target) {
         menu.scrollTo({
-          top: Math.max(0, target.offsetTop - 16),
+          top: mobileDrawerTargetOffset(menu, target),
           left: 0,
-          behavior: 'smooth',
+          behavior: 'auto',
         });
       }
     });

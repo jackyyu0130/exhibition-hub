@@ -247,7 +247,14 @@
     {
       "id": "hua-shan-1914wen-hua-chuang-yi-chan-ye-yuan-qu",
       "name": "華山1914文化創意產業園區",
-      "aliases": [],
+      "aliases": [
+        "華山",
+        "華山文創",
+        "華山1914",
+        "華山東2館",
+        "華山中4B館",
+        "華山紅磚六合院"
+      ],
       "region": "臺北市",
       "district": "中正區",
       "regionGroup": "north",
@@ -273,7 +280,15 @@
     {
       "id": "song-shan-wen-chuang-yuan-qu",
       "name": "松山文創園區",
-      "aliases": [],
+      "aliases": [
+        "松菸",
+        "松煙",
+        "松山菸廠",
+        "松山文創",
+        "松菸文創園區",
+        "松山文創園區一號倉庫",
+        "松山文創園區多功能展演廳"
+      ],
       "region": "臺北市",
       "district": "信義區",
       "regionGroup": "north",
@@ -430,7 +445,8 @@
       "id": "tai-bei-shi-li-mei-shu-guan",
       "name": "臺北市立美術館",
       "aliases": [
-        "台北市立美術館"
+        "台北市立美術館",
+        "北美館"
       ],
       "region": "臺北市",
       "district": "中山區",
@@ -799,7 +815,8 @@
       "id": "tai-bei-biao-yan-yi-shu-zhong-xin",
       "name": "臺北表演藝術中心",
       "aliases": [
-        "台北表演藝術中心"
+        "台北表演藝術中心",
+        "北藝中心"
       ],
       "region": "臺北市",
       "district": "士林區",
@@ -823,7 +840,11 @@
     {
       "id": "guo-jia-liang-ting-yuan",
       "name": "國家兩廳院",
-      "aliases": [],
+      "aliases": [
+        "兩廳院",
+        "國家音樂廳",
+        "國家戲劇院"
+      ],
       "region": "臺北市",
       "district": "中正區",
       "regionGroup": "north",
@@ -2748,7 +2769,8 @@
       "id": "guo-li-tai-wan-mei-shu-guan",
       "name": "國立臺灣美術館",
       "aliases": [
-        "國立台灣美術館"
+        "國立台灣美術館",
+        "國美館"
       ],
       "region": "臺中市",
       "district": "西區",
@@ -2772,7 +2794,8 @@
       "id": "tai-zhong-guo-jia-ge-ju-yuan",
       "name": "臺中國家歌劇院",
       "aliases": [
-        "台中國家歌劇院"
+        "台中國家歌劇院",
+        "台中歌劇院"
       ],
       "region": "臺中市",
       "district": "西屯區",
@@ -4138,7 +4161,9 @@
     {
       "id": "wei-wu-ying-guo-jia-yi-shu-wen-hua-zhong-xin",
       "name": "衛武營國家藝術文化中心",
-      "aliases": [],
+      "aliases": [
+        "衛武營"
+      ],
       "region": "高雄市",
       "district": "鳳山區",
       "regionGroup": "south",
