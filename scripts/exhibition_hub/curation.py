@@ -77,6 +77,7 @@ PUBLIC_EVENT_FIELDS = (
     "image", "images", "categories", "category", "contentType", "contentTypes",
     "eventFormat", "editorialStatus", "editorialFlags", "startDate", "endDate",
     "locationName", "location", "venueGroup", "venueDetail", "venueNames", "venueName",
+    "parentVenueName", "parentVenueId", "subVenueName", "subVenueNames",
     "venueIds", "venueId", "venueCoverageStatus", "unmatchedVenueValues", "address",
     "region", "regionCanonical", "latitude", "longitude", "coordinateSource", "price",
     "unit", "transitInfo", "hitRate", "source", "firstSeenAt", "lastSeenAt",

@@ -407,8 +407,15 @@ class ConfiguredOfficialSiteCollector(BaseCollector):
             "contentTypeHint": _hint(title, text[:4000]),
             "organizer": "",
             "organizers": [],
+            # R12 venue contract: venueNames contains canonical parent venues
+            # only; halls/floors/galleries are represented as child spaces.
             "venueName": configured_venue,
-            "venueNames": _unique(subvenues),
+            "venueNames": [configured_venue] if configured_venue else [],
+            "venueGroup": configured_venue,
+            "parentVenueName": configured_venue,
+            "subVenueName": subvenues[0] if subvenues else "",
+            "subVenueNames": _unique(subvenues),
+            "venueDetail": "／".join(_unique(subvenues)),
             "address": str(source.raw.get("address") or ""),
             "regionCanonical": str(source.raw.get("regionCanonical") or ""),
             "admission": admission,

@@ -1,0 +1,23 @@
+{
+  "version": "6.5.0-R12-STABLE2",
+  "releaseMarker": "v6.5.0-r12-stable2",
+  "basedOn": "develop / 6.5.0-R7",
+  "updatedAt": "2026-08-01",
+  "frontendChanged": true,
+  "collectorDryRunChanged": true,
+  "pagesBuilderChanged": true,
+  "venueContractChanged": true,
+  "officialDataChanged": false,
+  "automaticPublishingEnabled": false,
+  "features": [
+    "compact long price labels",
+    "Hero previous and next interaction repair",
+    "mobile swipe fallback",
+    "first tap preview and second tap navigation",
+    "Hero, home, explore and venue drawer motion refinement",
+    "Collector stage 7 dry-run framework",
+    "Collector stage 8 gated publish foundation",
+    "atomic validated Pages Builder",
+    "main venue and subspace contract"
+  ]
+}

@@ -63,7 +63,10 @@ class OfficialSiteCollectorParserTests(unittest.TestCase):
         self.assertEqual(record["startDate"], "2026-08-10")
         self.assertEqual(record["endDate"], "2026-08-12")
         self.assertEqual(record["venueName"], "臺北表演藝術中心")
-        self.assertIn("大劇院", record["venueNames"])
+        self.assertEqual(record["venueNames"], ["臺北表演藝術中心"])
+        self.assertEqual(record["parentVenueName"], "臺北表演藝術中心")
+        self.assertIn("大劇院", record["subVenueNames"])
+        self.assertEqual(record["subVenueName"], "大劇院")
         self.assertEqual(record["admission"], "paid")
         self.assertTrue(record["imageUrl"])
 

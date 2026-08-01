@@ -847,6 +847,10 @@ def enrich_event_with_registry(
         if venue_names
         else ""
     )
+    enriched["parentVenueName"] = enriched["venueName"]
+    enriched["parentVenueId"] = enriched["venueId"]
+    enriched.setdefault("subVenueNames", [])
+    enriched.setdefault("subVenueName", "")
     enriched["venueMatchConfidence"] = (
         match.get("confidence")
         if venue_ids
