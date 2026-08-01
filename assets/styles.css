@@ -7463,3 +7463,160 @@ body.venue-selector-open .venue-selector-backdrop { opacity: 1; }
     transition: none !important;
   }
 }
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R12 STABLE2 P1 — inward controls and smooth paint
+   ====================================================================== */
+
+/* Keep desktop controls inside the paper collage instead of at the far edges
+   of the viewport. The smaller hit circle still remains comfortably clickable. */
+@media (min-width: 761px) {
+  .hero-visual > .hero-carousel-arrow {
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 32px !important;
+    background: rgba(255,251,245,.96) !important;
+  }
+  .hero-visual > .hero-carousel-next {
+    left: clamp(18px, 2vw, 30px) !important;
+  }
+  .hero-visual > .hero-carousel-previous {
+    right: clamp(18px, 2vw, 30px) !important;
+  }
+}
+
+/* Blur and drop-shadow filters force repeated raster work while the page is
+   moving. Preserve depth with opacity and one static shadow instead. */
+.hero-ticket-stage .hero-postcard,
+.hero-ticket-stage .hero-ticket-card,
+.exhibition-card .smart-image-foreground,
+.venue-tile .smart-image-foreground,
+.nearby-result-card .smart-image-foreground,
+.nearby-mini-card .smart-image-foreground {
+  filter: none !important;
+}
+
+.exhibition-card,
+.venue-tile,
+.nearby-result-card,
+.nearby-mini-card {
+  contain: layout paint style;
+}
+
+.exhibition-card {
+  box-shadow: 0 8px 20px rgba(46,35,24,.085) !important;
+  transition: transform .42s cubic-bezier(.2,.72,.2,1), border-color .28s ease !important;
+}
+.venue-tile {
+  box-shadow: 0 8px 20px rgba(38,29,20,.10) !important;
+  transition: transform .46s cubic-bezier(.2,.72,.2,1), border-color .3s ease !important;
+}
+.featured-block.is-in-view .exhibition-card:hover,
+[data-motion-group].is-in-view .exhibition-card:hover {
+  box-shadow: 0 12px 28px rgba(46,35,24,.13) !important;
+}
+.venue-section.is-in-view .venue-tile:hover {
+  box-shadow: 0 13px 30px rgba(38,29,20,.15) !important;
+  transform: translate3d(0,-4px,0) scale(1.012) !important;
+}
+.venue-section.is-in-view .venue-tile:hover img {
+  filter: none !important;
+  transform: translateZ(0) scale(1.045) !important;
+}
+
+/* Skip layout and paint work for lower homepage sections until they approach
+   the viewport. Intrinsic sizes prevent the page from jumping while scrolling. */
+.home-view > .featured-block {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+.home-view > .split-feature {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
+}
+.home-view > .nearby-home {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+.home-view > .venue-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 860px;
+}
+.venue-selector-region {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
+
+/* One large view-level transform repaints the whole page. Section reveals are
+   enough, so views appear immediately and lower sections animate independently. */
+.home-view:not([hidden]),
+.listing-view:not([hidden]) {
+  animation: none !important;
+}
+
+/* Slow the reveal rhythm while keeping it compositor-only. The travel distance
+   is shorter than before, producing a softer and more continuous entrance. */
+[data-motion-group] .motion-card,
+.featured-block .motion-card,
+.venue-section .motion-card,
+[data-reveal-sequence] > .reveal-item,
+[data-split-reveal] > *,
+[data-fade-reveal] {
+  transform: translate3d(0,10px,0) !important;
+  transition-duration: .72s, .82s !important;
+  transition-timing-function: ease-out, cubic-bezier(.16,1,.3,1) !important;
+  transition-delay: min(
+    calc(var(--motion-index, var(--reveal-index, 0)) * 46ms),
+    230ms
+  ) !important;
+}
+
+[data-motion-group].is-in-view .motion-card,
+.featured-block.is-in-view .motion-card,
+.venue-section.is-in-view .motion-card,
+[data-reveal-sequence].is-in-view > .reveal-item,
+[data-split-reveal].is-in-view > *,
+[data-fade-reveal].is-in-view {
+  transform: translate3d(0,0,0) !important;
+}
+
+/* The Hero entrance receives the same slower editorial rhythm without blur. */
+.hero-ticket-stack.is-entering .hero-ticket-slide {
+  animation-duration: 1.65s !important;
+  animation-timing-function: cubic-bezier(.16,1,.3,1) !important;
+}
+.hero-ticket-stack.is-entering .hero-ticket-slot-2 { animation-delay: .14s !important; }
+.hero-ticket-stack.is-entering .hero-ticket-slot-3 { animation-delay: .28s !important; }
+
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  [data-motion-group] .motion-card,
+  .featured-block .motion-card,
+  .venue-section .motion-card,
+  [data-reveal-sequence] > .reveal-item,
+  [data-split-reveal] > *,
+  [data-fade-reveal] {
+    transform: translate3d(0,6px,0) !important;
+    transition-duration: .54s, .62s !important;
+    transition-delay: min(
+      calc(var(--motion-index, var(--reveal-index, 0)) * 30ms),
+      120ms
+    ) !important;
+  }
+
+  .exhibition-card,
+  .venue-tile,
+  .nearby-result-card,
+  .nearby-mini-card {
+    box-shadow: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-view > .featured-block,
+  .home-view > .split-feature,
+  .home-view > .nearby-home,
+  .home-view > .venue-section,
+  .venue-selector-region {
+    content-visibility: visible;
+  }
+}
