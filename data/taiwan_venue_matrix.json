@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-08-01",
+  "updatedAt": "2026-08-02",
   "confirmationSource": "台灣展覽誌_全台場館矩陣與1-9階段總檢視_V1.1.xlsx",
   "regionGroups": [
     {
@@ -918,7 +918,7 @@
       "name": "城市舞台",
       "aliases": [],
       "region": "臺北市",
-      "district": "信義區",
+      "district": "松山區",
       "regionGroup": "north",
       "subregion": "north-core",
       "priority": "P1",
@@ -927,10 +927,11 @@
       "venueComplexName": "",
       "venueSpaces": [],
       "sourceStrategy": "ticket_venue_mapping",
-      "officialUrl": "",
+      "officialUrl": "https://www.tapo.gov.taipei/Content_List.aspx?n=285BE042C5BA434D",
       "status": "planned",
-      "notes": "",
-      "confirmed": true
+      "notes": "行政區依臺北市藝文推廣處官方地址校正。",
+      "confirmed": true,
+      "address": "臺北市松山區八德路三段25號"
     },
     {
       "id": "da-dao-cheng-xi-yuan",
@@ -1343,13 +1344,16 @@
     },
     {
       "id": "yi-fu-wen-chuang-zhan-yan-guan-jie-ke-yin-le",
-      "name": "藝富文創展演館／杰克音樂",
+      "name": "杰克音樂 Jack's studio",
       "aliases": [
+        "杰克音樂",
+        "杰克音樂 Jack's Studio",
+        "Jack's studio",
         "藝富文創展演館",
-        "杰克音樂"
+        "藝富文創展演館／杰克音樂"
       ],
       "region": "臺北市",
-      "district": "中山區",
+      "district": "萬華區",
       "regionGroup": "north",
       "subregion": "north-core",
       "priority": "P2",
@@ -1360,8 +1364,9 @@
       "sourceStrategy": "ticket_venue_mapping",
       "officialUrl": "",
       "status": "planned",
-      "notes": "確認正式前台名稱",
-      "confirmed": true
+      "notes": "正式前台名稱與行政區已校正；舊名稱保留為 alias。",
+      "confirmed": true,
+      "address": "臺北市萬華區昆明街76號B1"
     },
     {
       "id": "tai-bei-shi-zheng-fu-shi-min-guang-chang",
@@ -3123,7 +3128,7 @@
       "name": "迴響音樂藝文展演空間",
       "aliases": [],
       "region": "臺中市",
-      "district": "西屯區",
+      "district": "中區",
       "regionGroup": "west",
       "subregion": "west-core",
       "priority": "P2",
@@ -3134,8 +3139,9 @@
       "sourceStrategy": "ticket_venue_mapping",
       "officialUrl": "",
       "status": "new",
-      "notes": "",
-      "confirmed": true
+      "notes": "行政區依公開售票／場館地址及站內活動地址一致結果校正。",
+      "confirmed": true,
+      "address": "臺中市中區中山路108號"
     },
     {
       "id": "yuan-man-hu-wai-ju-chang",
@@ -4139,7 +4145,7 @@
       "name": "高雄流行音樂中心",
       "aliases": [],
       "region": "高雄市",
-      "district": "苓雅區",
+      "district": "鹽埕區",
       "regionGroup": "south",
       "subregion": "south-core",
       "priority": "P0",
@@ -4155,8 +4161,9 @@
       "sourceStrategy": "direct_official",
       "officialUrl": "https://kpmc.com.tw/",
       "status": "planned",
-      "notes": "source_registry 已 planned，應拆 venueSpace",
-      "confirmed": true
+      "notes": "中心主要官方聯絡地址位於鹽埕區；子場域仍以 venueSpace 區分。",
+      "confirmed": true,
+      "address": "高雄市鹽埕區真愛路1號"
     },
     {
       "id": "wei-wu-ying-guo-jia-yi-shu-wen-hua-zhong-xin",

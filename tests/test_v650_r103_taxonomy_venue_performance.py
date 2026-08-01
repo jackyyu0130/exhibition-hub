@@ -27,9 +27,9 @@ class R103TaxonomyVenuePerformanceTests(unittest.TestCase):
     def test_live_house_entries_exist_in_confirmed_matrix(self):
         records = {item['name']: item for item in MATRIX['venues']}
         self.assertEqual(records['NUZONE']['venueType'], 'live_house')
-        self.assertEqual(records['藝富文創展演館／杰克音樂']['venueType'], 'live_house')
+        self.assertEqual(records["杰克音樂 Jack's studio"]['venueType'], 'live_house')
         self.assertTrue(records['NUZONE']['confirmed'])
-        self.assertTrue(records['藝富文創展演館／杰克音樂']['confirmed'])
+        self.assertTrue(records["杰克音樂 Jack's studio"]['confirmed'])
 
     def test_hero_uses_transform_only_final_override(self):
         marker = 'Exhibition Hub V6.5.0-R10.5'

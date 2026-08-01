@@ -66,6 +66,16 @@ POPUP_RE = re.compile(r"快閃|期間限定|pop-?up", re.I)
 MARKET_RE = re.compile(r"市集|蚤之市|展售會", re.I)
 CHILD_RE = re.compile(r"親子|兒童|家庭|幼兒", re.I)
 COMPETITION_RE = re.compile(r"競賽|比賽|大賽|徵件比賽", re.I)
+MUSIC_PROGRAM_RE = re.compile(
+    r"演出曲目|program|musicians?|指揮|小提琴|大提琴|鋼琴|長笛|單簧管|雙簧管|"
+    r"symphony|concerto|sonata|orchestra|樂章|作品(?:第|[0-9])|op\.?\s*[0-9]",
+    re.I,
+)
+PRICE_UNKNOWN_RE = re.compile(r"票價請見|依官網|待確認|另行公告|索票|未提供", re.I)
+PRICE_FREE_RE = re.compile(r"免費|自由入場|免票|free", re.I)
+PRICE_LOW_ALLOWED_RE = re.compile(r"捐款|樂捐|象徵性|銅板|學生優惠|兒童優惠", re.I)
+VERIFIED_NATORI_RE = re.compile(r"natori[\s\S]*(?:koshin|march|行進)|(?:koshin|march|行進)[\s\S]*natori", re.I)
+VERIFIED_NATORI_PRICE = "1F站席 NT$4,200／2F前座席 NT$3,600／2F後座席 NT$3,200／3F座席 NT$2,800／1F身障席 NT$2,100／2F身障席 NT$1,600"
 
 TAIPEI_TZ = timezone(timedelta(hours=8))
 MUTUALLY_EXCLUSIVE = {"演唱會", "音樂", "表演", "舞蹈", "電影"}
@@ -234,6 +244,80 @@ def is_singer_concert_title(title: str) -> bool:
     return bool(SINGER_CONCERT_RE.search(title))
 
 
+def sanitize_public_price(event: Mapping[str, Any]) -> tuple[str, str | None]:
+    """Return a conservative public price and an optional correction reason.
+
+    Source feeds occasionally expose date fragments or minimum-order numbers as
+    ticket prices. The public site must prefer an official-page fallback over a
+    precise-looking but unsupported amount.
+    """
+    raw = re.sub(r"\s+", " ", _clean(event.get("price"))).strip()
+    if not raw:
+        return "票價請見活動頁面", None
+    if PRICE_FREE_RE.search(raw):
+        return "免費入場", None
+    if PRICE_UNKNOWN_RE.search(raw):
+        return "票價請見活動頁面", None
+
+    allow_low = bool(PRICE_LOW_ALLOWED_RE.search(raw))
+    numeric_only = re.fullmatch(
+        r"(?:NT\$?|TWD|新[臺台]幣|票價)?\s*[$＄]?\s*([0-9][0-9,]*)\s*(?:元)?",
+        raw,
+        re.I,
+    )
+    if numeric_only:
+        amount = int(numeric_only.group(1).replace(",", ""))
+        if 0 < amount < 50 and not allow_low:
+            return "票價請見活動頁面", "unsupported_low_amount"
+
+    values = [int(value.replace(",", "")) for value in re.findall(r"[0-9][0-9,]*", raw)]
+    money_tokens = re.findall(
+        r"(?:NT\$?|TWD|新[臺台]幣|[$＄])\s*([0-9][0-9,]*)|([0-9][0-9,]*)\s*元",
+        raw,
+        re.I,
+    )
+    money_values = [
+        int((left or right).replace(",", ""))
+        for left, right in money_tokens
+        if left or right
+    ]
+    malformed_year_range = re.match(
+        r"^(?:NT\$?|TWD|新[臺台]幣)?\s*[$＄]?\s*[0-9]{1,2}\s*[–—-]\s*2,?0[0-9]{2}(?:\D|$)",
+        raw,
+        re.I,
+    )
+    if malformed_year_range or (
+        len(values) >= 2
+        and any(1900 <= value <= 2100 for value in values)
+        and min(values) <= 31
+        and not any(value >= 50 for value in money_values)
+    ):
+        return "票價請見活動頁面", "date_fragment"
+
+    title = _clean(event.get("title"))
+    if re.search(r"演唱會|音樂會|live\s+tour|one[- ]man|concert", title, re.I):
+        if len(values) == 1 and 0 < values[0] < 50 and not allow_low:
+            return "票價請見活動頁面", "implausible_performance_price"
+    return raw, None
+
+
+def apply_verified_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]:
+    corrected = deepcopy(dict(event))
+    title = _clean(corrected.get("title"))
+    if VERIFIED_NATORI_RE.search(title):
+        corrected["startDate"] = "2026-08-08"
+        corrected["endDate"] = "2026-08-09"
+        corrected["price"] = VERIFIED_NATORI_PRICE
+        corrected["category"] = "演唱會"
+        corrected["categories"] = ["演唱會"]
+    elif "夢與緋光" in title:
+        corrected["category"] = "音樂"
+        corrected["categories"] = ["音樂", *[
+            value for value in corrected.get("categories") or [] if value != "音樂"
+        ]]
+    return corrected
+
+
 def public_categories(event: Mapping[str, Any]) -> list[str]:
     title = _clean(event.get("title"))
     description = _clean(event.get("description"))
@@ -256,6 +340,10 @@ def public_categories(event: Mapping[str, Any]) -> list[str]:
     elif is_singer_concert_title(title):
         primary = "演唱會"
     elif "music_festival" in content_types or MUSIC_RE.search(title):
+        primary = "音樂"
+    elif (
+        "performance" in content_types or "音樂" in existing
+    ) and MUSIC_PROGRAM_RE.search(f"{title} {description}"):
         primary = "音樂"
     elif ANIME_RE.search(title):
         primary = "動漫"
@@ -369,14 +457,29 @@ def build_curated_payload(
     removed_counts: dict[str, int] = {}
     kept_counts: dict[str, int] = {}
     removed_samples: dict[str, list[dict[str, Any]]] = {}
+    price_corrections: dict[str, int] = {}
+    price_correction_samples: list[dict[str, Any]] = []
 
     for raw_event in source_payload.get("events") or []:
         if not isinstance(raw_event, Mapping):
             continue
-        event = classify_event(raw_event)
+        event = apply_verified_event_corrections(classify_event(raw_event))
         categories = public_categories(event)
         event["categories"] = categories
         event["category"] = categories[0]
+        original_price = _clean(event.get("price"))
+        public_price, price_reason = sanitize_public_price(event)
+        event["price"] = public_price
+        if price_reason and public_price != original_price:
+            price_corrections[price_reason] = price_corrections.get(price_reason, 0) + 1
+            if len(price_correction_samples) < 30:
+                price_correction_samples.append({
+                    "id": event.get("id"),
+                    "title": event.get("title"),
+                    "originalPrice": original_price,
+                    "publicPrice": public_price,
+                    "reason": price_reason,
+                })
         keep, reason, venue = evaluate_event(event, by_id, by_name, today=today)
         target = kept_counts if keep else removed_counts
         target[reason] = target.get(reason, 0) + 1
@@ -467,5 +570,10 @@ def build_curated_payload(
         "keptReasons": dict(sorted(kept_counts.items())),
         "removedReasons": dict(sorted(removed_counts.items())),
         "removedSamples": removed_samples,
+        "priceAudit": {
+            "correctedCount": sum(price_corrections.values()),
+            "correctionReasons": dict(sorted(price_corrections.items())),
+            "samples": price_correction_samples,
+        },
     }
     return payload, report
