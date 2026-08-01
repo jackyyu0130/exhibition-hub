@@ -22,8 +22,9 @@ class R122UrgentPerformanceTests(unittest.TestCase):
         self.assertIn("state.venueNameMatchCache.has(normalized)", APP)
 
     def test_home_venue_grid_is_deferred_and_bounded(self):
-        self.assertIn("function scheduleHomeVenueGrid()", APP)
-        self.assertIn("requestIdleCallback(render, {timeout: 650})", APP)
+        self.assertIn("function scheduleHomeVenueGrid({delayMs = 0, onRendered = null} = {})", APP)
+        self.assertIn("scheduleCalmHomeTask", APP)
+        self.assertIn("state.homeVenueEventIndex", APP)
         self.assertIn(".slice(0, 12)", APP)
         self.assertIn('grid.dataset.rendered = \'true\'', APP)
 
@@ -43,8 +44,8 @@ class R122UrgentPerformanceTests(unittest.TestCase):
         self.assertTrue("rootMargin:'0px 0px -8% 0px'" in APP or "rootMargin:'0px 0px -3% 0px'" in APP)
 
     def test_release_marker(self):
-        self.assertTrue("Performance patch: P2" in VERSION or "Performance patch: P3" in VERSION)
-        self.assertTrue("STABLE2 P2" in APP.splitlines()[0] or "STABLE2 P3" in APP.splitlines()[0])
+        self.assertIn("Performance patch: P4", VERSION)
+        self.assertIn("STABLE2 P4", APP.splitlines()[0])
 
 
 if __name__ == "__main__":

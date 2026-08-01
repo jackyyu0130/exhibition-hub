@@ -7888,3 +7888,190 @@ body.is-scrolling .venue-tile img {
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   Exhibition Hub V6.5.0-R12 STABLE2 P4 — deep first-load and scroll repair
+   ========================================================================== */
+
+/* The old intro moved three large tickets from more than one full stage width.
+   P4 paints the final geometry first, then reveals each already-laid-out ticket
+   with a short compositor-only offset. No keyframe, blur, filter, width, left or
+   top animation participates in the first-load sequence. */
+.hero-ticket-stack.is-entering .hero-ticket-slide {
+  animation: none !important;
+}
+.hero-ticket-stack.is-intro-pending .hero-ticket-slide {
+  opacity: 0 !important;
+  transform: translate3d(calc(var(--hero-x, 0%) + 11%), calc(var(--hero-y, 0px) + 8px), 0) !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+.hero-ticket-stack.is-intro-playing .hero-ticket-slide {
+  opacity: var(--hero-opacity, 1) !important;
+  transform: translate3d(var(--hero-x, 0%), var(--hero-y, 0px), 0) !important;
+  transition-property: opacity, transform !important;
+  transition-duration: 1.08s, 1.34s !important;
+  transition-timing-function: cubic-bezier(.2,.7,.2,1), cubic-bezier(.16,1,.3,1) !important;
+  will-change: transform, opacity !important;
+}
+.hero-ticket-stack.is-intro-playing .hero-ticket-slot-1 { transition-delay: .04s !important; }
+.hero-ticket-stack.is-intro-playing .hero-ticket-slot-2 { transition-delay: .18s !important; }
+.hero-ticket-stack.is-intro-playing .hero-ticket-slot-3 { transition-delay: .32s !important; }
+.hero-ticket-stack.is-intro-complete .hero-ticket-slide {
+  opacity: var(--hero-opacity, 1) !important;
+  transform: translate3d(var(--hero-x, 0%), var(--hero-y, 0px), 0) !important;
+  transition: none !important;
+  will-change: auto !important;
+}
+.hero-ticket-stack.is-intro-pending .hero-ticket-card,
+.hero-ticket-stack.is-intro-playing .hero-ticket-card {
+  filter: none !important;
+  box-shadow: 0 10px 24px rgba(43,31,21,.12) !important;
+}
+
+/* Home cards are deliberately hydrated off screen after the Hero settles.
+   Keeping their content visible prevents Chrome/Safari from materialising a
+   whole rail in the exact frame in which the user scrolls into it. Long listing
+   pages retain content-visibility on their own cards. */
+.home-view .featured-block .exhibition-card,
+.home-view .nearby-mini-card,
+.home-view .venue-section .venue-tile {
+  content-visibility: visible !important;
+  contain-intrinsic-size: none !important;
+}
+.home-view .featured-block .exhibition-card,
+.home-view .nearby-mini-card,
+.home-view .venue-section .venue-tile {
+  contain: paint style !important;
+}
+
+/* Stable, non-animated reserve blocks are visible only during the staged home
+   hydration. They avoid empty-section collapse without running shimmer loops. */
+.home-section-placeholder {
+  width: min(100%, 1080px);
+  min-height: 330px;
+  border: 1px solid rgba(115,88,63,.08);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(244,237,226,.72), rgba(232,220,204,.42));
+}
+.home-list-placeholder {
+  min-height: 230px;
+  border-radius: 18px;
+  background: rgba(241,233,222,.48);
+}
+.home-nearby-placeholder {
+  min-height: 360px;
+  border-radius: 22px;
+  background: rgba(241,233,222,.42);
+}
+
+/* Images are decoded one at a time before the section reaches the viewport.
+   If a slow remote source finishes later, only the bitmap fades; card geometry
+   never changes and no full-section repaint is required. */
+.home-view .nearby-mini-card .smart-image-foreground,
+.home-view .venue-section .venue-tile > img,
+.home-view .featured-block .smart-image-foreground {
+  opacity: 0;
+  transition: opacity .42s ease !important;
+}
+.home-view .nearby-mini-card.is-media-ready .smart-image-foreground,
+.home-view .nearby-mini-card .smart-image-frame.is-media-ready .smart-image-foreground,
+.home-view .venue-section .venue-tile.is-media-ready > img,
+.home-view .featured-block .exhibition-card.is-media-ready .smart-image-foreground,
+.home-view .featured-block .smart-image-frame.is-media-ready .smart-image-foreground {
+  opacity: 1;
+}
+
+/* P4 keeps the requested editorial pacing but reduces travel distance. The
+   browser now has decoded media and stable card geometry before these run. */
+.nearby-home[data-section-motion="nearby"] .motion-card {
+  opacity: 0 !important;
+  transform: translate3d(0, 8px, 0) !important;
+  transition-property: opacity, transform !important;
+  transition-duration: 1.55s, 1.75s !important;
+  transition-timing-function: cubic-bezier(.2,.68,.2,1), cubic-bezier(.16,1,.3,1) !important;
+  transition-delay: min(calc(var(--motion-index, 0) * 180ms), 540ms) !important;
+}
+.nearby-home[data-section-motion="nearby"].is-in-view .motion-card {
+  opacity: 1 !important;
+  transform: translate3d(0,0,0) !important;
+}
+.venue-section[data-section-motion="venue"] .motion-card {
+  opacity: 0 !important;
+  transform: translate3d(0, 8px, 0) !important;
+  transition-property: opacity, transform !important;
+  transition-duration: 1.5s, 1.7s !important;
+  transition-timing-function: cubic-bezier(.2,.68,.2,1), cubic-bezier(.16,1,.3,1) !important;
+  transition-delay: min(calc(var(--motion-index, 0) * 95ms), 665ms) !important;
+}
+.venue-section[data-section-motion="venue"].is-in-view .motion-card {
+  opacity: 1 !important;
+  transform: translate3d(0,0,0) !important;
+}
+
+/* Leaflet is no longer part of the homepage critical path. */
+.map-runtime-placeholder {
+  min-height: 430px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: #746657;
+  text-align: center;
+  background: linear-gradient(145deg, #eee5d8, #ded3c4);
+}
+.map-runtime-placeholder span {
+  font-family: "Noto Serif TC", serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+.map-runtime-placeholder small { color: #8c7d6d; }
+.map-runtime-placeholder.is-error { background: #eee4d9; }
+
+/* During wheel/touch movement, only hover-only effects are suppressed. Reveal
+   opacity and transform transitions continue uninterrupted. */
+body.is-scrolling .home-view .featured-block .exhibition-card:hover,
+body.is-scrolling .home-view .nearby-mini-card:hover,
+body.is-scrolling .home-view .venue-section .venue-tile:hover {
+  transform: translate3d(0,0,0) !important;
+}
+
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  .hero-ticket-stack.is-intro-pending .hero-ticket-slide {
+    transform: translate3d(calc(var(--hero-x, 0%) + 7%), calc(var(--hero-y, 0px) + 5px), 0) !important;
+  }
+  .hero-ticket-stack.is-intro-playing .hero-ticket-slide {
+    transition-duration: .96s, 1.18s !important;
+  }
+  .hero-ticket-stack.is-intro-playing .hero-ticket-slot-2 { transition-delay: .13s !important; }
+  .hero-ticket-stack.is-intro-playing .hero-ticket-slot-3 { transition-delay: .26s !important; }
+  .nearby-home[data-section-motion="nearby"] .motion-card {
+    transform: translate3d(0, 6px, 0) !important;
+    transition-duration: 1.22s, 1.38s !important;
+    transition-delay: min(calc(var(--motion-index, 0) * 130ms), 390ms) !important;
+  }
+  .venue-section[data-section-motion="venue"] .motion-card {
+    transform: translate3d(0, 6px, 0) !important;
+    transition-duration: 1.18s, 1.34s !important;
+    transition-delay: min(calc(var(--motion-index, 0) * 72ms), 504ms) !important;
+  }
+  .home-section-placeholder { min-height: 280px; }
+  .home-nearby-placeholder { min-height: 300px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ticket-stack.is-intro-pending .hero-ticket-slide,
+  .hero-ticket-stack.is-intro-playing .hero-ticket-slide,
+  .hero-ticket-stack.is-intro-complete .hero-ticket-slide,
+  .nearby-home[data-section-motion="nearby"] .motion-card,
+  .venue-section[data-section-motion="venue"] .motion-card {
+    opacity: 1 !important;
+    transform: translate3d(var(--hero-x, 0%), var(--hero-y, 0px), 0) !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .nearby-home[data-section-motion="nearby"] .motion-card,
+  .venue-section[data-section-motion="venue"] .motion-card {
+    transform: none !important;
+  }
+}
