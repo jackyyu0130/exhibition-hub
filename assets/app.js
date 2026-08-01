@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 P4 — staged hero hydration, lazy map assets, and predecoded home media. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 P4 → P5-B — restored motion, reliable rails, price/category/venue/nearby corrections. */
 (() => {
   'use strict';
 
@@ -12,6 +12,17 @@
     art_exhibition:'美術', pop_culture:'動漫', concert:'音樂', music_festival:'音樂',
     performance:'表演', popup:'快閃店', market:'市集', film_screening:'電影'
   };
+  const MUSIC_PROGRAM_PATTERN = /演出曲目|program|musicians?|指揮|小提琴|大提琴|鋼琴|長笛|單簧管|雙簧管|symphony|concerto|sonata|orchestra|樂章|作品(?:第|[0-9])|op\.?\s*[0-9]/i;
+  const VERIFIED_NATORI_PATTERN = /natori[\s\S]*(?:koshin|march|行進)|(?:koshin|march|行進)[\s\S]*natori/i;
+  const VERIFIED_NATORI_PRICE = '1F站席 NT$4,200／2F前座席 NT$3,600／2F後座席 NT$3,200／3F座席 NT$2,800／1F身障席 NT$2,100／2F身障席 NT$1,600';
+
+  function verifiedEventCorrection(title = '') {
+    if (VERIFIED_NATORI_PATTERN.test(String(title))) {
+      return {category:'演唱會', price:VERIFIED_NATORI_PRICE, startDate:'2026-08-08', endDate:'2026-08-09'};
+    }
+    if (/夢與緋光/.test(String(title))) return {category:'音樂'};
+    return null;
+  }
   const iconSvg = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
   const CATEGORY_ICON = {
     '快閃店': iconSvg('<path d="M4 10h16l-1.6-5H5.6L4 10Z"></path><path d="M5 10v9h14v-9M9 19v-5h6v5"></path><path d="M4 10c0 1.2 1 2.2 2.2 2.2S8.4 11.2 8.4 10c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2c0 1.2 1 2.2 2.2 2.2s2.2-1 2.2-2.2"></path><path d="m18.2 2 .7 1.5 1.6.7-1.6.7-.7 1.6-.7-1.6-1.6-.7 1.6-.7.7-1.5Z"></path>'),
@@ -106,6 +117,8 @@
     eventRegionCache: new WeakMap(),
     venueCatalogCache: [],
     homeVenueEventIndex: new Map(),
+    venueCoordinateIndex: new Map(),
+    geocodeCache: {},
     venueSearchTimer: null,
     venueDrawerTimer: null,
     params: new URLSearchParams(location.search),
@@ -401,6 +414,8 @@
     if (MUSIC_THEATRE_PATTERN.test(titleText)) return '表演';
     if (isSingerConcert(titleText, '', contentTypes)) return '演唱會';
     if (types.has('music_festival') || GENERAL_MUSIC_PATTERN.test(titleText)) return '音樂';
+    if ((types.has('performance') || candidates.includes('音樂'))
+      && MUSIC_PROGRAM_PATTERN.test(supportingText)) return '音樂';
     if (ANIME_CATEGORY_PATTERN.test(titleText)) return '動漫';
     if (NATURAL_CATEGORY_PATTERN.test(supportingText)) return '自然';
     if (HISTORY_CATEGORY_PATTERN.test(supportingText)) return '歷史';
@@ -670,6 +685,7 @@
   function normalizeEvent(raw, index) {
     const show = bestShow(raw);
     const title = firstValue(raw.title, raw.titile, raw.name, '未命名展覽');
+    const verifiedCorrection = verifiedEventCorrection(title);
     const description = stripFacebookReferences(firstValue(raw.description, raw.descriptionFilterHtml, raw.comment));
     const address = cleanPlaceText(firstValue(raw.address, raw.location, show.location, show.address));
     const originalLocationName = cleanPlaceText(firstValue(raw.locationName, raw.venue, show.locationName, show.venue, address));
@@ -705,7 +721,14 @@
     const baseCategories = normalizeCategories(rawCategories, title, description);
     const mappedCategory = contentTypes.map(type => CONTENT_TYPE_CATEGORY_MAP[type]).find(Boolean) || CONTENT_TYPE_CATEGORY_MAP[contentType];
     const categoryCandidates = mappedCategory ? [mappedCategory, ...baseCategories] : [...baseCategories];
-    const categories = finalizeCategories(categoryCandidates, title, description, contentTypes);
+    let categories = finalizeCategories(categoryCandidates, title, description, contentTypes);
+    if (verifiedCorrection?.category) {
+      const mutuallyExclusive = new Set(['演唱會','音樂','表演','舞蹈','電影']);
+      categories = [verifiedCorrection.category, ...categories.filter(category =>
+        category !== verifiedCorrection.category
+        && !(mutuallyExclusive.has(verifiedCorrection.category) && mutuallyExclusive.has(category))
+      )].slice(0, 3);
+    }
     const imageCandidates = [
       ...flattenImageCandidates(raw.images), ...flattenImageCandidates(raw.imageCandidates),
       ...flattenImageCandidates(raw.image), ...flattenImageCandidates(raw.imageURL), ...flattenImageCandidates(raw.imageUrl),
@@ -716,7 +739,10 @@
     const image = imageCandidates[0] || '';
     const {latitude, longitude} = coordinatesFrom(show, raw);
     const region = normalizeRegion(firstValue(raw.regionCanonical, raw.region, address, venueGroup, rawVenue));
-    const price = stripFacebookReferences(firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : ''));
+    const rawPrice = stripFacebookReferences(firstValue(raw.price, raw.Price, show.price, raw.discountInfo, firstValue(show.onSales, raw.onSales) === 'N' ? '免費' : ''));
+    const price = verifiedCorrection?.price || sanitizePriceText(rawPrice, {title, description, categories});
+    const correctedStartDate = verifiedCorrection?.startDate || firstValue(raw.startDate, raw.start, show.time, show.startTime);
+    const correctedEndDate = verifiedCorrection?.endDate || firstValue(raw.endDate, raw.end, raw.endTime, show.endTime, raw.startDate);
     return {
       id, title: String(title).trim(), description: stripHtml(description),
       sourceUrl: safeUrl(sourceUrl),
@@ -728,8 +754,8 @@
       eventFormat: String(raw.eventFormat || '').trim(),
       editorialStatus: String(raw.editorialStatus || '').trim(),
       editorialFlags: stringList(raw.editorialFlags),
-      startDate: firstValue(raw.startDate, raw.start, show.time, show.startTime),
-      endDate: firstValue(raw.endDate, raw.end, raw.endTime, show.endTime, raw.startDate),
+      startDate: correctedStartDate,
+      endDate: correctedEndDate,
       locationName: String(venueGroup || '地點待確認').trim(),
       location: String(venueGroup || '地點待確認').trim(),
       venueGroup, venueDetail, venueNames,
@@ -819,6 +845,38 @@
     if (!price || isFree(event)) return false;
     if (/票價請見|依官網|待確認|另行公告|索票|--|未知|未提供/i.test(price)) return false;
     return /(?:NT\$|TWD|新臺幣|新台幣|元|售票|付費|門票|票價|全票|優待票|預售票|現場票|\d)/i.test(price);
+  }
+
+  function sanitizePriceText(value = '', event = {}) {
+    const full = String(value || '').replace(/\s+/g, ' ').trim();
+    if (!full) return '票價請見活動頁面';
+    if (/免費|自由入場|免票|free/i.test(full)) return '免費入場';
+    if (/票價請見|依官網|待確認|另行公告|索票|未提供/i.test(full)) return '票價請見活動頁面';
+    const allowedLowPrice = /捐款|樂捐|象徵性|銅板|學生優惠|兒童優惠/i.test(full);
+    const numericOnly = full.match(/^(?:NT\$?|TWD|新[臺台]幣|票價)?\s*[$＄]?\s*([0-9][0-9,]*)\s*(?:元)?$/i);
+    if (numericOnly) {
+      const amount = Number(numericOnly[1].replaceAll(',', ''));
+      if (Number.isFinite(amount) && amount > 0 && amount < 50 && !allowedLowPrice) return '票價請見活動頁面';
+    }
+    const rangeValues = [...full.matchAll(/([0-9][0-9,]*)/g)]
+      .map(match => Number(match[1].replaceAll(',', '')))
+      .filter(Number.isFinite);
+    const moneyValues = [...full.matchAll(/(?:NT\$?|TWD|新[臺台]幣|[$＄])\s*([0-9][0-9,]*)|([0-9][0-9,]*)\s*元/gi)]
+      .map(match => Number(String(match[1] || match[2]).replaceAll(',', '')))
+      .filter(Number.isFinite);
+    const malformedYearRange = /^(?:NT\$?|TWD|新[臺台]幣)?\s*[$＄]?\s*[0-9]{1,2}\s*[–—-]\s*2,?0[0-9]{2}(?:\D|$)/i.test(full);
+    if (malformedYearRange || (rangeValues.length >= 2
+      && rangeValues.some(number => number >= 1900 && number <= 2100)
+      && Math.min(...rangeValues) <= 31
+      && !moneyValues.some(number => number >= 50))) {
+      return '票價請見活動頁面';
+    }
+    const title = String(event.title || '');
+    if (/演唱會|音樂會|live\s+tour|one[- ]man|concert/i.test(title)
+      && rangeValues.length === 1 && rangeValues[0] < 50 && !allowedLowPrice) {
+      return '票價請見活動頁面';
+    }
+    return full;
   }
 
   function compactPriceLabel(value = '') {
@@ -1349,19 +1407,26 @@
       await nextFrame();
       await nextFrame();
       if (token !== state.heroIntroSequenceToken || !stack.isConnected) return;
-      stack.classList.remove('is-intro-pending');
       if (reducedMotion) {
+        stack.classList.remove('is-intro-pending');
         stack.classList.add('is-intro-complete');
         state.heroIntroComplete = true;
         return;
       }
+      // Attach transition rules while the tickets are still at their pending
+      // right-side pose. Removing pending one painted frame later guarantees a
+      // real start/end pair instead of skipping directly to the final layout.
       stack.classList.add('is-intro-playing');
+      void stack.offsetWidth;
+      await nextFrame();
+      if (token !== state.heroIntroSequenceToken || !stack.isConnected) return;
+      stack.classList.remove('is-intro-pending');
       state.heroIntroTimer = window.setTimeout(() => {
         if (token !== state.heroIntroSequenceToken || !stack.isConnected) return;
         stack.classList.remove('is-intro-playing');
         stack.classList.add('is-intro-complete');
         state.heroIntroComplete = true;
-      }, 1780);
+      }, 3150);
     };
     begin();
   }
@@ -1592,40 +1657,41 @@
       return;
     }
 
-    featuredRail?.setAttribute('aria-busy', 'true');
-    upcomingList?.setAttribute('aria-busy', 'true');
-    endingList?.setAttribute('aria-busy', 'true');
-    nearbyList?.setAttribute('aria-busy', 'true');
-    if (featuredRail && !featuredRail.children.length) featuredRail.innerHTML = '<div class="home-section-placeholder" aria-hidden="true"></div>';
-    if (upcomingList && !upcomingList.children.length) upcomingList.innerHTML = '<div class="home-list-placeholder" aria-hidden="true"></div>';
-    if (endingList && !endingList.children.length) endingList.innerHTML = '<div class="home-list-placeholder" aria-hidden="true"></div>';
-    if (nearbyList && !nearbyList.children.length) nearbyList.innerHTML = '<div class="home-nearby-placeholder" aria-hidden="true"></div>';
-    if (venueGrid && !venueGrid.children.length) venueGrid.innerHTML = '<div class="venue-grid-loading" role="status"><span></span><p>場館資料準備中</p></div>';
-
-    scheduleCalmHomeTask(() => {
+    // Build the editorial card DOM on the first layout pass. Remote images
+    // are still decoded one at a time, but the browser no longer shows an empty
+    // section for one second and then inserts every card in a single frame.
+    if (featuredRail) {
       featuredRail.innerHTML = featured.length
         ? featured.map((event,index) => cardMarkup(event,{curated:index < 3,motionIndex:index})).join('')
         : emptyInline('目前沒有符合篩選的展覽');
       featuredRail.removeAttribute('aria-busy');
+      const featuredSection = featuredRail.closest('[data-motion-group]');
+      featuredSection?.classList.remove('is-in-view');
       prepareSectionMedia(featuredRail, {limit:9, concurrency:1});
-      setupScrollReveal();
-    }, {delayMs:1750, timeoutMs:3200});
-
-    scheduleCalmHomeTask(() => {
+    }
+    if (upcomingList) {
       upcomingList.innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
-      endingList.innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
       upcomingList.removeAttribute('aria-busy');
+    }
+    if (endingList) {
+      endingList.innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
       endingList.removeAttribute('aria-busy');
-      setupScrollReveal();
-    }, {delayMs:2050, timeoutMs:3500});
+    }
+    const timeMotion = upcomingList?.closest('[data-split-reveal]');
+    timeMotion?.classList.remove('is-in-view');
+    setupScrollReveal();
+
+    nearbyList?.setAttribute('aria-busy', 'true');
+    if (nearbyList && !nearbyList.children.length) nearbyList.innerHTML = '<div class="home-nearby-placeholder" aria-hidden="true"></div>';
+    if (venueGrid && !venueGrid.children.length) venueGrid.innerHTML = '<div class="venue-grid-loading" role="status"><span></span><p>場館資料準備中</p></div>';
 
     scheduleCalmHomeTask(() => {
       renderHomeNearby();
-      nearbyList.removeAttribute('aria-busy');
+      nearbyList?.removeAttribute('aria-busy');
       setupScrollReveal();
-    }, {delayMs:2350, timeoutMs:3900});
+    }, {delayMs:800, timeoutMs:2000});
 
-    scheduleHomeVenueGrid({delayMs:2650, onRendered:() => {
+    scheduleHomeVenueGrid({delayMs:1050, onRendered:() => {
       state.homeContentHydrated = true;
     }});
   }
@@ -1665,7 +1731,7 @@
     if (!grid) return;
     const venues = venueCatalog()
       .filter(item => item.count > 0 && item.name && !/資料整理中|地點待確認/.test(item.name))
-      .slice(0, 12);
+      .slice(0, 36);
     const eventsByVenue = state.homeVenueEventIndex;
 
     grid.innerHTML = venues.map((item, index) => {
@@ -1689,7 +1755,7 @@
       const serialized = escapeHtml(JSON.stringify(candidates));
       return `<a class="venue-tile motion-card motion-from-right ${candidates.length ? 'has-image' : 'venue-placeholder'}" style="--motion-index:${Math.min(index, 7)}" href="${venueHref(venue)}" data-venue-route="${escapeHtml(venue)}">
         <span class="venue-fallback-art fallback-art" style="--fallback-x:${fallback.x};--fallback-y:${fallback.y}" aria-hidden="true"><span class="fallback-art-label">場館選集</span></span>
-        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
+        ${candidates.length ? `<img src="${escapeHtml(candidates[0])}" data-venue-images="${serialized}" data-venue-image-index="0" alt="${escapeHtml(venue)}" loading="${index < 12 ? 'eager' : 'lazy'}" decoding="async" fetchpriority="${index < 12 ? 'auto' : 'low'}" referrerpolicy="no-referrer" onload="window.__validateVenueImage(this)" onerror="window.__venueImageFallback(this)">` : ''}
         <div class="venue-tile-content">
           <small>VENUE ${String(index+1).padStart(2,'0')}${imageKind ? ` · ${imageKind}` : ''}</small>
           <h3>${escapeHtml(venue)}</h3><p>${item.count} 檔展覽</p>
@@ -2088,6 +2154,36 @@
     state.eventVenueRecordCache = new WeakMap();
     state.eventVenueNameCache = new WeakMap();
     state.eventRegionCache = new WeakMap();
+
+    const coordinateBuckets = new Map();
+    state.events.forEach(event => {
+      if (!hasCoordinates(event)) return;
+      eventVenueCandidateValues(event).forEach(value => {
+        const key = normalizedVenueLookupKey(value);
+        if (!key) return;
+        if (!coordinateBuckets.has(key)) coordinateBuckets.set(key, []);
+        coordinateBuckets.get(key).push([event.latitude, event.longitude]);
+      });
+    });
+    state.venueRegistry.forEach(registry => {
+      const coordinate = cachedCoordinate([
+        registry.address,
+        `${registry.region || ''}${registry.district || ''}`,
+        registry.district,
+      ]);
+      if (!coordinate) return;
+      [registry.name, ...(registry.aliases || []), registry.venueComplexName].filter(Boolean).forEach(value => {
+        const key = normalizedVenueLookupKey(value);
+        if (!key || coordinateBuckets.has(key)) return;
+        coordinateBuckets.set(key, [[coordinate.latitude, coordinate.longitude]]);
+      });
+    });
+    state.venueCoordinateIndex = new Map([...coordinateBuckets].map(([key, coordinates]) => {
+      const sortedLat = coordinates.map(item => item[0]).sort((a,b) => a-b);
+      const sortedLng = coordinates.map(item => item[1]).sort((a,b) => a-b);
+      const middle = Math.floor(coordinates.length / 2);
+      return [key, {latitude:sortedLat[middle], longitude:sortedLng[middle]}];
+    }));
 
     state.events.forEach(event => {
       const regions = eventRegions(event);
@@ -2490,7 +2586,7 @@
       return;
     }
     updatePageMetadata(event);
-    const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 6);
+    const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 10);
     const mapUrl = googleMapsUrl(event);
     const externalUrl = event.sourceUrl || '';
     $('#detailContent').innerHTML = `
@@ -2516,7 +2612,7 @@
           <div class="detail-description"><h2>展覽介紹</h2><p>${escapeHtml(event.description || '目前沒有完整介紹，請前往官方活動頁面查看最新資訊。')}</p></div>
         </article>
       </div>
-      ${related.length ? `<section class="detail-related"><p class="eyebrow">YOU MAY ALSO LIKE</p><h2>附近或相似的展覽</h2><div class="featured-rail">${related.map(cardMarkup).join('')}</div></section>` : ''}`;
+      ${related.length ? `<section class="detail-related"><div class="detail-related-heading"><div><p class="eyebrow">YOU MAY ALSO LIKE</p><h2>附近或相似的展覽</h2></div><div class="section-controls" aria-label="切換附近或相似展覽"><button class="icon-button" type="button" data-scroll-target="detailRelatedRail" data-dir="-1" aria-label="向左瀏覽相似展覽">←</button><button class="icon-button" type="button" data-scroll-target="detailRelatedRail" data-dir="1" aria-label="向右瀏覽相似展覽">→</button></div></div><div class="featured-rail detail-related-rail" id="detailRelatedRail">${related.map(cardMarkup).join('')}</div></section>` : ''}`;
   }
 
   function detailMeta(label, value) { return `<div class="detail-meta-row"><small>${label}</small><strong>${escapeHtml(value || '—')}</strong></div>`; }
@@ -2528,13 +2624,57 @@
     const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
+  function addressDistrictKey(value = '') {
+    const text = cleanPlaceText(value).replaceAll('臺','台');
+    const match = text.match(/((?:台北市|新北市|桃園市|台中市|台南市|高雄市|基隆市|新竹市|嘉義市)[^市縣]{1,5}(?:區|鄉|鎮|市))/);
+    return match?.[1] || '';
+  }
+
+  function cachedCoordinate(values = []) {
+    for (const rawValue of values) {
+      const key = cleanPlaceText(rawValue);
+      if (!key) continue;
+      const variants = [key, key.replaceAll('臺','台'), key.replaceAll('台','臺')];
+      for (const variant of variants) {
+        const coordinate = state.geocodeCache[variant];
+        if (Array.isArray(coordinate) && coordinate.length >= 2
+          && Number.isFinite(Number(coordinate[0])) && Number.isFinite(Number(coordinate[1]))) {
+          return {latitude:Number(coordinate[0]), longitude:Number(coordinate[1])};
+        }
+      }
+    }
+    return null;
+  }
+
+  function eventCoordinates(event) {
+    if (hasCoordinates(event)) return {latitude:event.latitude, longitude:event.longitude, precision:'event'};
+    for (const value of eventVenueCandidateValues(event)) {
+      const coordinate = state.venueCoordinateIndex.get(normalizedVenueLookupKey(value));
+      if (coordinate) return {...coordinate, precision:'venue'};
+    }
+    const districtKey = addressDistrictKey(event.address);
+    const coordinate = cachedCoordinate([
+      event.address,
+      districtKey,
+      `${event.region || ''}${event.district || ''}`,
+      event.region,
+    ]);
+    if (coordinate) return {...coordinate, precision:districtKey ? 'district' : 'address'};
+    return null;
+  }
+
   function nearestEvents(items, limit = 30, maxDistance = Infinity) {
-    if (!state.userLocation) return items.filter(hasCoordinates).slice(0, limit);
-    return items
-      .filter(hasCoordinates)
-      .map(event => ({...event,_distance:haversine(state.userLocation.lat,state.userLocation.lng,event.latitude,event.longitude)}))
+    const located = items.map(event => {
+      const coordinate = eventCoordinates(event);
+      if (!coordinate) return null;
+      const enriched = {...event, latitude:coordinate.latitude, longitude:coordinate.longitude, _coordinatePrecision:coordinate.precision};
+      if (state.userLocation) enriched._distance = haversine(state.userLocation.lat,state.userLocation.lng,coordinate.latitude,coordinate.longitude);
+      return enriched;
+    }).filter(Boolean);
+    if (!state.userLocation) return located.slice(0, limit);
+    return located
       .filter(event => event._distance <= maxDistance)
-      .sort((a,b) => a._distance-b._distance)
+      .sort((a,b) => a._distance-b._distance || recommendationScore(b)-recommendationScore(a))
       .slice(0,limit);
   }
 
@@ -3106,8 +3246,16 @@
       }
       const scrollButton = event.target.closest('[data-scroll-target]');
       if (scrollButton) {
+        event.preventDefault();
         const target = document.getElementById(scrollButton.dataset.scrollTarget);
-        target?.scrollBy({left:Number(scrollButton.dataset.dir)*target.clientWidth*.85,behavior:'smooth'});
+        if (target) {
+          const direction = Number(scrollButton.dataset.dir) || 1;
+          const stepRatio = Number(scrollButton.dataset.scrollStep) || .92;
+          const distance = Math.max(target.clientWidth * stepRatio, 180);
+          const maxLeft = Math.max(0, target.scrollWidth - target.clientWidth);
+          const nextLeft = Math.max(0, Math.min(maxLeft, target.scrollLeft + direction * distance));
+          target.scrollTo({left:nextLeft, behavior:'smooth'});
+        }
       }
       const favoriteButton = event.target.closest('[data-favorite],[data-detail-favorite]');
       if (favoriteButton) {
@@ -3291,11 +3439,12 @@
     readParams();
     bindEvents();
     try {
-      const [{payload, rawEvents, local, sourceUrl, enriched, curated}, venueRegistryResponse, northernMatrixResponse, taiwanMatrixResponse] = await Promise.all([
+      const [{payload, rawEvents, local, sourceUrl, enriched, curated}, venueRegistryResponse, northernMatrixResponse, taiwanMatrixResponse, geocodeCacheResponse] = await Promise.all([
         fetchEventPayload(),
         fetch('data/venues.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
         fetch('data/northern_venue_matrix.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
         fetch('data/taiwan_venue_matrix.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
+        fetch('data/geocode-cache.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {}).catch(() => ({})),
       ]);
       const stableVenues = Array.isArray(venueRegistryResponse?.venues) ? venueRegistryResponse.venues : [];
       const normalizeMatrixVenues = response => Array.isArray(response?.venues)
@@ -3310,6 +3459,7 @@
       // Existing stable and northern records remain first so their curated aliases and active status win.
       // The confirmed nationwide matrix then extends coverage to west, south, east and missing northern venues.
       state.venueRegistry = [...stableVenues, ...northernVenues, ...confirmedTaiwanVenues];
+      state.geocodeCache = geocodeCacheResponse && typeof geocodeCacheResponse === 'object' ? geocodeCacheResponse : {};
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.stats = payload.stats || {};
       state.registryBuild = payload.registryBuild || null;

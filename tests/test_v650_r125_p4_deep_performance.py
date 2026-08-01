@@ -19,12 +19,12 @@ class R125P4DeepPerformanceTests(unittest.TestCase):
         self.assertIn("transition-duration: 1.08s, 1.34s", p4)
         self.assertIn("animation: none !important", p4)
 
-    def test_noncritical_home_sections_hydrate_after_hero(self):
+    def test_editorial_sections_mount_before_deferred_heavy_sections(self):
         self.assertIn("function scheduleCalmHomeTask", APP)
-        self.assertIn("delayMs:1750", APP)
-        self.assertIn("delayMs:2050", APP)
-        self.assertIn("delayMs:2350", APP)
-        self.assertIn("scheduleHomeVenueGrid({delayMs:2650", APP)
+        featured_insert = APP.index("featuredRail.innerHTML = featured.length")
+        nearby_delay = APP.index("delayMs:800")
+        self.assertLess(featured_insert, nearby_delay)
+        self.assertIn("scheduleHomeVenueGrid({delayMs:1050", APP)
         self.assertIn("homeContentHydrated", APP)
 
     def test_home_media_is_decoded_serially_before_reveal(self):
@@ -62,11 +62,12 @@ class R125P4DeepPerformanceTests(unittest.TestCase):
         self.assertIn("state.backToTopState !== backToTopVisible", APP)
         self.assertIn("state.scrollClassActive", APP)
 
-    def test_release_and_cache_mark_p4(self):
-        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p4", HTML)
-        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p4", HTML)
+    def test_release_and_cache_mark_latest_integrated_repair(self):
+        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p5b", HTML)
+        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p5b", HTML)
         self.assertIn("Performance patch: P4", VERSION)
-        self.assertIn("STABLE2 P4", APP.splitlines()[0])
+        self.assertIn("Integrated repair: P5-B", VERSION)
+        self.assertIn("P5-B", APP.splitlines()[0])
 
 
 if __name__ == "__main__":

@@ -110,7 +110,7 @@ class R104CuratedFeedAndDeployTests(unittest.TestCase):
         for path in required:
             self.assertIn(f'"{path}"', BUILD)
         records = {venue['name']: venue for venue in MATRIX['venues']}
-        for name in ('NUZONE', '藝富文創展演館／杰克音樂', 'WESTAR', 'Legacy Taipei', 'THE WALL Live House'):
+        for name in ('NUZONE', "杰克音樂 Jack's studio", 'WESTAR', 'Legacy Taipei', 'THE WALL Live House'):
             self.assertIn(name, records)
             self.assertEqual(records[name]['venueType'], 'live_house')
             self.assertTrue(records[name]['confirmed'])

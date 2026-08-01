@@ -27,13 +27,13 @@ class R123SectionSmoothnessTests(unittest.TestCase):
         self.assertNotIn('body.is-scrolling .venue-tile {\n  transition: none', section)
 
     def test_venue_grid_prepares_during_calm_home_hydration(self):
-        self.assertIn("scheduleHomeVenueGrid({delayMs:2650", APP)
+        self.assertIn("scheduleHomeVenueGrid({delayMs:1050", APP)
         self.assertIn("prepareSectionMedia(grid, {limit:12, concurrency:1})", APP)
 
     def test_cache_bust_and_version_mark_latest_patch(self):
-        self.assertIn('assets/styles.css?v=6.5.0-r12-stable2-p4', HTML)
-        self.assertIn('assets/app.js?v=6.5.0-r12-stable2-p4', HTML)
-        self.assertIn('Performance patch: P4', VERSION)
+        self.assertIn('assets/styles.css?v=6.5.0-r12-stable2-p5b', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r12-stable2-p5b', HTML)
+        self.assertIn('Integrated repair: P5-B', VERSION)
 
 
 if __name__ == '__main__':
