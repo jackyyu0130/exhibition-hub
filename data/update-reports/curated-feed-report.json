@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "builtAt": "2026-07-31T20:42:23.654983+00:00",
-  "sourceEventCount": 2481,
-  "publicEventCount": 667,
-  "removedEventCount": 1814,
+  "builtAt": "2026-08-01T06:58:38.929193+00:00",
+  "sourceEventCount": 2519,
+  "publicEventCount": 691,
+  "removedEventCount": 1828,
   "keptReasons": {
-    "confirmed_P0": 529,
-    "confirmed_P1_visible_interest": 138
+    "confirmed_P0": 548,
+    "confirmed_P1_visible_interest": 143
   },
   "removedReasons": {
     "expired": 407,
     "generic_or_district_only_place": 1,
-    "library_series": 10,
+    "library_series": 9,
     "low_interest_permanent_exhibition": 12,
-    "low_priority_or_low_interest_venue": 255,
-    "missing_image": 108,
-    "missing_outbound_link": 473,
+    "low_priority_or_low_interest_venue": 263,
+    "missing_image": 110,
+    "missing_outbound_link": 471,
     "small_local_activity": 24,
-    "unmatched_or_low_interest": 524
+    "unmatched_or_low_interest": 531
   },
   "removedSamples": {
     "missing_outbound_link": [
@@ -120,12 +120,6 @@
         "sourceUrl": "https://www.ntcri.gov.tw/home/zh-tw/exhibition/7501958"
       },
       {
-        "id": "69ae835ceb43d512a487f51e",
-        "title": "仰懷宗範──開山祖師圓寂十週年紀念特展",
-        "locationName": "中台世界博物館木雕分館",
-        "sourceUrl": "https://www.ctwm.org.tw/news/%E6%B4%BB%E5%8B%95/%E4%BB%B0%E6%87%B7%E5%AE%97%E7%AF%84%E2%94%80%E2%94%80%E9%96%8B%E5%B1%B1%E7%A5%96%E5%B8%AB%E5%9C%93%E5%AF%82%E5%8D%81%E9%80%B1%E5%B9%B4%E7%B4%80%E5%BF%B5%E7%89%B9%E5%B1%95-%E5%B1%95%E8%A6%BD%E9%A0%90%E5%91%8A?utm_source=web&utm_medium=post"
-      },
-      {
         "id": "6a480c4326b32427d0604113",
         "title": "【展覽】邊界即質地：2026 高雄青年文學獎 圖像文學特展",
         "locationName": "高雄市立圖書館高雄文學館",
@@ -206,18 +200,6 @@
         "sourceUrl": "https://www.opentix.life/event/2058831955254812673"
       },
       {
-        "id": "6a108ccf26b3243414cccad0",
-        "title": "三缺一劇團 × 陳瑞祥《野犬》",
-        "locationName": "台北市｜場館資料整理中",
-        "sourceUrl": "https://www.opentix.life/event/2054821424769810433"
-      },
-      {
-        "id": "69e8ff3026b3242a48a9e5e1",
-        "title": "黃浩洸《藍鼻小丑冒險之旅》",
-        "locationName": "文山劇場",
-        "sourceUrl": "https://www.opentix.life/event/2043905165055705088"
-      },
-      {
         "id": "6a19f5f626b3243414cccd50",
         "title": "2026年夏季巧虎大型舞臺劇「銀河怪盜的祕密」",
         "locationName": "新竹縣政府文化局",
@@ -228,6 +210,18 @@
         "title": "2026臺北兒童藝術節：《小魚散步》",
         "locationName": "水源劇場",
         "sourceUrl": "https://www.opentix.life/event/2043955237061541888"
+      },
+      {
+        "id": "6a2b06f726b3243414ccd173",
+        "title": "AM創意2026《轟吧!全壘打》棒球音樂劇",
+        "locationName": "臺中市中山堂",
+        "sourceUrl": "https://hall.culture.taichung.gov.tw/HallFrontend/WatchShow/ShowInfoDetail?AADID=CCD0001284"
+      },
+      {
+        "id": "6a19c72d26b3243414ccccf4",
+        "title": "TICF26台北國際合唱音樂節【南投巡演】西班牙 SUHAR男聲合唱團",
+        "locationName": "南投縣政府文化局演藝廳",
+        "sourceUrl": "https://www.opentix.life/event/2056992094789902337"
       }
     ],
     "unmatched_or_low_interest": [
