@@ -9,17 +9,18 @@ VERSION = (ROOT / "VERSION.txt").read_text(encoding="utf-8")
 
 
 class R121PerformancePolishTests(unittest.TestCase):
-    def test_stylesheet_cache_is_bumped_without_reloading_unchanged_javascript(self):
-        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p1", HTML)
-        self.assertIn("assets/app.js?v=6.5.0-r12-stable2", HTML)
-        self.assertIn("Performance patch: P1", VERSION)
+    def test_p2_cache_bust_supersedes_p1(self):
+        self.assertIn("assets/styles.css?v=6.5.0-r12-stable2-p2", HTML)
+        self.assertIn("assets/app.js?v=6.5.0-r12-stable2-p2", HTML)
+        self.assertIn("Performance patch: P2", VERSION)
 
-    def test_desktop_hero_controls_are_inside_collage(self):
-        self.assertIn("left: clamp(18px, 2vw, 30px) !important;", CSS)
-        self.assertIn("right: clamp(18px, 2vw, 30px) !important;", CSS)
-        self.assertIn("width: 52px !important;", CSS)
+    def test_p1_filter_and_shadow_safeguards_remain(self):
+        self.assertIn(".hero-ticket-stage .hero-postcard", CSS)
+        self.assertIn(".exhibition-card .smart-image-foreground", CSS)
+        self.assertIn("filter: none !important;", CSS)
+        self.assertIn("contain: layout paint", CSS)
 
-    def test_lower_home_sections_use_content_visibility(self):
+    def test_large_home_sections_no_longer_materialize_in_one_frame(self):
         for selector in (
             ".home-view > .featured-block",
             ".home-view > .split-feature",
@@ -27,20 +28,20 @@ class R121PerformancePolishTests(unittest.TestCase):
             ".home-view > .venue-section",
         ):
             self.assertIn(selector, CSS)
-        self.assertGreaterEqual(CSS.count("content-visibility: auto;"), 5)
-        self.assertIn("contain-intrinsic-size: auto 860px;", CSS)
+        self.assertIn("content-visibility: visible !important;", CSS)
+        self.assertIn("contain-intrinsic-size: none !important;", CSS)
 
-    def test_reveal_motion_is_slower_and_compositor_friendly(self):
-        self.assertIn("transition-duration: .72s, .82s !important;", CSS)
-        self.assertIn("transform: translate3d(0,10px,0) !important;", CSS)
+    def test_reveal_motion_remains_compositor_friendly(self):
+        self.assertIn("transition-duration: 1.02s, 1.16s !important;", CSS)
+        self.assertIn("transform: translate3d(0, 16px, 0) !important;", CSS)
         self.assertIn("cubic-bezier(.16,1,.3,1)", CSS)
-        self.assertIn("animation: none !important;", CSS)
-
-    def test_live_card_and_hero_filters_are_disabled(self):
-        self.assertIn(".hero-ticket-stage .hero-postcard", CSS)
-        self.assertIn(".exhibition-card .smart-image-foreground", CSS)
         self.assertIn("filter: none !important;", CSS)
-        self.assertIn("contain: layout paint style;", CSS)
+        self.assertIn("clip-path: none !important;", CSS)
+
+    def test_scroll_state_disables_hover_repaint(self):
+        self.assertIn("body.is-scrolling .exhibition-card", CSS)
+        self.assertIn("body.is-scrolling .venue-tile:hover", CSS)
+        self.assertIn("transition: none !important;", CSS)
 
 
 if __name__ == "__main__":
