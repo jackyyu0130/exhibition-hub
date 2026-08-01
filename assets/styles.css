@@ -7374,3 +7374,92 @@ body {
   }
 }
 
+
+
+/* ======================================================================
+   Exhibition Hub V6.5.0-R12 STABLE2 — integrated interaction and motion
+   ====================================================================== */
+
+.hero-carousel-arrow {
+  transition: transform .22s ease, opacity .22s ease, background-color .22s ease, box-shadow .22s ease !important;
+  transform: translate3d(0,0,0);
+}
+.hero-carousel-arrow:hover:not(:disabled),
+.hero-carousel-arrow:focus-visible:not(:disabled) {
+  transform: translate3d(0,-2px,0) scale(1.04);
+  box-shadow: 0 10px 24px rgba(52,39,27,.16);
+}
+.hero-carousel-arrow:active:not(:disabled) { transform: translate3d(0,0,0) scale(.97); }
+.hero-carousel-arrow:disabled { opacity: .36; cursor: wait; }
+.hero-ticket-stage { touch-action: pan-y pinch-zoom; }
+.hero-ticket-card { -webkit-tap-highlight-color: transparent; }
+
+.card-price {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Explore cards now enter with the same restrained rhythm as the homepage.
+   The delay is capped, so loading dozens of records never creates a long queue. */
+.listing-view .exhibition-grid .motion-card {
+  opacity: 0;
+  transform: translate3d(0,16px,0) !important;
+  transition: opacity .42s ease, transform .5s cubic-bezier(.22,.72,.18,1) !important;
+  transition-delay: min(calc(var(--motion-index, 0) * 24ms), 168ms) !important;
+}
+.listing-view .exhibition-grid.is-in-view .motion-card,
+.listing-view .exhibition-grid .motion-card.is-in-view {
+  opacity: 1;
+  transform: translate3d(0,0,0) !important;
+}
+
+.venue-selector-backdrop {
+  opacity: 0;
+  backdrop-filter: none;
+  transition: opacity .3s ease;
+}
+body.venue-selector-open .venue-selector-backdrop { opacity: 1; }
+.venue-selector-drawer {
+  transition: transform .42s cubic-bezier(.22,.72,.18,1), box-shadow .32s ease !important;
+  will-change: transform;
+}
+.venue-selector-drawer.open { will-change: auto; }
+.venue-selector-region,
+.venue-selector-option {
+  transition: background-color .2s ease, border-color .2s ease, transform .2s ease, opacity .2s ease;
+}
+.venue-selector-option:hover:not(:disabled) { transform: translate3d(3px,0,0); }
+
+.home-view:not([hidden]),
+.listing-view:not([hidden]) {
+  animation: r12-view-enter .36s ease both;
+}
+@keyframes r12-view-enter {
+  from { opacity: .72; transform: translate3d(0,6px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+@media (max-width: 760px) {
+  .hero-ticket-stage { touch-action: pan-y pinch-zoom; }
+  .hero-ticket-stage .hero-ticket-slide.is-ticket-active .hero-ticket-card,
+  .hero-ticket-stage .hero-ticket-card.is-touch-preview {
+    transform: translateZ(0) scale(1.022) rotate(var(--hero-ticket-rotate, -1.6deg)) !important;
+  }
+  .venue-selector-drawer { transition-duration: .36s !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel-arrow,
+  .listing-view .exhibition-grid .motion-card,
+  .venue-selector-backdrop,
+  .venue-selector-drawer,
+  .venue-selector-region,
+  .venue-selector-option,
+  .home-view:not([hidden]),
+  .listing-view:not([hidden]) {
+    animation: none !important;
+    transition: none !important;
+  }
+}

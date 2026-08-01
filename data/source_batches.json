@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "updatedAt": "2026-08-01",
-  "description": "第 6 階段來源批次設定。區域覆蓋已依全台場館矩陣確認檔 V1.1 統一；保留既有批次 ID 以維持相容性。",
+  "description": "第 6 階段既有批次，加上 R12 第 7 階段 dry-run 與第 8 階段人工閘門基礎；正式資料發布預設不啟用。",
   "regionGroups": [
     {
       "id": "north",
@@ -105,6 +105,56 @@
       ],
       "organizerIds": [],
       "failurePolicy": "isolate_source"
+    },
+    {
+      "id": "stage-7-daily-dry-run",
+      "name": "第 7 階段每日官方來源 Dry Run",
+      "enabled": true,
+      "regionGroupIds": [
+        "north",
+        "central",
+        "south",
+        "east-islands"
+      ],
+      "sourceIds": [
+        "huashan-1914",
+        "songshan-cultural-park",
+        "pier-2",
+        "taipei-music-center",
+        "kaohsiung-music-center",
+        "tainan-art-museum",
+        "taipei-performing-arts-center"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 2,
+      "sourceTimeoutSeconds": 180,
+      "slowSourceThresholdMs": 90000
+    },
+    {
+      "id": "stage-8-gated-publish",
+      "name": "第 8 階段人工核准發布基礎",
+      "enabled": false,
+      "regionGroupIds": [
+        "north",
+        "central",
+        "south",
+        "east-islands"
+      ],
+      "sourceIds": [
+        "huashan-1914",
+        "songshan-cultural-park",
+        "pier-2",
+        "taipei-music-center",
+        "kaohsiung-music-center",
+        "tainan-art-museum",
+        "taipei-performing-arts-center"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 3,
+      "sourceTimeoutSeconds": 240,
+      "slowSourceThresholdMs": 120000
     }
   ],
   "defaults": {

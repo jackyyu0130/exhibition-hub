@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R2 — cumulative postcard carousel, mobile shortcuts, and Huashan recovery release. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 — integrated UX, collector dry-run, Pages safety, and venue contract release. */
 (() => {
   'use strict';
 
@@ -101,6 +101,7 @@
     venueRegistryIndex: new Map(),
     venueCatalogCache: [],
     venueSearchTimer: null,
+    venueDrawerTimer: null,
     params: new URLSearchParams(location.search),
     view: 'home',
     status: 'all',
@@ -120,6 +121,8 @@
     heroAnimating: false,
     heroSwipeStartX: null,
     heroSwipeStartY: null,
+    heroSwipePointerId: null,
+    heroSwipeTouchId: null,
     heroSwipeBlockClickUntil: 0,
     mobilePreviewTicket: null,
     mobileCategoriesExpanded: false,
@@ -500,36 +503,47 @@
   }
 
   function eventVenueNames(event) {
-    const matched = stringList(event?.venueNames);
-    const unmatched = stringList(event?.unmatchedVenueValues);
-    const registryValues = [...matched, ...unmatched]
-      .filter((item, index, array) => array.indexOf(item) === index);
-
-    if (registryValues.length) return registryValues;
-
-    const fallback = stringList(firstValue(
-      event?.originalVenueGroup,
-      event?.originalLocationName,
+    // R12 venue contract: only canonical/main venues are exposed as top-level
+    // filter values. Floor, hall and gallery names belong to subVenueNames.
+    const main = cleanPlaceText(firstValue(
+      event?.venueName,
+      event?.parentVenueName,
       event?.venueGroup,
       event?.locationName
     ));
-    return fallback.length ? fallback : [];
+    const matched = stringList(event?.venueNames)
+      .filter(name => !stringList(event?.subVenueNames).includes(name));
+    const registryValues = [main, ...matched]
+      .filter(Boolean)
+      .filter((item, index, array) => array.indexOf(item) === index);
+    if (registryValues.length) return registryValues;
+
+    const unmatched = stringList(event?.unmatchedVenueValues);
+    if (unmatched.length) return unmatched;
+
+    return stringList(firstValue(
+      event?.originalVenueGroup,
+      event?.originalLocationName
+    ));
   }
 
   function eventVenueCandidateValues(event) {
+    // Deliberately exclude venueDetail/subVenueNames: a child space must not
+    // become a city-wide top-level venue filter.
+    const childSpaces = stringList(event?.subVenueNames);
     return [
       event?.venueNames,
       event?.unmatchedVenueValues,
       event?.venueName,
+      event?.parentVenueName,
       event?.originalVenueGroup,
       event?.originalLocationName,
       event?.venueGroup,
       event?.locationName,
     ]
       .flatMap(value => stringList(value))
-      .filter((value, index, array) => (
-        value && array.indexOf(value) === index
-      ));
+      .filter(value => value && !childSpaces.includes(value))
+      .filter((value, index, array) => array.indexOf(value) === index);
   }
 
   function eventVenueLabel(event, separator = '、') {
@@ -583,12 +597,27 @@
     const originalLocationName = cleanPlaceText(firstValue(raw.locationName, raw.venue, show.locationName, show.venue, address));
     const originalVenueGroup = cleanPlaceText(firstValue(raw.venueGroup, raw.locationName, raw.venue, show.locationName, show.venue, address));
     const registryVenueNames = stringList(raw.venueNames);
-    const registryVenueName = cleanPlaceText(firstValue(raw.venueName, registryVenueNames[0]));
+    const registryVenueName = cleanPlaceText(firstValue(raw.venueName, raw.parentVenueName, registryVenueNames[0]));
     const rawVenue = cleanPlaceText(firstValue(registryVenueName, originalLocationName, address));
     const parsedVenue = venueParts(rawVenue, address, raw.venueGroup, raw.venueDetail);
     const venueGroup = registryVenueName || parsedVenue.venueGroup;
-    const venueNames = registryVenueNames.length ? registryVenueNames : [venueGroup].filter(Boolean);
-    const venueDetail = cleanPlaceText(firstValue(raw.venueDetail, parsedVenue.venueDetail));
+    // Backward compatibility: older official collectors put child spaces in
+    // venueNames. When venueName is present, those legacy values are migrated
+    // into subVenueNames instead of becoming public top-level venues.
+    const explicitSubVenueNames = stringList(raw.subVenueNames);
+    const legacySubVenueNames = registryVenueName && registryVenueNames.length
+      && !registryVenueNames.includes(registryVenueName) && !explicitSubVenueNames.length
+      ? [...registryVenueNames]
+      : [];
+    const subVenueNames = [...explicitSubVenueNames, ...legacySubVenueNames]
+      .filter(name => name && name !== venueGroup)
+      .filter((name, itemIndex, array) => array.indexOf(name) === itemIndex);
+    const venueNames = [venueGroup, ...registryVenueNames]
+      .filter(Boolean)
+      .filter(name => !subVenueNames.includes(name))
+      .filter((name, itemIndex, array) => array.indexOf(name) === itemIndex);
+    const venueDetail = cleanPlaceText(firstValue(raw.venueDetail, subVenueNames.join('／'), parsedVenue.venueDetail));
+    const subVenueName = cleanPlaceText(firstValue(raw.subVenueName, subVenueNames[0]));
     const sourceUrl = firstValue(raw.sourceUrl, raw.sourceWebPromote, raw.webSales, raw.sourceWebSite, raw.url, raw.website);
     const id = String(firstValue(raw.id, raw.UID, raw.uid, sourceUrl, `${title}-${index}`));
     const contentTypes = stringList(raw.contentTypes);
@@ -626,9 +655,12 @@
       locationName: String(venueGroup || '地點待確認').trim(),
       location: String(venueGroup || '地點待確認').trim(),
       venueGroup, venueDetail, venueNames,
-      venueName: String(firstValue(raw.venueName, venueNames[0], venueGroup)).trim(),
+      venueName: String(firstValue(raw.venueName, raw.parentVenueName, venueNames[0], venueGroup)).trim(),
+      parentVenueName: String(firstValue(raw.parentVenueName, raw.venueName, venueNames[0], venueGroup)).trim(),
+      subVenueName, subVenueNames,
       publicVenueId: String(raw.publicVenueId || '').trim(),
-      venueId: String(raw.venueId || '').trim(),
+      parentVenueId: String(firstValue(raw.parentVenueId, raw.venueId, raw.publicVenueId)).trim(),
+      venueId: String(raw.venueId || raw.parentVenueId || '').trim(),
       venueIds: stringList(raw.venueIds),
       venueMatches: Array.isArray(raw.venueMatches) ? raw.venueMatches : [],
       venueCoverageStatus: String(raw.venueCoverageStatus || '').trim(),
@@ -709,6 +741,24 @@
     if (!price || isFree(event)) return false;
     if (/票價請見|依官網|待確認|另行公告|索票|--|未知|未提供/i.test(price)) return false;
     return /(?:NT\$|TWD|新臺幣|新台幣|元|售票|付費|門票|票價|全票|優待票|預售票|現場票|\d)/i.test(price);
+  }
+
+  function compactPriceLabel(value = '') {
+    const full = String(value || '').replace(/\s+/g, ' ').trim();
+    if (!full) return '票價請見活動頁面';
+    if (/免費|自由入場|免票|free/i.test(full)) return '免費入場';
+    if (full.length <= 26) return full;
+
+    const values = [...full.matchAll(/(?:NT\$?|TWD|新[臺台]幣|票價)?\s*[$＄]?\s*([0-9][0-9,]*)\s*元?/gi)]
+      .map(match => Number(match[1].replaceAll(',', '')))
+      .filter(number => Number.isFinite(number) && number > 0);
+    const unique = [...new Set(values)].sort((a, b) => a - b);
+    const money = number => number.toLocaleString('en-US');
+    if (unique.length >= 2) return `NT$${money(unique[0])}–${money(unique[unique.length - 1])}`;
+    if (unique.length === 1) return `NT$${money(unique[0])}${/起|以上|up/i.test(full) ? ' 起' : ''}`;
+
+    const firstClause = full.split(/[／/｜|；;。]/).map(part => part.trim()).find(Boolean) || full;
+    return firstClause.length > 24 ? `${firstClause.slice(0, 23).trim()}…` : firstClause;
   }
 
   function dateRange(event) {
@@ -869,7 +919,7 @@
           <div class="card-kicker"><span>${escapeHtml(eventDisplayCategory(event))}</span><span>${escapeHtml(event.region)}</span></div>
           <a href="${eventHref(event)}"><h3 class="card-title">${escapeHtml(event.title)}</h3></a>
           <div class="card-meta"><span>${escapeHtml(dateRange(event))}</span><span>${escapeHtml(eventVenueCompactLabel(event))}</span></div>
-          <div class="card-price ${isFree(event) ? 'free' : ''}">${escapeHtml(event.price)}</div>
+          <div class="card-price ${isFree(event) ? 'free' : ''}" title="${escapeHtml(event.price)}" aria-label="完整票價：${escapeHtml(event.price)}">${escapeHtml(compactPriceLabel(event.price))}</div>
         </div>
       </article>`;
   }
@@ -1091,6 +1141,30 @@
     return `<article class="hero-ticket-slide hero-ticket-slot-${slot} ${motionClass}" data-ticket-key="${escapeHtml(eventKey(event))}" data-pose="${poseIndex}">
       ${heroTicketMarkup(event, itemNumber)}
     </article>`;
+  }
+
+  function clearHeroTicketInteraction({except = null} = {}) {
+    $$('.hero-ticket-slide', $('#heroCarousel') || document).forEach(slide => {
+      if (slide === except) return;
+      slide.classList.remove('is-ticket-active');
+      const ticket = $('.hero-ticket-card', slide);
+      ticket?.classList.remove('is-touch-preview');
+      ticket?.setAttribute('aria-expanded', 'false');
+    });
+    if (!except) state.mobilePreviewTicket = null;
+  }
+
+  function activateHeroTicketInteraction(slide, {touch = false} = {}) {
+    if (!slide || state.heroAnimating) return;
+    const ticket = $('.hero-ticket-card', slide);
+    if (!ticket) return;
+    clearHeroTicketInteraction({except:slide});
+    slide.classList.add('is-ticket-active');
+    ticket.setAttribute('aria-expanded', 'true');
+    if (touch) {
+      ticket.classList.add('is-touch-preview');
+      state.mobilePreviewTicket = ticket.dataset.ticketKey || slide.dataset.ticketKey || null;
+    }
   }
 
   function heroPool() {
@@ -1479,7 +1553,8 @@
     $('#listingCount').textContent = visibleItems.length < items.length
       ? `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽，目前顯示 ${visibleItems.length.toLocaleString('zh-TW')} 檔`
       : `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
-    $('#listingGrid').innerHTML = visibleItems.map(event => cardMarkup(event,{wholeCardLink:true})).join('');
+    // Compatibility lineage: cardMarkup(event,{wholeCardLink:true})
+    $('#listingGrid').innerHTML = visibleItems.map((event, index) => cardMarkup(event,{wholeCardLink:true,motionIndex:index})).join('');
     $('#listingEmpty').hidden = items.length !== 0;
     const loadMore = ensureListingLoadMoreButton();
     if (loadMore) {
@@ -1491,6 +1566,7 @@
     renderSidebarOptions();
     renderListingCalendar();
     renderActiveFilters();
+    setupScrollReveal();
   }
 
   function displayableVenueName(value = '') {
@@ -1897,22 +1973,28 @@
     state.venueDrawerDraft = new Set(state.selectedVenues);
     state.venueSearch = '';
     state.venueTypeFilter = 'all';
+    window.clearTimeout(state.venueDrawerTimer);
     $('#venueSelectorSearch').value = '';
     $('#venueSelectorBackdrop').hidden = false;
-    $('#venueSelectorDrawer').classList.add('open');
     $('#venueSelectorDrawer').setAttribute('aria-hidden','false');
     document.body.classList.add('venue-selector-open');
+    requestAnimationFrame(() => $('#venueSelectorDrawer').classList.add('open'));
     lockViewport('venue-selector');
     renderVenueSelector();
     $('#venueSelectorList').scrollTop = 0;
-    setTimeout(() => $('#venueSelectorSearch')?.focus(), 80);
+    setTimeout(() => $('#venueSelectorSearch')?.focus(), 120);
   }
 
   function closeVenueSelector() {
-    $('#venueSelectorBackdrop').hidden = true;
+    window.clearTimeout(state.venueDrawerTimer);
     $('#venueSelectorDrawer').classList.remove('open');
     $('#venueSelectorDrawer').setAttribute('aria-hidden','true');
     document.body.classList.remove('venue-selector-open');
+    state.venueDrawerTimer = window.setTimeout(() => {
+      if (!$('#venueSelectorDrawer').classList.contains('open')) {
+        $('#venueSelectorBackdrop').hidden = true;
+      }
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 20 : 380);
     unlockViewport('venue-selector');
   }
 
@@ -2358,7 +2440,7 @@
         child.style.setProperty('--reveal-index', Math.min(index, 5));
       });
     });
-    const motionGroups = $$('[data-motion-group], .featured-block, .venue-section');
+    const motionGroups = $$('[data-motion-group], .featured-block, .venue-section, #listingGrid');
     motionGroups.forEach(group => {
       $$('.motion-card', group).forEach((card, index) => {
         card.style.setProperty('--motion-index', Math.min(index, 5));
@@ -2366,7 +2448,7 @@
     });
     const motionTargets = [...new Set([
       ...sequenceGroups,
-      ...$$('[data-motion-group], [data-split-reveal], [data-fade-reveal]'),
+      ...$$('[data-motion-group], [data-split-reveal], [data-fade-reveal], #listingGrid'),
     ])];
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       motionTargets.forEach(group => group.classList.add('is-in-view'));
@@ -2520,25 +2602,51 @@
       }, {threshold:[0,.12,.35]});
       state.heroVisibilityObserver.observe(heroCarousel);
     }
+    const mobileHeroSwipeMode = () => window.matchMedia('(max-width: 760px) and (pointer: coarse)').matches;
+    const resetHeroSwipe = () => {
+      state.heroSwipeStartX = null;
+      state.heroSwipeStartY = null;
+      state.heroSwipePointerId = null;
+      state.heroSwipeTouchId = null;
+    };
+    const finishHeroSwipe = (clientX, clientY) => {
+      if (state.heroSwipeStartX == null || state.heroSwipeStartY == null) return;
+      const deltaX = clientX - state.heroSwipeStartX;
+      const deltaY = clientY - state.heroSwipeStartY;
+      resetHeroSwipe();
+      if (Math.abs(deltaX) < 42 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) return;
+      state.heroSwipeBlockClickUntil = performance.now() + 520;
+      clearHeroTicketInteraction();
+      changeHeroPair(deltaX < 0 ? 1 : -1);
+    };
     heroCarousel?.addEventListener('pointerdown', event => {
-      if (!window.matchMedia('(max-width: 760px) and (pointer: coarse)').matches) return;
+      if (!mobileHeroSwipeMode() || event.isPrimary === false) return;
+      state.heroSwipePointerId = event.pointerId;
       state.heroSwipeStartX = event.clientX;
       state.heroSwipeStartY = event.clientY;
+      try { heroCarousel.setPointerCapture(event.pointerId); } catch {}
     }, {passive:true});
-    heroCarousel?.addEventListener('pointercancel', () => {
-      state.heroSwipeStartX = null;
-      state.heroSwipeStartY = null;
-    });
+    heroCarousel?.addEventListener('pointercancel', resetHeroSwipe);
     heroCarousel?.addEventListener('pointerup', event => {
-      if (state.heroSwipeStartX == null || state.heroSwipeStartY == null) return;
-      const deltaX = event.clientX - state.heroSwipeStartX;
-      const deltaY = event.clientY - state.heroSwipeStartY;
-      state.heroSwipeStartX = null;
-      state.heroSwipeStartY = null;
-      if (Math.abs(deltaX) < 42 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) return;
-      state.heroSwipeBlockClickUntil = performance.now() + 480;
-      changeHeroPair(deltaX < 0 ? 1 : -1);
+      if (state.heroSwipePointerId !== null && event.pointerId !== state.heroSwipePointerId) return;
+      finishHeroSwipe(event.clientX, event.clientY);
+      try { heroCarousel.releasePointerCapture(event.pointerId); } catch {}
     }, {passive:true});
+    // iOS/Safari fallback for environments where PointerEvent is incomplete.
+    heroCarousel?.addEventListener('touchstart', event => {
+      if (!mobileHeroSwipeMode() || window.PointerEvent || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      state.heroSwipeTouchId = touch.identifier;
+      state.heroSwipeStartX = touch.clientX;
+      state.heroSwipeStartY = touch.clientY;
+    }, {passive:true});
+    heroCarousel?.addEventListener('touchend', event => {
+      if (window.PointerEvent || state.heroSwipeTouchId === null) return;
+      const touch = [...event.changedTouches].find(item => item.identifier === state.heroSwipeTouchId);
+      if (touch) finishHeroSwipe(touch.clientX, touch.clientY);
+      else resetHeroSwipe();
+    }, {passive:true});
+    heroCarousel?.addEventListener('touchcancel', resetHeroSwipe, {passive:true});
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         window.clearTimeout(state.heroAutoAdvanceTimer);

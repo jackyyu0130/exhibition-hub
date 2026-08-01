@@ -90,6 +90,9 @@ jobs:
             data/exhibitions.curated.json \
             --report /tmp/pretest-image-quality-audit.json
 
+      - name: Check JavaScript syntax
+        run: node --check assets/app.js
+
       - name: Run project tests before production data update
         run: python -m unittest discover -s tests -v
 
