@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 P2 — route responsiveness, cached venue matching, and calm motion. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 P3 — smooth nearby and venue reveals with low-jank scrolling. */
 (() => {
   'use strict';
 
@@ -944,7 +944,7 @@
   }
 
   function nearbyMiniMarkup(event, distance = null) {
-    return `<a class="nearby-mini-card" href="${eventHref(event)}">
+    return `<a class="nearby-mini-card motion-card" href="${eventHref(event)}">
       ${imageMarkup(event, 'nearby-mini-media')}
       <div class="nearby-mini-body"><small>${distance === null ? escapeHtml(event.region) : `${distance.toFixed(1)} KM`}</small><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(eventVenueCompactLabel(event))}</p></div>
     </a>`;
@@ -1471,7 +1471,7 @@
       state.homeVenueObserver?.disconnect();
       state.homeVenueObserver = null;
       run();
-    }, {rootMargin:'650px 0px', threshold:0});
+    }, {rootMargin:'1200px 0px', threshold:0});
     state.homeVenueObserver.observe(section);
   }
 
@@ -2566,8 +2566,10 @@
     });
     const motionGroups = $$('[data-motion-group], .featured-block, .venue-section, #listingGrid');
     motionGroups.forEach(group => {
+      const sectionMode = group.dataset.sectionMotion || '';
+      const cap = sectionMode === 'nearby' ? 3 : sectionMode === 'venue' ? 7 : 7;
       $$('.motion-card', group).forEach((card, index) => {
-        card.style.setProperty('--motion-index', Math.min(index, 7));
+        card.style.setProperty('--motion-index', Math.min(index, cap));
       });
     });
     const motionTargets = [...new Set([
@@ -2585,7 +2587,7 @@
           state.revealObserver.unobserve(entry.target);
           queueScrollReveal(entry.target);
         });
-      }, {threshold:.14, rootMargin:'0px 0px -8% 0px'});
+      }, {threshold:.08, rootMargin:'0px 0px -3% 0px'});
     }
     motionTargets.forEach(group => {
       if (!group.classList.contains('is-in-view')) state.revealObserver.observe(group);
@@ -2618,11 +2620,11 @@
     };
     window.addEventListener('scroll', () => {
       if (!scrollControlFrame) scrollControlFrame = requestAnimationFrame(updateScrollControls);
-      document.body.classList.add('is-scrolling');
+      if (!document.body.classList.contains('is-scrolling')) document.body.classList.add('is-scrolling');
       window.clearTimeout(state.scrollIdleTimer);
       state.scrollIdleTimer = window.setTimeout(() => {
         document.body.classList.remove('is-scrolling');
-      }, 150);
+      }, 120);
     }, {passive:true});
     updateScrollControls();
     $('#backToTopButton')?.addEventListener('click', () => window.scrollTo({top:0,left:0,behavior:'smooth'}));

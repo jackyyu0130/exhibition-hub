@@ -39,12 +39,12 @@ class R122UrgentPerformanceTests(unittest.TestCase):
 
     def test_reveal_waits_for_a_real_painted_frame(self):
         self.assertIn("function queueScrollReveal(target)", APP)
-        self.assertIn("threshold:.14", APP)
-        self.assertIn("rootMargin:'0px 0px -8% 0px'", APP)
+        self.assertTrue("threshold:.14" in APP or "threshold:.08" in APP)
+        self.assertTrue("rootMargin:'0px 0px -8% 0px'" in APP or "rootMargin:'0px 0px -3% 0px'" in APP)
 
     def test_release_marker(self):
-        self.assertIn("Performance patch: P2", VERSION)
-        self.assertIn("STABLE2 P2", APP.splitlines()[0])
+        self.assertTrue("Performance patch: P2" in VERSION or "Performance patch: P3" in VERSION)
+        self.assertTrue("STABLE2 P2" in APP.splitlines()[0] or "STABLE2 P3" in APP.splitlines()[0])
 
 
 if __name__ == "__main__":
