@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 P3 — smooth nearby and venue reveals with low-jank scrolling. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 P4 — staged hero hydration, lazy map assets, and predecoded home media. */
 (() => {
   'use strict';
 
@@ -105,6 +105,7 @@
     eventVenueNameCache: new WeakMap(),
     eventRegionCache: new WeakMap(),
     venueCatalogCache: [],
+    homeVenueEventIndex: new Map(),
     venueSearchTimer: null,
     venueDrawerTimer: null,
     params: new URLSearchParams(location.search),
@@ -138,7 +139,9 @@
     heroTransitionTimer: null,
     heroAutoAdvanceTimer: null,
     heroIntroTimer: null,
+    heroIntroSequenceToken: 0,
     heroHasEntered: false,
+    heroIntroComplete: false,
     heroPaused: false,
     heroInView: true,
     heroVisibilityObserver: null,
@@ -148,10 +151,19 @@
     lastHomeFilterKey: '',
     revealObserver: null,
     revealFrameTokens: new WeakMap(),
+    sectionMediaPromises: new WeakMap(),
     homeVenueObserver: null,
     homeVenueRenderPending: false,
+    homeHydrationEpoch: 0,
+    homeHydrationTimers: [],
+    homeContentHydrated: false,
+    leafletAssetsPromise: null,
+    nearbyMapRenderToken: 0,
     routePending: false,
     scrollIdleTimer: null,
+    scrollClassActive: false,
+    headerScrolledState: null,
+    backToTopState: null,
     lastRenderedView: null,
     locationRequested: false,
     locationRequestPending: false,
@@ -159,6 +171,62 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+  const nextFrame = () => new Promise(resolve => requestAnimationFrame(() => resolve()));
+  const delay = milliseconds => new Promise(resolve => window.setTimeout(resolve, milliseconds));
+
+  function cancelHomeHydrationTasks() {
+    state.homeHydrationEpoch += 1;
+    state.homeHydrationTimers.forEach(timer => window.clearTimeout(timer));
+    state.homeHydrationTimers = [];
+  }
+
+  function scheduleCalmHomeTask(callback, {delayMs = 0, timeoutMs = 1600} = {}) {
+    const epoch = state.homeHydrationEpoch;
+    const scheduledAt = performance.now();
+    const run = () => {
+      if (epoch !== state.homeHydrationEpoch || state.view !== 'home') return;
+      const heroBusy = $('#heroTicketStack')?.classList.contains('is-intro-playing');
+      const scrollBusy = document.body.classList.contains('is-scrolling');
+      if ((heroBusy || scrollBusy) && performance.now() - scheduledAt < timeoutMs) {
+        const retry = window.setTimeout(run, 120);
+        state.homeHydrationTimers.push(retry);
+        return;
+      }
+      const execute = () => {
+        if (epoch !== state.homeHydrationEpoch || state.view !== 'home') return;
+        callback();
+      };
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(execute, {timeout: 320});
+      } else {
+        window.setTimeout(execute, 0);
+      }
+    };
+    const timer = window.setTimeout(run, delayMs);
+    state.homeHydrationTimers.push(timer);
+    return timer;
+  }
+
+  function waitForHeroTypography(maxWaitMs = 420) {
+    const fontReady = document.fonts?.ready || Promise.resolve();
+    return Promise.race([fontReady.catch(() => undefined), delay(maxWaitMs)]);
+  }
+
+  function waitForScrollIdle(maxWaitMs = 900) {
+    if (!document.body.classList.contains('is-scrolling')) return Promise.resolve();
+    return new Promise(resolve => {
+      const started = performance.now();
+      const poll = () => {
+        if (!document.body.classList.contains('is-scrolling') || performance.now() - started >= maxWaitMs) {
+          resolve();
+          return;
+        }
+        window.setTimeout(poll, 90);
+      };
+      poll();
+    });
+  }
 
   function lockViewport(owner) {
     if (state.viewportLockOwner === owner) return;
@@ -859,6 +927,7 @@
   }
 
   window.__exhibitionImageFallback = image => {
+    image?.closest('.smart-image-frame, .nearby-mini-card, .exhibition-card')?.classList.add('is-media-ready');
     try {
       const candidates = JSON.parse(image.dataset.images || '[]');
       const nextIndex = Number(image.dataset.imageIndex || 0) + 1;
@@ -878,10 +947,62 @@
     (image.closest('.smart-image-frame') || image).replaceWith(placeholder);
   };
 
+  function markDecodedMediaReady(image) {
+    if (!image?.isConnected) return;
+    image.closest('.smart-image-frame')?.classList.add('is-media-ready');
+    image.closest('.nearby-mini-card, .venue-tile, .exhibition-card')?.classList.add('is-media-ready');
+  }
+
   window.__validateExhibitionImage = image => {
     if (!image?.isConnected || !image.complete) return;
-    if (image.naturalWidth < 120 || image.naturalHeight < 80) window.__exhibitionImageFallback(image);
+    if (image.naturalWidth < 120 || image.naturalHeight < 80) {
+      window.__exhibitionImageFallback(image);
+      return;
+    }
+    markDecodedMediaReady(image);
   };
+
+  async function decodeImageForSection(image, timeoutMs = 1500) {
+    if (!image?.isConnected) return;
+    image.loading = 'eager';
+    image.fetchPriority = 'low';
+    try {
+      await Promise.race([
+        typeof image.decode === 'function' ? image.decode() : Promise.resolve(),
+        delay(timeoutMs),
+      ]);
+    } catch {}
+    markDecodedMediaReady(image);
+  }
+
+  function prepareSectionMedia(container, {limit = 12, concurrency = 1} = {}) {
+    if (!container) return Promise.resolve();
+    const existing = state.sectionMediaPromises.get(container);
+    if (existing) return existing;
+    const images = $$('img', container).slice(0, limit);
+    if (!images.length) {
+      container.dataset.mediaReady = 'true';
+      return Promise.resolve();
+    }
+    container.dataset.mediaPreparing = 'true';
+    let cursor = 0;
+    const worker = async () => {
+      while (cursor < images.length) {
+        const image = images[cursor++];
+        await waitForScrollIdle(700);
+        await decodeImageForSection(image);
+        await nextFrame();
+      }
+    };
+    const promise = Promise.all(
+      Array.from({length:Math.max(1, Math.min(concurrency, images.length))}, worker),
+    ).finally(() => {
+      container.dataset.mediaPreparing = 'false';
+      container.dataset.mediaReady = 'true';
+    });
+    state.sectionMediaPromises.set(container, promise);
+    return promise;
+  }
 
   function isRecentlyAdded(event, days = 7) {
     const seen = parseDate(event.firstSeenAt);
@@ -1215,12 +1336,43 @@
     }, 15000);
   }
 
+  function scheduleHeroIntro(stack) {
+    const token = ++state.heroIntroSequenceToken;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    state.heroIntroComplete = false;
+    stack.classList.add('is-intro-pending');
+    stack.classList.remove('is-intro-playing', 'is-intro-complete', 'is-entering');
+
+    const begin = async () => {
+      if (!reducedMotion) await waitForHeroTypography();
+      if (token !== state.heroIntroSequenceToken || !stack.isConnected) return;
+      await nextFrame();
+      await nextFrame();
+      if (token !== state.heroIntroSequenceToken || !stack.isConnected) return;
+      stack.classList.remove('is-intro-pending');
+      if (reducedMotion) {
+        stack.classList.add('is-intro-complete');
+        state.heroIntroComplete = true;
+        return;
+      }
+      stack.classList.add('is-intro-playing');
+      state.heroIntroTimer = window.setTimeout(() => {
+        if (token !== state.heroIntroSequenceToken || !stack.isConnected) return;
+        stack.classList.remove('is-intro-playing');
+        stack.classList.add('is-intro-complete');
+        state.heroIntroComplete = true;
+      }, 1780);
+    };
+    begin();
+  }
+
   function renderHeroTickets({settle = false} = {}) {
     const stack = $('#heroTicketStack');
     if (!stack) return;
     window.clearTimeout(state.heroTransitionTimer);
     window.clearTimeout(state.heroAutoAdvanceTimer);
     window.clearTimeout(state.heroIntroTimer);
+    state.heroIntroSequenceToken += 1;
     const pool = heroPool();
     if (!pool.length) return;
     const firstIndex = heroIndex();
@@ -1231,8 +1383,8 @@
     stack.className = settle
       ? 'hero-ticket-stack is-resetting'
       : isIntro
-        ? 'hero-ticket-stack is-entering'
-        : 'hero-ticket-stack';
+        ? 'hero-ticket-stack is-intro-pending'
+        : 'hero-ticket-stack is-intro-complete';
     stack.innerHTML = [
       heroTicketSlideMarkup(pool[firstIndex], 1, firstIndex + 1, '', heroPoseIndex(firstIndex)),
       heroTicketSlideMarkup(pool[secondIndex], 2, secondIndex + 1, '', heroPoseIndex(secondIndex)),
@@ -1242,9 +1394,7 @@
       requestAnimationFrame(() => requestAnimationFrame(() => stack.classList.remove('is-resetting')));
     } else if (isIntro) {
       state.heroHasEntered = true;
-      state.heroIntroTimer = window.setTimeout(() => {
-        stack.classList.remove('is-entering');
-      }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 40 : 3400);
+      scheduleHeroIntro(stack);
     }
     updateHeroStatus();
     scheduleHeroAutoAdvance();
@@ -1258,6 +1408,7 @@
     window.clearTimeout(state.heroAutoAdvanceTimer);
     window.clearTimeout(state.heroTransitionTimer);
     window.clearTimeout(state.heroIntroTimer);
+    state.heroIntroSequenceToken += 1;
     state.heroAnimating = true;
     clearHeroTicketInteraction();
     $('#heroNextButton')?.setAttribute('disabled', '');
@@ -1302,7 +1453,7 @@
       return;
     }
 
-    stack.classList.remove('is-entering', 'is-resetting', 'is-moving-next', 'is-moving-previous');
+    stack.classList.remove('is-entering', 'is-intro-pending', 'is-intro-playing', 'is-intro-complete', 'is-resetting', 'is-moving-next', 'is-moving-previous');
     try {
       stack.getAnimations({subtree:true}).forEach(animation => animation.cancel());
     } catch {}
@@ -1408,6 +1559,7 @@
     const upcoming = state.events.filter(isUpcoming).sort((a,b) => (parseDate(a.startDate)?.getTime() || Infinity) - (parseDate(b.startDate)?.getTime() || Infinity)).slice(0, 4);
     const ending = state.events.filter(event => isEnding(event, 30)).sort((a,b) => (parseDate(a.endDate)?.getTime() || Infinity) - (parseDate(b.endDate)?.getTime() || Infinity)).slice(0, 4);
 
+    cancelHomeHydrationTasks();
     $('#heroEventCount').textContent = state.events.length.toLocaleString('zh-TW');
     $('#heroVenueCount').textContent = sourceVenueCount(state.events).toLocaleString('zh-TW');
     const updated = parseDate(state.updatedAt);
@@ -1425,13 +1577,57 @@
 
     renderCategoryStrip();
     renderHomeFilterResults(homeFilterItems);
-    $('#featuredRail').innerHTML = featured.length ? featured.map((event,index) => cardMarkup(event,{curated:index < 3,motionIndex:index})).join('') : emptyInline('目前沒有符合篩選的展覽');
-    $('#upcomingList').innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
-    $('#endingList').innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
-    scheduleHomeVenueGrid();
-    renderHomeNearby();
     syncHomeFilters();
     setupScrollReveal();
+
+    const featuredRail = $('#featuredRail');
+    const upcomingList = $('#upcomingList');
+    const endingList = $('#endingList');
+    const nearbyList = $('#nearbyHomeList');
+    const venueGrid = $('#venueGrid');
+
+    if (state.homeContentHydrated && featuredRail?.querySelector('.exhibition-card')) {
+      renderHomeNearby();
+      scheduleHomeVenueGrid({delayMs:180});
+      return;
+    }
+
+    featuredRail?.setAttribute('aria-busy', 'true');
+    upcomingList?.setAttribute('aria-busy', 'true');
+    endingList?.setAttribute('aria-busy', 'true');
+    nearbyList?.setAttribute('aria-busy', 'true');
+    if (featuredRail && !featuredRail.children.length) featuredRail.innerHTML = '<div class="home-section-placeholder" aria-hidden="true"></div>';
+    if (upcomingList && !upcomingList.children.length) upcomingList.innerHTML = '<div class="home-list-placeholder" aria-hidden="true"></div>';
+    if (endingList && !endingList.children.length) endingList.innerHTML = '<div class="home-list-placeholder" aria-hidden="true"></div>';
+    if (nearbyList && !nearbyList.children.length) nearbyList.innerHTML = '<div class="home-nearby-placeholder" aria-hidden="true"></div>';
+    if (venueGrid && !venueGrid.children.length) venueGrid.innerHTML = '<div class="venue-grid-loading" role="status"><span></span><p>場館資料準備中</p></div>';
+
+    scheduleCalmHomeTask(() => {
+      featuredRail.innerHTML = featured.length
+        ? featured.map((event,index) => cardMarkup(event,{curated:index < 3,motionIndex:index})).join('')
+        : emptyInline('目前沒有符合篩選的展覽');
+      featuredRail.removeAttribute('aria-busy');
+      prepareSectionMedia(featuredRail, {limit:9, concurrency:1});
+      setupScrollReveal();
+    }, {delayMs:1750, timeoutMs:3200});
+
+    scheduleCalmHomeTask(() => {
+      upcomingList.innerHTML = upcoming.length ? upcoming.map(compactMarkup).join('') : emptyInline('目前沒有即將開展的活動');
+      endingList.innerHTML = ending.length ? ending.map(compactMarkup).join('') : emptyInline('目前沒有即將結束的活動');
+      upcomingList.removeAttribute('aria-busy');
+      endingList.removeAttribute('aria-busy');
+      setupScrollReveal();
+    }, {delayMs:2050, timeoutMs:3500});
+
+    scheduleCalmHomeTask(() => {
+      renderHomeNearby();
+      nearbyList.removeAttribute('aria-busy');
+      setupScrollReveal();
+    }, {delayMs:2350, timeoutMs:3900});
+
+    scheduleHomeVenueGrid({delayMs:2650, onRendered:() => {
+      state.homeContentHydrated = true;
+    }});
   }
 
   function renderCategoryStrip() {
@@ -1444,35 +1640,22 @@
       </a>`).join('');
   }
 
-  function scheduleHomeVenueGrid() {
-    const section = $('.venue-section');
+  function scheduleHomeVenueGrid({delayMs = 0, onRendered = null} = {}) {
     const grid = $('#venueGrid');
-    if (!section || !grid || grid.dataset.rendered === 'true' || state.homeVenueRenderPending) return;
+    if (!grid || grid.dataset.rendered === 'true' || state.homeVenueRenderPending) {
+      if (grid?.dataset.rendered === 'true' && typeof onRendered === 'function') onRendered();
+      return;
+    }
     if (!grid.children.length) {
       grid.innerHTML = '<div class="venue-grid-loading" role="status"><span></span><p>場館資料準備中</p></div>';
     }
-    const run = () => {
+    scheduleCalmHomeTask(() => {
       if (grid.dataset.rendered === 'true' || state.homeVenueRenderPending) return;
       state.homeVenueRenderPending = true;
-      const render = () => {
-        renderVenueGrid();
-        state.homeVenueRenderPending = false;
-      };
-      if ('requestIdleCallback' in window) requestIdleCallback(render, {timeout: 650});
-      else setTimeout(render, 32);
-    };
-    if (!('IntersectionObserver' in window)) {
-      run();
-      return;
-    }
-    state.homeVenueObserver?.disconnect();
-    state.homeVenueObserver = new IntersectionObserver(entries => {
-      if (!entries.some(entry => entry.isIntersecting)) return;
-      state.homeVenueObserver?.disconnect();
-      state.homeVenueObserver = null;
-      run();
-    }, {rootMargin:'1200px 0px', threshold:0});
-    state.homeVenueObserver.observe(section);
+      renderVenueGrid();
+      state.homeVenueRenderPending = false;
+      if (typeof onRendered === 'function') onRendered();
+    }, {delayMs, timeoutMs:4600});
   }
 
   function renderVenueGrid() {
@@ -1483,13 +1666,7 @@
     const venues = venueCatalog()
       .filter(item => item.count > 0 && item.name && !/資料整理中|地點待確認/.test(item.name))
       .slice(0, 12);
-    const selectedNames = new Set(venues.map(item => item.name));
-    const eventsByVenue = new Map(venues.map(item => [item.name, []]));
-    state.events.forEach(event => {
-      eventCanonicalVenueNames(event).forEach(name => {
-        if (selectedNames.has(name)) eventsByVenue.get(name).push(event);
-      });
-    });
+    const eventsByVenue = state.homeVenueEventIndex;
 
     grid.innerHTML = venues.map((item, index) => {
       const venue = item.name;
@@ -1522,10 +1699,13 @@
     grid.dataset.rendered = 'true';
     const section = grid.closest('.venue-section');
     section?.classList.remove('is-in-view');
+    const mediaPromise = prepareSectionMedia(grid, {limit:12, concurrency:1});
+    if (section) state.sectionMediaPromises.set(section, mediaPromise);
     requestAnimationFrame(() => setupScrollReveal());
   }
 
   window.__venueImageFallback = image => {
+    image?.closest('.venue-tile')?.classList.add('is-media-ready');
     try {
       const candidates = JSON.parse(image.dataset.venueImages || '[]');
       const nextIndex = Number(image.dataset.venueImageIndex || 0) + 1;
@@ -1541,13 +1721,22 @@
 
   window.__validateVenueImage = image => {
     if (!image?.isConnected || !image.complete) return;
-    if (image.naturalWidth < 120 || image.naturalHeight < 80) window.__venueImageFallback(image);
+    if (image.naturalWidth < 120 || image.naturalHeight < 80) {
+      window.__venueImageFallback(image);
+      return;
+    }
+    markDecodedMediaReady(image);
   };
 
   function renderHomeNearby() {
     let items = state.events.filter(hasCoordinates).slice(0, 3);
     if (state.userLocation) items = nearestEvents(state.events, 3);
-    $('#nearbyHomeList').innerHTML = items.length ? items.map(event => nearbyMiniMarkup(event, event._distance ?? null)).join('') : emptyInline('目前沒有可定位的展覽');
+    const list = $('#nearbyHomeList');
+    list.innerHTML = items.length ? items.map(event => nearbyMiniMarkup(event, event._distance ?? null)).join('') : emptyInline('目前沒有可定位的展覽');
+    const section = list.closest('.nearby-home');
+    section?.classList.remove('is-in-view');
+    const mediaPromise = prepareSectionMedia(list, {limit:3, concurrency:1});
+    if (section) state.sectionMediaPromises.set(section, mediaPromise);
     $('#homeLocationButton').textContent = state.userLocation ? '已依目前位置排序' : '使用目前位置';
   }
 
@@ -1911,6 +2100,7 @@
     });
 
     const records = new Map();
+    const homeVenueEventIndex = new Map();
     state.venueRegistry
       .filter(registry => registry?.confirmed)
       .forEach(registry => {
@@ -1961,6 +2151,8 @@
         if (!existing) return;
         existing.count += 1;
         records.set(key, existing);
+        if (!homeVenueEventIndex.has(name)) homeVenueEventIndex.set(name, []);
+        homeVenueEventIndex.get(name).push(event);
       });
     });
 
@@ -1972,6 +2164,7 @@
     };
     window.__venueMatchDiagnostics = state.venueMatchDiagnostics;
 
+    state.homeVenueEventIndex = homeVenueEventIndex;
     state.venueCatalogCache = [...records.values()]
       .sort(
         (a, b) => (
@@ -2345,6 +2538,34 @@
       .slice(0,limit);
   }
 
+  function ensureLeafletAssets() {
+    if (window.L) return Promise.resolve(window.L);
+    if (state.leafletAssetsPromise) return state.leafletAssetsPromise;
+    state.leafletAssetsPromise = new Promise((resolve, reject) => {
+      if (!document.querySelector('link[data-leaflet-runtime]')) {
+        const stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        stylesheet.dataset.leafletRuntime = 'true';
+        document.head.appendChild(stylesheet);
+      }
+      const existing = document.querySelector('script[data-leaflet-runtime]');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(window.L), {once:true});
+        existing.addEventListener('error', () => reject(new Error('Leaflet 載入失敗')), {once:true});
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.async = true;
+      script.dataset.leafletRuntime = 'true';
+      script.onload = () => resolve(window.L);
+      script.onerror = () => reject(new Error('Leaflet 載入失敗'));
+      document.head.appendChild(script);
+    });
+    return state.leafletAssetsPromise;
+  }
+
   function renderNearby() {
     const items = nearestEvents(filterEvents(), 200, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
     $('#nearbyStatusText').textContent = state.userLocation
@@ -2353,7 +2574,23 @@
     $('#nearbyCount').textContent = state.userLocation ? `${items.length} 檔・${NEARBY_RADIUS_KM} KM 內` : `${items.length} 檔待定位`;
     $('#nearbyResultList').innerHTML = items.map(event => resultMarkup(event, event._distance)).join('')
       || emptyInline(state.userLocation ? `目前位置 ${NEARBY_RADIUS_KM} 公里內沒有可定位的展覽` : '目前沒有提供座標的展覽');
-    renderMap(items);
+    const map = $('#nearbyMap');
+    const token = ++state.nearbyMapRenderToken;
+    if (!window.L) {
+      map.classList.add('is-map-loading');
+      map.innerHTML = '<div class="map-runtime-placeholder"><span>地圖載入中</span><small>展覽清單可以先行瀏覽</small></div>';
+    }
+    ensureLeafletAssets().then(() => {
+      if (token !== state.nearbyMapRenderToken || state.view !== 'nearby') return;
+      map.classList.remove('is-map-loading');
+      map.innerHTML = '';
+      renderMap(items);
+    }).catch(error => {
+      console.warn('[Exhibition Hub] lazy map asset failed', error);
+      if (token !== state.nearbyMapRenderToken) return;
+      map.classList.remove('is-map-loading');
+      map.innerHTML = '<div class="map-runtime-placeholder is-error"><span>地圖暫時無法載入</span><small>仍可使用右側展覽清單與外部導航</small></div>';
+    });
   }
 
   function renderMap(items) {
@@ -2439,6 +2676,7 @@
 
   function renderCurrentView() {
     const previousView = state.lastRenderedView;
+    if (previousView === 'home' && state.view !== 'home') cancelHomeHydrationTasks();
     const views = {home:$('#homeView'),listing:$('#listingView'),nearby:$('#nearbyView'),detail:$('#detailView'),favorites:$('#favoritesView')};
     Object.entries(views).forEach(([name,element]) => element.hidden = name !== state.view);
     if (state.view !== 'detail') updatePageMetadata();
@@ -2556,6 +2794,20 @@
     state.revealFrameTokens.set(target, first);
   }
 
+  function queueScrollRevealWhenReady(target) {
+    if (!target || target.dataset.revealWaiting === 'true') return;
+    const mediaPromise = state.sectionMediaPromises.get(target);
+    if (!mediaPromise) {
+      queueScrollReveal(target);
+      return;
+    }
+    target.dataset.revealWaiting = 'true';
+    Promise.race([mediaPromise, delay(720)]).finally(() => {
+      target.dataset.revealWaiting = 'false';
+      queueScrollReveal(target);
+    });
+  }
+
   function setupScrollReveal() {
     const sequenceGroups = $$('[data-reveal-sequence]');
     sequenceGroups.forEach(group => {
@@ -2585,7 +2837,7 @@
         entries.forEach(entry => {
           if (!entry.isIntersecting) return;
           state.revealObserver.unobserve(entry.target);
-          queueScrollReveal(entry.target);
+          queueScrollRevealWhenReady(entry.target);
         });
       }, {threshold:.08, rootMargin:'0px 0px -3% 0px'});
     }
@@ -2615,16 +2867,30 @@
     let scrollControlFrame = 0;
     const updateScrollControls = () => {
       scrollControlFrame = 0;
-      $('#siteHeader')?.classList.toggle('scrolled', scrollY > 12);
-      $('#backToTopButton')?.classList.toggle('is-visible', scrollY > Math.max(520, innerHeight * .72));
+      const currentY = window.scrollY || window.pageYOffset || 0;
+      const headerScrolled = currentY > 12;
+      const backToTopVisible = currentY > Math.max(520, innerHeight * .72);
+      if (state.headerScrolledState !== headerScrolled) {
+        state.headerScrolledState = headerScrolled;
+        $('#siteHeader')?.classList.toggle('scrolled', headerScrolled);
+      }
+      if (state.backToTopState !== backToTopVisible) {
+        state.backToTopState = backToTopVisible;
+        $('#backToTopButton')?.classList.toggle('is-visible', backToTopVisible);
+      }
     };
     window.addEventListener('scroll', () => {
       if (!scrollControlFrame) scrollControlFrame = requestAnimationFrame(updateScrollControls);
-      if (!document.body.classList.contains('is-scrolling')) document.body.classList.add('is-scrolling');
+      if (!state.scrollClassActive) {
+        state.scrollClassActive = true;
+        document.body.classList.add('is-scrolling');
+      }
       window.clearTimeout(state.scrollIdleTimer);
       state.scrollIdleTimer = window.setTimeout(() => {
+        if (!state.scrollClassActive) return;
+        state.scrollClassActive = false;
         document.body.classList.remove('is-scrolling');
-      }, 120);
+      }, 150);
     }, {passive:true});
     updateScrollControls();
     $('#backToTopButton')?.addEventListener('click', () => window.scrollTo({top:0,left:0,behavior:'smooth'}));
