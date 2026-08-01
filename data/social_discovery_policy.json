@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-01",
+  "release": "v6.5.0-r12-stable2",
+  "enabled": false,
+  "purpose": "第 7、8 階段的社群探索資料契約，只能用於發現候選活動，不得作為正式日期、地址、票價或售票連結來源。",
+  "canonicalFieldsForbidden": [
+    "startDate",
+    "endDate",
+    "address",
+    "price",
+    "officialUrl",
+    "ticketUrl"
+  ],
+  "requiredVerification": [
+    "official_venue_page",
+    "official_organizer_page",
+    "official_ticketing_page"
+  ],
+  "publicationPolicy": "discovery_only",
+  "facebookImportAllowed": false
+}

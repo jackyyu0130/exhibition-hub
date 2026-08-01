@@ -1,0 +1,53 @@
+name: Collector stage 7 dry run
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "35 19 * * *" # 台灣時間每日 03:35
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exhibition-hub-collector-stage-7-dry-run
+  cancel-in-progress: false
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run regression tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Audit collector registrations
+        run: |
+          mkdir -p collector-dry-run-output
+          python scripts/run_collectors.py \
+            --audit-only \
+            --report-output collector-dry-run-output/framework-audit.json
+
+      - name: Build non-publishing stage report
+        run: |
+          python scripts/prepare_collector_dry_run.py \
+            --stage stage-7-daily-dry-run \
+            --output collector-dry-run-output/stage-7-report.json
+
+      - name: Upload dry-run audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: collector-stage-7-dry-run
+          path: collector-dry-run-output/
+          retention-days: 14

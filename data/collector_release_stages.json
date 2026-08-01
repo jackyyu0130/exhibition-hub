@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-01",
+  "release": "v6.5.0-r12-stable2",
+  "description": "Collector 第 7、8 階段安全基礎。第 7 階段只產生 dry-run 稽核資料；第 8 階段保留發布閘門定義，但預設禁止發布。",
+  "stages": [
+    {
+      "id": "stage-7-daily-dry-run",
+      "name": "第 7 階段：每日 Collector Dry Run",
+      "mode": "dry_run",
+      "enabled": true,
+      "publishEnabled": false,
+      "batchId": "stage-7-daily-dry-run",
+      "requiredGates": [
+        "allSourcesRegistered",
+        "failureThreshold",
+        "minimumCandidateRecords",
+        "publicDataUntouched"
+      ]
+    },
+    {
+      "id": "stage-8-gated-publish-foundation",
+      "name": "第 8 階段：人工核准發布基礎",
+      "mode": "gated_publish",
+      "enabled": false,
+      "publishEnabled": false,
+      "batchId": "stage-8-gated-publish",
+      "requiredGates": [
+        "allSourcesRegistered",
+        "failureThreshold",
+        "minimumCandidateRecords",
+        "publicDataUntouched",
+        "manualApproval"
+      ]
+    }
+  ],
+  "qualityGates": {
+    "maxFailedSources": 2,
+    "minimumCandidateRecords": 1,
+    "requireOfficialSourceForPublication": true,
+    "allowSocialDiscoveryAsCanonicalSource": false,
+    "manualApprovalRequired": true
+  }
+}

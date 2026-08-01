@@ -10,6 +10,7 @@ from exhibition_hub.classifiers.content_types import (
 from ..image_quality import clean_image_urls
 
 from .normalization import unique_strings, unique_urls
+from exhibition_hub.venues import normalize_event_venue_contract
 
 
 _HINT_TO_CATEGORY = {
@@ -214,6 +215,7 @@ def collector_record_to_event(
         ),
         "editorialFlags": [],
     }
+    event = normalize_event_venue_contract(event)
     classified = classify_event(event)
     classified["category"] = category
     classified["categories"] = [category]
