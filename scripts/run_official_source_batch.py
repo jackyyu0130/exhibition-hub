@@ -23,6 +23,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-registry", default="data/source_registry.json")
     parser.add_argument("--output", required=True)
     parser.add_argument("--report", required=True)
+    parser.add_argument("--diff-output")
     parser.add_argument("--audit-dir", default="production-update-audit/official-sources")
     parser.add_argument("--exclude-source", action="append", default=["huashan-1914"])
     return parser.parse_args()
@@ -59,6 +60,130 @@ def publishable_records(report: Mapping[str, Any]) -> list[dict[str, Any]]:
     return records
 
 
+def event_map(payload: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
+    result: dict[str, dict[str, Any]] = {}
+    for event in payload.get("events") or []:
+        if not isinstance(event, dict):
+            continue
+        event_id = str(event.get("id") or "").strip()
+        if event_id:
+            result[event_id] = event
+    return result
+
+
+def build_official_source_batch_diff(
+    base: Mapping[str, Any],
+    preview: Mapping[str, Any],
+    report: Mapping[str, Any],
+) -> dict[str, Any]:
+    base_events = [
+        event for event in base.get("events") or []
+        if isinstance(event, dict)
+    ]
+    preview_events = [
+        event for event in preview.get("events") or []
+        if isinstance(event, dict)
+    ]
+    base_ids = [
+        str(event.get("id") or "").strip()
+        for event in base_events
+    ]
+    preview_ids = [
+        str(event.get("id") or "").strip()
+        for event in preview_events
+    ]
+    base_id_set = set(base_ids)
+    preview_id_set = set(preview_ids)
+    removed_ids = sorted(base_id_set - preview_id_set)
+    added_ids = sorted(preview_id_set - base_id_set)
+
+    base_by_id = event_map(base)
+    preview_by_id = event_map(preview)
+    modified_ids = sorted(
+        event_id
+        for event_id in base_id_set & preview_id_set
+        if base_by_id[event_id] != preview_by_id[event_id]
+    )
+
+    source_items = [
+        item for item in report.get("sources") or []
+        if isinstance(item, dict)
+    ]
+    allowed_statuses = {
+        "merged",
+        "preserved_previous_base",
+    }
+    source_statuses_valid = all(
+        str(item.get("status") or "") in allowed_statuses
+        for item in source_items
+    )
+    preview_build = preview.get("officialSourceBuild") or {}
+    preview_unique = (
+        "" not in preview_ids
+        and len(preview_ids) == len(set(preview_ids))
+    )
+    report_count_matches = (
+        int(report.get("finalEventCount") or -1)
+        == len(preview_events)
+    )
+
+    quality_gates = {
+        "batchCompleted": True,
+        "failureIsolationEnabled": (
+            report.get("failureIsolation") is True
+        ),
+        "batchReportCountMatches": report_count_matches,
+        "baseEventsPreserved": not removed_ids,
+        "previewIdsUnique": preview_unique,
+        "previewBuildUnpublished": (
+            preview_build.get("published") is False
+        ),
+        "sourceStatusesValid": source_statuses_valid,
+        "published": False,
+    }
+
+    failed_gates = [
+        key
+        for key, value in quality_gates.items()
+        if key != "published" and not value
+    ]
+    if failed_gates:
+        raise ValueError(
+            "Official-source batch diff failed gates: "
+            + ", ".join(failed_gates)
+        )
+
+    return {
+        "mode": "official-source-batch-publish-diff",
+        "published": False,
+        "sourceId": "official-source-batch",
+        "baseEventCount": len(base_events),
+        "candidateEventCount": len(preview_events),
+        "previewEventCount": len(preview_events),
+        "addedEventCount": len(added_ids),
+        "modifiedEventCount": len(modified_ids),
+        "unchangedBaseEventCount": (
+            len(base_id_set) - len(modified_ids)
+        ),
+        "removedBaseEventCount": len(removed_ids),
+        "qualityGates": quality_gates,
+        "addedIds": added_ids,
+        "modifiedIds": modified_ids,
+        "removedIds": removed_ids,
+        "batchSummary": {
+            "sourceCount": int(report.get("sourceCount") or 0),
+            "successfulSourceCount": int(
+                report.get("successfulSourceCount") or 0
+            ),
+            "failedSourceCount": int(
+                report.get("failedSourceCount") or 0
+            ),
+            "skippedSourceCount": int(
+                report.get("skippedSourceCount") or 0
+            ),
+        },
+    }
+
 def active_official_sources(
     registry_payload: Mapping[str, Any],
     *,
@@ -80,7 +205,8 @@ def active_official_sources(
 
 def main() -> int:
     args = parse_args()
-    current = load_json(args.base)
+    base_payload = load_json(args.base)
+    current = deepcopy(base_payload)
     registry_payload = load_json(args.source_registry)
     audit_dir = Path(args.audit_dir)
     audit_dir.mkdir(parents=True, exist_ok=True)
@@ -175,8 +301,15 @@ def main() -> int:
         "finalEventCount": len(current.get("events") or []),
         "sources": source_reports,
     }
+    batch_diff = build_official_source_batch_diff(
+        base_payload,
+        current,
+        report,
+    )
     write_json(args.output, current)
     write_json(args.report, report)
+    if args.diff_output:
+        write_json(args.diff_output, batch_diff)
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
 
