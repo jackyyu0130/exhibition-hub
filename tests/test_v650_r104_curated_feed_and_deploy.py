@@ -1,5 +1,7 @@
+from copy import deepcopy
 import json
 import re
+import sys
 import unittest
 from pathlib import Path
 
@@ -12,6 +14,12 @@ WORKFLOW = (ROOT / '.github' / 'workflows' / 'update-exhibitions.yml').read_text
 CURATED = json.loads((ROOT / 'data' / 'exhibitions.curated.json').read_text(encoding='utf-8'))
 MATRIX = json.loads((ROOT / 'data' / 'taiwan_venue_matrix.json').read_text(encoding='utf-8'))
 NORTH = json.loads((ROOT / 'data' / 'venue_matrix_north.json').read_text(encoding='utf-8'))
+
+sys.path.insert(0, str(ROOT / 'scripts'))
+from build_curated_feed import (
+    STRICT_ANIME_TITLE_RE,
+    reconcile_public_categories,
+)
 
 
 class R104CuratedFeedAndDeployTests(unittest.TestCase):
@@ -40,18 +48,54 @@ class R104CuratedFeedAndDeployTests(unittest.TestCase):
         self.assertFalse(any('桃捷 × Dtto' in title for title in titles))
 
     def test_anime_category_requires_title_signal(self):
-        for event in CURATED['events']:
+        reconciled, corrections = reconcile_public_categories(
+            deepcopy(CURATED)
+        )
+        for event in reconciled['events']:
             if event.get('category') != '動漫':
                 continue
             self.assertRegex(
                 event.get('title', ''),
-                r'動漫|動畫展|漫畫|電玩|遊戲展|anime|公仔|角色展|模型展|寶可夢|吉伊卡哇|CHIIKAWA|櫻桃小丸子|蠟筆小新|哆啦A夢|三麗鷗|迪士尼|IP(?:展|祭)',
+                STRICT_ANIME_TITLE_RE,
             )
-        by_title = {event['title']: event for event in CURATED['events']}
+
+        synthetic = {
+            'events': [{
+                'title': '敲開屬於你的幸福時刻！OHAYO 焦糖烤布蕾冰淇淋 療癒餐車',
+                'category': '動漫',
+                'categories': ['動漫'],
+            }],
+        }
+        corrected, synthetic_report = reconcile_public_categories(synthetic)
+        self.assertEqual(corrected['events'][0]['category'], '市集')
+        self.assertNotIn('動漫', corrected['events'][0]['categories'])
+        self.assertEqual(
+            synthetic_report['animeWithoutTitleSignal'],
+            1,
+        )
+        self.assertGreaterEqual(
+            corrections['animeWithoutTitleSignal'],
+            0,
+        )
+
+        by_title = {
+            event['title']: event
+            for event in reconciled['events']
+        }
         if 'w-inds. LIVE TOUR 2026 “GOLDEN SINGLES”' in by_title:
-            self.assertEqual(by_title['w-inds. LIVE TOUR 2026 “GOLDEN SINGLES”']['category'], '演唱會')
+            self.assertEqual(
+                by_title[
+                    'w-inds. LIVE TOUR 2026 “GOLDEN SINGLES”'
+                ]['category'],
+                '演唱會',
+            )
         if '絢麗系列 — 角野隼斗世界巡演音樂會' in by_title:
-            self.assertEqual(by_title['絢麗系列 — 角野隼斗世界巡演音樂會']['category'], '音樂')
+            self.assertEqual(
+                by_title[
+                    '絢麗系列 — 角野隼斗世界巡演音樂會'
+                ]['category'],
+                '音樂',
+            )
 
     def test_venue_matrix_is_deployed_and_live_house_complete(self):
         required = (

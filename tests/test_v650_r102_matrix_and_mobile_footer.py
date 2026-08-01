@@ -46,7 +46,13 @@ class V650R102MatrixAndMobileFooterTests(unittest.TestCase):
         self.assertIn("fetch('data/taiwan_venue_matrix.json'", APP)
         self.assertIn("const confirmedTaiwanVenues = normalizeMatrixVenues", APP)
         self.assertIn("state.venueRegistry = [...stableVenues, ...northernVenues, ...confirmedTaiwanVenues]", APP)
-        self.assertIn("state.venueRegistry.filter(registry => registry?.confirmed)", APP)
+        self.assertIn("const registryById = new Map()", APP)
+        self.assertIn("state.venueRegistryById = registryById", APP)
+        self.assertIn(
+            "const canonicalRecords = eventCanonicalVenueRecords(event)",
+            APP,
+        )
+        self.assertIn(".filter(registry => registry?.confirmed)", APP)
         self.assertIn("unavailable = item.count === 0", APP)
         self.assertIn("尚無展演", APP)
 

@@ -279,7 +279,7 @@ def public_categories(event: Mapping[str, Any]) -> list[str]:
     elif COMPETITION_RE.search(title):
         primary = "競賽"
     else:
-        primary = next((value for value in existing if value not in {"講座", "研習"}), "其他")
+        primary = next((value for value in existing if value not in {"講座", "研習", "動漫"}), "其他")
 
     secondary: list[str] = []
     text = f"{title} {description}"
