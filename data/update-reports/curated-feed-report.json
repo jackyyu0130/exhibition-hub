@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "builtAt": "2026-08-01T06:58:38.929193+00:00",
-  "sourceEventCount": 2519,
-  "publicEventCount": 691,
-  "removedEventCount": 1828,
+  "builtAt": "2026-08-01T08:55:38.359942+00:00",
+  "sourceEventCount": 2563,
+  "publicEventCount": 733,
+  "removedEventCount": 1830,
   "keptReasons": {
-    "confirmed_P0": 548,
-    "confirmed_P1_visible_interest": 143
+    "confirmed_P0": 591,
+    "confirmed_P1_visible_interest": 142
   },
   "removedReasons": {
-    "expired": 407,
+    "expired": 408,
     "generic_or_district_only_place": 1,
-    "library_series": 9,
+    "library_series": 10,
     "low_interest_permanent_exhibition": 12,
     "low_priority_or_low_interest_venue": 263,
-    "missing_image": 110,
+    "missing_image": 109,
     "missing_outbound_link": 471,
     "small_local_activity": 24,
-    "unmatched_or_low_interest": 531
+    "unmatched_or_low_interest": 532
   },
   "removedSamples": {
     "missing_outbound_link": [
@@ -120,6 +120,12 @@
         "sourceUrl": "https://www.ntcri.gov.tw/home/zh-tw/exhibition/7501958"
       },
       {
+        "id": "69ae835ceb43d512a487f51e",
+        "title": "仰懷宗範──開山祖師圓寂十週年紀念特展",
+        "locationName": "中台世界博物館木雕分館",
+        "sourceUrl": "https://www.ctwm.org.tw/news/%E6%B4%BB%E5%8B%95/%E4%BB%B0%E6%87%B7%E5%AE%97%E7%AF%84%E2%94%80%E2%94%80%E9%96%8B%E5%B1%B1%E7%A5%96%E5%B8%AB%E5%9C%93%E5%AF%82%E5%8D%81%E9%80%B1%E5%B9%B4%E7%B4%80%E5%BF%B5%E7%89%B9%E5%B1%95-%E5%B1%95%E8%A6%BD%E9%A0%90%E5%91%8A?utm_source=web&utm_medium=post"
+      },
+      {
         "id": "6a480c4326b32427d0604113",
         "title": "【展覽】邊界即質地：2026 高雄青年文學獎 圖像文學特展",
         "locationName": "高雄市立圖書館高雄文學館",
@@ -206,12 +212,6 @@
         "sourceUrl": "https://ticket.com.tw/application/utk01/utk0101_.aspx"
       },
       {
-        "id": "69eba23926b3242a48a9e654",
-        "title": "2026臺北兒童藝術節：《小魚散步》",
-        "locationName": "水源劇場",
-        "sourceUrl": "https://www.opentix.life/event/2043955237061541888"
-      },
-      {
         "id": "6a2b06f726b3243414ccd173",
         "title": "AM創意2026《轟吧!全壘打》棒球音樂劇",
         "locationName": "臺中市中山堂",
@@ -222,6 +222,12 @@
         "title": "TICF26台北國際合唱音樂節【南投巡演】西班牙 SUHAR男聲合唱團",
         "locationName": "南投縣政府文化局演藝廳",
         "sourceUrl": "https://www.opentix.life/event/2056992094789902337"
+      },
+      {
+        "id": "6a19c73e26b3243414cccd03",
+        "title": "《時空玫瑰》富瑜親子音樂劇場",
+        "locationName": "誠品表演廳",
+        "sourceUrl": "https://www.opentix.life/event/2057698219891294209"
       }
     ],
     "unmatched_or_low_interest": [

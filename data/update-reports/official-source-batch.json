@@ -1,0 +1,125 @@
+{
+  "mode": "official-source-batch",
+  "published": false,
+  "failureIsolation": true,
+  "base": "production-update-audit/publish-preview.json",
+  "output": "production-update-audit/official-sources-preview.json",
+  "sourceCount": 6,
+  "successfulSourceCount": 3,
+  "failedSourceCount": 3,
+  "skippedSourceCount": 0,
+  "finalEventCount": 2563,
+  "sources": [
+    {
+      "sourceId": "kaohsiung-music-center",
+      "sourceName": "高雄流行音樂中心",
+      "status": "preserved_previous_base",
+      "baseEventCount": 2519,
+      "collectorStatus": "success",
+      "collectorSuccess": true,
+      "collectedRecordCount": 1,
+      "publishableRecordCount": 1,
+      "minimumRecords": 2,
+      "warnings": [],
+      "errors": [],
+      "reason": "below_minimum_publishable_records"
+    },
+    {
+      "sourceId": "pier-2",
+      "sourceName": "駁二藝術特區",
+      "status": "preserved_previous_base",
+      "baseEventCount": 2519,
+      "collectorStatus": "partial",
+      "collectorSuccess": true,
+      "collectedRecordCount": 0,
+      "publishableRecordCount": 0,
+      "minimumRecords": 2,
+      "warnings": [
+        "駁二藝術特區 returned no publishable detail records"
+      ],
+      "errors": [],
+      "reason": "below_minimum_publishable_records"
+    },
+    {
+      "sourceId": "songshan-cultural-park",
+      "sourceName": "松山文創園區",
+      "status": "merged",
+      "baseEventCount": 2519,
+      "collectorStatus": "success",
+      "collectorSuccess": true,
+      "collectedRecordCount": 26,
+      "publishableRecordCount": 23,
+      "minimumRecords": 5,
+      "warnings": [],
+      "errors": [],
+      "candidateEventCount": 2541,
+      "decisionCounts": {
+        "new_event": 22,
+        "auto_merge": 1
+      },
+      "reviewQueueCount": 0
+    },
+    {
+      "sourceId": "taipei-music-center",
+      "sourceName": "臺北流行音樂中心",
+      "status": "merged",
+      "baseEventCount": 2541,
+      "collectorStatus": "success",
+      "collectorSuccess": true,
+      "collectedRecordCount": 9,
+      "publishableRecordCount": 9,
+      "minimumRecords": 4,
+      "warnings": [],
+      "errors": [],
+      "candidateEventCount": 2550,
+      "decisionCounts": {
+        "new_event": 9
+      },
+      "reviewQueueCount": 0
+    },
+    {
+      "sourceId": "taipei-performing-arts-center",
+      "sourceName": "臺北表演藝術中心",
+      "status": "merged",
+      "baseEventCount": 2550,
+      "collectorStatus": "success",
+      "collectorSuccess": true,
+      "collectedRecordCount": 96,
+      "publishableRecordCount": 95,
+      "minimumRecords": 5,
+      "warnings": [],
+      "errors": [],
+      "candidateEventCount": 2563,
+      "decisionCounts": {
+        "auto_merge": 9,
+        "needs_review": 73,
+        "new_event": 13
+      },
+      "reviewQueueCount": 73
+    },
+    {
+      "sourceId": "tainan-art-museum",
+      "sourceName": "臺南市美術館",
+      "status": "preserved_previous_base",
+      "baseEventCount": 2563,
+      "collectorStatus": "failed",
+      "collectorSuccess": false,
+      "collectedRecordCount": 0,
+      "publishableRecordCount": 0,
+      "minimumRecords": 2,
+      "warnings": [
+        "https://www.tnam.museum/exhibition/exhibition/detail/720: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/720",
+        "https://www.tnam.museum/exhibition/exhibition/detail/718: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/718",
+        "https://www.tnam.museum/exhibition/exhibition/detail/716: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/716",
+        "https://www.tnam.museum/exhibition/exhibition/detail/711: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/711",
+        "https://www.tnam.museum/exhibition/exhibition/detail/708: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/708",
+        "https://www.tnam.museum/exhibition/exhibition/detail/704: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/704",
+        "https://www.tnam.museum/exhibition/exhibition/detail/577: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/577",
+        "https://www.tnam.museum/exhibition/exhibition/detail/735: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/735",
+        "https://www.tnam.museum/exhibition/exhibition/detail/726: CollectorHttpError: 404 Client Error: Not Found for url: https://www.tnam.museum/exhibition/exhibition/detail/726"
+      ],
+      "errors": [],
+      "reason": "collector_failed"
+    }
+  ]
+}
