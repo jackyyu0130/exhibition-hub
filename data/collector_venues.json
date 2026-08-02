@@ -1,0 +1,348 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "release": "v6.5.0-r12-stable2-c1",
+  "description": "C1 場館 Collector 目標登錄。此檔不由前台讀取，也不包含展覽候選資料。",
+  "venueCount": 21,
+  "venues": [
+    {
+      "id": "twtc-hall-1",
+      "name": "臺北世貿一館",
+      "region": "臺北市",
+      "group": "convention",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.twtc.com.tw/",
+      "publicVenueIds": [
+        "taipei-world-trade-center"
+      ],
+      "collectorVenueIds": [
+        "twtc-hall-1"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "twtc-hall-3",
+      "name": "臺北世貿三館（歷史場館）",
+      "region": "臺北市",
+      "group": "convention",
+      "operationalStatus": "retired_historical_verify_only",
+      "auditMode": "verify_only",
+      "officialUrl": "https://www.twtc.com.tw/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "twtc-hall-3"
+      ],
+      "publishEnabled": false,
+      "notes": "歷史場館紀錄；不得作為現行展覽來源，C2 前需人工確認現況。"
+    },
+    {
+      "id": "tainex-hall-1",
+      "name": "南港展覽館一館",
+      "region": "臺北市",
+      "group": "convention",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.tainex.com.tw/",
+      "publicVenueIds": [
+        "taipei-nangang-exhibition-center"
+      ],
+      "collectorVenueIds": [
+        "tainex-hall-1"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "tainex-hall-2",
+      "name": "南港展覽館二館",
+      "region": "臺北市",
+      "group": "convention",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.tainex.com.tw/",
+      "publicVenueIds": [
+        "taipei-nangang-exhibition-center"
+      ],
+      "collectorVenueIds": [
+        "tainex-hall-2"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "legacy-taipei",
+      "name": "Legacy Taipei",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.legacy.com.tw/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "legacy-taipei"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "legacy-max",
+      "name": "Legacy MAX",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.legacy.com.tw/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "legacy-max"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "the-wall-live-house",
+      "name": "THE WALL Live House",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://thewall.tw/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "the-wall-live-house"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "nuzone",
+      "name": "NUZONE",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.nuzone.com.tw/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "nuzone"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "clapper-studio",
+      "name": "Clapper Studio",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.syntrend.com.tw/space/venues.html",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "clapper-studio"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "pipe-live-music",
+      "name": "PIPE Live Music",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://pipelivemusic.com/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "pipe-live-music"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "westar",
+      "name": "WESTAR",
+      "region": "臺北市",
+      "group": "live",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.tremendia.com/westar/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "westar"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "national-theater-concert-hall",
+      "name": "國家兩廳院",
+      "region": "臺北市",
+      "group": "performing",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://npac-ntch.org/zh",
+      "publicVenueIds": [
+        "national-theater-and-concert-hall"
+      ],
+      "collectorVenueIds": [
+        "national-theater-concert-hall"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "national-taichung-theater",
+      "name": "臺中國家歌劇院",
+      "region": "臺中市",
+      "group": "performing",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.npac-ntt.org/",
+      "publicVenueIds": [
+        "national-taichung-theater"
+      ],
+      "collectorVenueIds": [
+        "national-taichung-theater"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "taipei-fine-arts-museum",
+      "name": "臺北市立美術館",
+      "region": "臺北市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.tfam.museum/",
+      "publicVenueIds": [
+        "taipei-fine-arts-museum"
+      ],
+      "collectorVenueIds": [
+        "taipei-fine-arts-museum"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "fubon-art-museum",
+      "name": "富邦美術館",
+      "region": "臺北市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.fubonartmuseum.org/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "fubon-art-museum"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "moca-taipei",
+      "name": "臺北當代藝術館",
+      "region": "臺北市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.mocataipei.org.tw/",
+      "publicVenueIds": [
+        "moca-taipei"
+      ],
+      "collectorVenueIds": [
+        "moca-taipei"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "national-palace-museum",
+      "name": "國立故宮博物院",
+      "region": "臺北市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.npm.gov.tw/",
+      "publicVenueIds": [
+        "national-palace-museum-north",
+        "national-palace-museum-south"
+      ],
+      "collectorVenueIds": [
+        "national-palace-museum-north",
+        "national-palace-museum-south"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "national-museum-natural-science",
+      "name": "國立自然科學博物館",
+      "region": "臺中市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.nmns.edu.tw/",
+      "publicVenueIds": [
+        "national-museum-of-natural-science"
+      ],
+      "collectorVenueIds": [
+        "national-museum-natural-science"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "national-taiwan-museum",
+      "name": "國立臺灣博物館",
+      "region": "臺北市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "publicVenueIds": [
+        "national-taiwan-museum"
+      ],
+      "collectorVenueIds": [
+        "national-taiwan-museum"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "chimei-museum",
+      "name": "奇美博物館",
+      "region": "臺南市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.chimeimuseum.org/",
+      "publicVenueIds": [
+        "chimei-museum"
+      ],
+      "collectorVenueIds": [
+        "chimei-museum"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    },
+    {
+      "id": "juming-museum",
+      "name": "朱銘美術館",
+      "region": "新北市",
+      "group": "museum",
+      "operationalStatus": "planned",
+      "auditMode": "audit_only",
+      "officialUrl": "https://www.juming.org.tw/",
+      "publicVenueIds": [],
+      "collectorVenueIds": [
+        "juming-museum"
+      ],
+      "publishEnabled": false,
+      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+    }
+  ]
+}

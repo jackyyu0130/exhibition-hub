@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-01",
-  "description": "台灣展覽誌全台活動來源登錄表。此檔只管理資料來源，不直接儲存活動。",
+  "updatedAt": "2026-08-02",
+  "description": "台灣展覽誌來源登錄表；C1 加入 21 個官方場館 planned／audit_only 登錄，未啟用且不發布。",
   "coverageRegions": [
     "基隆市",
     "臺北市",
@@ -448,6 +448,977 @@
       "sourceCategory": "北藝中心官方節目",
       "excludeTitlePattern": "節目取消|取消演出",
       "notes": "R11.0 第一批官方來源；取消節目與不完整資料不進入正式公開資料。"
+    },
+    {
+      "id": "chimei-museum",
+      "name": "奇美博物館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.chimeimuseum.org/",
+      "listingUrl": "https://www.chimeimuseum.org/exhibition-event",
+      "coverageRegions": [
+        "臺南市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [
+        "chimei-museum"
+      ],
+      "collectorVenueIds": [
+        "chimei-museum"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.chimeimuseum.org",
+        "chimeimuseum.org"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "clapper-studio",
+      "name": "Clapper Studio",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.syntrend.com.tw/space/venues.html",
+      "listingUrl": "https://www.syntrend.com.tw/space/venues.html",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance",
+        "exhibition"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "clapper-studio"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.syntrend.com.tw",
+        "syntrend.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "fubon-art-museum",
+      "name": "富邦美術館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.fubonartmuseum.org/",
+      "listingUrl": "https://www.fubonartmuseum.org/Exhibitions",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "fubon-art-museum"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.fubonartmuseum.org",
+        "fubonartmuseum.org"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "juming-museum",
+      "name": "朱銘美術館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.juming.org.tw/",
+      "listingUrl": "https://www.juming.org.tw/mainssl/modules/MySpace/index.php",
+      "coverageRegions": [
+        "新北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "juming-museum"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.juming.org.tw",
+        "juming.org.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "legacy-max",
+      "name": "Legacy MAX",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://www.legacy.com.tw/",
+      "listingUrl": "https://www.legacy.com.tw/page/programlist/?area_id=4",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "legacy-max"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.legacy.com.tw",
+        "legacy.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "listingUrls": [
+        "https://www.legacy.com.tw/page/programlist/?area_id=4"
+      ],
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "legacy-taipei",
+      "name": "Legacy Taipei",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://www.legacy.com.tw/",
+      "listingUrl": "https://www.legacy.com.tw/page/programlist/?area_id=1",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "legacy-taipei"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.legacy.com.tw",
+        "legacy.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "listingUrls": [
+        "https://www.legacy.com.tw/page/programlist/?area_id=1"
+      ],
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "moca-taipei",
+      "name": "臺北當代藝術館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.mocataipei.org.tw/",
+      "listingUrl": "https://www.mocataipei.org.tw/tw/ExhibitionAndEvent/Exhibitions/Current%20Exhibition",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [
+        "moca-taipei"
+      ],
+      "collectorVenueIds": [
+        "moca-taipei"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.mocataipei.org.tw",
+        "mocataipei.org.tw",
+        "www.moca.taipei",
+        "moca.taipei"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "national-museum-natural-science",
+      "name": "國立自然科學博物館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.nmns.edu.tw/",
+      "listingUrl": "https://www.nmns.edu.tw/ch/exhibitions/galleries/special-exhibitions/",
+      "coverageRegions": [
+        "臺中市"
+      ],
+      "contentTypes": [
+        "exhibition"
+      ],
+      "venueIds": [
+        "national-museum-of-natural-science"
+      ],
+      "collectorVenueIds": [
+        "national-museum-natural-science"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.nmns.edu.tw",
+        "nmns.edu.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "national-palace-museum",
+      "name": "國立故宮博物院",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.npm.gov.tw/",
+      "listingUrl": "https://www.npm.gov.tw/Exhibition-Current.aspx?sno=03000060&l=1",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [
+        "national-palace-museum-north",
+        "national-palace-museum-south"
+      ],
+      "collectorVenueIds": [
+        "national-palace-museum-north",
+        "national-palace-museum-south"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.npm.gov.tw",
+        "npm.gov.tw",
+        "south.npm.gov.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "national-taichung-theater",
+      "name": "臺中國家歌劇院",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://www.npac-ntt.org/",
+      "listingUrl": "https://www.npac-ntt.org/program/events?place=1",
+      "coverageRegions": [
+        "臺中市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [
+        "national-taichung-theater"
+      ],
+      "collectorVenueIds": [
+        "national-taichung-theater"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.npac-ntt.org",
+        "npac-ntt.org"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "national-taiwan-museum",
+      "name": "國立臺灣博物館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.ntm.gov.tw/",
+      "listingUrl": "https://www.ntm.gov.tw/News.aspx?n=3726&sms=13479",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition"
+      ],
+      "venueIds": [
+        "national-taiwan-museum"
+      ],
+      "collectorVenueIds": [
+        "national-taiwan-museum"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.ntm.gov.tw",
+        "ntm.gov.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "national-theater-concert-hall",
+      "name": "國家兩廳院",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://npac-ntch.org/zh",
+      "listingUrl": "https://npac-ntch.org/zh/program/schedulelist",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [
+        "national-theater-and-concert-hall"
+      ],
+      "collectorVenueIds": [
+        "national-theater-concert-hall"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "npac-ntch.org",
+        "www.npac-ntch.org"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "nuzone",
+      "name": "NUZONE",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://www.nuzone.com.tw/",
+      "listingUrl": "https://nuzone.kktix.cc/events",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance",
+        "exhibition"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "nuzone"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.nuzone.com.tw",
+        "nuzone.com.tw",
+        "nuzone.kktix.cc",
+        "kktix.cc"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "pipe-live-music",
+      "name": "PIPE Live Music",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://pipelivemusic.com/",
+      "listingUrl": "https://pipelivemusic.com/",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "pipe-live-music"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "pipelivemusic.com",
+        "www.pipelivemusic.com"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "tainex-hall-1",
+      "name": "南港展覽館一館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.tainex.com.tw/",
+      "listingUrl": "https://www.tainex.com.tw/event",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "expo",
+        "exhibition"
+      ],
+      "venueIds": [
+        "taipei-nangang-exhibition-center"
+      ],
+      "collectorVenueIds": [
+        "tainex-hall-1"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.tainex.com.tw",
+        "tainex.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "listingUrls": [
+        "https://www.tainex.com.tw/event"
+      ],
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "tainex-hall-2",
+      "name": "南港展覽館二館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.tainex.com.tw/",
+      "listingUrl": "https://www.tainex.com.tw/event",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "expo",
+        "exhibition"
+      ],
+      "venueIds": [
+        "taipei-nangang-exhibition-center"
+      ],
+      "collectorVenueIds": [
+        "tainex-hall-2"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.tainex.com.tw",
+        "tainex.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "listingUrls": [
+        "https://www.tainex.com.tw/event"
+      ],
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "taipei-fine-arts-museum",
+      "name": "臺北市立美術館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.tfam.museum/",
+      "listingUrl": "https://www.tfam.museum/Exhibition/Exhibition_page.aspx?id=41&ddlLang=zh-tw",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "exhibition",
+        "art_exhibition"
+      ],
+      "venueIds": [
+        "taipei-fine-arts-museum"
+      ],
+      "collectorVenueIds": [
+        "taipei-fine-arts-museum"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.tfam.museum",
+        "tfam.museum"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "the-wall-live-house",
+      "name": "THE WALL Live House",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://thewall.tw/",
+      "listingUrl": "https://thewalllivehouse.kktix.cc/events",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "the-wall-live-house"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "thewall.tw",
+        "www.thewall.tw",
+        "thewalllivehouse.kktix.cc",
+        "kktix.cc"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "twtc-hall-1",
+      "name": "臺北世貿一館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 24,
+      "officialUrl": "https://www.twtc.org.tw/",
+      "listingUrl": "https://www.twtc.org.tw/exhibition?p=menu1",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "expo",
+        "exhibition"
+      ],
+      "venueIds": [
+        "taipei-world-trade-center"
+      ],
+      "collectorVenueIds": [
+        "twtc-hall-1"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "www.twtc.org.tw",
+        "twtc.org.tw",
+        "www.twtc.com.tw",
+        "twtc.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 12,
+        "minDelaySeconds": 2,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "twtc-hall-3",
+      "name": "臺北世貿三館（歷史場館）",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "retired",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 65,
+      "refreshHours": 168,
+      "officialUrl": "https://www.twtc.org.tw/",
+      "listingUrl": "",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "expo",
+        "exhibition"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "twtc-hall-3"
+      ],
+      "auditMode": "verify_only",
+      "allowedDomains": [
+        "www.twtc.org.tw",
+        "twtc.org.tw",
+        "www.twtc.com.tw",
+        "twtc.com.tw"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 2,
+        "minDelaySeconds": 4,
+        "timeoutSeconds": 25,
+        "maxAttempts": 1,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 歷史場館驗證項目；不建立現行 Collector、不抓取、不發布。",
+      "implementationStatus": "registry_only"
+    },
+    {
+      "id": "westar",
+      "name": "WESTAR",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "planned_official_site",
+      "status": "planned",
+      "enabled": false,
+      "trustLevel": "official",
+      "priority": 78,
+      "refreshHours": 12,
+      "officialUrl": "https://westar.kktix.cc/",
+      "listingUrl": "https://westar.kktix.cc/events",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "concert",
+        "performance"
+      ],
+      "venueIds": [],
+      "collectorVenueIds": [
+        "westar"
+      ],
+      "auditMode": "audit_only",
+      "allowedDomains": [
+        "westar.kktix.cc",
+        "kktix.cc"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 8,
+        "minDelaySeconds": 3,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": false,
+        "writePublicData": false,
+        "requiresManualApproval": true
+      },
+      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
+      "implementationStatus": "registry_only"
     }
   ]
 }
