@@ -12,3 +12,5 @@ Public social feed: S2 (approved-only, confidence >= 0.68, hidden when empty)
 Candidate release: C3 (daily review artifact, human decisions, preview validation, release PR only; no direct main push)
 Discovery expansion: 96 ticketing, organizer, Live House and festival source profiles; public-site candidates or manual/official-API social intake only
 Social UI: Hero → 最近大家在聊 → 循著今日心緒；detail discussions and gated discussion index
+Monitored sources: C4 (71 organizations / 98 endpoints; 50 public website or KKTIX endpoints monitored at 04:00 Asia/Taipei; strict venue matching and verified automatic publication)
+Social source safety: Instagram/Facebook endpoints remain disabled until Meta official API authorization; no simulated login, private access or unauthorized social scraping
