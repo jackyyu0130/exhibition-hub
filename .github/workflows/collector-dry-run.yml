@@ -39,11 +39,14 @@ jobs:
             --audit-only \
             --report-output collector-dry-run-output/framework-audit.json
 
-      - name: Build non-publishing stage report
+      - name: Build non-publishing stage reports
         run: |
           python scripts/prepare_collector_dry_run.py \
             --stage stage-7-daily-dry-run \
             --output collector-dry-run-output/stage-7-report.json
+          python scripts/prepare_collector_dry_run.py \
+            --stage stage-7-c1-venue-registry-audit \
+            --output collector-dry-run-output/stage-7-c1-venue-registry-report.json
 
       - name: Upload dry-run audit artifacts
         uses: actions/upload-artifact@v4
