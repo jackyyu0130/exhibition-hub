@@ -500,7 +500,7 @@
       "name": "Clapper Studio",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -538,7 +538,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "fubon-art-museum",
@@ -633,7 +633,7 @@
       "name": "Legacy MAX",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -673,14 +673,14 @@
       "listingUrls": [
         "https://www.legacy.com.tw/page/programlist/?area_id=4"
       ],
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "legacy-taipei",
       "name": "Legacy Taipei",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -720,7 +720,7 @@
       "listingUrls": [
         "https://www.legacy.com.tw/page/programlist/?area_id=1"
       ],
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "moca-taipei",
@@ -1006,7 +1006,7 @@
       "name": "NUZONE",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1046,14 +1046,14 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "pipe-live-music",
       "name": "PIPE Live Music",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1090,7 +1090,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "tainex-hall-1",
@@ -1241,7 +1241,7 @@
       "name": "THE WALL Live House",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1280,7 +1280,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "twtc-hall-1",
@@ -1381,7 +1381,7 @@
       "name": "WESTAR",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1418,7 +1418,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     }
   ]
 }
