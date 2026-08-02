@@ -3,3 +3,4 @@ Baseline lineage: Taiwan Exhibition Journal V6.5.0-R7
 Performance patch: P4 (staged Hero hydration, lazy map runtime, predecoded home media, and deep scroll repair)
 Integrated repair: P5-B (restored Hero/editorial motion, working rails, price/category/venue/nearby audits)
 Collector foundation: C1 (21 official venue targets; planned/audit_only; non-publishing)
+Collector implementation: C2 (convention dry-run candidate groups; artifact only)

@@ -1097,7 +1097,7 @@
       "name": "南港展覽館一館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1139,14 +1139,14 @@
       "listingUrls": [
         "https://www.tainex.com.tw/event"
       ],
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "tainex-hall-2",
       "name": "南港展覽館二館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1188,7 +1188,7 @@
       "listingUrls": [
         "https://www.tainex.com.tw/event"
       ],
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "taipei-fine-arts-museum",
@@ -1287,7 +1287,7 @@
       "name": "臺北世貿一館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1328,14 +1328,14 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "twtc-hall-3",
       "name": "臺北世貿三館（歷史場館）",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "retired",
       "enabled": false,
       "trustLevel": "official",
@@ -1374,7 +1374,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 歷史場館驗證項目；不建立現行 Collector、不抓取、不發布。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "westar",

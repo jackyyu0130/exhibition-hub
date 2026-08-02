@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "description": "C2 官方場館 dry-run profiles；只產生候選 artifact，不發布。",
+  "groups": {
+    "convention": [
+      {
+        "sourceId": "twtc-hall-1",
+        "venueName": "臺北世貿一館",
+        "region": "臺北市",
+        "category": "展覽",
+        "listingUrls": [
+          "https://www.twtc.org.tw/exhibition?p=menu1"
+        ],
+        "allowedDomains": [
+          "www.twtc.org.tw",
+          "twtc.org.tw"
+        ],
+        "requiredKeywords": [
+          "世貿一館",
+          "一館"
+        ],
+        "detailUrlPatterns": [
+          "exhibition_more\\\\.aspx"
+        ],
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "twtc-hall-3",
+        "venueName": "臺北世貿三館（歷史場館）",
+        "region": "臺北市",
+        "category": "展覽",
+        "listingUrls": [],
+        "allowedDomains": [
+          "www.twtc.org.tw"
+        ],
+        "mode": "verify_only"
+      },
+      {
+        "sourceId": "tainex-hall-1",
+        "venueName": "南港展覽館一館",
+        "region": "臺北市",
+        "category": "展覽",
+        "listingUrls": [
+          "https://www.tainex.com.tw/event"
+        ],
+        "allowedDomains": [
+          "www.tainex.com.tw",
+          "tainex.com.tw"
+        ],
+        "requiredKeywords": [
+          "一館",
+          "1館",
+          "Hall 1"
+        ],
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "tainex-hall-2",
+        "venueName": "南港展覽館二館",
+        "region": "臺北市",
+        "category": "展覽",
+        "listingUrls": [
+          "https://www.tainex.com.tw/event"
+        ],
+        "allowedDomains": [
+          "www.tainex.com.tw",
+          "tainex.com.tw"
+        ],
+        "requiredKeywords": [
+          "二館",
+          "2館",
+          "Hall 2"
+        ],
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      }
+    ]
+  }
+}
