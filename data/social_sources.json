@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "updatedAt": "2026-08-02",
-  "description": "社群只用於候選發現與人工審核；不得改寫官方展覽欄位。",
+  "description": "社群只用於候選發現與人工審核；不得改寫官方展覽欄位。C3 增加官方 Instagram／Facebook 公開連結的人工或正式 API 候選入口。",
   "sources": [
     {
       "id": "threads",
@@ -42,6 +42,35 @@
       "requiresWrittenAuthorization": true,
       "saveFullText": false,
       "publishAuthorIdentity": false
+    },
+    {
+      "id": "instagram",
+      "enabled": false,
+      "mode": "official_api_or_manual_public_link",
+      "requiresOfficialAccess": true,
+      "allowedAccountTypes": [
+        "venue",
+        "organizer",
+        "festival"
+      ],
+      "saveFullText": false,
+      "publishAuthorIdentity": false,
+      "eventCandidateOnly": true
+    },
+    {
+      "id": "facebook",
+      "enabled": false,
+      "mode": "official_api_or_manual_public_link",
+      "requiresOfficialAccess": true,
+      "allowedAccountTypes": [
+        "venue",
+        "organizer",
+        "festival"
+      ],
+      "saveFullText": false,
+      "publishAuthorIdentity": false,
+      "eventCandidateOnly": true,
+      "automaticEventImport": false
     }
   ]
 }

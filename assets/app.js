@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 P4 → P5-B — restored motion, reliable rails, price/category/venue/nearby corrections. */
+/* Exhibition Hub V6.5.0-R12 STABLE2 P5-B → C3 — reviewed candidate release and curated social discovery UI. */
 (() => {
   'use strict';
 
@@ -180,6 +180,9 @@
     lastRenderedView: null,
     locationRequested: false,
     locationRequestPending: false,
+    socialDiscussions: [],
+    socialPlatform: 'all',
+    socialSort: 'popular',
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -1179,11 +1182,14 @@
       ? requestedSort
       : 'recommended';
     state.date = params.get('date') || null;
+    state.socialPlatform = ['threads','ptt','dcard'].includes(params.get('platform')) ? params.get('platform') : 'all';
+    state.socialSort = params.get('socialSort') === 'latest' ? 'latest' : 'popular';
     const calendarAnchor = state.date ? parseDate(`${state.date}T00:00:00`) : new Date();
     state.calendarMonth = new Date(calendarAnchor.getFullYear(), calendarAnchor.getMonth(), 1);
     if (params.has('event')) state.view = 'detail';
     else if (params.get('view') === 'nearby') state.view = 'nearby';
     else if (params.get('view') === 'favorites') state.view = 'favorites';
+    else if (params.get('view') === 'discussions') state.view = 'social';
     else if (params.get('view') === 'all' || state.query || state.categories.size || state.region || state.venue || params.has('status') || params.has('admission')) state.view = 'listing';
     else state.view = 'home';
   }
@@ -1617,12 +1623,65 @@
   }
 
 
+  function socialDiscussionEvent(row) {
+    return state.events.find(item => String(item.id || item.uid || '') === String(row.matchedEventId || ''));
+  }
+
+  function socialDiscussionCardMarkup(row, {compact = false} = {}) {
+    const event = socialDiscussionEvent(row);
+    const source = String(row.source || '社群').toLowerCase();
+    const label = source === 'ptt' ? 'PTT' : source === 'dcard' ? 'DCARD' : source === 'threads' ? 'THREADS' : source.toUpperCase();
+    return `<article class="social-discussion-card${compact ? ' is-compact' : ''}" data-social-source="${escapeHtml(source)}">
+      <div class="social-discussion-meta"><span>${escapeHtml(label)}</span><small>社群討論</small></div>
+      ${row.publishedAt ? `<time datetime="${escapeHtml(row.publishedAt)}">${escapeHtml(String(row.publishedAt).slice(0,10))}</time>` : ''}
+      <p>${escapeHtml(row.shortExcerpt || '')}</p>
+      ${event ? `<a class="social-related-event" href="${eventHref(event)}"><small>相關展覽</small><strong>${escapeHtml(event.title)}</strong><span aria-hidden="true">→</span></a>` : ''}
+      <a class="social-original-link" href="${escapeHtml(row.postUrl)}" target="_blank" rel="noopener noreferrer">前往公開原文 ↗</a>
+    </article>`;
+  }
+
+  function socialNavigationEligible() {
+    const rows = Array.isArray(state.socialDiscussions) ? state.socialDiscussions : [];
+    return rows.length >= 6 && new Set(rows.map(row => String(row.matchedEventId || '')).filter(Boolean)).size >= 3;
+  }
+
+  function syncSocialNavigation() {
+    const visible = socialNavigationEligible();
+    $$('[data-social-nav]').forEach(link => link.hidden = !visible);
+    const allLink = $('#socialDiscussionsAllLink');
+    if (allLink) allLink.hidden = !visible;
+  }
+
   function renderSocialDiscussions() {
-    const section=$('#socialDiscussionsSection'); const rail=$('#socialDiscussionsRail');
-    if (!section || !rail) return; const rows=Array.isArray(state.socialDiscussions)?state.socialDiscussions:[];
-    if (!rows.length) { section.hidden=true; rail.innerHTML=''; return; }
-    rail.innerHTML=rows.map(row=>{ const event=state.events.find(item=>String(item.id||item.uid||'')===String(row.matchedEventId||''));
-      return `<article class="social-discussion-card"><div><span>${escapeHtml(String(row.source||'社群').toUpperCase())}</span><small>社群討論</small></div>${row.publishedAt?`<time datetime="${escapeHtml(row.publishedAt)}">${escapeHtml(String(row.publishedAt).slice(0,10))}</time>`:''}<p>${escapeHtml(row.shortExcerpt||'')}</p>${event?`<a href="${eventHref(event)}">${escapeHtml(event.title)} →</a>`:''}<a class="social-original-link" href="${escapeHtml(row.postUrl)}" target="_blank" rel="noopener noreferrer">前往原文 ↗</a></article>`; }).join(''); section.hidden=false;
+    const section = $('#socialDiscussionsSection');
+    const rail = $('#socialDiscussionsRail');
+    if (!section || !rail) return;
+    const rows = (Array.isArray(state.socialDiscussions) ? state.socialDiscussions : []).slice(0, 6);
+    syncSocialNavigation();
+    if (!rows.length) { section.hidden=true; rail.innerHTML = ''; return; }
+    rail.innerHTML = rows.map(row => socialDiscussionCardMarkup(row, {compact:true})).join('');
+    section.hidden = false;
+  }
+
+  function renderSocialView() {
+    const rows = Array.isArray(state.socialDiscussions) ? [...state.socialDiscussions] : [];
+    const filtered = rows.filter(row => state.socialPlatform === 'all' || String(row.source || '').toLowerCase() === state.socialPlatform);
+    filtered.sort((a,b) => state.socialSort === 'latest'
+      ? String(b.publishedAt || '').localeCompare(String(a.publishedAt || ''))
+      : Number(b.popularityScore || 0) - Number(a.popularityScore || 0));
+    const grid = $('#socialDiscussionGrid');
+    const empty = $('#socialViewEmpty');
+    const count = $('#socialViewCount');
+    if (count) count.textContent = `共 ${filtered.length.toLocaleString('zh-TW')} 則經人工確認的公開討論`;
+    if (grid) grid.innerHTML = filtered.map(row => socialDiscussionCardMarkup(row)).join('');
+    if (empty) empty.hidden = filtered.length !== 0;
+    $$('#socialPlatformFilters [data-social-platform]').forEach(button => button.classList.toggle('active', button.dataset.socialPlatform === state.socialPlatform));
+    const sort = $('#socialSortSelect'); if (sort) sort.value = state.socialSort;
+  }
+
+  function discussionsForEvent(event) {
+    const key = String(event.id || event.uid || '');
+    return (Array.isArray(state.socialDiscussions) ? state.socialDiscussions : []).filter(row => String(row.matchedEventId || '') === key).slice(0, 3);
   }
 
   function renderHome() {
@@ -2596,6 +2655,7 @@
       return;
     }
     updatePageMetadata(event);
+    const eventDiscussions = discussionsForEvent(event);
     const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 10);
     const mapUrl = googleMapsUrl(event);
     const externalUrl = event.sourceUrl || '';
@@ -2622,6 +2682,7 @@
           <div class="detail-description"><h2>展覽介紹</h2><p>${escapeHtml(event.description || '目前沒有完整介紹，請前往官方活動頁面查看最新資訊。')}</p></div>
         </article>
       </div>
+      ${eventDiscussions.length ? `<section class="detail-social-discussions"><div class="detail-related-heading"><div><p class="eyebrow">SOCIAL DISCOVERY</p><h2>大家怎麼說</h2><p class="section-description">經人工確認、與這場展覽配對的公開討論。</p></div></div><div class="social-discussions-rail detail-social-rail">${eventDiscussions.map(row => socialDiscussionCardMarkup(row, {compact:true})).join('')}</div></section>` : ''}
       ${related.length ? `<section class="detail-related"><div class="detail-related-heading"><div><p class="eyebrow">YOU MAY ALSO LIKE</p><h2>附近或相似的展覽</h2></div><div class="section-controls" aria-label="切換附近或相似展覽"><button class="icon-button" type="button" data-scroll-target="detailRelatedRail" data-dir="-1" aria-label="向左瀏覽相似展覽">←</button><button class="icon-button" type="button" data-scroll-target="detailRelatedRail" data-dir="1" aria-label="向右瀏覽相似展覽">→</button></div></div><div class="featured-rail detail-related-rail" id="detailRelatedRail">${related.map(cardMarkup).join('')}</div></section>` : ''}`;
   }
 
@@ -2827,7 +2888,7 @@
   function renderCurrentView() {
     const previousView = state.lastRenderedView;
     if (previousView === 'home' && state.view !== 'home') cancelHomeHydrationTasks();
-    const views = {home:$('#homeView'),listing:$('#listingView'),nearby:$('#nearbyView'),detail:$('#detailView'),favorites:$('#favoritesView')};
+    const views = {home:$('#homeView'),listing:$('#listingView'),nearby:$('#nearbyView'),social:$('#socialView'),detail:$('#detailView'),favorites:$('#favoritesView')};
     Object.entries(views).forEach(([name,element]) => element.hidden = name !== state.view);
     if (state.view !== 'detail') updatePageMetadata();
     if (state.view === 'home') {
@@ -2841,6 +2902,7 @@
       renderNearby();
       if (!state.userLocation && !state.locationRequested) requestLocation({automatic:true});
     }
+    if (state.view === 'social') renderSocialView();
     if (state.view === 'detail') renderDetail();
     if (state.view === 'favorites') renderFavorites();
     state.lastRenderedView = state.view;
@@ -3205,6 +3267,11 @@
     $('#datePicker').addEventListener('change', event => {state.date = event.target.value || null; renderHome();});
     $('#filterResultsClear').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();$('#discover').scrollIntoView({behavior:'smooth',block:'start'});});
     $('#clearFiltersButton').addEventListener('click', () => {state.status='all';state.date=null;state.categories.clear();renderHome();});
+    $('#socialSortSelect')?.addEventListener('change', event => {
+      state.socialSort = event.target.value === 'latest' ? 'latest' : 'popular';
+      renderSocialView();
+    });
+
     $('#statusPills').addEventListener('click', event => {
       const button = event.target.closest('[data-status]');
       if (!button) return;
@@ -3252,6 +3319,12 @@
       if (wholeCard && !event.target.closest('a,button,input,select,textarea')) {
         event.preventDefault();
         navigateTo(wholeCard.dataset.cardHref);
+        return;
+      }
+      const socialPlatformButton = event.target.closest('[data-social-platform]');
+      if (socialPlatformButton) {
+        state.socialPlatform = socialPlatformButton.dataset.socialPlatform || 'all';
+        renderSocialView();
         return;
       }
       const scrollButton = event.target.closest('[data-scroll-target]');
@@ -3472,6 +3545,7 @@
       state.venueRegistry = [...stableVenues, ...northernVenues, ...confirmedTaiwanVenues];
       state.geocodeCache = geocodeCacheResponse && typeof geocodeCacheResponse === 'object' ? geocodeCacheResponse : {};
       state.socialDiscussions = Array.isArray(socialResponse?.discussions) ? socialResponse.discussions : [];
+      syncSocialNavigation();
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.stats = payload.stats || {};
       state.registryBuild = payload.registryBuild || null;

@@ -1,0 +1,88 @@
+name: C3 candidate review artifact
+on:
+  workflow_dispatch:
+    inputs:
+      discovery_group:
+        description: Additional source group
+        required: true
+        default: ticketing
+        type: choice
+        options: [ticketing, organizer, livehouse, festival, all]
+      source_offset:
+        description: Rotation offset
+        required: false
+        default: '0'
+  schedule:
+    - cron: '55 20 * * *'
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - run: pip install -r requirements.txt
+      - name: Resolve rotating discovery window
+        id: window
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            group="all"
+            chunk=32
+            total="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          payload=json.loads(Path('data/c3_source_catalog.json').read_text(encoding='utf-8'))
+          print(sum(bool(item.get('automatedPublicRead')) for item in payload.get('sources', [])))
+          PY
+          )"
+            windows=$(( (total + chunk - 1) / chunk ))
+            day=$((10#$(date -u +%j)))
+            offset=$(( ((day - 1) % windows) * chunk ))
+          else
+            group="${{ github.event.inputs.discovery_group || 'ticketing' }}"
+            offset="${{ github.event.inputs.source_offset || '0' }}"
+          fi
+          echo "group=$group" >> "$GITHUB_OUTPUT"
+          echo "offset=$offset" >> "$GITHUB_OUTPUT"
+          echo "Discovery group=$group offset=$offset"
+      - name: Run C2 official venue candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          for group in convention live_house performing_arts museums; do
+            python scripts/run_venue_collector_dry_run.py --group "$group" --output-dir "c3-work/collector-artifacts/$group"
+          done
+      - name: Discover additional public source links
+        run: >-
+          python scripts/run_c3_source_discovery.py
+          --group "${{ steps.window.outputs.group }}"
+          --offset "${{ steps.window.outputs.offset }}"
+          --limit 32
+          --output-dir c3-work/collector-artifacts/additional
+      - name: Probe source availability
+        run: >-
+          python scripts/probe_c3_sources.py
+          --group "${{ steps.window.outputs.group }}"
+          --offset "${{ steps.window.outputs.offset }}"
+          --limit 32
+          --output c3-work/source-probe.json
+      - name: Build review queue
+        run: >-
+          python scripts/build_c3_candidate_queue.py
+          --input-dir c3-work/collector-artifacts
+          --output c3-work/c3_candidate_queue.json
+          --report c3-work/c3_candidate_report.json
+      - name: Confirm public data is untouched
+        run: git diff --exit-code -- data/exhibitions.json data/exhibitions.enriched.json data/exhibitions.curated.json data/social_discussions.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c3-candidate-review-${{ github.run_number }}
+          path: c3-work
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,90 @@
+name: C3 prepare approved release PR
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type PREPARE_C3_RELEASE_PR
+        required: true
+        type: string
+      discovery_group:
+        description: Additional source group
+        required: true
+        default: all
+        type: choice
+        options: [ticketing, organizer, livehouse, festival, all]
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  prepare-release-pr:
+    if: github.event.inputs.confirm == 'PREPARE_C3_RELEASE_PR'
+    environment: c3-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - run: pip install -r requirements.txt
+      - name: Rebuild fresh candidates
+        shell: bash
+        run: |
+          set -euo pipefail
+          for group in convention live_house performing_arts museums; do
+            python scripts/run_venue_collector_dry_run.py --group "$group" --output-dir "c3-work/collector-artifacts/$group"
+          done
+          python scripts/run_c3_source_discovery.py --group "${{ github.event.inputs.discovery_group }}" --limit 96 --output-dir c3-work/collector-artifacts/additional
+          python scripts/build_c3_candidate_queue.py --input-dir c3-work/collector-artifacts --output c3-work/c3_candidate_queue.json --report c3-work/c3_candidate_report.json
+      - name: Build approved enriched preview
+        run: >-
+          python scripts/build_c3_publish_preview.py
+          --queue c3-work/c3_candidate_queue.json
+          --decisions data/c3_review_decisions.json
+          --output c3-work/exhibitions.enriched.preview.json
+          --audit c3-work/c3-release-audit.json
+      - name: Build curated preview
+        run: >-
+          python scripts/build_curated_feed.py
+          --input c3-work/exhibitions.enriched.preview.json
+          --output c3-work/exhibitions.curated.preview.json
+          --report c3-work/curated-feed-report.json
+      - name: Validate preview
+        run: >-
+          python scripts/validate_published_data.py
+          --input c3-work/exhibitions.enriched.preview.json
+          --minimum-events 500
+          --report-output c3-work/published-data-validation.json
+      - name: Run complete regression tests
+        run: |
+          python -m compileall -q scripts tests
+          node --check assets/app.js
+          python -m unittest discover -s tests -v
+      - name: Prepare release branch and pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="c3-release-${GITHUB_RUN_ID}"
+          cp c3-work/exhibitions.enriched.preview.json data/exhibitions.enriched.json
+          cp c3-work/exhibitions.curated.preview.json data/exhibitions.curated.json
+          cp c3-work/c3-release-audit.json data/update-reports/c3-latest-release.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add data/exhibitions.enriched.json data/exhibitions.curated.json data/update-reports/c3-latest-release.json
+          if git diff --cached --quiet; then
+            echo "No approved C3 changes; no PR created."
+            exit 0
+          fi
+          git commit -m "data: prepare approved C3 candidate release"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title "Publish approved C3 exhibition candidates" --body "Prepared by the C3 approved-candidate workflow. No direct push to main. Review the audit and checks before merging."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c3-release-preview-${{ github.run_number }}
+          path: c3-work
+          if-no-files-found: warn
+          retention-days: 30
