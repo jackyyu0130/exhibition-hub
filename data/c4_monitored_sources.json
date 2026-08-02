@@ -1,0 +1,2571 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "timezone": "Asia/Taipei",
+  "dailySchedule": "04:00",
+  "description": "C4 指定來源監看與場館自動配對登錄表。公開網站與 KKTIX 主辦頁可自動建立候選；Instagram/Facebook 必須使用 Meta 正式 API 與授權，未取得權限時不模擬登入或爬取。",
+  "safety": {
+    "directSocialScraping": false,
+    "privateContentAccess": false,
+    "socialLoginAutomation": false,
+    "autoPublishRequiresOfficialEndpoint": true,
+    "autoPublishMinimumConfidence": 0.94,
+    "autoPublishRequiresImage": true,
+    "autoPublishRequiresUniqueVenueMatch": true,
+    "autoPublishRequiresFullDate": true,
+    "preserveExistingDataOnFailure": true,
+    "createAuditReport": true
+  },
+  "organizationCount": 71,
+  "endpointCount": 98,
+  "enabledPublicEndpointCount": 50,
+  "organizations": [
+    {
+      "id": "tixcraft",
+      "name": "拓元售票系統 TixCraft",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://tixcraft.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "tixcraft-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "kktix",
+      "name": "KKTIX",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://kktix.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "kktix-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/kktix/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 60,
+          "autoPublishAllowed": false,
+          "id": "kktix-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ibon-ticket",
+      "name": "ibon 售票系統",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://ticket.ibon.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "ibon-ticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "kham-ticket",
+      "name": "寬宏售票系統 KHAM",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://kham.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "kham-ticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "era-ticket",
+      "name": "年代售票 ERA Ticket",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.ticket.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "era-ticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ticketplus",
+      "name": "遠大售票 Ticket Plus",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://ticketplus.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "ticketplus-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "opentix",
+      "name": "OPENTIX 兩廳院文化生活",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.opentix.life",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "opentix-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/OPENTIXNTCH/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 60,
+          "autoPublishAllowed": false,
+          "id": "opentix-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "udn-ticket",
+      "name": "udn 售票網",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://tickets.udnfunlife.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "udn-ticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "famiticket",
+      "name": "FamiTicket 全家售票網",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.famiticket.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "famiticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "indievox",
+      "name": "iNDIEVOX 獨立音樂網",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.indievox.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "indievox-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "walkieticket",
+      "name": "華娛售票 WalkieTicket",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://www.walkieticket.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 75,
+          "autoPublishAllowed": true,
+          "id": "walkieticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "books-ticket",
+      "name": "博客來售票網",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://tickets.books.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 80,
+          "autoPublishAllowed": true,
+          "id": "books-ticket-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "accupass",
+      "name": "Accupass 活動通",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.accupass.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "accupass-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": "活動範圍廣，只建立候選，不直接自動發布。"
+    },
+    {
+      "id": "kkday",
+      "name": "KKday",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.kkday.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 60,
+          "autoPublishAllowed": false,
+          "id": "kkday-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": "只接受明確展覽、演唱會或音樂祭候選。"
+    },
+    {
+      "id": "klook",
+      "name": "Klook 客路",
+      "roles": [
+        "ticketing"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.klook.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 60,
+          "autoPublishAllowed": false,
+          "id": "klook-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": "只接受明確展覽、演唱會或音樂祭候選。"
+    },
+    {
+      "id": "bin-live",
+      "name": "必應創造 B'in Live",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.bin-live.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "bin-live-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "kktix_organizer",
+          "url": "https://binliveconcert.kktix.cc",
+          "accessMode": "kktix_organizer",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "bin-live-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "younghope",
+      "name": "源活國際娛樂 YoungHope",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/younghope.ent/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "younghope-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/younghopeENT/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "younghope-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "kham-inc",
+      "name": "寬宏藝術 KHAM Inc.",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://www.khaminc.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "kham-inc-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/kham_tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "kham-inc-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/khamfans/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "kham-inc-3",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "big-art",
+      "name": "大鴻藝術 BIG ART",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/bigart.staff/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "big-art-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/bigart.tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "big-art-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "superdome",
+      "name": "超級圓頂 SuperDome",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/superdometw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "superdome-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/superdometw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "superdome-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "kktix_organizer",
+          "url": "https://superdome.kktix.cc",
+          "accessMode": "kktix_organizer",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "superdome-3",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "bin-music",
+      "name": "相信音樂 B'in Music",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.bin-music.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "bin-music-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "udnfunlife",
+      "name": "聯合數位文創 udnFunLife",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.udnfunlife.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 85,
+          "autoPublishAllowed": true,
+          "id": "udnfunlife-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "big-nest",
+      "name": "中子創新 The Big Nest",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.legacy.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "big-nest-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "the-wall-music",
+      "name": "The Wall Music 這牆音樂",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://www.thewall.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "the-wall-music-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "livenationtw",
+      "name": "Live Nation Taiwan 理想國",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.livenation.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "livenationtw-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/livenationtw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "livenationtw-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/livenationtw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "livenationtw-3",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "kktix_organizer",
+          "url": "https://livenationtw.kktix.cc",
+          "accessMode": "kktix_organizer",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "livenationtw-4",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ime-taiwan",
+      "name": "iMe Taiwan",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/ime_taiwan/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "ime-taiwan-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/imetaiwan/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "ime-taiwan-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "kklive-tw",
+      "name": "KKLIVE Taiwan",
+      "roles": [
+        "organizer"
+      ],
+      "region": "全台",
+      "aliases": [],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/kklive_tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "kklive-tw-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "legacy",
+      "name": "Legacy 傳 音樂展演空間",
+      "roles": [
+        "venue",
+        "organizer"
+      ],
+      "region": "跨區",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Legacy Taipei",
+          "region": "臺北市",
+          "aliases": [
+            "Legacy Taipei",
+            "Legacy台北",
+            "華山 Legacy",
+            "Legacy 華山"
+          ]
+        },
+        {
+          "canonicalName": "Legacy TERA",
+          "region": "臺北市",
+          "aliases": [
+            "Legacy TERA",
+            "TERA"
+          ]
+        },
+        {
+          "canonicalName": "Legacy MAX",
+          "region": "臺北市",
+          "aliases": [
+            "Legacy MAX",
+            "MAX 信義"
+          ]
+        },
+        {
+          "canonicalName": "Legacy mini @ amba",
+          "region": "臺北市",
+          "aliases": [
+            "Legacy mini",
+            "legacy_mini",
+            "mini @ amba",
+            "amba mini"
+          ]
+        },
+        {
+          "canonicalName": "Legacy Taichung",
+          "region": "臺中市",
+          "aliases": [
+            "Legacy Taichung",
+            "Legacy台中",
+            "台中 Legacy"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.legacy.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "legacy-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/legacy_taiwan/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "legacy-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/LegacyHomePage/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "legacy-3",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/legacy_mini/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "legacy-4",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "sub-live",
+      "name": "SUB（Live House B）",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "SUB（Live House B）",
+          "region": "臺北市",
+          "aliases": [
+            "SUB",
+            "SUB Live",
+            "Live House B"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://sublive.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "sub-live-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "the-wall-livehouse",
+      "name": "The Wall Live House 這牆",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "THE WALL Live House",
+          "region": "臺北市",
+          "aliases": [
+            "THE WALL",
+            "The Wall Live House",
+            "這牆",
+            "公館 The Wall"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://www.thewall.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "the-wall-livehouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/thewalllivehouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "the-wall-livehouse-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/thewall.tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "the-wall-livehouse-3",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "revolver",
+      "name": "Revolver 左輪手槍",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Revolver 左輪手槍",
+          "region": "臺北市",
+          "aliases": [
+            "Revolver",
+            "左輪手槍"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.revolver.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "revolver-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/revolvertaipei/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "revolver-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "witchhouse",
+      "name": "女巫店 Witch House",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "女巫店 Witch House",
+          "region": "臺北市",
+          "aliases": [
+            "女巫店",
+            "Witch House"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.witchhouse.org",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "witchhouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/witchhouse1996/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "witchhouse-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "riverside",
+      "name": "河岸留言 Riverside",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "河岸留言公館音樂藝文咖啡",
+          "region": "臺北市",
+          "aliases": [
+            "河岸留言公館",
+            "Riverside 公館",
+            "公館河岸"
+          ]
+        },
+        {
+          "canonicalName": "河岸留言西門紅樓展演館",
+          "region": "臺北市",
+          "aliases": [
+            "河岸留言西門",
+            "西門紅樓河岸",
+            "Riverside 西門"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.riverside.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "riverside-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/riversidelivehouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "riverside-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "kafka-taipei",
+      "name": "海邊的卡夫卡 Kafka by the Sea",
+      "roles": [
+        "venue",
+        "organizer"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "海邊的卡夫卡 Kafka by the Sea",
+          "region": "臺北市",
+          "aliases": [
+            "海邊的卡夫卡",
+            "Kafka by the Sea",
+            "Kafka"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/kafka.republic/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "kafka-taipei-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "kktix_organizer",
+          "url": "https://kafka.kktix.cc",
+          "accessMode": "kktix_organizer",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 100,
+          "autoPublishAllowed": true,
+          "id": "kafka-taipei-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "pipe-live-music",
+      "name": "PIPE Live Music 水管音樂",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "PIPE Live Music",
+          "region": "臺北市",
+          "aliases": [
+            "PIPE",
+            "PIPE Live Music",
+            "水管音樂"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://pipelivemusic.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "pipe-live-music-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "wildlab",
+      "name": "野地方 Wild Lab",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "野地方 Wild Lab",
+          "region": "臺北市",
+          "aliases": [
+            "野地方",
+            "Wild Lab"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/wildlab.tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "wildlab-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "jackstudio",
+      "name": "杰克音樂 Jack's Studio",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "杰克音樂 Jack's Studio",
+          "region": "臺北市",
+          "aliases": [
+            "杰克音樂",
+            "Jack's Studio",
+            "Jack Studio"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/jackbig8/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "jackstudio-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/jackstudio168/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "jackstudio-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "theuumouth",
+      "name": "樂悠悠之口 光復南",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "樂悠悠之口 光復南",
+          "region": "臺北市",
+          "aliases": [
+            "樂悠悠之口",
+            "光復南樂悠悠",
+            "The UU Mouth"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://theuumouth.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "theuumouth-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/theuumouth.south/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "theuumouth-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "nuzone",
+      "name": "NUZONE",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "NUZONE",
+          "region": "臺北市",
+          "aliases": [
+            "NUZONE",
+            "Nu Zone"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.nuzone.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "nuzone-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "corner-house",
+      "name": "Corner House 角落文創",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Corner House 角落文創",
+          "region": "臺北市",
+          "aliases": [
+            "Corner House",
+            "角落文創"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.corner-house.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 85,
+          "autoPublishAllowed": true,
+          "id": "corner-house-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "hana-space",
+      "name": "花漾 HANA SPACE",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "花漾 HANA SPACE",
+          "region": "臺北市",
+          "aliases": [
+            "花漾",
+            "HANA SPACE"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://hanaspace.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 85,
+          "autoPublishAllowed": true,
+          "id": "hana-space-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "moondog",
+      "name": "MOONDOG",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "MOONDOG",
+          "region": "臺北市",
+          "aliases": [
+            "MOONDOG",
+            "Breeze MEGA"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.moondog10times.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 85,
+          "autoPublishAllowed": true,
+          "id": "moondog-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "westar",
+      "name": "WESTAR",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "WESTAR",
+          "region": "臺北市",
+          "aliases": [
+            "WESTAR",
+            "Westar"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.tremendia.com/westar/about.html",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 80,
+          "autoPublishAllowed": true,
+          "id": "westar-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "clapper-studio",
+      "name": "CLAPPER STUDIO",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "CLAPPER STUDIO",
+          "region": "臺北市",
+          "aliases": [
+            "CLAPPER STUDIO",
+            "Clapper",
+            "三創 Clapper"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.syntrend.com.tw/space/venues.html",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 80,
+          "autoPublishAllowed": true,
+          "id": "clapper-studio-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "zepp-new-taipei",
+      "name": "Zepp New Taipei",
+      "roles": [
+        "venue"
+      ],
+      "region": "新北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Zepp New Taipei",
+          "region": "新北市",
+          "aliases": [
+            "Zepp New Taipei",
+            "Zepp新北"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/zeppnewtaipei",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "zepp-new-taipei-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "billboard-live-taipei",
+      "name": "Billboard Live TAIPEI",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Billboard Live TAIPEI",
+          "region": "臺北市",
+          "aliases": [
+            "Billboard Live TAIPEI",
+            "Billboard Live Taipei"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.billboardlivetaipei.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "billboard-live-taipei-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "sappho",
+      "name": "Sappho Live Jazz",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Sappho Live Jazz",
+          "region": "臺北市",
+          "aliases": [
+            "Sappho",
+            "Sappho Live Jazz"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/sappholivetaipei/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "sappho-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "blue-note-taipei",
+      "name": "台北藍調 Blue Note Taipei",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "台北藍調 Blue Note Taipei",
+          "region": "臺北市",
+          "aliases": [
+            "台北藍調",
+            "Blue Note Taipei"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.bluenotetaipei.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 85,
+          "autoPublishAllowed": true,
+          "id": "blue-note-taipei-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ez5",
+      "name": "EZ5 音樂餐廳",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "EZ5 音樂餐廳",
+          "region": "臺北市",
+          "aliases": [
+            "EZ5",
+            "EZ5 音樂餐廳"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://www.ez5.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 80,
+          "autoPublishAllowed": true,
+          "id": "ez5-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "super346",
+      "name": "Super 346 Live House",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Super 346 Live House",
+          "region": "臺北市",
+          "aliases": [
+            "Super 346",
+            "346 Live House"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://tw346.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 75,
+          "autoPublishAllowed": true,
+          "id": "super346-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "musiccorner",
+      "name": "Music Corner 角落音樂餐廳",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Music Corner 角落音樂餐廳",
+          "region": "臺北市",
+          "aliases": [
+            "Music Corner",
+            "角落音樂餐廳"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/musiccorner.tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "musiccorner-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "backstage-cafe",
+      "name": "後台 Backstage Café",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "後台 Backstage Café",
+          "region": "臺北市",
+          "aliases": [
+            "Backstage Café",
+            "後台咖啡",
+            "台大體育館後台"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://www.backstagecafe.com.tw/space",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 75,
+          "autoPublishAllowed": true,
+          "id": "backstage-cafe-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "idea-plan-space",
+      "name": "典空間",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "典空間",
+          "region": "臺北市",
+          "aliases": [
+            "典空間",
+            "Idea Plan Space"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://idea-plan-space.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 80,
+          "autoPublishAllowed": true,
+          "id": "idea-plan-space-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "mediasphere",
+      "name": "時藝劇場",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "時藝劇場",
+          "region": "臺北市",
+          "aliases": [
+            "時藝劇場",
+            "Media Sphere"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.mediasphere.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 24,
+          "priority": 80,
+          "autoPublishAllowed": true,
+          "id": "mediasphere-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "cohesion-space",
+      "name": "凝聚力展演空間",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "凝聚力展演空間",
+          "region": "臺北市",
+          "aliases": [
+            "凝聚力展演空間",
+            "Cohesion Space"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/cohesionspace/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "cohesion-space-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "fuzz-art-space",
+      "name": "fuzz art space",
+      "roles": [
+        "venue"
+      ],
+      "region": "新北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "fuzz art space",
+          "region": "新北市",
+          "aliases": [
+            "fuzz art space",
+            "FuzzArtSpace"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/FuzzArtSpace/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 70,
+          "autoPublishAllowed": false,
+          "id": "fuzz-art-space-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "corner-max",
+      "name": "CORNER MAX 大角落多功能展演館",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺北市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "CORNER MAX 大角落多功能展演館",
+          "region": "臺北市",
+          "aliases": [
+            "CORNER MAX",
+            "大角落多功能展演館"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "unknown",
+          "url": "",
+          "accessMode": "manual_only",
+          "enabled": false,
+          "refreshHours": 24,
+          "priority": 0,
+          "autoPublishAllowed": false,
+          "id": "corner-max-1",
+          "trustLevel": "unverified",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": "尚未查得固定官方網址。"
+    },
+    {
+      "id": "there-livehouse",
+      "name": "ThERE CAFE & LIVE HOUSE",
+      "roles": [
+        "venue"
+      ],
+      "region": "桃園市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "ThERE CAFE & LIVE HOUSE",
+          "region": "桃園市",
+          "aliases": [
+            "ThERE CAFE",
+            "ThERE Live House"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/ThERELiveHouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "there-livehouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "mixingstudio",
+      "name": "彌聲 MixingStudio",
+      "roles": [
+        "venue"
+      ],
+      "region": "新竹市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "彌聲 MixingStudio",
+          "region": "新竹市",
+          "aliases": [
+            "彌聲",
+            "MixingStudio",
+            "Mixing Studio"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://www.mixingstudiotw.com",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 85,
+          "autoPublishAllowed": true,
+          "id": "mixingstudio-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "sound-livehouse",
+      "name": "迴響音樂展演空間 SOUND Live House",
+      "roles": [
+        "venue",
+        "organizer"
+      ],
+      "region": "臺中市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "迴響音樂展演空間 SOUND Live House",
+          "region": "臺中市",
+          "aliases": [
+            "迴響音樂展演空間",
+            "SOUND Live House",
+            "Sound Livehouse"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/soundlivehouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "sound-livehouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/SoundLiveHouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "sound-livehouse-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "tcrc-livehouse",
+      "name": "TCRC Livehouse",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺南市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "TCRC Livehouse",
+          "region": "臺南市",
+          "aliases": [
+            "TCRC",
+            "TCRC Livehouse"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/tcrc_livehouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "tcrc-livehouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "seety-tainan",
+      "name": "新城視展演空間",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺南市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "新城視展演空間",
+          "region": "臺南市",
+          "aliases": [
+            "新城視",
+            "SEETY Tainan",
+            "seetytainan"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/seetytainan/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "seety-tainan-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "heron-livehouse",
+      "name": "漂丿白鷺 Live House",
+      "roles": [
+        "venue"
+      ],
+      "region": "臺南市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "漂丿白鷺 Live House",
+          "region": "臺南市",
+          "aliases": [
+            "漂丿白鷺",
+            "白鷺 Live House",
+            "Heron Livehouse"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/heronlivehouse",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "heron-livehouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "livewarehouse",
+      "name": "LIVE WAREHOUSE",
+      "roles": [
+        "venue"
+      ],
+      "region": "高雄市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "LIVE WAREHOUSE",
+          "region": "高雄市",
+          "aliases": [
+            "LIVE WAREHOUSE",
+            "Live Warehouse",
+            "大義 C10"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "https://livewarehouse.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 95,
+          "autoPublishAllowed": true,
+          "id": "livewarehouse-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/livewarehouse.tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "livewarehouse-2",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        },
+        {
+          "platform": "facebook",
+          "url": "https://www.facebook.com/livewarehouse/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "livewarehouse-3",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "backstage-live",
+      "name": "後台 Backstage Live",
+      "roles": [
+        "venue"
+      ],
+      "region": "高雄市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "後台 Backstage Live",
+          "region": "高雄市",
+          "aliases": [
+            "Backstage Live",
+            "後台 Backstage",
+            "SPERO"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "official_website",
+          "url": "http://backstagelive.com.tw",
+          "accessMode": "public_html",
+          "enabled": true,
+          "refreshHours": 12,
+          "priority": 90,
+          "autoPublishAllowed": true,
+          "id": "backstage-live-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "rocks-kaohsiung",
+      "name": "Rocks 岩石音樂",
+      "roles": [
+        "venue"
+      ],
+      "region": "高雄市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "Rocks 岩石音樂",
+          "region": "高雄市",
+          "aliases": [
+            "Rocks 岩石音樂",
+            "Rocks Music KH"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/rocksmusickhtw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "rocks-kaohsiung-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "paramount-bar",
+      "name": "百樂門酒館 Paramount Bar",
+      "roles": [
+        "venue"
+      ],
+      "region": "高雄市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "百樂門酒館 Paramount Bar",
+          "region": "高雄市",
+          "aliases": [
+            "百樂門酒館",
+            "Paramount Bar"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/paramount.bar.tw/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "paramount-bar-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "kafka-kaohsiung",
+      "name": "海邊的卡夫卡－高流店",
+      "roles": [
+        "venue"
+      ],
+      "region": "高雄市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "海邊的卡夫卡－高流店",
+          "region": "高雄市",
+          "aliases": [
+            "海邊的卡夫卡高流店",
+            "Kafka 高流",
+            "kafka.republic.kh"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/kafka.republic.kh/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 75,
+          "autoPublishAllowed": false,
+          "id": "kafka-kaohsiung-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "rock-music-kaohsiung",
+      "name": "洛克音樂藝文展演空間 Rock Music",
+      "roles": [
+        "venue"
+      ],
+      "region": "高雄市",
+      "aliases": [],
+      "venueMatches": [
+        {
+          "canonicalName": "洛克音樂藝文展演空間 Rock Music",
+          "region": "高雄市",
+          "aliases": [
+            "洛克音樂藝文展演空間",
+            "Rock Music 高雄"
+          ]
+        }
+      ],
+      "endpoints": [
+        {
+          "platform": "unknown",
+          "url": "",
+          "accessMode": "manual_only",
+          "enabled": false,
+          "refreshHours": 24,
+          "priority": 0,
+          "autoPublishAllowed": false,
+          "id": "rock-music-kaohsiung-1",
+          "trustLevel": "unverified",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": "尚未取得可驗證的固定官方網址。"
+    },
+    {
+      "id": "taiwan-music-festival",
+      "name": "台灣祭 Taiwan Music Festival",
+      "roles": [
+        "festival"
+      ],
+      "region": "屏東縣",
+      "aliases": [
+        "台灣祭"
+      ],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/taiwanmusicfest/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "taiwan-music-festival-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "rock-in-taichung",
+      "name": "搖滾台中 ROCK IN TAICHUNG",
+      "roles": [
+        "festival"
+      ],
+      "region": "臺中市",
+      "aliases": [
+        "搖滾台中"
+      ],
+      "venueMatches": [],
+      "endpoints": [
+        {
+          "platform": "instagram",
+          "url": "https://www.instagram.com/rockintaichung/",
+          "accessMode": "meta_api_required",
+          "enabled": false,
+          "refreshHours": 12,
+          "priority": 80,
+          "autoPublishAllowed": false,
+          "id": "rock-in-taichung-1",
+          "trustLevel": "official",
+          "requiresManualReview": true
+        }
+      ],
+      "notes": ""
+    }
+  ]
+}

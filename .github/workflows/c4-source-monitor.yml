@@ -1,0 +1,239 @@
+name: C4 monitored sources and venue matching
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 20 * * *" # 台灣時間每天 04:00
+
+permissions:
+  contents: write
+
+concurrency:
+  group: c4-monitored-sources
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    name: Monitor shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Monitor official websites and KKTIX organizer pages
+        run: >-
+          python scripts/run_c4_source_monitor.py
+          --registry data/c4_monitored_sources.json
+          --state data/c4_monitor_state.json
+          --events data/exhibitions.enriched.json
+          --output-dir "c4-shard-${{ matrix.shard }}"
+          --shard-count 4
+          --shard-index "${{ matrix.shard }}"
+          --max-detail-pages 12
+          --request-delay 0.7
+
+      - name: Upload shard audit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c4-shard-${{ matrix.shard }}
+          path: c4-shard-${{ matrix.shard }}
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Merge, validate, publish and trigger Pages deploy
+    needs: monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout newest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download monitor shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: c4-shard-*
+          path: c4-work/shards
+          merge-multiple: false
+
+      - name: Merge source reports, candidates and state
+        run: >-
+          python scripts/merge_c4_monitor_shards.py
+          --input-dir c4-work/shards
+          --base-state data/c4_monitor_state.json
+          --candidates c4-work/candidates.json
+          --report c4-work/monitor-report.json
+          --state c4-work/c4_monitor_state.next.json
+          --public-status c4-work/c4_public_status.json
+
+      - name: Build strict automatic publish preview
+        run: >-
+          python scripts/apply_c4_candidates.py
+          --base data/exhibitions.enriched.json
+          --candidates c4-work/candidates.json
+          --output c4-work/exhibitions.enriched.preview.json
+          --report c4-work/publish-report.json
+          --maximum-additions 40
+
+      - name: Sanitize C4 candidate images
+        run: >-
+          python scripts/audit_event_images.py
+          --fix
+          c4-work/exhibitions.enriched.preview.json
+          --report c4-work/image-quality-audit.json
+
+      - name: Build curated preview
+        run: >-
+          python scripts/build_curated_feed.py
+          --input c4-work/exhibitions.enriched.preview.json
+          --matrix data/taiwan_venue_matrix.json
+          --output c4-work/exhibitions.curated.preview.json
+          --report c4-work/curated-feed-report.json
+
+      - name: Validate production preview
+        run: >-
+          python scripts/validate_published_data.py
+          --input c4-work/exhibitions.enriched.preview.json
+          --minimum-events 500
+          --report-output c4-work/published-data-validation.json
+
+      - name: Run complete regression tests
+        run: |
+          python -m compileall -q scripts tests
+          node --check assets/app.js
+          python -m unittest discover -s tests -v
+
+      - name: Finalize public status and quality gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          monitor = json.loads(Path("c4-work/monitor-report.json").read_text(encoding="utf-8"))
+          publish = json.loads(Path("c4-work/publish-report.json").read_text(encoding="utf-8"))
+          status = json.loads(Path("c4-work/c4_public_status.json").read_text(encoding="utf-8"))
+          gates = publish.get("qualityGates") or {}
+          required = ("baseEventsPreserved", "maximumAdditionsRespected", "onlyEligibleCandidatesApplied", "directSocialCandidatesApplied")
+          failed = [key for key in required if not gates.get(key)]
+          if failed:
+              raise SystemExit("C4 quality gates failed: " + ", ".join(failed))
+          status["publishedCandidateCount"] = int(publish.get("addedCount") or 0)
+          status["candidateCount"] = int(monitor.get("candidateCount") or 0)
+          status["autoPublishEligibleCount"] = int(monitor.get("autoPublishEligibleCount") or 0)
+          status["lastRunResult"] = "success"
+          Path("c4-work/c4_public_status.json").write_text(
+              json.dumps(status, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Update production files
+        shell: bash
+        run: |
+          set -euo pipefail
+          added="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('c4-work/publish-report.json').read_text(encoding='utf-8')).get('addedCount', 0))
+          PY
+          )"
+          if [ "$added" -gt 0 ]; then
+            cp c4-work/exhibitions.enriched.preview.json data/exhibitions.enriched.json
+            cp c4-work/exhibitions.curated.preview.json data/exhibitions.curated.json
+          fi
+          cp c4-work/c4_monitor_state.next.json data/c4_monitor_state.json
+          cp c4-work/c4_public_status.json data/c4_public_status.json
+          mkdir -p data/update-reports
+          cp c4-work/monitor-report.json data/update-reports/c4-source-monitor.json
+          cp c4-work/publish-report.json data/update-reports/c4-publish-report.json
+
+      - name: Commit C4 data safely to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          TRACKED=(
+            data/exhibitions.enriched.json
+            data/exhibitions.curated.json
+            data/c4_monitor_state.json
+            data/c4_public_status.json
+            data/update-reports/c4-source-monitor.json
+            data/update-reports/c4-publish-report.json
+          )
+          if [ -z "$(git status --porcelain -- "${TRACKED[@]}")" ]; then
+            echo "No C4 changes to commit"
+            exit 0
+          fi
+
+          mkdir -p /tmp/c4-production/data/update-reports
+          for path in "${TRACKED[@]}"; do
+            if [ -f "$path" ]; then
+              mkdir -p "/tmp/c4-production/$(dirname "$path")"
+              cp "$path" "/tmp/c4-production/$path"
+            fi
+          done
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            for path in "${TRACKED[@]}"; do
+              if [ -f "/tmp/c4-production/$path" ]; then
+                mkdir -p "$(dirname "$path")"
+                cp "/tmp/c4-production/$path" "$path"
+              fi
+            done
+            if [ -z "$(git status --porcelain -- "${TRACKED[@]}")" ]; then
+              echo "Newest main already contains this C4 result"
+              exit 0
+            fi
+            git add "${TRACKED[@]}"
+            git commit -m "chore: monitor C4 sources and publish verified venue events"
+            if git push origin HEAD:main; then
+              echo "C4 production data pushed. The main push will trigger the Pages deployment workflow."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Unable to push C4 result after three attempts"
+          exit 1
+
+      - name: Upload complete C4 audit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c4-source-monitor-${{ github.run_number }}
+          path: c4-work
+          if-no-files-found: error
+          retention-days: 30

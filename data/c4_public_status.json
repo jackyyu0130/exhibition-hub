@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": null,
+  "monitoredPublicSourceCount": 50,
+  "healthySourceCount": 0,
+  "failedSourceCount": 0,
+  "candidateCount": 0,
+  "autoPublishEligibleCount": 0,
+  "schedule": "每天 04:00（台灣時間）",
+  "socialApiStatus": "Instagram／Facebook 需 Meta 正式 API 與授權；尚未啟用的社群端點不會模擬登入或爬取。"
+}
