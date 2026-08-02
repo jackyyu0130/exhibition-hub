@@ -6,7 +6,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import yaml
 
 from scripts.exhibition_hub.c3_review import apply_decisions, build_queue
 
@@ -42,8 +41,7 @@ class C3CandidateReleaseTests(unittest.TestCase):
     def test_candidate_workflow_is_daily_read_only_and_artifact_only(self):
         path = ROOT / ".github/workflows/c3-candidate-review.yml"
         text = path.read_text(encoding="utf-8")
-        payload = yaml.safe_load(text)
-        self.assertEqual(payload["permissions"]["contents"], "read")
+        self.assertRegex(text, r"(?m)^permissions:\s*\n\s+contents:\s*read\s*$")
         self.assertIn("55 20 * * *", text)
         self.assertIn("Resolve rotating discovery window", text)
         self.assertIn("group=\"all\"", text)
@@ -55,9 +53,7 @@ class C3CandidateReleaseTests(unittest.TestCase):
     def test_release_workflow_creates_pr_and_never_pushes_main(self):
         path = ROOT / ".github/workflows/c3-release-pr.yml"
         text = path.read_text(encoding="utf-8")
-        payload = yaml.safe_load(text)
-        job = payload["jobs"]["prepare-release-pr"]
-        self.assertEqual(job["environment"], "c3-production")
+        self.assertRegex(text, r"(?m)^\s{4}environment:\s*c3-production\s*$")
         self.assertIn("PREPARE_C3_RELEASE_PR", text)
         self.assertIn("gh pr create --base main", text)
         self.assertIn('git push origin "$branch"', text)
