@@ -205,6 +205,40 @@
         "timeoutSeconds": 25,
         "minDelaySeconds": 3
       }
+    ],
+    "performing_arts": [
+      {
+        "sourceId": "national-theater-concert-hall",
+        "venueName": "國家兩廳院",
+        "region": "臺北市",
+        "category": "表演",
+        "listingUrls": [
+          "https://npac-ntch.org/zh/program/schedulelist"
+        ],
+        "allowedDomains": [
+          "npac-ntch.org",
+          "www.npac-ntch.org"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "national-taichung-theater",
+        "venueName": "臺中國家歌劇院",
+        "region": "臺中市",
+        "category": "表演",
+        "listingUrls": [
+          "https://www.npac-ntt.org/program/events?place=1"
+        ],
+        "allowedDomains": [
+          "www.npac-ntt.org",
+          "npac-ntt.org"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      }
     ]
   }
 }

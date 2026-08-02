@@ -869,7 +869,7 @@
       "name": "臺中國家歌劇院",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -908,7 +908,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "national-taiwan-museum",
@@ -960,7 +960,7 @@
       "name": "國家兩廳院",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -999,7 +999,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "nuzone",
