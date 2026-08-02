@@ -888,8 +888,17 @@
     if (/免費|自由入場|免票|free/i.test(full)) return '免費入場';
     if (full.length <= 26) return full;
 
-    const values = [...full.matchAll(/(?:NT\$?|TWD|新[臺台]幣|票價)?\s*[$＄]?\s*([0-9][0-9,]*)\s*元?/gi)]
-      .map(match => Number(match[1].replaceAll(',', '')))
+    // Only treat numbers as money when the surrounding text explicitly marks
+    // them as a currency amount or a named ticket price. This prevents times,
+    // dates and age restrictions such as 10:00, 17:30 or 3 歲 from becoming
+    // fake card prices.
+    const currencyValues = [...full.matchAll(/(?:NT\$?|TWD|新[臺台]幣|[$＄])\s*([0-9][0-9,]*)/gi)]
+      .map(match => Number(match[1].replaceAll(',', '')));
+    const yuanValues = [...full.matchAll(/([0-9][0-9,]*)\s*元/gi)]
+      .map(match => Number(match[1].replaceAll(',', '')));
+    const labelledValues = [...full.matchAll(/(?:現場票價|票價|全票|優待票|優惠票|預售票|現場票|早鳥票|學生票|兒童票|愛心票)[：:]?\s*[$＄]?\s*([0-9][0-9,]*)/gi)]
+      .map(match => Number(match[1].replaceAll(',', '')));
+    const values = [...currencyValues, ...yuanValues, ...labelledValues]
       .filter(number => Number.isFinite(number) && number > 0);
     const unique = [...new Set(values)].sort((a, b) => a - b);
     const money = number => number.toLocaleString('en-US');
