@@ -8,5 +8,14 @@
   "dcard": {
     "authorizedSources": [],
     "notes": "Requires written authorization or manual public URL submission."
+  },
+  "catalogReference": "data/c3_source_catalog.json",
+  "instagram": {
+    "approvedAccountsSource": "c3_source_catalog.json",
+    "notes": "Only official venue, organizer and festival accounts; manual links or official API only."
+  },
+  "facebook": {
+    "approvedPagesSource": "c3_source_catalog.json",
+    "notes": "No automatic Facebook event import. Manual public links or official API only."
   }
 }

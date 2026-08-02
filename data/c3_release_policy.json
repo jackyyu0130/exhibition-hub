@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "release": "v6.5.0-r12-stable2-c3",
+  "description": "C3 候選審核與正式發布安全規格。正式資料只能透過人工審核、預覽、完整測試及 Pull Request 合併。",
+  "thresholds": {
+    "automaticEligibility": 0.86,
+    "manualEligibility": 0.72,
+    "existingEventUpdate": 0.82,
+    "minimumTitleLength": 3,
+    "maximumReviewQueue": 500
+  },
+  "requiredFields": ["title", "startDate", "endDate", "venueName", "region", "sourceUrl"],
+  "trustedSourceKinds": ["venue_official", "ticketing", "organizer_official", "government"],
+  "socialRules": {
+    "communityPostsCanPublishEvents": false,
+    "officialSocialOnlyRequiresManualApproval": true,
+    "officialSocialOnlyCannotOverrideCoreFields": true,
+    "requiresSecondaryEvidenceForCoreFields": true,
+    "saveFullText": false,
+    "publishAuthorIdentity": false
+  },
+  "publication": {
+    "directPushToMain": false,
+    "createPullRequestOnly": true,
+    "requiresExactConfirmation": "PREPARE_C3_RELEASE_PR",
+    "requiresEnvironmentApproval": true,
+    "rollbackOnValidationFailure": true,
+    "preservePreviousProductionData": true
+  }
+}

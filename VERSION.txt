@@ -9,3 +9,6 @@ Collector implementation: C2 (convention, live_house, performing_arts dry-run ca
 Collector implementation: C2 (convention, live_house, performing_arts, museums dry-run candidate groups; artifact only)
 Social discovery: S1 (review queue, PTT low-frequency public index, Threads/Dcard authorized or manual only)
 Public social feed: S2 (approved-only, confidence >= 0.68, hidden when empty)
+Candidate release: C3 (daily review artifact, human decisions, preview validation, release PR only; no direct main push)
+Discovery expansion: 96 ticketing, organizer, Live House and festival source profiles; public-site candidates or manual/official-API social intake only
+Social UI: Hero → 最近大家在聊 → 循著今日心緒；detail discussions and gated discussion index

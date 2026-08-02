@@ -20,7 +20,7 @@
   <!-- Compatibility history: assets/styles.css?v=6.5.0-r11.0.2 · assets/app.js?v=6.5.0-r11.0.2 · assets/styles.css?v=6.5.0-r12-stable2-p4 · assets/app.js?v=6.5.0-r12-stable2-p4 -->
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-p5b · assets/app.js?v=6.5.0-r12-stable2-p5b -->
   <!-- Performance patch P1: inward Hero controls, lower paint cost, smoother section reveals. -->
-  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r12-stable2-s2">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r12-stable2-c3">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var loaded=false;function load(){if(loaded)return;loaded=true;
@@ -52,6 +52,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <nav class="desktop-nav" aria-label="主要導覽">
         <a href="?view=all">探索展覽</a>
         <a href="?view=nearby">附近展覽</a>
+        <a href="?view=discussions" data-social-nav hidden>大家在聊</a>
         <a href="?view=favorites">我的收藏</a>
       </nav>
 
@@ -85,6 +86,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <nav class="mobile-menu-nav" aria-label="行動版主要導覽">
         <a href="?view=all">探索展覽</a>
         <a href="?view=nearby">附近展覽</a>
+        <a href="?view=discussions" data-social-nav hidden>大家在聊</a>
         <a href="?view=favorites">我的收藏</a>
       </nav>
 
@@ -222,6 +224,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </section>
 
+      <section class="editorial-section social-discussions-section social-discussions-home" id="socialDiscussionsSection" hidden>
+        <div class="section-heading">
+          <div><p class="eyebrow">SOCIAL DISCOVERY</p><h2>最近大家在聊</h2><p class="section-description">從公開討論裡，聽見展覽之外的回聲。內容皆經人工確認並連結回站內展覽。</p></div>
+          <div class="section-heading-actions"><a class="text-link" id="socialDiscussionsAllLink" href="?view=discussions" hidden>查看全部話題 →</a><div class="section-controls"><button class="icon-button" type="button" data-scroll-target="socialDiscussionsRail" data-dir="-1" aria-label="向左瀏覽社群討論">←</button><button class="icon-button" type="button" data-scroll-target="socialDiscussionsRail" data-dir="1" aria-label="向右瀏覽社群討論">→</button></div></div>
+        </div>
+        <div class="social-discussions-rail" id="socialDiscussionsRail"></div>
+      </section>
+
       <section class="discovery-panel" id="discover">
         <div class="panel-topline">
           <div>
@@ -331,11 +341,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="nearby-stack" id="nearbyHomeList"></div>
       </section>
 
-
-      <section class="editorial-section social-discussions-section" id="socialDiscussionsSection" hidden>
-        <div class="section-heading"><div><p class="eyebrow">SOCIAL DISCOVERY</p><h2>最近大家在聊</h2></div><div class="section-controls"><button class="icon-button" type="button" data-scroll-target="socialDiscussionsRail" data-dir="-1" aria-label="向左瀏覽社群討論">←</button><button class="icon-button" type="button" data-scroll-target="socialDiscussionsRail" data-dir="1" aria-label="向右瀏覽社群討論">→</button></div></div>
-        <div class="social-discussions-rail" id="socialDiscussionsRail"></div>
-      </section>
 
       <section class="editorial-section venue-section" data-motion-group data-section-motion="venue">
         <div class="section-heading">
@@ -511,6 +516,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </section>
 
+    <section class="social-view app-view" id="socialView" hidden>
+      <div class="view-hero compact-view-hero social-view-hero">
+        <p class="eyebrow">SOCIAL DISCOVERY</p>
+        <h1>大家在聊</h1>
+        <p>從 Threads、PTT 與 Dcard 的公開討論裡，整理與展覽真正相關的聲音。所有內容皆經人工審核，不取代官方日期、地址與票價。</p>
+      </div>
+      <div class="social-view-shell">
+        <div class="social-view-toolbar">
+          <div class="social-platform-filters" id="socialPlatformFilters" aria-label="社群平台篩選">
+            <button type="button" class="active" data-social-platform="all">全部</button>
+            <button type="button" data-social-platform="threads">Threads</button>
+            <button type="button" data-social-platform="ptt">PTT</button>
+            <button type="button" data-social-platform="dcard">Dcard</button>
+          </div>
+          <select id="socialSortSelect" aria-label="社群討論排序">
+            <option value="popular">熱門討論</option>
+            <option value="latest">最新討論</option>
+          </select>
+        </div>
+        <p class="social-view-count" id="socialViewCount"></p>
+        <div class="social-discussion-grid" id="socialDiscussionGrid"></div>
+        <div class="empty-state" id="socialViewEmpty" hidden><span>✦</span><h3>目前還沒有足夠的核准討論</h3><p>內容達到公開門檻後，這裡會自動出現。</p><a class="primary-link" href="./">回到首頁</a></div>
+      </div>
+    </section>
+
     <section class="detail-view app-view" id="detailView" hidden>
       <div class="detail-shell" id="detailContent"></div>
     </section>
@@ -567,7 +597,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h2>讓每一次出門，<br>都有值得期待的目的地。</h2>
       </div>
       <div class="footer-links">
-        <div class="footer-navigation"><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展覽</a><a href="?view=favorites">我的收藏</a></div>
+        <div class="footer-navigation"><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展覽</a><a href="?view=discussions" data-social-nav hidden>大家在聊</a><a href="?view=favorites">我的收藏</a></div>
         <div class="footer-metrics" aria-label="網站資料摘要">
           <div class="footer-metric"><strong>收錄展覽</strong><span id="footerRecordCount">— 檔</span></div>
           <div class="footer-metric"><strong>展演場地</strong><span id="footerVenueCount">— 處</span></div>
@@ -603,6 +633,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/app.js?v=6.5.0-r12-stable2-s2"></script>
+  <script src="assets/app.js?v=6.5.0-r12-stable2-c3"></script>
 </body>
 </html>
