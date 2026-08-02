@@ -44,7 +44,13 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.include_top }}" = "true" ]; then
             EXTRA+=(--include-top)
           fi
-          python scripts/run_threads_discovery.py             --config data/threads_search_config.json             --events data/exhibitions.curated.json             --output social-review-artifact/threads_candidates.json             --signals-output social-review-artifact/threads_new_event_signals.json             --report social-review-artifact/threads_discovery_report.json             "${EXTRA[@]}"
+          python scripts/run_threads_discovery.py \
+            --config data/threads_search_config.json \
+            --events data/exhibitions.curated.json \
+            --output social-review-artifact/threads_candidates.json \
+            --signals-output social-review-artifact/threads_new_event_signals.json \
+            --report social-review-artifact/threads_discovery_report.json \
+            "${EXTRA[@]}"
 
       - name: Build combined review-only candidate queue
         run: >-
@@ -59,6 +65,26 @@ jobs:
           data/exhibitions.enriched.json
           data/exhibitions.curated.json
           data/social_discussions.json
+
+      - name: Validate Threads API result
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(
+              Path('social-review-artifact/threads_discovery_report.json').read_text(encoding='utf-8')
+          )
+          status = report.get('status')
+          print(
+              f"Threads status={status} "
+              f"successfulQueries={report.get('successfulQueryCount', 0)} "
+              f"candidates={report.get('candidateCount', 0)}"
+          )
+          if status in {'api_error', 'permission_denied', 'rate_limited', 'server_error', 'http_error', 'error'}:
+              raise SystemExit(1)
+          PY
 
       - name: Upload review artifact
         uses: actions/upload-artifact@v4
