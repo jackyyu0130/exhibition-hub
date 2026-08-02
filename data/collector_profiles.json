@@ -77,6 +77,134 @@
         "timeoutSeconds": 25,
         "minDelaySeconds": 2
       }
+    ],
+    "live_house": [
+      {
+        "sourceId": "legacy-taipei",
+        "venueName": "Legacy Taipei",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://www.legacy.com.tw/page/programlist/?area_id=1"
+        ],
+        "allowedDomains": [
+          "www.legacy.com.tw",
+          "legacy.com.tw"
+        ],
+        "requiredKeywords": [
+          "Legacy Taipei",
+          "台北"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      },
+      {
+        "sourceId": "legacy-max",
+        "venueName": "Legacy MAX",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://www.legacy.com.tw/page/programlist/?area_id=4"
+        ],
+        "allowedDomains": [
+          "www.legacy.com.tw",
+          "legacy.com.tw"
+        ],
+        "requiredKeywords": [
+          "Legacy MAX",
+          "MAX"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      },
+      {
+        "sourceId": "the-wall-live-house",
+        "venueName": "THE WALL Live House",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://thewalllivehouse.kktix.cc/events"
+        ],
+        "allowedDomains": [
+          "thewalllivehouse.kktix.cc",
+          "kktix.cc"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      },
+      {
+        "sourceId": "nuzone",
+        "venueName": "NUZONE",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://nuzone.kktix.cc/events"
+        ],
+        "allowedDomains": [
+          "nuzone.kktix.cc",
+          "kktix.cc"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      },
+      {
+        "sourceId": "clapper-studio",
+        "venueName": "Clapper Studio",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://www.syntrend.com.tw/space/venues.html"
+        ],
+        "allowedDomains": [
+          "www.syntrend.com.tw",
+          "syntrend.com.tw"
+        ],
+        "requiredKeywords": [
+          "Clapper"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      },
+      {
+        "sourceId": "pipe-live-music",
+        "venueName": "PIPE Live Music",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://pipelivemusic.com/"
+        ],
+        "allowedDomains": [
+          "pipelivemusic.com",
+          "www.pipelivemusic.com"
+        ],
+        "requiredKeywords": [
+          "PIPE"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      },
+      {
+        "sourceId": "westar",
+        "venueName": "WESTAR",
+        "region": "臺北市",
+        "category": "演唱會",
+        "listingUrls": [
+          "https://westar.kktix.cc/events"
+        ],
+        "allowedDomains": [
+          "westar.kktix.cc",
+          "kktix.cc"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 3
+      }
     ]
   }
 }
