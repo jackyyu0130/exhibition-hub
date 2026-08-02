@@ -268,6 +268,12 @@ jobs:
           print(f"Curated public feed ready: {len(events)} events")
           PY
 
+      - name: Build approved social discussion feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/build_social_feed.py --queue data/social_review_queue.json --events data/exhibitions.curated.json --output data/social_discussions.json
+
       - name: Validate dynamic published production data
         shell: bash
         run: |
@@ -300,6 +306,7 @@ jobs:
             data/exhibitions.json
             data/exhibitions.enriched.json
             data/exhibitions.curated.json
+            data/social_discussions.json
             data/geocode-cache.json
             data/update-reports/latest-huashan-update.json
             data/update-reports/image-quality-audit.json

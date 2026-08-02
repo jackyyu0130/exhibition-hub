@@ -1616,6 +1616,15 @@
     state.lastHomeFilterKey = filterKey;
   }
 
+
+  function renderSocialDiscussions() {
+    const section=$('#socialDiscussionsSection'); const rail=$('#socialDiscussionsRail');
+    if (!section || !rail) return; const rows=Array.isArray(state.socialDiscussions)?state.socialDiscussions:[];
+    if (!rows.length) { section.hidden=true; rail.innerHTML=''; return; }
+    rail.innerHTML=rows.map(row=>{ const event=state.events.find(item=>String(item.id||item.uid||'')===String(row.matchedEventId||''));
+      return `<article class="social-discussion-card"><div><span>${escapeHtml(String(row.source||'社群').toUpperCase())}</span><small>社群討論</small></div>${row.publishedAt?`<time datetime="${escapeHtml(row.publishedAt)}">${escapeHtml(String(row.publishedAt).slice(0,10))}</time>`:''}<p>${escapeHtml(row.shortExcerpt||'')}</p>${event?`<a href="${eventHref(event)}">${escapeHtml(event.title)} →</a>`:''}<a class="social-original-link" href="${escapeHtml(row.postUrl)}" target="_blank" rel="noopener noreferrer">前往原文 ↗</a></article>`; }).join(''); section.hidden=false;
+  }
+
   function renderHome() {
     const ongoing = state.events.filter(isOngoing);
     const featured = selectFeatured(ongoing.length ? ongoing : state.events, 9);
@@ -1642,6 +1651,7 @@
 
     renderCategoryStrip();
     renderHomeFilterResults(homeFilterItems);
+    renderSocialDiscussions();
     syncHomeFilters();
     setupScrollReveal();
 
@@ -3439,12 +3449,13 @@
     readParams();
     bindEvents();
     try {
-      const [{payload, rawEvents, local, sourceUrl, enriched, curated}, venueRegistryResponse, northernMatrixResponse, taiwanMatrixResponse, geocodeCacheResponse] = await Promise.all([
+      const [{payload, rawEvents, local, sourceUrl, enriched, curated}, venueRegistryResponse, northernMatrixResponse, taiwanMatrixResponse, geocodeCacheResponse, socialResponse] = await Promise.all([
         fetchEventPayload(),
         fetch('data/venues.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
         fetch('data/northern_venue_matrix.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
         fetch('data/taiwan_venue_matrix.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {venues:[]}).catch(() => ({venues:[]})),
         fetch('data/geocode-cache.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {}).catch(() => ({})),
+        fetch('data/social_discussions.json', {cache:'no-cache'}).then(response => response.ok ? response.json() : {discussions:[]}).catch(() => ({discussions:[]})),
       ]);
       const stableVenues = Array.isArray(venueRegistryResponse?.venues) ? venueRegistryResponse.venues : [];
       const normalizeMatrixVenues = response => Array.isArray(response?.venues)
@@ -3460,6 +3471,7 @@
       // The confirmed nationwide matrix then extends coverage to west, south, east and missing northern venues.
       state.venueRegistry = [...stableVenues, ...northernVenues, ...confirmedTaiwanVenues];
       state.geocodeCache = geocodeCacheResponse && typeof geocodeCacheResponse === 'object' ? geocodeCacheResponse : {};
+      state.socialDiscussions = Array.isArray(socialResponse?.discussions) ? socialResponse.discussions : [];
       state.updatedAt = payload.updatedAt || payload.updated_at || (!local ? new Date().toISOString() : null);
       state.stats = payload.stats || {};
       state.registryBuild = payload.registryBuild || null;
