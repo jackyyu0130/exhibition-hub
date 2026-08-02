@@ -239,6 +239,137 @@
         "timeoutSeconds": 25,
         "minDelaySeconds": 2
       }
+    ],
+    "museums": [
+      {
+        "sourceId": "taipei-fine-arts-museum",
+        "venueName": "臺北市立美術館",
+        "region": "臺北市",
+        "category": "美術",
+        "listingUrls": [
+          "https://www.tfam.museum/Exhibition/Exhibition_page.aspx?id=41&ddlLang=zh-tw"
+        ],
+        "allowedDomains": [
+          "www.tfam.museum",
+          "tfam.museum"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "fubon-art-museum",
+        "venueName": "富邦美術館",
+        "region": "臺北市",
+        "category": "美術",
+        "listingUrls": [
+          "https://www.fubonartmuseum.org/Exhibitions"
+        ],
+        "allowedDomains": [
+          "www.fubonartmuseum.org",
+          "fubonartmuseum.org"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "moca-taipei",
+        "venueName": "臺北當代藝術館",
+        "region": "臺北市",
+        "category": "美術",
+        "listingUrls": [
+          "https://www.mocataipei.org.tw/tw/ExhibitionAndEvent/Exhibitions/Current%20Exhibition"
+        ],
+        "allowedDomains": [
+          "www.mocataipei.org.tw",
+          "mocataipei.org.tw"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "national-palace-museum",
+        "venueName": "國立故宮博物院",
+        "region": "臺北市",
+        "category": "歷史",
+        "listingUrls": [
+          "https://www.npm.gov.tw/Exhibition-Current.aspx?sno=03000060&l=1"
+        ],
+        "allowedDomains": [
+          "www.npm.gov.tw",
+          "npm.gov.tw",
+          "south.npm.gov.tw"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "national-museum-natural-science",
+        "venueName": "國立自然科學博物館",
+        "region": "臺中市",
+        "category": "自然",
+        "listingUrls": [
+          "https://www.nmns.edu.tw/ch/exhibitions/galleries/special-exhibitions/"
+        ],
+        "allowedDomains": [
+          "www.nmns.edu.tw",
+          "nmns.edu.tw"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "national-taiwan-museum",
+        "venueName": "國立臺灣博物館",
+        "region": "臺北市",
+        "category": "歷史",
+        "listingUrls": [
+          "https://www.ntm.gov.tw/News.aspx?n=3726&sms=13479"
+        ],
+        "allowedDomains": [
+          "www.ntm.gov.tw",
+          "ntm.gov.tw"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "chimei-museum",
+        "venueName": "奇美博物館",
+        "region": "臺南市",
+        "category": "美術",
+        "listingUrls": [
+          "https://www.chimeimuseum.org/exhibition-event"
+        ],
+        "allowedDomains": [
+          "www.chimeimuseum.org",
+          "chimeimuseum.org"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      },
+      {
+        "sourceId": "juming-museum",
+        "venueName": "朱銘美術館",
+        "region": "新北市",
+        "category": "美術",
+        "listingUrls": [
+          "https://www.juming.org.tw/mainssl/modules/MySpace/index.php"
+        ],
+        "allowedDomains": [
+          "www.juming.org.tw",
+          "juming.org.tw"
+        ],
+        "allowUndatedCandidates": true,
+        "timeoutSeconds": 25,
+        "minDelaySeconds": 2
+      }
     ]
   }
 }
