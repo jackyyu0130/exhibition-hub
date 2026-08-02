@@ -16,3 +16,4 @@ Monitored sources: C4 (71 organizations / 98 endpoints; 50 public website or KKT
 Social source safety: Instagram/Facebook endpoints remain disabled until Meta official API authorization; no simulated login, private access or unauthorized social scraping
 Price label hotfix: C4-HOTFIX1 (card ranges use explicit currency/ticket amounts only; times, dates and age restrictions are excluded)
 Threads discovery: T1 (official keyword_search API, rotating static terms, current-event dynamic terms, anonymized review-only candidates, safe no-token skip)
+Threads API diagnostics: T1-HOTFIX1 (token preflight, Meta error details, HTTP 500 compatibility retry, and no false-green success when every query fails)

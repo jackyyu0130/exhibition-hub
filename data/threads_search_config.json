@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updatedAt": "2026-08-02",
   "apiHost": "https://graph.threads.net",
   "endpoint": "/keyword_search",
@@ -19,7 +19,8 @@
     "maxDynamicQueriesPerRun": 8,
     "maxResultsPerQuery": 25,
     "lookbackHours": 72,
-    "requestDelaySeconds": 0.35
+    "requestDelaySeconds": 0.35,
+    "serverErrorRetries": 1
   },
   "fields": [
     "id",
@@ -32,6 +33,16 @@
     "has_replies",
     "is_verified",
     "topic_tag"
+  ],
+  "compatibilityFields": [
+    "id",
+    "permalink",
+    "username",
+    "text",
+    "timestamp",
+    "shortcode",
+    "is_quote_post",
+    "has_replies"
   ],
   "staticQueries": [
     "展覽推薦",

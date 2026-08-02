@@ -93,11 +93,7 @@ def dynamic_queries(
     for event in current_events(events, today=today):
         title = clean(event.get("title"))
         title = re.sub(r"^[【\[].*?[】\]]\s*", "", title)
-        if (
-            len(title) < 4
-            or len(title) > 64
-            or GENERIC_TITLE.fullmatch(title)
-        ):
+        if len(title) < 4 or len(title) > 64 or GENERIC_TITLE.fullmatch(title):
             continue
         key = re.sub(r"\W+", "", title.lower())
         if not key or key in seen:
@@ -128,11 +124,7 @@ def build_query_plan(
             "searchMode": "KEYWORD",
             "kind": "static",
         }
-        for query in rotated(
-            config.get("staticQueries") or [],
-            static_limit,
-            seed,
-        )
+        for query in rotated(config.get("staticQueries") or [], static_limit, seed)
     ]
     plan.extend(
         {
@@ -141,11 +133,7 @@ def build_query_plan(
             "searchMode": "KEYWORD",
             "kind": "event_title",
         }
-        for query in dynamic_queries(
-            events,
-            today=now.date(),
-            limit=dynamic_limit,
-        )
+        for query in dynamic_queries(events, today=now.date(), limit=dynamic_limit)
     )
     if include_top:
         plan.extend(
@@ -230,24 +218,100 @@ def normalize_post(
     }
 
 
-@dataclass
-class QueryResult:
-    query: str
-    searchType: str
-    status: str
-    returnedCount: int
-    acceptedCount: int
-    error: str = ""
+def response_error_details(response: requests.Response | None) -> dict[str, Any]:
+    if response is None:
+        return {}
+    details: dict[str, Any] = {"httpStatus": int(response.status_code or 0)}
+    try:
+        payload = response.json()
+    except Exception:
+        text = clean(getattr(response, "text", ""))
+        if text:
+            details["message"] = text[:300]
+        return details
 
-    def to_dict(self) -> dict[str, Any]:
+    error = payload.get("error") if isinstance(payload, Mapping) else None
+    if isinstance(error, Mapping):
+        for source, target in (
+            ("message", "message"),
+            ("type", "metaType"),
+            ("code", "metaCode"),
+            ("error_subcode", "metaSubcode"),
+            ("is_transient", "isTransient"),
+            ("fbtrace_id", "fbtraceId"),
+        ):
+            value = error.get(source)
+            if value not in (None, ""):
+                details[target] = value
+    return details
+
+
+def classify_http_error(response: requests.Response | None) -> str:
+    details = response_error_details(response)
+    status = int(details.get("httpStatus") or 0)
+    code = int(details.get("metaCode") or 0)
+    if status in {401, 403} or code in {10, 190, 200}:
+        return "permission_denied"
+    if status == 429 or code in {4, 17, 32, 613}:
+        return "rate_limited"
+    if status >= 500 or bool(details.get("isTransient")):
+        return "server_error"
+    return "http_error"
+
+
+def request_json(
+    session: requests.Session,
+    endpoint: str,
+    *,
+    params: Mapping[str, Any],
+    token: str,
+    use_query_token: bool = False,
+) -> Mapping[str, Any]:
+    request_params = dict(params)
+    headers = {
+        "User-Agent": "TaiwanExhibitionJournal-T1Threads/1.1 (+https://twexhibition.com/)",
+        "Accept": "application/json",
+    }
+    if use_query_token:
+        request_params["access_token"] = token
+    else:
+        headers["Authorization"] = f"Bearer {token}"
+
+    response = session.get(
+        endpoint,
+        params=request_params,
+        headers=headers,
+        timeout=30,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return payload if isinstance(payload, Mapping) else {}
+
+
+def api_preflight(
+    session: requests.Session,
+    *,
+    token: str,
+    config: Mapping[str, Any],
+) -> dict[str, Any]:
+    host = clean(config.get("apiHost") or "https://graph.threads.net").rstrip("/")
+    try:
+        payload = request_json(
+            session,
+            f"{host}/me",
+            params={"fields": "id,username"},
+            token=token,
+        )
         return {
-            "query": self.query,
-            "searchType": self.searchType,
-            "status": self.status,
-            "returnedCount": self.returnedCount,
-            "acceptedCount": self.acceptedCount,
-            "error": self.error,
+            "status": "success",
+            "userIdAvailable": bool(payload.get("id")),
+            "usernameAvailable": bool(payload.get("username")),
         }
+    except requests.HTTPError as exc:
+        details = response_error_details(exc.response)
+        return {"status": classify_http_error(exc.response), **details}
+    except Exception as exc:
+        return {"status": "error", "message": f"{type(exc).__name__}: {exc}"}
 
 
 def api_search(
@@ -257,7 +321,7 @@ def api_search(
     config: Mapping[str, Any],
     query: Mapping[str, str],
     now: datetime,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], str]:
     limits = config.get("limits") or {}
     lookback = int(limits.get("lookbackHours") or 72)
     endpoint = (
@@ -274,24 +338,113 @@ def api_search(
         "since": int((now - timedelta(hours=lookback)).timestamp()),
         "until": int(now.timestamp()),
     }
-    response = session.get(
-        endpoint,
-        params=params,
-        headers={
-            "Authorization": f"Bearer {token}",
-            "User-Agent": "TaiwanExhibitionJournal-T1Threads/1.0 (+https://twexhibition.com/)",
-            "Accept": "application/json",
-        },
-        timeout=30,
-    )
-    response.raise_for_status()
-    payload = response.json()
-    if not isinstance(payload, Mapping):
-        return []
-    return [
-        item for item in payload.get("data") or []
-        if isinstance(item, Mapping)
-    ]
+
+    raw_retries = limits.get("serverErrorRetries")
+    retry_count = 1 if raw_retries is None else max(0, int(raw_retries))
+    last_error: requests.HTTPError | None = None
+    for attempt in range(retry_count + 1):
+        try:
+            payload = request_json(
+                session,
+                endpoint,
+                params=params,
+                token=token,
+            )
+            rows = [
+                item for item in payload.get("data") or []
+                if isinstance(item, Mapping)
+            ]
+            return rows, "full"
+        except requests.HTTPError as exc:
+            last_error = exc
+            if classify_http_error(exc.response) != "server_error" or attempt >= retry_count:
+                break
+            time.sleep(1.0 * (attempt + 1))
+
+    # Meta's keyword endpoint can occasionally return an opaque HTTP 500 for
+    # otherwise valid requests. Retry once using the smallest request shown in
+    # Meta's official example: no time window, no explicit search_mode, and a
+    # conservative field list. The access token is still never logged.
+    if last_error is not None and classify_http_error(last_error.response) == "server_error":
+        compatibility_fields = ",".join(
+            str(item)
+            for item in (
+                config.get("compatibilityFields")
+                or [
+                    "id",
+                    "permalink",
+                    "username",
+                    "text",
+                    "timestamp",
+                    "shortcode",
+                    "is_quote_post",
+                    "has_replies",
+                ]
+            )
+        )
+        compatibility_params = {
+            "q": query["q"],
+            "search_type": query["searchType"],
+            "limit": min(int(limits.get("maxResultsPerQuery") or 25), 25),
+            "fields": compatibility_fields,
+        }
+        payload = request_json(
+            session,
+            endpoint,
+            params=compatibility_params,
+            token=token,
+            use_query_token=True,
+        )
+        rows = [
+            item for item in payload.get("data") or []
+            if isinstance(item, Mapping)
+        ]
+        return rows, "compatibility"
+
+    assert last_error is not None
+    raise last_error
+
+
+@dataclass
+class QueryResult:
+    query: str
+    searchType: str
+    status: str
+    returnedCount: int
+    acceptedCount: int
+    attemptMode: str = ""
+    error: str = ""
+    errorDetails: dict[str, Any] | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        payload = {
+            "query": self.query,
+            "searchType": self.searchType,
+            "status": self.status,
+            "returnedCount": self.returnedCount,
+            "acceptedCount": self.acceptedCount,
+            "attemptMode": self.attemptMode,
+            "error": self.error,
+        }
+        if self.errorDetails:
+            payload["errorDetails"] = self.errorDetails
+        return payload
+
+
+def overall_status(results: Sequence[QueryResult], preflight: Mapping[str, Any]) -> str:
+    preflight_status = clean(preflight.get("status"))
+    if preflight_status and preflight_status != "success":
+        return preflight_status
+    successful = sum(1 for item in results if item.status == "success")
+    if successful == len(results) and results:
+        return "success"
+    if successful > 0:
+        return "partial_success"
+    if any(item.status == "permission_denied" for item in results):
+        return "permission_denied"
+    if any(item.status == "rate_limited" for item in results):
+        return "rate_limited"
+    return "api_error" if results else "success"
 
 
 def discover_threads(
@@ -310,21 +463,45 @@ def discover_threads(
 
     rows: dict[str, dict[str, Any]] = {}
     results: list[QueryResult] = []
-    permission_denied = False
+    preflight = {"status": "skipped_for_test"} if search_fn else api_preflight(
+        session,
+        token=token,
+        config=config,
+    )
+
+    if not search_fn and preflight.get("status") != "success":
+        report = {
+            "schemaVersion": 2,
+            "generatedAt": now.isoformat(),
+            "status": overall_status(results, preflight),
+            "reviewRequired": True,
+            "publishAllowed": False,
+            "preflight": preflight,
+            "queryCount": 0,
+            "successfulQueryCount": 0,
+            "candidateCount": 0,
+            "queries": [],
+            "privacy": {
+                "fullTextStored": False,
+                "authorIdentityPublished": False,
+                "usernameStored": False,
+            },
+        }
+        return [], report
 
     for query in plan:
         try:
-            posts = list(
-                search_fn(query)
-                if search_fn
-                else api_search(
+            if search_fn:
+                posts = list(search_fn(query))
+                attempt_mode = "test"
+            else:
+                posts, attempt_mode = api_search(
                     session,
                     token=token,
                     config=config,
                     query=query,
                     now=now,
                 )
-            )
             accepted = 0
             for post in posts:
                 candidate = normalize_post(post, query, config)
@@ -352,23 +529,24 @@ def discover_threads(
                     status="success",
                     returnedCount=len(posts),
                     acceptedCount=accepted,
+                    attemptMode=attempt_mode,
                 )
             )
         except requests.HTTPError as exc:
-            status_code = getattr(exc.response, "status_code", 0)
-            if status_code in {401, 403}:
-                permission_denied = True
+            status = classify_http_error(exc.response)
+            details = response_error_details(exc.response)
             results.append(
                 QueryResult(
                     query=query["q"],
                     searchType=query["searchType"],
-                    status="permission_denied" if permission_denied else "http_error",
+                    status=status,
                     returnedCount=0,
                     acceptedCount=0,
-                    error=f"HTTP {status_code}" if status_code else type(exc).__name__,
+                    error=f"HTTP {details.get('httpStatus', 0)}",
+                    errorDetails=details,
                 )
             )
-            if permission_denied:
+            if status == "permission_denied":
                 break
         except Exception as exc:
             results.append(
@@ -389,16 +567,16 @@ def discover_threads(
         key=lambda item: str(item.get("publishedAt") or ""),
         reverse=True,
     )
+    status = "success" if search_fn else overall_status(results, preflight)
     report = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "generatedAt": now.isoformat(),
-        "status": "permission_denied" if permission_denied else "success",
+        "status": status,
         "reviewRequired": True,
         "publishAllowed": False,
+        "preflight": preflight,
         "queryCount": len(results),
-        "successfulQueryCount": sum(
-            1 for item in results if item.status == "success"
-        ),
+        "successfulQueryCount": sum(1 for item in results if item.status == "success"),
         "candidateCount": len(candidates),
         "queries": [item.to_dict() for item in results],
         "privacy": {
