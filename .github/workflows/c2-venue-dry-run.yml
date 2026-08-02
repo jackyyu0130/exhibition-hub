@@ -1,0 +1,62 @@
+name: C2 venue collectors dry run
+on:
+  workflow_dispatch:
+    inputs:
+      group:
+        description: Collector group
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - convention
+          - live_house
+          - performing_arts
+          - museums
+  schedule:
+    - cron: '25 20 * * 2,5'
+permissions:
+  contents: read
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run non-publishing venue collectors
+        shell: bash
+        run: |
+          set -euo pipefail
+          requested="${{ github.event.inputs.group || 'all' }}"
+          if [ "$requested" = "all" ]; then
+            groups="convention live_house performing_arts museums"
+          else
+            groups="$requested"
+          fi
+          for group in $groups; do
+            if python - <<PY
+          import json
+          from pathlib import Path
+          payload=json.loads(Path('data/collector_profiles.json').read_text(encoding='utf-8'))
+          raise SystemExit(0 if '$group' in payload.get('groups',{}) else 1)
+          PY
+            then
+              python scripts/run_venue_collector_dry_run.py --group "$group" --output-dir "collector-artifacts/$group"
+            else
+              echo "Group $group is not installed in this stage; skipping."
+            fi
+          done
+      - name: Verify public data is untouched
+        run: git diff --exit-code -- data/exhibitions.json data/exhibitions.enriched.json data/exhibitions.curated.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c2-venue-dry-run-${{ github.run_number }}
+          path: collector-artifacts
+          if-no-files-found: warn
+          retention-days: 21
