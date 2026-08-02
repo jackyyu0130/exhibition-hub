@@ -5,7 +5,7 @@ ROOT=Path(__file__).resolve().parents[1]
 P=json.loads((ROOT/'data/collector_profiles.json').read_text(encoding='utf-8'))
 class C2DryRunTests(unittest.TestCase):
  def test_groups_and_nonpublishing_contract(self):
-  self.assertEqual(set(P['groups']),{'convention', 'performing_arts', 'live_house'})
+  self.assertEqual(set(P['groups']),{'convention', 'performing_arts', 'museums', 'live_house'})
   for rows in P['groups'].values():
    for p in rows:
     self.assertTrue(p['allowedDomains']); self.assertTrue(p['listingUrls'] or p.get('mode')=='verify_only')

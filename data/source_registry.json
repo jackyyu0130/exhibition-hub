@@ -454,7 +454,7 @@
       "name": "奇美博物館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -493,7 +493,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "clapper-studio",
@@ -545,7 +545,7 @@
       "name": "富邦美術館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -582,14 +582,14 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "juming-museum",
       "name": "朱銘美術館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -626,7 +626,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "legacy-max",
@@ -727,7 +727,7 @@
       "name": "臺北當代藝術館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -768,14 +768,14 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "national-museum-natural-science",
       "name": "國立自然科學博物館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -813,14 +813,14 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "national-palace-museum",
       "name": "國立故宮博物院",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -862,7 +862,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "national-taichung-theater",
@@ -915,7 +915,7 @@
       "name": "國立臺灣博物館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -953,7 +953,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "national-theater-concert-hall",
@@ -1195,7 +1195,7 @@
       "name": "臺北市立美術館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "planned_official_site",
+      "parser": "venue_profile_dry_run",
       "status": "planned",
       "enabled": false,
       "trustLevel": "official",
@@ -1234,7 +1234,7 @@
         "requiresManualApproval": true
       },
       "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "registry_only"
+      "implementationStatus": "dry_run_candidate"
     },
     {
       "id": "the-wall-live-house",

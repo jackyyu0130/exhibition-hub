@@ -6,3 +6,4 @@ Collector foundation: C1 (21 official venue targets; planned/audit_only; non-pub
 Collector implementation: C2 (convention dry-run candidate groups; artifact only)
 Collector implementation: C2 (convention, live_house dry-run candidate groups; artifact only)
 Collector implementation: C2 (convention, live_house, performing_arts dry-run candidate groups; artifact only)
+Collector implementation: C2 (convention, live_house, performing_arts, museums dry-run candidate groups; artifact only)
