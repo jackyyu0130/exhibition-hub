@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "apiHost": "https://graph.threads.net",
+  "endpoint": "/keyword_search",
+  "requiredPermission": "threads_keyword_search",
+  "reviewOnly": true,
+  "saveFullText": false,
+  "publishAuthorIdentity": false,
+  "schedule": {
+    "timezone": "Asia/Taipei",
+    "times": [
+      "04:20",
+      "16:20"
+    ]
+  },
+  "limits": {
+    "maxStaticQueriesPerRun": 12,
+    "maxDynamicQueriesPerRun": 8,
+    "maxResultsPerQuery": 25,
+    "lookbackHours": 72,
+    "requestDelaySeconds": 0.35
+  },
+  "fields": [
+    "id",
+    "permalink",
+    "username",
+    "text",
+    "timestamp",
+    "shortcode",
+    "is_quote_post",
+    "has_replies",
+    "is_verified",
+    "topic_tag"
+  ],
+  "staticQueries": [
+    "展覽推薦",
+    "台北展覽",
+    "新北展覽",
+    "桃園展覽",
+    "新竹展覽",
+    "台中展覽",
+    "台南展覽",
+    "高雄展覽",
+    "免費展覽",
+    "最近看展",
+    "藝術展",
+    "攝影展",
+    "插畫展",
+    "美術館",
+    "博物館",
+    "演唱會",
+    "音樂祭",
+    "Live House"
+  ],
+  "topQueries": [
+    "展覽推薦",
+    "最近看展",
+    "演唱會",
+    "音樂祭"
+  ],
+  "eventSignalTerms": [
+    "展覽",
+    "特展",
+    "個展",
+    "聯展",
+    "藝術展",
+    "攝影展",
+    "插畫展",
+    "美術館",
+    "博物館",
+    "演唱會",
+    "音樂會",
+    "音樂祭",
+    "音樂節",
+    "展演",
+    "開幕",
+    "展期",
+    "售票",
+    "開賣",
+    "入場",
+    "活動"
+  ],
+  "excludedTerms": [
+    "徵才",
+    "招募",
+    "求職",
+    "租屋",
+    "代購",
+    "團購",
+    "抽獎資格",
+    "課程招生",
+    "補習班",
+    "投資",
+    "虛擬貨幣",
+    "成人內容"
+  ],
+  "priorityAccountSignals": [
+    "taipei_gan_ma",
+    "taipei.selected",
+    "ocean_magazine_10",
+    "timeouttaiwan",
+    "skm_whoartyou"
+  ],
+  "privacy": {
+    "storeUsername": false,
+    "storeUsernameHash": true,
+    "maximumExcerptCharacters": 240,
+    "storeMediaUrl": false
+  }
+}

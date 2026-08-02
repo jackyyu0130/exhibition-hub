@@ -1,25 +1,70 @@
 name: Social discovery review artifact
+
 on:
   workflow_dispatch:
+    inputs:
+      include_top:
+        description: 同時搜尋 Threads 熱門結果（TOP）
+        required: true
+        default: false
+        type: boolean
   schedule:
-    - cron: '40 21 * * 1,4'
+    - cron: '20 20,8 * * *' # 台灣時間每天 04:20、16:20
+
 permissions:
   contents: read
+
 jobs:
   review-artifact:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
+    env:
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.12', cache: pip}
-      - run: pip install -r requirements.txt
-      - name: Build review-only candidate queue
-        run: python scripts/run_social_discovery.py --output social-review-artifact/social_review_queue.json
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Discover Threads candidates through official API
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXTRA=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.include_top }}" = "true" ]; then
+            EXTRA+=(--include-top)
+          fi
+          python scripts/run_threads_discovery.py             --config data/threads_search_config.json             --events data/exhibitions.curated.json             --output social-review-artifact/threads_candidates.json             --signals-output social-review-artifact/threads_new_event_signals.json             --report social-review-artifact/threads_discovery_report.json             "${EXTRA[@]}"
+
+      - name: Build combined review-only candidate queue
+        run: >-
+          python scripts/run_social_discovery.py
+          --additional social-review-artifact/threads_candidates.json
+          --output social-review-artifact/social_review_queue.json
+
       - name: Confirm no public feed mutation
-        run: git diff --exit-code -- data/exhibitions.json data/exhibitions.enriched.json data/exhibitions.curated.json data/social_discussions.json
-      - uses: actions/upload-artifact@v4
+        run: >-
+          git diff --exit-code --
+          data/exhibitions.json
+          data/exhibitions.enriched.json
+          data/exhibitions.curated.json
+          data/social_discussions.json
+
+      - name: Upload review artifact
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: social-review-${{ github.run_number }}
           path: social-review-artifact
+          if-no-files-found: error
           retention-days: 21

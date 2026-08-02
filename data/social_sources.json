@@ -1,19 +1,23 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updatedAt": "2026-08-02",
-  "description": "社群只用於候選發現與人工審核；不得改寫官方展覽欄位。C3 增加官方 Instagram／Facebook 公開連結的人工或正式 API 候選入口。",
+  "description": "社群只用於候選發現與人工審核；不得改寫官方展覽欄位。T1 透過 Meta Threads 官方 keyword_search API 建立匿名候選，沒有 Token 時安全跳過。",
   "sources": [
     {
       "id": "threads",
-      "enabled": false,
-      "mode": "official_api_or_manual",
+      "enabled": true,
+      "mode": "official_keyword_api_review_only",
+      "apiHost": "https://graph.threads.net",
+      "activationSecret": "THREADS_ACCESS_TOKEN",
       "requiresOfficialAccessToken": true,
+      "requiredPermission": "threads_keyword_search",
+      "schedule": "每天 04:20、16:20（台灣時間）",
       "allowedAccountTypes": [
-        "venue",
-        "organizer"
+        "public"
       ],
       "saveFullText": false,
-      "publishAuthorIdentity": false
+      "publishAuthorIdentity": false,
+      "directPublish": false
     },
     {
       "id": "ptt",
