@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "description": "社群只用於候選發現與人工審核；不得改寫官方展覽欄位。",
+  "sources": [
+    {
+      "id": "threads",
+      "enabled": false,
+      "mode": "official_api_or_manual",
+      "requiresOfficialAccessToken": true,
+      "allowedAccountTypes": [
+        "venue",
+        "organizer"
+      ],
+      "saveFullText": false,
+      "publishAuthorIdentity": false
+    },
+    {
+      "id": "ptt",
+      "enabled": true,
+      "mode": "public_web_bbs_low_frequency",
+      "boards": [
+        "museum",
+        "Art",
+        "Drama-Ticket",
+        "Indie-Film",
+        "Japan_Travel",
+        "Kaohsiung",
+        "Tainan",
+        "TaichungBun",
+        "Taipei"
+      ],
+      "maxCandidatesPerRun": 40,
+      "minDelaySeconds": 4,
+      "saveFullText": false,
+      "publishAuthorIdentity": false
+    },
+    {
+      "id": "dcard",
+      "enabled": false,
+      "mode": "written_authorization_or_manual",
+      "requiresWrittenAuthorization": true,
+      "saveFullText": false,
+      "publishAuthorIdentity": false
+    }
+  ]
+}

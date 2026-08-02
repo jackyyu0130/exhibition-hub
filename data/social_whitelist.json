@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-02",
+  "threads": {
+    "approvedAccounts": [],
+    "notes": "Only public venue/organizer accounts and official API IDs."
+  },
+  "dcard": {
+    "authorizedSources": [],
+    "notes": "Requires written authorization or manual public URL submission."
+  }
+}
