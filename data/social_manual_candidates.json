@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "instructions": "Only public URLs; excerpt <= 240 chars; no private content or full text.",
+  "candidates": []
+}
