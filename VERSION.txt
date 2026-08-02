@@ -14,3 +14,4 @@ Discovery expansion: 96 ticketing, organizer, Live House and festival source pro
 Social UI: Hero → 最近大家在聊 → 循著今日心緒；detail discussions and gated discussion index
 Monitored sources: C4 (71 organizations / 98 endpoints; 50 public website or KKTIX endpoints monitored at 04:00 Asia/Taipei; strict venue matching and verified automatic publication)
 Social source safety: Instagram/Facebook endpoints remain disabled until Meta official API authorization; no simulated login, private access or unauthorized social scraping
+Price label hotfix: C4-HOTFIX1 (card ranges use explicit currency/ticket amounts only; times, dates and age restrictions are excluded)
