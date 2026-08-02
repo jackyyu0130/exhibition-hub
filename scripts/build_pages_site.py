@@ -17,6 +17,7 @@ REQUIRED_FILES = (
     "data/exhibitions.curated.json",
     "data/exhibitions.enriched.json",
     "data/exhibitions.json",
+    "data/social_discussions.json",
     "data/venues.json",
     "data/northern_venue_matrix.json",
     "data/taiwan_venue_matrix.json",

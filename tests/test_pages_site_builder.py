@@ -24,6 +24,7 @@ class PagesSiteBuilderTests(unittest.TestCase):
             (root / "data/exhibitions.enriched.json").write_text("{}", encoding="utf-8")
             (root / "data/exhibitions.curated.json").write_text("{}", encoding="utf-8")
             (root / "data/exhibitions.json").write_text("{}", encoding="utf-8")
+            (root / "data/social_discussions.json").write_text("{}", encoding="utf-8")
             (root / "data/venues.json").write_text("{}", encoding="utf-8")
             (root / "data/northern_venue_matrix.json").write_text("{}", encoding="utf-8")
             for filename in (
@@ -44,6 +45,7 @@ class PagesSiteBuilderTests(unittest.TestCase):
             self.assertTrue((output / "assets/app.js").exists())
             self.assertTrue((output / "data/exhibitions.enriched.json").exists())
             self.assertTrue((output / "data/exhibitions.curated.json").exists())
+            self.assertTrue((output / "data/social_discussions.json").exists())
             self.assertTrue((output / "data/venues.json").exists())
             self.assertTrue((output / "data/northern_venue_matrix.json").exists())
             self.assertTrue((output / "data/taiwan_venue_matrix.json").exists())
