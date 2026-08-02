@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": "2026-08-01",
+  "updatedAt": "2026-08-02",
   "description": "第 6 階段既有批次，加上 R12 第 7 階段 dry-run 與第 8 階段人工閘門基礎；正式資料發布預設不啟用。",
   "regionGroups": [
     {
@@ -155,6 +155,133 @@
       "maxAttemptsPerSource": 3,
       "sourceTimeoutSeconds": 240,
       "slowSourceThresholdMs": 120000
+    },
+    {
+      "id": "c1-planned-venue-registry-audit",
+      "name": "C1 21 場館 Collector 登錄總稽核",
+      "enabled": false,
+      "regionGroupIds": [
+        "north",
+        "central",
+        "south"
+      ],
+      "sourceIds": [
+        "twtc-hall-1",
+        "twtc-hall-3",
+        "tainex-hall-1",
+        "tainex-hall-2",
+        "legacy-taipei",
+        "legacy-max",
+        "the-wall-live-house",
+        "nuzone",
+        "clapper-studio",
+        "pipe-live-music",
+        "westar",
+        "national-theater-concert-hall",
+        "national-taichung-theater",
+        "taipei-fine-arts-museum",
+        "fubon-art-museum",
+        "moca-taipei",
+        "national-palace-museum",
+        "national-museum-natural-science",
+        "national-taiwan-museum",
+        "chimei-museum",
+        "juming-museum"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 1,
+      "retryBackoffSeconds": 3,
+      "sourceTimeoutSeconds": 30,
+      "slowSourceThresholdMs": 20000
+    },
+    {
+      "id": "c1-convention-venues-audit",
+      "name": "C1 會展場館 Collector 登錄稽核",
+      "enabled": false,
+      "regionGroupIds": [
+        "north"
+      ],
+      "sourceIds": [
+        "twtc-hall-1",
+        "twtc-hall-3",
+        "tainex-hall-1",
+        "tainex-hall-2"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 1,
+      "retryBackoffSeconds": 3,
+      "sourceTimeoutSeconds": 30,
+      "slowSourceThresholdMs": 20000
+    },
+    {
+      "id": "c1-live-houses-audit",
+      "name": "C1 Live House Collector 登錄稽核",
+      "enabled": false,
+      "regionGroupIds": [
+        "north"
+      ],
+      "sourceIds": [
+        "legacy-taipei",
+        "legacy-max",
+        "the-wall-live-house",
+        "nuzone",
+        "clapper-studio",
+        "pipe-live-music",
+        "westar"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 1,
+      "retryBackoffSeconds": 3,
+      "sourceTimeoutSeconds": 30,
+      "slowSourceThresholdMs": 20000
+    },
+    {
+      "id": "c1-performing-arts-audit",
+      "name": "C1 表演場館 Collector 登錄稽核",
+      "enabled": false,
+      "regionGroupIds": [
+        "north",
+        "central"
+      ],
+      "sourceIds": [
+        "national-theater-concert-hall",
+        "national-taichung-theater"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 1,
+      "retryBackoffSeconds": 3,
+      "sourceTimeoutSeconds": 30,
+      "slowSourceThresholdMs": 20000
+    },
+    {
+      "id": "c1-museums-audit",
+      "name": "C1 博物館／美術館 Collector 登錄稽核",
+      "enabled": false,
+      "regionGroupIds": [
+        "north",
+        "central",
+        "south"
+      ],
+      "sourceIds": [
+        "taipei-fine-arts-museum",
+        "fubon-art-museum",
+        "moca-taipei",
+        "national-palace-museum",
+        "national-museum-natural-science",
+        "national-taiwan-museum",
+        "chimei-museum",
+        "juming-museum"
+      ],
+      "organizerIds": [],
+      "failurePolicy": "isolate_source",
+      "maxAttemptsPerSource": 1,
+      "retryBackoffSeconds": 3,
+      "sourceTimeoutSeconds": 30,
+      "slowSourceThresholdMs": 20000
     }
   ],
   "defaults": {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-01",
+  "updatedAt": "2026-08-02",
   "release": "v6.5.0-r12-stable2",
   "description": "Collector 第 7、8 階段安全基礎。第 7 階段只產生 dry-run 稽核資料；第 8 階段保留發布閘門定義，但預設禁止發布。",
   "stages": [
@@ -31,6 +31,19 @@
         "minimumCandidateRecords",
         "publicDataUntouched",
         "manualApproval"
+      ]
+    },
+    {
+      "id": "stage-7-c1-venue-registry-audit",
+      "name": "第 7 階段 C1 場館登錄安全稽核",
+      "mode": "dry_run",
+      "enabled": true,
+      "publishEnabled": false,
+      "batchId": "c1-planned-venue-registry-audit",
+      "requiredGates": [
+        "allSourcesRegistered",
+        "failureThreshold",
+        "publicDataUntouched"
       ]
     }
   ],

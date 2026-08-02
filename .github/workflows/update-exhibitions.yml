@@ -59,9 +59,17 @@ jobs:
             if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
               CHANGED_FILES="$(git diff --name-only "$BEFORE" "$AFTER")"
               if printf '%s\n' "$CHANGED_FILES" | grep -qx "data/source_registry.json"; then
-                RUN_UPDATE=true
-                REASON="source-registry-activation"
-              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(.github/workflows/update-exhibitions\.yml|scripts/validate_published_data\.py|scripts/run_official_source_batch\.py|scripts/exhibition_hub/collectors/official_sites\.py|scripts/exhibition_hub/collectors/__init__\.py)$'; then
+                REGISTRY_CHECK="$(python scripts/check_source_registry_activation.py \
+                  --before-ref "$BEFORE" \
+                  --after-ref "$AFTER")"
+                printf '%s\n' "$REGISTRY_CHECK"
+                if printf '%s\n' "$REGISTRY_CHECK" | grep -qx "activation_changed=true"; then
+                  RUN_UPDATE=true
+                  REASON="source-registry-activation"
+                else
+                  REASON="source-registry-planned-only"
+                fi
+              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(scripts/validate_published_data\.py|scripts/run_official_source_batch\.py|scripts/exhibition_hub/collectors/official_sites\.py|scripts/exhibition_hub/collectors/__init__\.py)$'; then
                 RUN_UPDATE=true
                 REASON="production-pipeline-recovery"
               fi
