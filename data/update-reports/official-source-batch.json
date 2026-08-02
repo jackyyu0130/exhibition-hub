@@ -8,7 +8,7 @@
   "successfulSourceCount": 3,
   "failedSourceCount": 3,
   "skippedSourceCount": 0,
-  "finalEventCount": 2497,
+  "finalEventCount": 2498,
   "sources": [
     {
       "sourceId": "kaohsiung-music-center",
@@ -89,11 +89,11 @@
       "minimumRecords": 5,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 2497,
+      "candidateEventCount": 2498,
       "decisionCounts": {
-        "auto_merge": 9,
-        "needs_review": 73,
-        "new_event": 13
+        "new_event": 14,
+        "auto_merge": 8,
+        "needs_review": 73
       },
       "reviewQueueCount": 73
     },
@@ -101,7 +101,7 @@
       "sourceId": "tainan-art-museum",
       "sourceName": "臺南市美術館",
       "status": "preserved_previous_base",
-      "baseEventCount": 2497,
+      "baseEventCount": 2498,
       "collectorStatus": "failed",
       "collectorSuccess": false,
       "collectedRecordCount": 0,

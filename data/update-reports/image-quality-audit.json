@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T07:29:57.844549+00:00",
+  "generatedAt": "2026-08-02T12:53:55.135830+00:00",
   "mode": "fix",
   "reports": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "path": "data/exhibitions.enriched.json",
-      "eventCount": 2497,
+      "eventCount": 2498,
       "fixApplied": true,
       "affectedEventCount": 0,
       "rejectedImageCount": 0,

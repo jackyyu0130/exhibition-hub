@@ -1,11 +1,11 @@
 {
   "mode": "production-publish-report",
   "published": true,
-  "publishedAt": "2026-08-02T07:29:55.592437+00:00",
+  "publishedAt": "2026-08-02T12:53:52.946745+00:00",
   "sourceId": "huashan-1914",
-  "currentEventCount": 2476,
-  "publishedEventCount": 2497,
-  "addedEventCount": 29,
+  "currentEventCount": 2497,
+  "publishedEventCount": 2498,
+  "addedEventCount": 9,
   "removedEventCount": 8,
   "dropCount": 0,
   "dropRatio": 0.0,
@@ -28,42 +28,12 @@
     "published": false
   },
   "hashes": {
-    "current": "a9e53b4a74efcb2bfb69e6587d41698d1eaa56074cf89a222dd3291ab49dbcf8",
-    "preview": "827e48a7aeb763152ca2ad813594b8d4a8e776acdfb5b2ecdc82c6fb7d476eeb",
-    "published": "cb82b323e0788793763211c65303c921b4e61c048adafd77cf0fa71686fcd172"
+    "current": "c46ccfff38bc2bc108e7c3706fe561171afc92d3a49ab607adbc9e9fd9d851ab",
+    "preview": "67b8233fb4896c28b3a6c59a2935dbb2a1ba65b7d58eaa4e99374bd196ebc627",
+    "published": "dd5fc5343bdf8784dbef3dadf83bd9a77257d4a6ef9de20c73e4e3be4141146a"
   },
   "addedIds": [
-    "69b06ece26b3242a48a9d9d4",
-    "69b4434926b3242a48a9db6e",
-    "69b4434926b3242a48a9db6f",
-    "69e48794eb43c961d05406c8",
-    "6a1dbbca26b3243414cccdc4",
-    "6a3181c626b3243414ccd35f",
-    "6a3a4af7647a40ec65297aae",
-    "6a435f1826b32427d0603f64",
-    "6a6e294326b32427d060431c",
-    "6a6e294326b32427d060431d",
-    "6a6e294326b32427d060431e",
-    "6a6e294326b32427d060431f",
-    "6a6e294326b32427d0604320",
-    "6a6e294526b32427d0604321",
-    "6a6e294526b32427d0604322",
-    "6a6e294526b32427d0604323",
-    "6a6e294526b32427d0604324",
-    "6a6e294526b32427d0604325",
-    "6a6e294526b32427d0604326",
-    "6a6e294526b32427d0604327",
-    "6a6e294526b32427d0604328",
-    "6a6e294a26b32427d0604329",
-    "6a6e294a26b32427d060432a",
-    "6a6e294a26b32427d060432b",
-    "6a6e294a26b32427d060432c",
-    "6a6e294a26b32427d060432d",
-    "6a6e294b26b32427d060432e",
-    "6a6e294b26b32427d060432f",
-    "6a6e294b26b32427d0604330"
-  ],
-  "removedIds": [
+    "4aa5265fd6dba7bf3bdaca4b",
     "69ae835ceb43d512a487f51e",
     "69e7e31926b3242a48a9e5c8",
     "6a194090eb437cf2219b95ed",
@@ -72,5 +42,15 @@
     "6a4cbc52647a042a0eb890c8",
     "6a5d8c1a647ad700eb56ccca",
     "6a608124eb43f5f34e518845"
+  ],
+  "removedIds": [
+    "69b06ece26b3242a48a9d9d4",
+    "69b4434926b3242a48a9db6e",
+    "69b4434926b3242a48a9db6f",
+    "69e48794eb43c961d05406c8",
+    "6a1dbbca26b3243414cccdc4",
+    "6a3181c626b3243414ccd35f",
+    "6a3a4af7647a40ec65297aae",
+    "6a435f1826b32427d0603f64"
   ]
 }
