@@ -1,0 +1,43 @@
+Exhibition Hub V6.5.0-R13 完整替換包快速操作
+
+一、本機放置路徑
+1. 解壓縮 Exhibition-Hub-V6.5.0-R13-full-replacement.zip。
+2. GitHub Desktop 選 Current Repository：exhibition-hub。
+3. Current Branch 選 develop。
+4. 點 Repository > Show in Finder。
+5. 目標根目錄通常是：
+   /Users/jacky_yu/Documents/GitHub/exhibition-hub/
+6. 複製「解壓縮資料夾裡面的全部內容」到上述根目錄並選 Replace／取代。
+7. 不要刪除或覆蓋 .git；不要把最外層資料夾再塞進 repository。
+
+二、GitHub Desktop 提交
+1. 回到 GitHub Desktop > Changes。
+2. Summary 輸入：
+   Apply Exhibition Hub V6.5.0-R13 SEO and official venue sources
+3. 點 Commit to develop。
+4. 點 Push origin。
+
+三、建立 Pull Request
+1. 點 Preview Pull Request。
+2. 確認 base: main、compare: develop。
+3. PR Title 輸入：
+   Apply Exhibition Hub V6.5.0-R13 SEO and official venue sources
+4. 點 Create pull request。
+5. 等所有 checks 顯示綠色後，點 Merge pull request > Confirm merge。
+
+四、部署
+1. GitHub repository 上方點 Actions。
+2. 左側點 Update data and deploy site。
+3. 若 main 工作沒有自動開始，點 Run workflow，Branch 選 main，再點綠色 Run workflow。
+4. 等 update-and-deploy 顯示綠色勾勾／Success。
+5. 開啟 https://twexhibition.com/ 並按 Command + Shift + R。
+
+五、必查項目
+- 網頁標題：台灣展覽誌｜全台展覽與演出資訊
+- https://twexhibition.com/favicon.ico 能顯示票券 Logo
+- https://twexhibition.com/favicon-48.png 能顯示票券 Logo
+- https://twexhibition.com/logo-512.png 能顯示票券 Logo
+- Actions 中 twtc-hall-1 與 taipei-expo-park-expo-dome 不得清空正式資料
+- twtc-hall-3 必須維持 retired／disabled
+
+完整檢查與復原方式請看 REPLACEMENT_GUIDE_V6.5.0_R13_ZH-TW.md。

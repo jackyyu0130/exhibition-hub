@@ -76,16 +76,17 @@ class V641MobileDrawerTests(unittest.TestCase):
             with self.subTest(selector=selector):
                 self.assertIn(selector, CSS)
 
-    def test_favicon_assets_are_versioned_and_include_touch_icon(self):
+    def test_favicon_assets_use_stable_root_urls_and_include_touch_icon(self):
         for marker in (
-            "assets/favicon-48.png?v=6.5.0-r7",
-            "assets/apple-touch-icon.png?v=6.5.0-r7",
+            'href="/favicon.ico"',
+            'href="/favicon-48.png"',
+            'href="/apple-touch-icon.png"',
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, HTML)
-        for filename in ("favicon-48.png", "apple-touch-icon.png"):
+        for filename in ("favicon.ico", "favicon-48.png", "apple-touch-icon.png", "logo-512.png"):
             with self.subTest(filename=filename):
-                self.assertTrue((ROOT / "assets" / filename).is_file())
+                self.assertTrue((ROOT / filename).is_file())
 
 
 if __name__ == "__main__":

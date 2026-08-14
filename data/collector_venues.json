@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-02",
-  "release": "v6.5.0-r12-stable2-c1",
+  "updatedAt": "2026-08-14",
+  "release": "v6.5.0-r13",
   "description": "C1 場館 Collector 目標登錄。此檔不由前台讀取，也不包含展覽候選資料。",
   "venueCount": 21,
   "venues": [
@@ -10,17 +10,17 @@
       "name": "臺北世貿一館",
       "region": "臺北市",
       "group": "convention",
-      "operationalStatus": "planned",
-      "auditMode": "audit_only",
-      "officialUrl": "https://www.twtc.com.tw/",
+      "operationalStatus": "active",
+      "auditMode": "production",
+      "officialUrl": "https://www.twtc.org.tw/",
       "publicVenueIds": [
         "taipei-world-trade-center"
       ],
       "collectorVenueIds": [
         "twtc-hall-1"
       ],
-      "publishEnabled": false,
-      "notes": "C1 只建立登錄與安全政策；C2 實作 Collector 前不抓取、不發布。"
+      "publishEnabled": true,
+      "notes": "R13 已完成正式 Collector、來源隔離與官方一館清單驗證；只發布具有日期與可用官方活動圖片的項目。"
     },
     {
       "id": "twtc-hall-3",

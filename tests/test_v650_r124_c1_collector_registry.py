@@ -19,11 +19,11 @@ C1_IDS={
 }
 
 class C1CollectorRegistryTests(unittest.TestCase):
-    def test_exactly_21_c1_sources_are_registered_and_disabled(self):
+    def test_exactly_21_c1_sources_are_registered_and_only_hall_1_is_activated(self):
         by_id={x['id']:x for x in SOURCES['sources']}
         self.assertTrue(C1_IDS.issubset(by_id))
         self.assertEqual(len(C1_IDS),21)
-        for source_id in C1_IDS:
+        for source_id in C1_IDS - {'twtc-hall-1'}:
             source=by_id[source_id]
             self.assertFalse(source['enabled'])
             self.assertFalse(source['publicationPolicy']['publishEnabled'])
@@ -32,6 +32,12 @@ class C1CollectorRegistryTests(unittest.TestCase):
             self.assertTrue(source['allowedDomains'])
             self.assertLessEqual(source['networkPolicy']['maxAttempts'],2)
             self.assertGreaterEqual(source['networkPolicy']['minDelaySeconds'],2)
+        hall_1=by_id['twtc-hall-1']
+        self.assertTrue(hall_1['enabled'])
+        self.assertEqual(hall_1['status'],'active')
+        self.assertTrue(hall_1['publicationPolicy']['publishEnabled'])
+        self.assertTrue(hall_1['publicationPolicy']['writePublicData'])
+        self.assertEqual(hall_1['networkPolicy']['failurePolicy'],'isolate_source')
 
     def test_hall_3_is_verify_only_and_juming_is_present(self):
         by_id={x['id']:x for x in SOURCES['sources']}

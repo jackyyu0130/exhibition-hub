@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-07-29",
+  "updatedAt": "2026-08-14",
   "regionGroup": "north",
   "coverageRegions": [
     "臺北市",
@@ -35,6 +35,8 @@
       "id": "taipei-world-trade-center-hall-1",
       "name": "台北世貿一館",
       "aliases": [
+        "臺北世貿一館",
+        "台北世貿一館",
         "台北世界貿易中心展覽大樓",
         "世貿一館",
         "TWTC Hall 1"
@@ -44,10 +46,10 @@
       "venueType": "convention_exhibition",
       "venueComplexId": "",
       "venueSpaces": [],
-      "sourceStrategy": "shared_official_split",
-      "officialUrl": "https://www.twtc.com.tw/",
-      "status": "planned",
-      "notes": ""
+      "sourceStrategy": "direct_official",
+      "officialUrl": "https://www.twtc.org.tw/",
+      "status": "active",
+      "notes": "R13：只解析世貿官方一館 menu1 清單；三館維持退役且不抓取。"
     },
     {
       "id": "taipei-international-convention-center",
@@ -106,18 +108,21 @@
       "id": "expo-park-expo-dome",
       "name": "花博公園爭豔館",
       "aliases": [
+        "花博公園爭艷館",
+        "爭艷館",
         "爭豔館",
-        "花博爭豔館"
+        "花博爭豔館",
+        "花博爭艷館"
       ],
       "region": "臺北市",
       "district": "中山區",
       "venueType": "convention_exhibition",
       "venueComplexId": "taipei-expo-park",
       "venueSpaces": [],
-      "sourceStrategy": "organizer_calendar",
+      "sourceStrategy": "direct_official",
       "officialUrl": "https://www.expopark.taipei/",
-      "status": "planned",
-      "notes": ""
+      "status": "active",
+      "notes": "R13：解析花博公園官方活動清單，僅保留場地為爭艷館／爭豔館的項目。"
     },
     {
       "id": "expo-park-eco-ark",
