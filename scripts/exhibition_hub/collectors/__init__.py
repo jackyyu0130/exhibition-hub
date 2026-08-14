@@ -98,8 +98,10 @@ from .official_sites import (
     KaohsiungMusicCenterCollector,
     Pier2ArtCenterCollector,
     TainanArtMuseumCollector,
+    TaipeiExpoParkExpoDomeCollector,
     TaipeiMusicCenterCollector,
     TaipeiPerformingArtsCenterCollector,
+    TwtcHall1Collector,
 )
 
 __all__.extend([
@@ -109,6 +111,8 @@ __all__.extend([
     "TainanArtMuseumCollector",
     "TaipeiPerformingArtsCenterCollector",
     "Pier2ArtCenterCollector",
+    "TwtcHall1Collector",
+    "TaipeiExpoParkExpoDomeCollector",
 ])
 
 for _official_collector_type in OFFICIAL_SITE_COLLECTORS:
@@ -118,4 +122,3 @@ for _official_collector_type in OFFICIAL_SITE_COLLECTORS:
             priority=90,
             enabled=True,
         )
-

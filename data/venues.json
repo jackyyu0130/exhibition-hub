@@ -779,8 +779,12 @@
       "aliases": [
         "台北世貿",
         "臺北世貿",
+        "台北世貿一館",
+        "臺北世貿一館",
         "世貿一館",
-        "世貿展覽館"
+        "世貿展覽館",
+        "台北世界貿易中心展覽大樓",
+        "TWTC Hall 1"
       ],
       "region": "臺北市",
       "district": "信義區",
@@ -788,8 +792,10 @@
         "convention_center",
         "expo_space"
       ],
-      "officialUrl": "",
-      "sourceIds": [],
+      "officialUrl": "https://www.twtc.org.tw/",
+      "sourceIds": [
+        "twtc-hall-1"
+      ],
       "status": "active",
       "latitude": null,
       "longitude": null,
@@ -1315,7 +1321,10 @@
       "name": "花博公園爭艷館",
       "aliases": [
         "花博爭艷館",
-        "爭艷館"
+        "花博爭豔館",
+        "花博公園爭豔館",
+        "爭艷館",
+        "爭豔館"
       ],
       "region": "臺北市",
       "district": "中山區",
@@ -1324,8 +1333,10 @@
         "expo_space",
         "market_space"
       ],
-      "officialUrl": "",
-      "sourceIds": [],
+      "officialUrl": "https://www.expopark.taipei/",
+      "sourceIds": [
+        "taipei-expo-park-expo-dome"
+      ],
       "status": "active",
       "latitude": null,
       "longitude": null,

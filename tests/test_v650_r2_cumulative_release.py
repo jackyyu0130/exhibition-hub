@@ -16,8 +16,8 @@ class V650R2CumulativeReleaseTests(unittest.TestCase):
         for marker in (
             "assets/styles.css?v=6.5.0-r11.0.2",
             "assets/app.js?v=6.5.0-r11.0.2",
-            "assets/favicon-48.png?v=6.5.0-r7",
-            "assets/apple-touch-icon.png?v=6.5.0-r7",
+            'href="/favicon-48.png"',
+            'href="/apple-touch-icon.png"',
             "assets/taiwan-exhibition-journal-logo-v10.png?v=6.5.0-r7",
         ):
             with self.subTest(marker=marker):

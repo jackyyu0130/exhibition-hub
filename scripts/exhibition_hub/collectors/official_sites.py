@@ -42,6 +42,16 @@ _SINGLE_DATE_RE = re.compile(
     r"(?P<date>\d{4}\s*(?:年|[./-])\s*\d{1,2}\s*(?:月|[./-])\s*\d{1,2}\s*日?)",
     re.I,
 )
+_ROC_RANGE_RE = re.compile(
+    r"(?P<start>\d{2,3}\s*(?:年|[./-])\s*\d{1,2}\s*(?:月|[./-])\s*\d{1,2}\s*日?)"
+    r"(?:\s*[（(][^）)]{1,5}[）)])?\s*(?:-|－|–|—|~|～|至)\s*"
+    r"(?P<end>\d{2,3}\s*(?:年|[./-])\s*\d{1,2}\s*(?:月|[./-])\s*\d{1,2}\s*日?)",
+    re.I,
+)
+_ROC_SINGLE_DATE_RE = re.compile(
+    r"(?P<date>\d{2,3}\s*(?:年|[./-])\s*\d{1,2}\s*(?:月|[./-])\s*\d{1,2}\s*日?)",
+    re.I,
+)
 _TIME_RE = re.compile(
     r"(?P<start>\d{1,2}[：:]\d{2})\s*(?:-|－|–|—|~|～|至)\s*"
     r"(?P<end>\d{1,2}[：:]\d{2})"
@@ -89,13 +99,42 @@ def _dates(text: str) -> tuple[str, str]:
     return "", ""
 
 
+def _roc_date(value: Any) -> str:
+    """Convert a Minguo/ROC date such as 115-08-14 to 2026-08-14."""
+    text = str(value or "").strip()
+    match = re.search(
+        r"(?<!\d)(\d{2,3})\s*(?:年|[./-])\s*(\d{1,2})\s*(?:月|[./-])\s*(\d{1,2})",
+        text,
+    )
+    if not match:
+        return ""
+    year = int(match.group(1)) + 1911
+    return f"{year:04d}-{int(match.group(2)):02d}-{int(match.group(3)):02d}"
+
+
+def _roc_dates(text: str) -> tuple[str, str]:
+    match = _ROC_RANGE_RE.search(text)
+    if match:
+        return _roc_date(match.group("start")), _roc_date(match.group("end"))
+    match = _ROC_SINGLE_DATE_RE.search(text)
+    if match:
+        value = _roc_date(match.group("date"))
+        return value, value
+    return "", ""
+
+
 def _clean_images(values: Sequence[str], base_url: str) -> list[str]:
     result: list[str] = []
     seen: set[str] = set()
     for value in values:
-        absolute = urljoin(base_url, str(value or "").strip())
+        candidate = str(value or "").strip()
+        if not candidate:
+            continue
+        absolute = urljoin(base_url, candidate)
         parsed = urlparse(absolute)
         if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+            continue
+        if parsed.path.lower().endswith((".aspx", ".html", ".htm", ".php")):
             continue
         if _IMAGE_REJECT_RE.search(parsed.path):
             continue
@@ -308,6 +347,121 @@ class _DetailParser(HTMLParser):
 
     def full_text(self) -> str:
         return _space(" ".join(self.text))
+
+
+class _TwtcListingParser(HTMLParser):
+    """Parse the official TWTC Hall 1 schedule without mixing other halls."""
+
+    def __init__(self, base_url: str) -> None:
+        super().__init__(convert_charrefs=True)
+        self.base_url = base_url
+        self.records: list[dict[str, str]] = []
+        self._row: list[dict[str, Any]] | None = None
+        self._cell: dict[str, Any] | None = None
+        self._anchor: dict[str, Any] | None = None
+        self._ignored = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag = tag.lower()
+        attr = {str(k).lower(): str(v or "") for k, v in attrs}
+        if tag in _IGNORED_TAGS:
+            self._ignored += 1
+            return
+        if self._ignored:
+            return
+        if tag == "tr":
+            self._row = []
+        elif tag in {"td", "th"} and self._row is not None:
+            self._cell = {"parts": [], "anchors": []}
+        elif tag == "a" and self._cell is not None and attr.get("href"):
+            self._anchor = {
+                "url": urljoin(self.base_url, attr["href"]),
+                "parts": [attr.get("title", ""), attr.get("aria-label", "")],
+            }
+
+    def handle_data(self, data: str) -> None:
+        if self._ignored or self._cell is None:
+            return
+        text = _space(data)
+        if not text:
+            return
+        self._cell["parts"].append(text)
+        if self._anchor is not None:
+            self._anchor["parts"].append(text)
+
+    def handle_endtag(self, tag: str) -> None:
+        tag = tag.lower()
+        if tag in _IGNORED_TAGS and self._ignored:
+            self._ignored -= 1
+            return
+        if self._ignored:
+            return
+        if tag == "a" and self._anchor is not None and self._cell is not None:
+            self._anchor["text"] = _space(" ".join(_unique(self._anchor["parts"])))
+            self._cell["anchors"].append(self._anchor)
+            self._anchor = None
+        elif tag in {"td", "th"} and self._cell is not None and self._row is not None:
+            self._cell["text"] = _space(" ".join(_unique(self._cell["parts"])))
+            self._row.append(self._cell)
+            self._cell = None
+        elif tag == "tr" and self._row is not None:
+            self._finish_row(self._row)
+            self._row = None
+
+    def _finish_row(self, cells: Sequence[Mapping[str, Any]]) -> None:
+        anchors = [dict(anchor) for cell in cells for anchor in cell.get("anchors") or []]
+        detail = next((
+            anchor for anchor in anchors
+            if urlparse(str(anchor.get("url") or "")).path.lower().endswith("/exhibition_more.aspx")
+            and dict(parse_qsl(urlparse(str(anchor.get("url") or "")).query)).get("p") == "menu1"
+        ), None)
+        if not detail:
+            return
+        detail_url = str(detail["url"])
+        venue_text = _space(cells[-1].get("text")) if len(cells) >= 5 else ""
+        if venue_text and not re.search(r"(?:臺北|台北)?世貿一館", venue_text):
+            return
+        detail_host = urlparse(detail_url).netloc.lower().removeprefix("www.")
+        title_cell = next((
+            cell for cell in cells
+            if any(
+                str(anchor.get("url") or "") == detail_url
+                for anchor in cell.get("anchors") or []
+            )
+        ), {})
+        title_anchor = next((
+            dict(anchor) for anchor in title_cell.get("anchors") or []
+            if str(anchor.get("url") or "") != detail_url
+            and _space(anchor.get("text"))
+            and _space(anchor.get("text")).lower() not in {"more", "詳細資料"}
+        ), None)
+        title = _space((title_anchor or {}).get("text"))
+        if not title:
+            title = re.sub(
+                r"\b(?:more|詳細資料)\b",
+                "",
+                _space(title_cell.get("text")),
+                flags=re.I,
+            ).strip()
+        event_url = ""
+        if title_anchor:
+            candidate = str(title_anchor.get("url") or "")
+            candidate_host = urlparse(candidate).netloc.lower().removeprefix("www.")
+            if candidate_host and candidate_host != detail_host:
+                event_url = candidate
+        organizer = _space(cells[2].get("text")) if len(cells) > 2 else ""
+        self.records.append({
+            "sourceEventId": hashlib.sha256(detail_url.encode("utf-8")).hexdigest()[:24],
+            "title": title,
+            "detailUrl": detail_url,
+            "eventUrl": event_url,
+            "organizer": organizer,
+            "organizers": [organizer] if organizer else [],
+            "listingText": _space(" ".join(str(cell.get("text") or "") for cell in cells)),
+            "startDate": "",
+            "endDate": "",
+            "imageUrl": "",
+        })
 
 
 class ConfiguredOfficialSiteCollector(BaseCollector):
@@ -543,10 +697,185 @@ class Pier2ArtCenterCollector(ConfiguredOfficialSiteCollector):
     source_name = "駁二藝術特區"
 
 
+class TwtcHall1Collector(ConfiguredOfficialSiteCollector):
+    source_id = "twtc-hall-1"
+    source_name = "臺北世貿一館"
+
+    @classmethod
+    def parse_listing(
+        cls,
+        html: str,
+        *,
+        base_url: str,
+        detail_patterns: Sequence[str],
+    ) -> tuple[list[dict[str, str]], list[str]]:
+        del detail_patterns
+        parser = _TwtcListingParser(base_url)
+        parser.feed(html)
+        parser.close()
+        by_url = {record["detailUrl"]: record for record in parser.records}
+        return list(by_url.values()), []
+
+    @classmethod
+    def parse_detail(
+        cls,
+        html: str,
+        *,
+        detail_url: str,
+        source: CollectorSource,
+        listing: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        listing = dict(listing or {})
+        record = super().parse_detail(
+            html,
+            detail_url=detail_url,
+            source=source,
+            listing=listing,
+        )
+        if _space(listing.get("title")):
+            record["title"] = _space(listing["title"])
+        organizer = _space(listing.get("organizer"))
+        record["organizer"] = organizer
+        record["organizers"] = [organizer] if organizer else []
+        event_url = str(listing.get("eventUrl") or "")
+        if event_url and not re.search(r"facebook|instagram|threads\.net", urlparse(event_url).netloc, re.I):
+            record["externalUrls"] = [event_url]
+        else:
+            record["externalUrls"] = []
+        start = str(record.get("startDate") or "")
+        end = str(record.get("endDate") or "")
+        date_text = f"{start} 至 {end}" if start and end and start != end else start
+        summary_parts = [
+            f"{record['title']}於臺北世貿一館舉辦。",
+            f"展期：{date_text}。" if date_text else "",
+            f"主辦單位：{organizer}。" if organizer else "",
+            "入場方式與最新異動請以官方活動頁及主辦單位公告為準。",
+        ]
+        record["description"] = _space(" ".join(part for part in summary_parts if part))
+        record["admission"] = "unknown"
+        record["priceText"] = "入場方式請洽主辦單位"
+        return record
+
+    def collect_raw(self, source: CollectorSource, client: Any) -> Sequence[Mapping[str, Any]]:
+        records = [dict(record) for record in super().collect_raw(source, client)]
+        self.last_external_requested = 0
+        self.last_external_success = 0
+        for record in records:
+            if record.get("imageUrl"):
+                continue
+            event_url = str(record.get("eventUrl") or "").strip()
+            parsed = urlparse(event_url)
+            if (
+                parsed.scheme not in {"http", "https"}
+                or not parsed.netloc
+                or re.search(r"facebook|instagram|threads\.net|line\.me", parsed.netloc, re.I)
+            ):
+                continue
+            self.last_external_requested += 1
+            try:
+                response = client.get(event_url)
+                parser = _DetailParser(response.url or event_url)
+                parser.feed(response.text)
+                parser.close()
+                images = _clean_images(
+                    [
+                        parser.meta.get("og:image", ""),
+                        parser.meta.get("twitter:image", ""),
+                        *parser.images,
+                    ],
+                    response.url or event_url,
+                )
+                if images:
+                    record["imageUrl"] = images[0]
+                    record["imageUrls"] = images
+                    self.last_external_success += 1
+                description = _space(
+                    parser.meta.get("og:description")
+                    or parser.meta.get("description")
+                )
+                if len(description) >= 40 and len(str(record.get("description") or "")) < 40:
+                    record["description"] = description
+            except Exception as exc:
+                self.last_detail_failures.append(
+                    f"{event_url}: {type(exc).__name__}: {exc}"
+                )
+        return records
+
+    def run(self, source: CollectorSource, client: Any) -> CollectorRunReport:
+        report = super().run(source, client)
+        report.metrics.update({
+            "externalEventPagesRequested": getattr(self, "last_external_requested", 0),
+            "externalEventPagesWithUsableImage": getattr(self, "last_external_success", 0),
+        })
+        return report
+
+
+class TaipeiExpoParkExpoDomeCollector(ConfiguredOfficialSiteCollector):
+    source_id = "taipei-expo-park-expo-dome"
+    source_name = "花博公園爭艷館"
+
+    @classmethod
+    def parse_listing(
+        cls,
+        html: str,
+        *,
+        base_url: str,
+        detail_patterns: Sequence[str],
+    ) -> tuple[list[dict[str, str]], list[str]]:
+        records, pagination = super().parse_listing(
+            html,
+            base_url=base_url,
+            detail_patterns=detail_patterns,
+        )
+        filtered: list[dict[str, str]] = []
+        for record in records:
+            listing_text = _space(record.get("listingText"))
+            if not re.search(r"(?:花博公園)?爭[艷豔]館", listing_text):
+                continue
+            start, end = _roc_dates(listing_text)
+            if start:
+                record["startDate"] = start
+                record["endDate"] = end or start
+            filtered.append(record)
+        return filtered, pagination
+
+    @classmethod
+    def parse_detail(
+        cls,
+        html: str,
+        *,
+        detail_url: str,
+        source: CollectorSource,
+        listing: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        listing = dict(listing or {})
+        record = super().parse_detail(
+            html,
+            detail_url=detail_url,
+            source=source,
+            listing=listing,
+        )
+        if _space(listing.get("title")):
+            record["title"] = _space(listing["title"])
+        exclude_pattern = str(source.raw.get("excludeTitlePattern") or "")
+        excluded = bool(_DEFAULT_EXCLUDE_RE.search(record["title"]))
+        if exclude_pattern:
+            excluded = excluded or bool(re.search(exclude_pattern, record["title"], re.I))
+        record["editorialStatus"] = "exclude_review" if excluded else "candidate"
+        start, end = _roc_dates(_space(
+            f"{record.get('description', '')} {listing.get('listingText', '')}"
+        ))
+        record["startDate"] = start or str(listing.get("startDate") or record.get("startDate") or "")
+        record["endDate"] = end or str(listing.get("endDate") or record.get("endDate") or record["startDate"])
+        return record
+
+
 OFFICIAL_SITE_COLLECTORS = (
     TaipeiMusicCenterCollector,
     KaohsiungMusicCenterCollector,
     TainanArtMuseumCollector,
     TaipeiPerformingArtsCenterCollector,
     Pier2ArtCenterCollector,
+    TwtcHall1Collector,
+    TaipeiExpoParkExpoDomeCollector,
 )

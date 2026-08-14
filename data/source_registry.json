@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-02",
-  "description": "台灣展覽誌來源登錄表；C1 加入 21 個官方場館 planned／audit_only 登錄，未啟用且不發布。",
+  "updatedAt": "2026-08-14",
+  "description": "台灣展覽誌來源登錄表；R13 啟用臺北世貿一館與花博公園爭艷館官方來源，並維持退役場館與社群來源停用。",
   "coverageRegions": [
     "基隆市",
     "臺北市",
@@ -1287,14 +1287,32 @@
       "name": "臺北世貿一館",
       "layer": "venue_official",
       "sourceType": "venue_website",
-      "parser": "venue_profile_dry_run",
-      "status": "planned",
-      "enabled": false,
+      "parser": "official_site_twtc",
+      "status": "active",
+      "enabled": true,
       "trustLevel": "official",
-      "priority": 78,
-      "refreshHours": 24,
+      "priority": 88,
+      "refreshHours": 12,
       "officialUrl": "https://www.twtc.org.tw/",
       "listingUrl": "https://www.twtc.org.tw/exhibition?p=menu1",
+      "listingUrls": [
+        "https://www.twtc.org.tw/exhibition?p=menu1"
+      ],
+      "detailPathPatterns": [
+        "^/exhibition_more\\.aspx$"
+      ],
+      "maxListingPages": 1,
+      "minimumRecords": 1,
+      "venueName": "臺北世貿一館",
+      "regionCanonical": "臺北市",
+      "address": "臺北市信義區信義路五段5號",
+      "subVenueKeywords": [
+        "一館1F",
+        "一館2F",
+        "世貿一館"
+      ],
+      "sourceCategory": "世貿一館官方展覽",
+      "excludeTitlePattern": "講座|課程|工作坊|營隊|說明會|研習|講習",
       "coverageRegions": [
         "臺北市"
       ],
@@ -1308,7 +1326,7 @@
       "collectorVenueIds": [
         "twtc-hall-1"
       ],
-      "auditMode": "audit_only",
+      "auditMode": "production",
       "allowedDomains": [
         "www.twtc.org.tw",
         "twtc.org.tw",
@@ -1323,12 +1341,12 @@
         "failurePolicy": "isolate_source"
       },
       "publicationPolicy": {
-        "publishEnabled": false,
-        "writePublicData": false,
-        "requiresManualApproval": true
+        "publishEnabled": true,
+        "writePublicData": true,
+        "requiresManualApproval": false
       },
-      "notes": "C1 planned／audit_only 登錄；C2 實作前不執行網路抓取，也不得寫入正式資料。",
-      "implementationStatus": "dry_run_candidate"
+      "notes": "R13 正式來源；只解析官方 menu1（一館）列表與官方詳情頁。活動圖只接受非社群之外部官方活動頁可用圖片；來源失敗時保留既有正式資料。",
+      "implementationStatus": "production"
     },
     {
       "id": "twtc-hall-3",
@@ -1375,6 +1393,73 @@
       },
       "notes": "C1 歷史場館驗證項目；不建立現行 Collector、不抓取、不發布。",
       "implementationStatus": "dry_run_candidate"
+    },
+    {
+      "id": "taipei-expo-park-expo-dome",
+      "name": "花博公園爭艷館",
+      "layer": "venue_official",
+      "sourceType": "venue_website",
+      "parser": "official_site_expo_dome",
+      "status": "active",
+      "enabled": true,
+      "trustLevel": "official",
+      "priority": 88,
+      "refreshHours": 12,
+      "officialUrl": "https://www.expopark.taipei/",
+      "listingUrl": "https://www.expopark.taipei/news_exhibition.aspx?_CSN=43&n=247&sms=9029",
+      "listingUrls": [
+        "https://www.expopark.taipei/news_exhibition.aspx?_CSN=43&n=247&sms=9029"
+      ],
+      "detailPathPatterns": [
+        "^/News_Photo_Content\\.aspx$"
+      ],
+      "maxListingPages": 3,
+      "minimumRecords": 1,
+      "venueName": "花博公園爭艷館",
+      "regionCanonical": "臺北市",
+      "address": "臺北市中山區玉門街1號",
+      "subVenueKeywords": [
+        "花博公園爭艷館",
+        "花博公園爭豔館",
+        "花博爭艷館",
+        "花博爭豔館",
+        "爭艷館",
+        "爭豔館"
+      ],
+      "sourceCategory": "花博爭艷館官方活動",
+      "excludeTitlePattern": "論壇|講座|課程|工作坊|營隊|說明會|研習|講習",
+      "coverageRegions": [
+        "臺北市"
+      ],
+      "contentTypes": [
+        "expo",
+        "exhibition",
+        "market",
+        "festival"
+      ],
+      "venueIds": [
+        "taipei-expo-park-expo-dome"
+      ],
+      "auditMode": "production",
+      "allowedDomains": [
+        "www.expopark.taipei",
+        "expopark.taipei",
+        "ws.expopark.taipei"
+      ],
+      "networkPolicy": {
+        "maxRequestsPerRun": 36,
+        "minDelaySeconds": 1,
+        "timeoutSeconds": 25,
+        "maxAttempts": 2,
+        "failurePolicy": "isolate_source"
+      },
+      "publicationPolicy": {
+        "publishEnabled": true,
+        "writePublicData": true,
+        "requiresManualApproval": false
+      },
+      "notes": "R13 正式來源；只收錄官方活動清單中場地明確為爭艷館／爭豔館的項目，並轉換民國年日期。來源失敗時保留既有正式資料。",
+      "implementationStatus": "production"
     },
     {
       "id": "westar",

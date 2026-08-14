@@ -1,0 +1,55 @@
+{
+  "version": "6.5.0-R13",
+  "releaseMarker": "v6.5.0-r13",
+  "basedOn": {
+    "branch": "main",
+    "commit": "1a9ab48",
+    "version": "6.5.0-R12-STABLE2"
+  },
+  "updatedAt": "2026-08-14",
+  "siteTitle": "台灣展覽誌｜全台展覽與演出資訊",
+  "frontendChanged": true,
+  "seoMetadataChanged": true,
+  "faviconAssetsChanged": true,
+  "collectorImplementationChanged": true,
+  "officialSourceRegistryChanged": true,
+  "venueAliasesChanged": true,
+  "publishedEventPayloadChanged": false,
+  "socialSourcesEnabled": false,
+  "officialSources": [
+    {
+      "id": "twtc-hall-1",
+      "name": "臺北世貿一館",
+      "status": "active",
+      "listingUrl": "https://www.twtc.org.tw/exhibition?p=menu1",
+      "failurePolicy": "isolate_source"
+    },
+    {
+      "id": "taipei-expo-park-expo-dome",
+      "name": "花博公園爭艷館",
+      "status": "active",
+      "listingUrl": "https://www.expopark.taipei/news_exhibition.aspx?_CSN=43&n=247&sms=9029",
+      "failurePolicy": "isolate_source"
+    },
+    {
+      "id": "twtc-hall-3",
+      "name": "臺北世貿三館（歷史場館）",
+      "status": "retired",
+      "enabled": false
+    }
+  ],
+  "liveVerification": {
+    "verifiedAt": "2026-08-14",
+    "twtcHall1ListingRecords": 34,
+    "twtcHall1DetailSample": 5,
+    "expoDomeVenueMatchedRecords": 7,
+    "expoDomeDetailSample": 5,
+    "htmlPageRejectedAsImage": true
+  },
+  "safety": [
+    "Facebook and Instagram remain disabled",
+    "No simulated login or unauthorized social scraping",
+    "Talks, courses, workshops, camps, seminars, and training stay excluded or reviewed",
+    "A failed official source is isolated and cannot erase existing production data"
+  ]
+}

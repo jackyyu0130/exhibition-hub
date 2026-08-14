@@ -1,4 +1,10 @@
-Taiwan Exhibition Journal V6.5.0-R12 STABLE2
+Taiwan Exhibition Journal V6.5.0-R13
+SEO identity: stable root favicon assets, canonical metadata, and exact title 台灣展覽誌｜全台展覽與演出資訊
+Official source: 臺北世貿一館 menu1 schedule and detail collector (active; isolated failure; Hall 3 remains retired)
+Official source: 花博公園爭艷館 official schedule and detail collector (active; ROC date conversion; venue-only filtering)
+Source safety: Facebook and Instagram remain disabled; no login simulation or unauthorized social scraping
+Data policy: talks, courses, workshops, camps, seminars, and training remain excluded or sent to review
+Baseline: GitHub main 1a9ab48 (V6.5.0-R12 STABLE2)
 R2 production publish-gate hotfix (expired-event cleanup is date-aware; active/future removals remain strictly capped)
 Baseline lineage: Taiwan Exhibition Journal V6.5.0-R7
 Performance patch: P4 (staged Hero hydration, lazy map runtime, predecoded home media, and deep scroll repair)
