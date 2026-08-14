@@ -1,18 +1,18 @@
 {
   "mode": "production-publish-report",
   "published": true,
-  "publishedAt": "2026-08-14T10:49:35.228604+00:00",
+  "publishedAt": "2026-08-14T12:05:30.163018+00:00",
   "sourceId": "huashan-1914",
-  "currentEventCount": 2211,
+  "currentEventCount": 2215,
   "publishedEventCount": 2215,
-  "addedEventCount": 13,
-  "removedEventCount": 9,
+  "addedEventCount": 10,
+  "removedEventCount": 10,
   "dropCount": 0,
   "dropRatio": 0.0,
   "asOfDate": "2026-08-14",
   "expiredRemovedEventCount": 0,
-  "activeRemovedEventCount": 9,
-  "activeRemovedRatio": 0.004071,
+  "activeRemovedEventCount": 10,
+  "activeRemovedRatio": 0.004515,
   "safetyLimits": {
     "minimumEvents": 500,
     "maxActiveRemovedCount": 25,
@@ -36,11 +36,23 @@
     "published": false
   },
   "hashes": {
-    "current": "a56f6446beff755370bf4cb2e6ae119c34f0bd045e4b1b1ccc5f3e2ae2070a2b",
-    "preview": "5842ab035d8a4d77ad49af1683614e1512ae2250de91988474f7218482d978d6",
-    "published": "68b083a403eed0c9990a7fec1d99bc92f19b4f1444dedd6e438eae7dead1e477"
+    "current": "a6f707ec2ecb726a2deb54f9fce910c1d7fb552f4ed46e694a6436f1c5f77f09",
+    "preview": "208b9ab489c068480a259552abf6b8000eec50b442239813b026c4f4c7d9d445",
+    "published": "78598c97a7f19e62376603678dc4a6ab8e2875986eeb19465cdae26eb635c001"
   },
   "addedIds": [
+    "4f6fb2a5d09c458dc3f86975",
+    "69b06ece26b3242a48a9d9d4",
+    "69b4434926b3242a48a9db6e",
+    "69b4434926b3242a48a9db6f",
+    "69e48794eb43c961d05406c8",
+    "6a3181c626b3243414ccd35f",
+    "6a3a4af7647a40ec65297aae",
+    "6a435f1826b32427d0603f64",
+    "6a4f3aa6647ad700eb56ccb6",
+    "6a6f6780eb43f5f34e51885f"
+  ],
+  "removedIds": [
     "69ae835ceb43d512a487f51e",
     "69e7e31926b3242a48a9e5c8",
     "6a194090eb437cf2219b95ed",
@@ -50,32 +62,19 @@
     "6a5d8c1a647ad700eb56ccca",
     "6a608124eb43f5f34e518845",
     "6a7d1dd1eb436c2506e0fba2",
-    "6a7da88d647ad700eb56ccef",
-    "6a7e7b51647ad700eb56ccf1",
-    "b6ecae1ab7b144a36d97003b",
-    "ddaabd2b477e9b804438d97d"
-  ],
-  "removedIds": [
-    "69b06ece26b3242a48a9d9d4",
-    "69b4434926b3242a48a9db6e",
-    "69b4434926b3242a48a9db6f",
-    "69e48794eb43c961d05406c8",
-    "6a3181c626b3243414ccd35f",
-    "6a3a4af7647a40ec65297aae",
-    "6a435f1826b32427d0603f64",
-    "6a4f3aa6647ad700eb56ccb6",
-    "6a6f6780eb43f5f34e51885f"
+    "b6ecae1ab7b144a36d97003b"
   ],
   "expiredRemovedIds": [],
   "activeRemovedIds": [
-    "69b06ece26b3242a48a9d9d4",
-    "69b4434926b3242a48a9db6e",
-    "69b4434926b3242a48a9db6f",
-    "69e48794eb43c961d05406c8",
-    "6a3181c626b3243414ccd35f",
-    "6a3a4af7647a40ec65297aae",
-    "6a435f1826b32427d0603f64",
-    "6a4f3aa6647ad700eb56ccb6",
-    "6a6f6780eb43f5f34e51885f"
+    "69ae835ceb43d512a487f51e",
+    "69e7e31926b3242a48a9e5c8",
+    "6a194090eb437cf2219b95ed",
+    "6a2301c426b3243414cccf21",
+    "6a34414826b3243414ccd45e",
+    "6a4cbc52647a042a0eb890c8",
+    "6a5d8c1a647ad700eb56ccca",
+    "6a608124eb43f5f34e518845",
+    "6a7d1dd1eb436c2506e0fba2",
+    "b6ecae1ab7b144a36d97003b"
   ]
 }

@@ -124,7 +124,7 @@
       "collectorStatus": "partial",
       "collectorSuccess": true,
       "collectedRecordCount": 34,
-      "publishableRecordCount": 12,
+      "publishableRecordCount": 13,
       "minimumRecords": 1,
       "warnings": [
         "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
@@ -147,7 +147,7 @@
       "candidateEventCount": 2215,
       "decisionCounts": {
         "new_event": 1,
-        "auto_merge": 11
+        "auto_merge": 12
       },
       "reviewQueueCount": 0
     },
