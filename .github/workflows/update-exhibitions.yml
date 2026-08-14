@@ -69,7 +69,7 @@ jobs:
                 else
                   REASON="source-registry-planned-only"
                 fi
-              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(scripts/validate_published_data\.py|scripts/run_official_source_batch\.py|scripts/exhibition_hub/collectors/official_sites\.py|scripts/exhibition_hub/collectors/__init__\.py)$'; then
+              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(scripts/validate_published_data\.py|scripts/finalize_source_publish\.py|scripts/run_official_source_batch\.py|scripts/exhibition_hub/collectors/official_sites\.py|scripts/exhibition_hub/collectors/__init__\.py)$'; then
                 RUN_UPDATE=true
                 REASON="production-pipeline-recovery"
               fi
@@ -224,7 +224,7 @@ jobs:
             --quality-report "production-update-audit/quality-report.json" \
             --source-id "huashan-1914" \
             --minimum-events "500" \
-            --max-drop-count "250" \
+            --max-drop-count "25" \
             --max-drop-ratio "0.15" \
             --output "production-update-audit/exhibitions.enriched.final.json" \
             --report-output "production-update-audit/production-publish-report.json" \

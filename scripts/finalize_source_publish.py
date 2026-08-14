@@ -3,11 +3,15 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 import hashlib
 import json
 from pathlib import Path
 from typing import Any, Mapping
+from zoneinfo import ZoneInfo
+
+
+TAIPEI_TIMEZONE = ZoneInfo("Asia/Taipei")
 
 
 def parse_args() -> argparse.Namespace:
@@ -27,7 +31,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--report-output", required=True)
     parser.add_argument("--minimum-events", type=int, default=500)
     parser.add_argument("--max-drop-ratio", type=float, default=0.15)
-    parser.add_argument("--max-drop-count", type=int, default=250)
+    parser.add_argument(
+        "--max-drop-count",
+        type=int,
+        default=25,
+        help=(
+            "Maximum active, future, or date-unknown events that may be "
+            "removed. Expired events do not consume this budget."
+        ),
+    )
+    parser.add_argument(
+        "--as-of-date",
+        help=(
+            "Date used to classify expired events (YYYY-MM-DD). "
+            "Defaults to today's date in Asia/Taipei."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -67,6 +86,41 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def parse_event_date(value: Any) -> date | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
+def removed_event_ids_by_lifecycle(
+    current_events: list[dict[str, Any]],
+    preview_ids: set[str],
+    *,
+    as_of_date: date,
+) -> tuple[list[str], list[str]]:
+    expired_ids: set[str] = set()
+    active_or_unknown_ids: set[str] = set()
+
+    for event in current_events:
+        event_id = str(event.get("id") or "").strip()
+        if not event_id or event_id in preview_ids:
+            continue
+
+        end_date = parse_event_date(event.get("endDate"))
+        if end_date is not None and end_date < as_of_date:
+            expired_ids.add(event_id)
+        else:
+            # Missing or invalid dates are deliberately treated as active so
+            # an ambiguous record can never bypass the production gate.
+            active_or_unknown_ids.add(event_id)
+
+    return sorted(expired_ids), sorted(active_or_unknown_ids)
+
+
 def finalize_publish(
     *,
     current: Mapping[str, Any],
@@ -78,6 +132,7 @@ def finalize_publish(
     minimum_events: int,
     max_drop_ratio: float,
     max_drop_count: int,
+    as_of_date: date | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     current_events = [
         event for event in current.get("events") or []
@@ -147,17 +202,31 @@ def finalize_publish(
 
     current_count = len(current_events)
     preview_count = len(preview_events)
-    removed_ids = sorted(set(current_ids) - set(preview_ids))
-    added_ids = sorted(set(preview_ids) - set(current_ids))
+    preview_id_set = set(preview_ids)
+    removed_ids = sorted(set(current_ids) - preview_id_set)
+    added_ids = sorted(preview_id_set - set(current_ids))
+    effective_as_of_date = as_of_date or datetime.now(TAIPEI_TIMEZONE).date()
+    expired_removed_ids, active_removed_ids = removed_event_ids_by_lifecycle(
+        current_events,
+        preview_id_set,
+        as_of_date=effective_as_of_date,
+    )
     drop_count = max(0, current_count - preview_count)
     drop_ratio = (
         round(drop_count / current_count, 6)
         if current_count else 0.0
     )
+    active_removed_ratio = (
+        round(len(active_removed_ids) / current_count, 6)
+        if current_count else 0.0
+    )
 
     require(
-        drop_count <= max(0, max_drop_count),
-        f"Production count drop {drop_count} exceeds {max_drop_count}.",
+        len(active_removed_ids) <= max(0, max_drop_count),
+        (
+            "Active, future, or date-unknown production removals "
+            f"{len(active_removed_ids)} exceed {max_drop_count}."
+        ),
     )
     require(
         drop_ratio <= max(0.0, max_drop_ratio),
@@ -195,6 +264,8 @@ def finalize_publish(
         "publishedEventCount": preview_count,
         "productionAddedEventCount": len(added_ids),
         "productionRemovedEventCount": len(removed_ids),
+        "productionExpiredRemovedEventCount": len(expired_removed_ids),
+        "productionActiveRemovedEventCount": len(active_removed_ids),
     })
     final["officialSourceBuild"] = build
     final["updatedAt"] = published_at
@@ -210,10 +281,18 @@ def finalize_publish(
         "removedEventCount": len(removed_ids),
         "dropCount": drop_count,
         "dropRatio": drop_ratio,
+        "asOfDate": effective_as_of_date.isoformat(),
+        "expiredRemovedEventCount": len(expired_removed_ids),
+        "activeRemovedEventCount": len(active_removed_ids),
+        "activeRemovedRatio": active_removed_ratio,
         "safetyLimits": {
             "minimumEvents": minimum_events,
+            "maxActiveRemovedCount": max_drop_count,
+            "maxTotalDropRatio": max_drop_ratio,
             "maxDropCount": max_drop_count,
             "maxDropRatio": max_drop_ratio,
+            "countGateScope": "active_future_or_date_unknown_removed_events",
+            "ratioGateScope": "net_total_event_count",
         },
         "sourceRecordCount": len(source_records),
         "detailSuccessCount": int(metrics.get("detailSuccessCount") or 0),
@@ -226,12 +305,19 @@ def finalize_publish(
         },
         "addedIds": added_ids,
         "removedIds": removed_ids,
+        "expiredRemovedIds": expired_removed_ids,
+        "activeRemovedIds": active_removed_ids,
     }
     return final, report
 
 
 def main() -> int:
     args = parse_args()
+    as_of_date = None
+    if args.as_of_date:
+        as_of_date = parse_event_date(args.as_of_date)
+        if as_of_date is None:
+            raise ValueError("--as-of-date must use YYYY-MM-DD format.")
     final, report = finalize_publish(
         current=load_json(args.current),
         preview=load_json(args.preview),
@@ -242,6 +328,7 @@ def main() -> int:
         minimum_events=max(1, args.minimum_events),
         max_drop_ratio=max(0.0, args.max_drop_ratio),
         max_drop_count=max(0, args.max_drop_count),
+        as_of_date=as_of_date,
     )
     write_json(args.output, final)
     write_json(args.report_output, report)
