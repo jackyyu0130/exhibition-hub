@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-14T07:43:56.744275+00:00",
+  "generatedAt": "2026-08-14T10:49:36.890908+00:00",
   "mode": "fix",
   "reports": [
     {
       "path": "data/exhibitions.json",
-      "eventCount": 2146,
+      "eventCount": 2148,
       "fixApplied": true,
       "affectedEventCount": 0,
       "rejectedImageCount": 0,
@@ -18,7 +18,7 @@
     },
     {
       "path": "data/exhibitions.enriched.json",
-      "eventCount": 2211,
+      "eventCount": 2215,
       "fixApplied": true,
       "affectedEventCount": 0,
       "rejectedImageCount": 0,
