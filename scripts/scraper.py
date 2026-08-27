@@ -49,7 +49,16 @@ except ModuleNotFoundError:  # Offline maintenance still works before dependenci
             def get(self, *_args, **_kwargs):
                 raise _RequestsFallback.RequestException("Install requirements.txt for network updates")
 
+            def close(self):
+                return None
+
     requests = _RequestsFallback()
+
+try:
+    from exhibition_hub.tls_compat import create_culture_ministry_session
+except ModuleNotFoundError:  # Keep offline maintenance available without requests.
+    def create_culture_ministry_session():
+        return requests.Session()
 
 CULTURE_BASE_URL = "https://cloud.culture.tw/"
 API_TEMPLATE = CULTURE_BASE_URL + "frontsite/trans/SearchShowAction.do?method={method}&category={category}"
@@ -61,6 +70,12 @@ DETAIL_API_URL = CULTURE_BASE_URL + "frontsite/opendata/activityOpenDataJsonActi
 TAIPEI_TZ = timezone(timedelta(hours=8))
 USER_AGENT = "TaiwanExhibitionJournal/6.3 (+https://github.com/jackyyu0130/exhibition-hub)"
 DEFAULT_VENUE_ALIASES = Path("data/venue-aliases.json")
+
+
+def network_session(url: str = ""):
+    if str(url).startswith(CULTURE_BASE_URL):
+        return create_culture_ministry_session()
+    return requests.Session()
 
 # Official Culture Ministry category codes. Public-facing categories deliberately
 # omit 「徵選」 and 「商展」; those records are reclassified from their content.
@@ -807,8 +822,9 @@ def image_url_responds(url: str, *, timeout: int = 12) -> bool:
     if url in IMAGE_VALIDATION_CACHE:
         return IMAGE_VALIDATION_CACHE[url]
     result = False
+    session = network_session(url)
     try:
-        response = requests.get(
+        response = session.get(
             url,
             timeout=timeout,
             allow_redirects=True,
@@ -822,6 +838,8 @@ def image_url_responds(url: str, *, timeout: int = 12) -> bool:
         response.close()
     except (requests.RequestException, ValueError, StopIteration):
         result = False
+    finally:
+        session.close()
     IMAGE_VALIDATION_CACHE[url] = result
     return result
 
@@ -885,8 +903,9 @@ def _walk_jsonld(value: Any) -> Iterator[dict[str, Any]]:
 def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> dict[str, Any]:
     if not url or is_facebook_url(url):
         return {}
+    session = network_session(url)
     try:
-        response = requests.get(
+        response = session.get(
             url,
             timeout=timeout,
             allow_redirects=True,
@@ -1034,6 +1053,8 @@ def discover_page_metadata(url: str, *, title: str = "", timeout: int = 16) -> d
         }
     except requests.RequestException:
         return {}
+    finally:
+        session.close()
 
 
 def discover_page_images(url: str, *, timeout: int = 16) -> list[str]:
@@ -1480,7 +1501,7 @@ def fetch_activity_detail(uid: str, *, timeout: int = 20) -> dict[str, Any]:
     """Fetch the official single-activity record when the list feed is incomplete."""
     if not uid:
         return {}
-    session = requests.Session()
+    session = network_session(DETAIL_API_URL)
     session.headers.update({"User-Agent": USER_AGENT, "Accept": "application/json,text/plain,*/*"})
     for method in ("doFindActivityByIdOpenApi", "doFindActivityById"):
         try:
@@ -1744,7 +1765,7 @@ def extract_payload(response: requests.Response) -> list[dict[str, Any]]:
 
 
 def fetch_category(category: str, config: SourceConfig) -> list[dict[str, Any]]:
-    session = requests.Session()
+    session = network_session(CULTURE_BASE_URL)
     session.headers.update({"User-Agent": USER_AGENT, "Accept": "application/json,text/plain,*/*"})
     errors: list[str] = []
     for method in API_METHODS:
