@@ -276,7 +276,7 @@
   }
 
   const DEFAULT_PAGE_TITLE = '台灣展覽誌｜全台展覽與演出資訊';
-  const DEFAULT_PAGE_DESCRIPTION = '收錄全台展覽、演出與大型展會，查找展期、場館、票價與官方資訊。';
+  const DEFAULT_PAGE_DESCRIPTION = '想看展，卻不知道從哪裡開始？整理全台最新展覽、藝術快閃與大型展會，一鍵掌握展期、場館與門票資訊，陪你找到下一次城市散步的靈感目的地。';
   const DEFAULT_PAGE_IMAGE = 'https://twexhibition.com/logo-512.png';
   const DEFAULT_PAGE_URL = 'https://twexhibition.com/';
 
