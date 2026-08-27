@@ -1716,10 +1716,10 @@
     const updated = parseDate(state.updatedAt);
     $('#heroUpdatedDate').textContent = updated
       ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日`
-      : '每日更新';
+      : '等待首次更新';
     $('#heroUpdatedTime').textContent = updated
       ? `${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分更新`
-      : '自動更新';
+      : '資料更新時間';
     const paperDate = $('#heroPaperDate');
     if (paperDate) paperDate.textContent = updated
       ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')}`
@@ -2938,7 +2938,7 @@
     const updatedAt = $('#footerUpdatedAt');
     if (updatedAt) updatedAt.textContent = updated
       ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')} ${String(updated.getHours()).padStart(2,'0')}:${String(updated.getMinutes()).padStart(2,'0')}`
-      : '每日自動更新';
+      : '尚未取得更新時間';
   }
 
   function navigateWithFeedback(target, options = {}) {

@@ -1,11 +1,8 @@
-Taiwan Exhibition Journal V6.5.0-R13
-SEO identity: stable root favicon assets, canonical metadata, and exact title 台灣展覽誌｜全台展覽與演出資訊
-Official source: 臺北世貿一館 menu1 schedule and detail collector (active; isolated failure; Hall 3 remains retired)
-Official source: 花博公園爭艷館 official schedule and detail collector (active; ROC date conversion; venue-only filtering)
-Source safety: Facebook and Instagram remain disabled; no login simulation or unauthorized social scraping
-Data policy: talks, courses, workshops, camps, seminars, and training remain excluded or sent to review
-Baseline: GitHub main 1a9ab48 (V6.5.0-R12 STABLE2)
-R2 production publish-gate hotfix (expired-event cleanup is date-aware; active/future removals remain strictly capped)
+Taiwan Exhibition Journal V6.5.0-R14.2
+R14.2 restores R13 SEO metadata and deploys the confirmed 512px logo while retaining local weekly updates and stable root favicons
+R14.1 validation compatibility hotfix (stable root favicon assertions and cumulative release metadata)
+Mac local weekly crawler + manual lightweight Pages publish + favicon deployment repair
+Baseline lineage: Taiwan Exhibition Journal V6.5.0-R12 STABLE2
 Baseline lineage: Taiwan Exhibition Journal V6.5.0-R7
 Performance patch: P4 (staged Hero hydration, lazy map runtime, predecoded home media, and deep scroll repair)
 Integrated repair: P5-B (restored Hero/editorial motion, working rails, price/category/venue/nearby audits)
@@ -19,8 +16,9 @@ Public social feed: S2 (approved-only, confidence >= 0.68, hidden when empty)
 Candidate release: C3 (daily review artifact, human decisions, preview validation, release PR only; no direct main push)
 Discovery expansion: 96 ticketing, organizer, Live House and festival source profiles; public-site candidates or manual/official-API social intake only
 Social UI: Hero → 最近大家在聊 → 循著今日心緒；detail discussions and gated discussion index
-Monitored sources: C4 (71 organizations / 98 endpoints; 50 public website or KKTIX endpoints monitored at 04:00 Asia/Taipei; strict venue matching and verified automatic publication)
+Monitored sources: C4 (71 organizations / 98 endpoints; historical implementation retained; scheduled workflow remains disabled)
 Social source safety: Instagram/Facebook endpoints remain disabled until Meta official API authorization; no simulated login, private access or unauthorized social scraping
 Price label hotfix: C4-HOTFIX1 (card ranges use explicit currency/ticket amounts only; times, dates and age restrictions are excluded)
 Threads discovery: T1 (official keyword_search API, rotating static terms, current-event dynamic terms, anonymized review-only candidates, safe no-token skip)
 Threads API diagnostics: T1-HOTFIX1 (token preflight, Meta error details, HTTP 500 compatibility retry, and no false-green success when every query fails)
+Built: 2026-08-27 Asia/Taipei

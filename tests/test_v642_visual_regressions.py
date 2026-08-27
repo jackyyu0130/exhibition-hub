@@ -71,7 +71,7 @@ class V642VisualRegressionTests(unittest.TestCase):
         )
         self.assertIn("aspect-ratio: 1 / 1", image_rule.group(1))
 
-    def test_all_frontend_assets_share_the_same_cache_version(self):
+    def test_frontend_cache_and_stable_favicon_urls(self):
         for marker in (
             "assets/styles.css?v=6.5.0-r11.0.2",
             "assets/app.js?v=6.5.0-r11.0.2",
