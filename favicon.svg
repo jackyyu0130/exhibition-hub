@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="台灣展覽誌票券標誌">
+  <path fill="#f1d89d" d="M8 10h48a4 4 0 0 1 4 4v9a9 9 0 0 0 0 18v9a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-9a9 9 0 0 0 0-18v-9a4 4 0 0 1 4-4Z"/>
+  <path fill="none" stroke="#604b39" stroke-width="3" stroke-linejoin="round" d="M8 10h48a4 4 0 0 1 4 4v9a9 9 0 0 0 0 18v9a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-9a9 9 0 0 0 0-18v-9a4 4 0 0 1 4-4Z"/>
+  <path fill="none" stroke="#9b7c57" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4" d="M21 17v30"/>
+  <path fill="#604b39" d="M29 21h20v4H29zm0 9h20v4H29zm0 9h13v4H29z"/>
+</svg>

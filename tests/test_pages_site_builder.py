@@ -20,6 +20,17 @@ class PagesSiteBuilderTests(unittest.TestCase):
             (root / "docs").mkdir(parents=True)
             (root / "index.html").write_text("ok", encoding="utf-8")
             (root / ".nojekyll").write_text("", encoding="utf-8")
+            for filename in (
+                "favicon.ico",
+                "favicon.svg",
+                "favicon-48.png",
+                "favicon-96.png",
+                "favicon-192.png",
+                "favicon-512.png",
+                "apple-touch-icon.png",
+                "site.webmanifest",
+            ):
+                (root / filename).write_bytes(b"icon")
             (root / "assets/app.js").write_text("ok", encoding="utf-8")
             (root / "data/exhibitions.enriched.json").write_text("{}", encoding="utf-8")
             (root / "data/exhibitions.curated.json").write_text("{}", encoding="utf-8")
@@ -42,6 +53,10 @@ class PagesSiteBuilderTests(unittest.TestCase):
             build_pages_site(root, output)
 
             self.assertTrue((output / "index.html").exists())
+            self.assertTrue((output / "favicon.ico").exists())
+            self.assertTrue((output / "favicon.svg").exists())
+            self.assertTrue((output / "favicon-48.png").exists())
+            self.assertTrue((output / "site.webmanifest").exists())
             self.assertTrue((output / "assets/app.js").exists())
             self.assertTrue((output / "data/exhibitions.enriched.json").exists())
             self.assertTrue((output / "data/exhibitions.curated.json").exists())

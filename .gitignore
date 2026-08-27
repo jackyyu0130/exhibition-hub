@@ -9,3 +9,8 @@ __pycache__/
 # Local editor files
 .vscode/
 .idea/
+
+# Local weekly crawler runtime and reports
+.venv-weekly-update/
+.local-weekly-update.lock
+local-update-output/

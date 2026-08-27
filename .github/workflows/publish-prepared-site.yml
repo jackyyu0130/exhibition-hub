@@ -1,0 +1,40 @@
+name: Publish prepared website
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: exhibition-hub-pages-publish
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout prepared website
+        uses: actions/checkout@v4
+
+      - name: Build static Pages directory
+        run: python3 scripts/build_pages_site.py --root . --output site
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload prepared website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+          retention-days: 1
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

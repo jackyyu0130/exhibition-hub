@@ -1,0 +1,21 @@
+{
+  "name": "台灣展覽誌",
+  "short_name": "台灣展覽誌",
+  "description": "收錄全台展覽與演出資訊。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f1e9",
+  "theme_color": "#f7f1e9",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

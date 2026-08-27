@@ -275,10 +275,8 @@
     return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   }
 
-  const DEFAULT_PAGE_TITLE = '台灣展覽誌｜全台展覽與演出資訊';
-  const DEFAULT_PAGE_DESCRIPTION = '收錄全台展覽、演出與大型展會，查找展期、場館、票價與官方資訊。';
-  const DEFAULT_PAGE_IMAGE = 'https://twexhibition.com/logo-512.png';
-  const DEFAULT_PAGE_URL = 'https://twexhibition.com/';
+  const DEFAULT_PAGE_TITLE = '台灣展覽誌｜探索全台藝文展覽';
+  const DEFAULT_PAGE_DESCRIPTION = '探索全台正在舉辦、即將開展與你附近的藝文展覽。';
 
   function setMetaContent(selector, content) {
     const node = $(selector);
@@ -292,16 +290,10 @@
       setMetaContent('#metaDescription', DEFAULT_PAGE_DESCRIPTION);
       setMetaContent('#metaOgTitle', DEFAULT_PAGE_TITLE);
       setMetaContent('#metaOgDescription', DEFAULT_PAGE_DESCRIPTION);
-      setMetaContent('#metaOgImage', DEFAULT_PAGE_IMAGE);
-      setMetaContent('#metaOgUrl', DEFAULT_PAGE_URL);
+      setMetaContent('#metaOgImage', '');
       if (structured) structured.textContent = JSON.stringify({
-        '@context':'https://schema.org', '@graph':[
-          {'@type':'WebSite','@id':`${DEFAULT_PAGE_URL}#website`,name:'台灣展覽誌',
-            url:DEFAULT_PAGE_URL,description:DEFAULT_PAGE_DESCRIPTION,
-            publisher:{'@id':`${DEFAULT_PAGE_URL}#organization`}},
-          {'@type':'Organization','@id':`${DEFAULT_PAGE_URL}#organization`,name:'台灣展覽誌',
-            url:DEFAULT_PAGE_URL,logo:{'@type':'ImageObject',url:DEFAULT_PAGE_IMAGE,width:512,height:512}},
-        ],
+        '@context':'https://schema.org', '@type':'WebSite', name:'台灣展覽誌',
+        url:new URL('./', location.href).href, description:DEFAULT_PAGE_DESCRIPTION,
       });
       return;
     }
@@ -313,7 +305,6 @@
     setMetaContent('#metaOgTitle', title);
     setMetaContent('#metaOgDescription', description);
     setMetaContent('#metaOgImage', image);
-    setMetaContent('#metaOgUrl', location.href);
     if (structured) structured.textContent = JSON.stringify({
       '@context':'https://schema.org', '@type':'Event', name:event.title,
       startDate:event.startDate || undefined, endDate:event.endDate || undefined,
@@ -1716,10 +1707,10 @@
     const updated = parseDate(state.updatedAt);
     $('#heroUpdatedDate').textContent = updated
       ? `${updated.getFullYear()} 年 ${updated.getMonth()+1} 月 ${updated.getDate()} 日`
-      : '每日更新';
+      : '等待首次更新';
     $('#heroUpdatedTime').textContent = updated
       ? `${String(updated.getHours()).padStart(2,'0')} 點 ${String(updated.getMinutes()).padStart(2,'0')} 分更新`
-      : '自動更新';
+      : '資料更新時間';
     const paperDate = $('#heroPaperDate');
     if (paperDate) paperDate.textContent = updated
       ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')}`
@@ -2938,7 +2929,7 @@
     const updatedAt = $('#footerUpdatedAt');
     if (updatedAt) updatedAt.textContent = updated
       ? `${updated.getFullYear()}.${String(updated.getMonth()+1).padStart(2,'0')}.${String(updated.getDate()).padStart(2,'0')} ${String(updated.getHours()).padStart(2,'0')}:${String(updated.getMinutes()).padStart(2,'0')}`
-      : '每日自動更新';
+      : '尚未取得更新時間';
   }
 
   function navigateWithFeedback(target, options = {}) {

@@ -14,6 +14,14 @@ from typing import Iterable
 REQUIRED_FILES = (
     "index.html",
     ".nojekyll",
+    "favicon.ico",
+    "favicon.svg",
+    "favicon-48.png",
+    "favicon-96.png",
+    "favicon-192.png",
+    "favicon-512.png",
+    "apple-touch-icon.png",
+    "site.webmanifest",
     "data/exhibitions.curated.json",
     "data/exhibitions.enriched.json",
     "data/exhibitions.json",
@@ -93,7 +101,7 @@ def _write_manifest(staging: Path, copied: list[str]) -> None:
         })
     payload = {
         "schemaVersion": 1,
-        "release": "v6.5.0-r12-stable2",
+        "release": "v6.5.0-r14-local-weekly-favicon",
         "builtAt": datetime.now(timezone.utc).isoformat(),
         "copiedEntries": copied,
         "fileCount": len(files),
