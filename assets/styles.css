@@ -3983,8 +3983,8 @@ body {
     transform: none !important;
   }
 
-  /* Touch screens use an explicit first-tap preview. A second tap follows the
-     same ticket link, matching desktop hover without accidental navigation. */
+  /* Direct mobile taps now follow the ticket link immediately. These styles
+     remain available for keyboard or programmatic previews. */
   .hero-ticket-card.is-touch-preview {
     z-index: 12;
     opacity: 1;
@@ -3999,6 +3999,7 @@ body {
   .hero-ticket-slot-3.is-touch-preview {
     transform: rotate(.5deg) translate(-10px,-5px) !important;
   }
+
 }
 
 @media (max-width: 600px) {

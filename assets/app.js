@@ -3307,15 +3307,8 @@
       const tappedHeroTicket = event.target.closest('.hero-ticket-card');
       const touchTicketMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
       if (tappedHeroTicket && touchTicketMode) {
-        const ticketKey = tappedHeroTicket.dataset.ticketKey;
-        const tappedSlide = tappedHeroTicket.closest('.hero-ticket-slide');
-        if (state.mobilePreviewTicket !== ticketKey || !tappedHeroTicket.classList.contains('is-touch-preview')) {
-          event.preventDefault();
-          activateHeroTicketInteraction(tappedSlide, {touch:true});
-          return;
-        }
-        state.mobilePreviewTicket = null;
-      } else if (touchTicketMode && state.mobilePreviewTicket) {
+        // A stationary tap follows the link below immediately. Horizontal
+        // swipes are still intercepted by heroSwipeBlockClickUntil above.
         clearHeroTicketInteraction();
       }
       const internalLink = event.target.closest('a[href]');

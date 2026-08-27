@@ -46,16 +46,17 @@
 
    `feat: add local weekly update and favicon deployment`
 
-5. 點 `Commit to main`。
+5. 確認 Current branch 是 `develop`，點 `Commit to develop`。
 6. 點上方 `Push origin`。
-7. 等待 Push 完成。
-8. 開啟 GitHub 網頁中的 `exhibition-hub`。
-9. 點上方 `Actions`。
-10. 左側點 `Publish prepared website`。
-11. 點右側 `Run workflow`。
-12. Branch 保持 `main`。
-13. 再點綠色 `Run workflow`。
-14. 等工作出現綠色勾勾。
+7. 等 `Validate development changes` 出現綠色勾勾。
+8. 建立 `develop → main` Pull Request 並完成合併。
+9. 開啟 GitHub 網頁中的 `exhibition-hub`。
+10. 點上方 `Actions`。
+11. 左側點 `Publish prepared website`。
+12. 點右側 `Run workflow`。
+13. Branch 保持 `main`。
+14. 再點綠色 `Run workflow`。
+15. 等工作出現綠色勾勾。
 
 這個 workflow 只會打包並發布網站，不會執行爬蟲、圖片擷取或完整測試。
 
@@ -65,9 +66,10 @@
 
 1. 開啟 GitHub Desktop。
 2. 左上角選擇 `exhibition-hub`。
-3. 點上方 `Fetch origin`。
-4. 如果按鈕變成 `Pull origin`，再點一次 `Pull origin`。
-5. 確認左側沒有尚未提交的舊變更。
+3. 確認 Current branch 是 `develop`。
+4. 點上方 `Fetch origin`。
+5. 如果按鈕變成 `Pull origin`，再點一次 `Pull origin`。
+6. 確認左側沒有尚未提交的舊變更。
 
 ### 2. 雙擊執行爬蟲
 
@@ -101,6 +103,7 @@
 摘要會顯示：
 
 - 更新前與更新後筆數
+- 更新前與更新後的展演場館數
 - 新增筆數
 - 內容異動筆數
 - 移除或不再發布筆數
@@ -130,10 +133,18 @@
 
    `data: weekly exhibition update 2026-08-25`
 
-4. 點 `Commit to main`。
+4. 再次確認 Current branch 是 `develop`，點 `Commit to develop`。
 5. 點上方 `Push origin`。
 
-### 5. 手動發布已準備好的網站
+### 5. 通過檢查並合併到 main
+
+1. 到 GitHub → `Actions`，確認最新的 `Validate development changes` 是綠色勾勾。
+2. 開啟或建立 `develop → main` Pull Request。
+3. 確認 Checks 通過後，點 `Merge pull request`。
+4. 點 `Confirm merge`。
+5. 不要直接把本機資料 Commit 到 `main`。
+
+### 6. 手動發布已準備好的網站
 
 1. 開啟 GitHub repository 網頁。
 2. 點 `Actions`。
@@ -159,6 +170,7 @@
 
 - 首頁能正常載入。
 - 展覽筆數合理。
+- 展演場館數合理。
 - 首頁及頁尾更新時間是本次爬蟲完成時間。
 - 瀏覽器分頁不再是地球圖示。
 - favicon 網址能直接顯示票券圖示。
@@ -201,7 +213,8 @@ Google 搜尋結果不會立即更新。正式 favicon 可讀取後，再到 Goo
 5. 選擇 `Revert Changes in Commit`。
 6. 確認產生新的 Revert Commit。
 7. 點 `Push origin`。
-8. 回到 GitHub Actions，再執行一次 `Publish prepared website`。
+8. 等檢查通過後，將 `develop → main` Pull Request 合併。
+9. 回到 GitHub Actions，再執行一次 `Publish prepared website`。
 
 這會以新的反向 Commit 復原，不會刪除 GitHub 歷史紀錄。
 
