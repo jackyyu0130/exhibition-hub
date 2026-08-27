@@ -12,7 +12,7 @@ MANIFEST = json.loads((ROOT / "MANIFEST_V6.5.0-R7.json").read_text(encoding="utf
 
 
 class V650R2CumulativeReleaseTests(unittest.TestCase):
-    def test_r7_cache_bust_is_applied_to_all_frontend_assets(self):
+    def test_r7_assets_remain_and_favicon_uses_stable_root_urls(self):
         for marker in (
             "assets/styles.css?v=6.5.0-r11.0.2",
             "assets/app.js?v=6.5.0-r11.0.2",

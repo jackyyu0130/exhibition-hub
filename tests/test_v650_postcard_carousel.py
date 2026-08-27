@@ -9,7 +9,7 @@ CSS = (ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
 
 
 class V650PostcardCarouselTests(unittest.TestCase):
-    def test_frontend_assets_share_v650r7_cache_version(self):
+    def test_frontend_cache_and_stable_favicon_urls(self):
         for marker in (
             "assets/styles.css?v=6.5.0-r11.0.2",
             "assets/app.js?v=6.5.0-r11.0.2",
