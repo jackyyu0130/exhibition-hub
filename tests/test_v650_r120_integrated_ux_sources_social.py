@@ -110,7 +110,7 @@ class R120IntegratedUxSourcesSocialTests(unittest.TestCase):
             (root / "assets/app.js").write_text("ok\n", encoding="utf-8")
             build_pages_site(root, output)
             manifest = json.loads((output / BUILD_MANIFEST).read_text(encoding="utf-8"))
-            self.assertEqual(manifest["release"], "v6.5.0-r12-stable2")
+            self.assertEqual(manifest["release"], "v6.5.0-r14-local-weekly-favicon")
             self.assertGreater(manifest["fileCount"], 1)
             self.assertTrue(all(len(item["sha256"]) == 64 for item in manifest["files"]))
 

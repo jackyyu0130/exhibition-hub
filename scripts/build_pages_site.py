@@ -21,6 +21,7 @@ REQUIRED_FILES = (
     "favicon-192.png",
     "favicon-512.png",
     "apple-touch-icon.png",
+    "logo-512.png",
     "site.webmanifest",
     "data/exhibitions.curated.json",
     "data/exhibitions.enriched.json",

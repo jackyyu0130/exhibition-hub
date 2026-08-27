@@ -28,6 +28,7 @@ class PagesSiteBuilderTests(unittest.TestCase):
                 "favicon-192.png",
                 "favicon-512.png",
                 "apple-touch-icon.png",
+                "logo-512.png",
                 "site.webmanifest",
             ):
                 (root / filename).write_bytes(b"icon")
@@ -56,6 +57,7 @@ class PagesSiteBuilderTests(unittest.TestCase):
             self.assertTrue((output / "favicon.ico").exists())
             self.assertTrue((output / "favicon.svg").exists())
             self.assertTrue((output / "favicon-48.png").exists())
+            self.assertTrue((output / "logo-512.png").exists())
             self.assertTrue((output / "site.webmanifest").exists())
             self.assertTrue((output / "assets/app.js").exists())
             self.assertTrue((output / "data/exhibitions.enriched.json").exists())
