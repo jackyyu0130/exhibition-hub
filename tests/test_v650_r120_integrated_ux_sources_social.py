@@ -38,13 +38,13 @@ class R120IntegratedUxSourcesSocialTests(unittest.TestCase):
         self.assertIn("function activateHeroTicketInteraction", APP)
         self.assertLess(APP.index("function clearHeroTicketInteraction"), APP.index("function changeHeroPair"))
         self.assertIn("ticket.setAttribute('aria-expanded', 'true')", APP)
-        self.assertIn("state.mobilePreviewTicket = ticket.dataset.ticketKey", APP)
 
-    def test_first_tap_previews_and_second_tap_can_navigate(self):
-        self.assertIn("state.mobilePreviewTicket !== ticketKey", APP)
-        self.assertIn("activateHeroTicketInteraction(tappedSlide, {touch:true})", APP)
-        self.assertIn("state.mobilePreviewTicket = null", APP)
-        self.assertIn("is-touch-preview", CSS)
+    def test_first_mobile_tap_navigates_without_preview_gate(self):
+        self.assertIn("assets/app.js?v=6.5.0-r14-single-tap1", HTML)
+        self.assertNotIn("state.mobilePreviewTicket !== ticketKey", APP)
+        self.assertNotIn("activateHeroTicketInteraction(tappedSlide, {touch:true})", APP)
+        self.assertIn("const internalLink = event.target.closest('a[href]')", APP)
+        self.assertIn("navigateTo(url.href)", APP)
 
     def test_mobile_swipe_has_pointer_capture_and_touch_fallback(self):
         self.assertIn("setPointerCapture", APP)

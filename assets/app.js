@@ -276,7 +276,7 @@
   }
 
   const DEFAULT_PAGE_TITLE = '台灣展覽誌｜全台展覽與演出資訊';
-  const DEFAULT_PAGE_DESCRIPTION = '收錄全台展覽、演出與大型展會，查找展期、場館、票價與官方資訊。';
+  const DEFAULT_PAGE_DESCRIPTION = '想看展，卻不知道從哪裡開始？整理全台最新展覽、藝術快閃與大型展會，一鍵掌握展期、場館與門票資訊，陪你找到下一次城市散步的靈感目的地。';
   const DEFAULT_PAGE_IMAGE = 'https://twexhibition.com/logo-512.png';
   const DEFAULT_PAGE_URL = 'https://twexhibition.com/';
 
@@ -3307,15 +3307,8 @@
       const tappedHeroTicket = event.target.closest('.hero-ticket-card');
       const touchTicketMode = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
       if (tappedHeroTicket && touchTicketMode) {
-        const ticketKey = tappedHeroTicket.dataset.ticketKey;
-        const tappedSlide = tappedHeroTicket.closest('.hero-ticket-slide');
-        if (state.mobilePreviewTicket !== ticketKey || !tappedHeroTicket.classList.contains('is-touch-preview')) {
-          event.preventDefault();
-          activateHeroTicketInteraction(tappedSlide, {touch:true});
-          return;
-        }
-        state.mobilePreviewTicket = null;
-      } else if (touchTicketMode && state.mobilePreviewTicket) {
+        // A stationary tap follows the link below immediately. Horizontal
+        // swipes are still intercepted by heroSwipeBlockClickUntil above.
         clearHeroTicketInteraction();
       }
       const internalLink = event.target.closest('a[href]');

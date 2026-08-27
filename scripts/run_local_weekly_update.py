@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -75,6 +76,34 @@ def event_map(payload: Any) -> dict[str, dict[str, Any]]:
         key = event_id(row) or f"row-{index}-{row.get('title', '')}"
         result[key] = row
     return result
+
+
+def clean_place_text(value: Any) -> str:
+    text = str(value or "").replace("&nbsp;", " ").strip()
+    text = re.sub(r"^[=＝:：;；|｜]+|[=＝:：;；|｜]+\s*$", "", text)
+    text = re.sub(r"\s{2,}", " ", text)
+    return text.strip()
+
+
+def event_venue_key(event: dict[str, Any]) -> str:
+    for field in (
+        "originalVenueGroup",
+        "originalLocationName",
+        "venueGroup",
+        "locationName",
+    ):
+        value = clean_place_text(event.get(field))
+        if value:
+            return value
+    return ""
+
+
+def venue_count(payload: Any) -> int:
+    return len({
+        venue
+        for event in event_map(payload).values()
+        if (venue := event_venue_key(event))
+    })
 
 
 def acquire_lock() -> None:
@@ -163,6 +192,8 @@ def build_summary(before_payload: Any, after_payload: Any) -> dict[str, Any]:
         "finishedAt": datetime.now().astimezone().isoformat(),
         "beforeCount": len(before),
         "afterCount": len(after),
+        "beforeVenueCount": venue_count(before_payload),
+        "afterVenueCount": venue_count(after_payload),
         "addedCount": len(added_ids),
         "changedCount": len(changed_ids),
         "removedCount": len(removed_ids),
@@ -208,8 +239,8 @@ def summary_markdown(summary: dict[str, Any]) -> str:
 
 - 執行結果：成功
 - 官網資料更新時間：{summary.get('publishedUpdatedAt') or '未提供'}
-- 更新前：{summary['beforeCount']} 筆
-- 更新後：{summary['afterCount']} 筆
+- 更新前：{summary['beforeCount']} 筆展覽／{summary['beforeVenueCount']} 處展演場館
+- 更新後：{summary['afterCount']} 筆展覽／{summary['afterVenueCount']} 處展演場館
 - 新增：{summary['addedCount']} 筆
 - 內容異動：{summary['changedCount']} 筆
 - 移除／不再發布：{summary['removedCount']} 筆
@@ -229,9 +260,10 @@ def summary_markdown(summary: dict[str, Any]) -> str:
 
 1. 若資料量沒有異常大幅下降，開啟 GitHub Desktop。
 2. 確認本次變更主要位於 `data/`。
-3. 一次 Commit 並 Push 到 `main`。
-4. 到 GitHub → Actions → `Publish prepared website` → `Run workflow`。
-5. 發布完成後檢查首頁展覽數、更新時間及 favicon。
+3. 在 `develop` 一次 Commit 並 Push。
+4. 等 `Validate development changes` 出現綠色勾勾，再建立或更新 `develop → main` Pull Request。
+5. 合併 PR 後，到 GitHub → Actions → `Publish prepared website` → `Run workflow`，Branch 選 `main`。
+6. 發布完成後檢查首頁展覽數、展演場館數與更新時間。
 """
 
 

@@ -48,6 +48,19 @@ class R14LocalUpdateAndFaviconTests(unittest.TestCase):
         self.assertTrue((ROOT / "run_weekly_update.command").is_file())
         self.assertTrue((ROOT / "scripts/run_local_weekly_update.py").is_file())
 
+    def test_local_update_handoff_uses_develop_pr_and_reports_venue_count(self):
+        runner = (ROOT / "scripts/run_local_weekly_update.py").read_text(
+            encoding="utf-8"
+        )
+        guide = (ROOT / "R14_MAC_WEEKLY_UPDATE_GUIDE_ZH-TW.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("afterVenueCount", runner)
+        self.assertIn("develop → main", runner)
+        self.assertIn("Current branch 是 `develop`", guide)
+        self.assertIn("develop → main", guide)
+        self.assertNotIn("Commit to main", guide)
+
 
 if __name__ == "__main__":
     unittest.main()
