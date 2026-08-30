@@ -2,19 +2,19 @@
   "mode": "official-source-batch",
   "published": false,
   "failureIsolation": true,
-  "base": "/Users/jacky_yu/Documents/GitHub/exhibition-hub/local-update-output/20260828-001145/audit/publish-preview.json",
-  "output": "/Users/jacky_yu/Documents/GitHub/exhibition-hub/local-update-output/20260828-001145/audit/official-sources-preview.json",
+  "base": "/home/runner/work/exhibition-hub/exhibition-hub/local-update-output/20260830-085148/audit/publish-preview.json",
+  "output": "/home/runner/work/exhibition-hub/exhibition-hub/local-update-output/20260830-085148/audit/official-sources-preview.json",
   "sourceCount": 8,
-  "successfulSourceCount": 3,
-  "failedSourceCount": 5,
+  "successfulSourceCount": 5,
+  "failedSourceCount": 3,
   "skippedSourceCount": 0,
-  "finalEventCount": 2070,
+  "finalEventCount": 1982,
   "sources": [
     {
       "sourceId": "kaohsiung-music-center",
       "sourceName": "高雄流行音樂中心",
       "status": "preserved_previous_base",
-      "baseEventCount": 2031,
+      "baseEventCount": 1946,
       "collectorStatus": "success",
       "collectorSuccess": true,
       "collectedRecordCount": 1,
@@ -28,7 +28,7 @@
       "sourceId": "pier-2",
       "sourceName": "駁二藝術特區",
       "status": "preserved_previous_base",
-      "baseEventCount": 2031,
+      "baseEventCount": 1946,
       "collectorStatus": "partial",
       "collectorSuccess": true,
       "collectedRecordCount": 0,
@@ -44,17 +44,17 @@
       "sourceId": "songshan-cultural-park",
       "sourceName": "松山文創園區",
       "status": "merged",
-      "baseEventCount": 2031,
+      "baseEventCount": 1946,
       "collectorStatus": "success",
       "collectorSuccess": true,
-      "collectedRecordCount": 36,
-      "publishableRecordCount": 27,
+      "collectedRecordCount": 33,
+      "publishableRecordCount": 18,
       "minimumRecords": 5,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 2057,
+      "candidateEventCount": 1963,
       "decisionCounts": {
-        "new_event": 26,
+        "new_event": 17,
         "auto_merge": 1
       },
       "reviewQueueCount": 0
@@ -63,7 +63,7 @@
       "sourceId": "taipei-music-center",
       "sourceName": "臺北流行音樂中心",
       "status": "merged",
-      "baseEventCount": 2057,
+      "baseEventCount": 1963,
       "collectorStatus": "success",
       "collectorSuccess": true,
       "collectedRecordCount": 12,
@@ -71,7 +71,7 @@
       "minimumRecords": 4,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 2069,
+      "candidateEventCount": 1975,
       "decisionCounts": {
         "new_event": 12
       },
@@ -80,55 +80,64 @@
     {
       "sourceId": "taipei-performing-arts-center",
       "sourceName": "臺北表演藝術中心",
-      "status": "preserved_previous_base",
-      "baseEventCount": 2069,
-      "collectorStatus": "failed",
-      "collectorSuccess": false,
-      "collectedRecordCount": 0,
-      "publishableRecordCount": 0,
+      "status": "merged",
+      "baseEventCount": 1975,
+      "collectorStatus": "success",
+      "collectorSuccess": true,
+      "collectedRecordCount": 20,
+      "publishableRecordCount": 20,
       "minimumRecords": 5,
       "warnings": [],
-      "errors": [
-        "CollectorHttpError: HTTPSConnectionPool(host='tpac.org.taipei', port=443): Max retries exceeded with url: /program (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))"
-      ],
-      "reason": "collector_failed"
+      "errors": [],
+      "candidateEventCount": 1980,
+      "decisionCounts": {
+        "new_event": 5,
+        "needs_review": 15
+      },
+      "reviewQueueCount": 15
     },
     {
       "sourceId": "taipei-expo-park-expo-dome",
       "sourceName": "花博公園爭艷館",
-      "status": "preserved_previous_base",
-      "baseEventCount": 2069,
-      "collectorStatus": "failed",
-      "collectorSuccess": false,
-      "collectedRecordCount": 0,
-      "publishableRecordCount": 0,
+      "status": "merged",
+      "baseEventCount": 1980,
+      "collectorStatus": "success",
+      "collectorSuccess": true,
+      "collectedRecordCount": 14,
+      "publishableRecordCount": 14,
       "minimumRecords": 1,
       "warnings": [],
-      "errors": [
-        "CollectorHttpError: HTTPSConnectionPool(host='www.expopark.taipei', port=443): Max retries exceeded with url: /news_exhibition.aspx?_CSN=43&n=247&sms=9029 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))"
-      ],
-      "reason": "collector_failed"
+      "errors": [],
+      "candidateEventCount": 1981,
+      "decisionCounts": {
+        "new_event": 1,
+        "auto_merge": 13
+      },
+      "reviewQueueCount": 0
     },
     {
       "sourceId": "twtc-hall-1",
       "sourceName": "臺北世貿一館",
       "status": "merged",
-      "baseEventCount": 2069,
+      "baseEventCount": 1981,
       "collectorStatus": "partial",
       "collectorSuccess": true,
-      "collectedRecordCount": 35,
-      "publishableRecordCount": 15,
+      "collectedRecordCount": 20,
+      "publishableRecordCount": 10,
       "minimumRecords": 1,
       "warnings": [
-        "http://www.oaas.org.tw: CollectorHttpError: HTTPConnectionPool(host='www.oaas.org.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.oaas.org.tw', port=80): Failed to resolve 'www.oaas.org.tw' ([Errno 8] nodename nor servname provided, or not known)\"))",
-        "http://www.ifpr.com.tw: CollectorHttpError: HTTPConnectionPool(host='www.ifpr.com.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.ifpr.com.tw', port=80): Failed to resolve 'www.ifpr.com.tw' ([Errno 8] nodename nor servname provided, or not known)\"))",
-        "https://www.ibexpo.com.tw/: CollectorHttpError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
+        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
+        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
+        "http://www.oaas.org.tw: CollectorHttpError: HTTPConnectionPool(host='www.oaas.org.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.oaas.org.tw', port=80): Failed to resolve 'www.oaas.org.tw' ([Errno -2] Name or service not known)\"))",
+        "http://www.ifpr.com.tw: CollectorHttpError: HTTPConnectionPool(host='www.ifpr.com.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.ifpr.com.tw', port=80): Failed to resolve 'www.ifpr.com.tw' ([Errno -2] Name or service not known)\"))",
+        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/"
       ],
       "errors": [],
-      "candidateEventCount": 2070,
+      "candidateEventCount": 1982,
       "decisionCounts": {
         "new_event": 1,
-        "auto_merge": 14
+        "auto_merge": 9
       },
       "reviewQueueCount": 0
     },
@@ -136,14 +145,13 @@
       "sourceId": "tainan-art-museum",
       "sourceName": "臺南市美術館",
       "status": "preserved_previous_base",
-      "baseEventCount": 2070,
+      "baseEventCount": 1982,
       "collectorStatus": "failed",
       "collectorSuccess": false,
       "collectedRecordCount": 0,
       "publishableRecordCount": 0,
       "minimumRecords": 2,
       "warnings": [
-        "https://www.tnam.museum/exhibition/exhibition/detail/720: CollectorHttpError: Transient HTTP 500 for https://www.tnam.museum/exhibition/exhibition/detail/720",
         "https://www.tnam.museum/exhibition/exhibition/detail/718: CollectorHttpError: Transient HTTP 500 for https://www.tnam.museum/exhibition/exhibition/detail/718",
         "https://www.tnam.museum/exhibition/exhibition/detail/716: CollectorHttpError: Transient HTTP 500 for https://www.tnam.museum/exhibition/exhibition/detail/716",
         "https://www.tnam.museum/exhibition/exhibition/detail/711: CollectorHttpError: Transient HTTP 500 for https://www.tnam.museum/exhibition/exhibition/detail/711",
