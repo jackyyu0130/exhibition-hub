@@ -53,10 +53,10 @@ class R120IntegratedUxSourcesSocialTests(unittest.TestCase):
         self.assertIn("addEventListener('touchend'", APP)
         self.assertIn("changeHeroPair(deltaX < 0 ? 1 : -1)", APP)
 
-    def test_long_price_display_is_compact_but_preserves_full_value(self):
+    def test_card_price_display_uses_a_consistent_activity_page_label(self):
         self.assertIn("function compactPriceLabel", APP)
-        self.assertIn("NT$${money(unique[0])}–${money(unique[unique.length - 1])}", APP)
-        self.assertIn('title="${escapeHtml(event.price)}"', APP)
+        self.assertIn("return '票價請見活動頁面'", APP)
+        self.assertNotIn('title="${escapeHtml(event.price)}"', APP)
         self.assertIn("text-overflow: ellipsis", CSS)
 
     def test_integrated_motion_is_capped_and_reduced_motion_safe(self):

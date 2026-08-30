@@ -111,7 +111,7 @@ class FrontendContractTests(unittest.TestCase):
 
     def test_supplied_brand_and_generated_fallback_art_are_used(self):
         self.assertIn("assets/taiwan-exhibition-journal-logo-v10.png", self.html)
-        self.assertIn("exhibition-fallback-sprite-v40.png", self.css)
+        self.assertIn("exhibition-placeholder-v16.webp", self.css)
         self.assertIn("fallbackMarkup(event", self.app)
 
     def test_upcoming_time_dot_is_green(self):

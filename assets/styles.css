@@ -2271,15 +2271,15 @@ body {
   mix-blend-mode: multiply;
 }
 
-/* Generated category artwork is only shown after every real image candidate fails. */
+/* R16: one branded, neutral artwork is shown after every official image candidate fails. */
 .fallback-art {
   position: relative;
   overflow: hidden;
-  background-color: #d9cdbd;
-  background-image: url("exhibition-fallback-sprite-v40.png");
+  background-color: #ded1bd;
+  background-image: url("exhibition-placeholder-v16.webp");
   background-repeat: no-repeat;
-  background-size: 400% 400%;
-  background-position: var(--fallback-x, 100%) var(--fallback-y, 100%);
+  background-size: cover;
+  background-position: center;
   color: #fff;
   isolation: isolate;
 }
@@ -2289,8 +2289,30 @@ body {
   inset: 0;
   z-index: 0;
   background:
-    linear-gradient(to top, rgba(24,19,15,.52), transparent 58%),
-    linear-gradient(120deg, rgba(255,255,255,.08), transparent 42%);
+    linear-gradient(to top, rgba(34,27,20,.58), transparent 52%),
+    linear-gradient(120deg, rgba(255,255,255,.07), transparent 42%);
+}
+.fallback-art-brand {
+  position: absolute;
+  left: 14px;
+  top: 13px;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  color: #372d24;
+  font-family: "Noto Sans TC", sans-serif;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(255,250,242,.8);
+}
+.fallback-art-brand b {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.fallback-art-brand small {
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: .14em;
 }
 .fallback-art-label {
   position: absolute;
@@ -2309,6 +2331,15 @@ body {
   text-shadow: 0 1px 4px rgba(0,0,0,.34);
   backdrop-filter: blur(5px);
 }
+.nearby-mini-media .fallback-art-brand,
+.nearby-result-media .fallback-art-brand {
+  left: 9px;
+  top: 9px;
+}
+.nearby-mini-media .fallback-art-brand b,
+.nearby-result-media .fallback-art-brand b { font-size: 8px; }
+.nearby-mini-media .fallback-art-brand small,
+.nearby-result-media .fallback-art-brand small { display: none; }
 
 /* Home filters use one non-conflicting animation, avoiding opacity/transform flashes. */
 .filter-results-section.is-changing { opacity: 1; transform: translateY(0); }

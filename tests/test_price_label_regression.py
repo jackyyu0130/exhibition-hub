@@ -38,22 +38,21 @@ class PriceLabelRegressionTests(unittest.TestCase):
         )
         return json.loads(result.stdout)
 
-    def test_age_and_time_numbers_do_not_become_ticket_prices(self) -> None:
+    def test_paid_price_details_use_one_tidy_card_label(self) -> None:
         source = (
             "活動時間：每日 10:00 – 18:00（17:30 停止售票及入場） / "
             "現場票價： / 全票：470 元（一般身分者適用） / "
             "優待票：450 元（年滿 3 歲以上兒童）"
         )
-        self.assertEqual(self.run_cases([source]), ["NT$450–470"])
+        self.assertEqual(self.run_cases([source]), ["票價請見活動頁面"])
 
-    def test_named_prices_without_yuan_are_still_supported(self) -> None:
+    def test_named_prices_without_yuan_use_the_same_label(self) -> None:
         source = "早鳥票：1,200 / 現場票：1,500 / 18歲以上"
-        self.assertEqual(self.run_cases([source]), ["NT$1,200–1,500"])
+        self.assertEqual(self.run_cases([source]), ["票價請見活動頁面"])
 
     def test_plain_schedule_does_not_render_as_currency_range(self) -> None:
         source = "活動時間：每日 10:00 – 18:00（17:30 停止入場）"
-        result = self.run_cases([source])[0]
-        self.assertFalse(result.startswith("NT$"))
+        self.assertEqual(self.run_cases([source]), ["票價請見活動頁面"])
 
     def test_free_admission_is_unchanged(self) -> None:
         self.assertEqual(self.run_cases(["每日 10:00–18:00，免費入場"]), ["免費入場"])
