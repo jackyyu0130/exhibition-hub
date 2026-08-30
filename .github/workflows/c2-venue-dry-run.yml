@@ -13,8 +13,6 @@ on:
           - live_house
           - performing_arts
           - museums
-  schedule:
-    - cron: '25 20 * * 2,5'
 permissions:
   contents: read
 jobs:

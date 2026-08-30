@@ -71,9 +71,13 @@ class ProductionPublishGateTests(unittest.TestCase):
         workflow = Path(".github/workflows/update-exhibitions.yml").read_text(
             encoding="utf-8"
         )
-        self.assertIn('--max-drop-count "25"', workflow)
-        self.assertNotIn('--max-drop-count "250"', workflow)
-        self.assertIn("scripts/finalize_source_publish\\.py", workflow)
+        runner = Path("scripts/run_local_weekly_update.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("run_local_weekly_update.py", workflow)
+        self.assertIn('"--max-drop-count", "25"', runner)
+        self.assertNotIn('"--max-drop-count", "250"', runner)
+        self.assertIn("scripts/finalize_source_publish.py", runner)
 
     def test_expired_cleanup_does_not_consume_active_removal_budget(self):
         current_events = [

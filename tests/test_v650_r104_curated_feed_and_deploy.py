@@ -135,8 +135,10 @@ class R104CuratedFeedAndDeployTests(unittest.TestCase):
         self.assertIn("cache:'no-cache'", APP)
         self.assertIn('transition: none !important', CSS)
         self.assertIn('content-visibility: auto', CSS)
-        self.assertIn('Build curated public feed', WORKFLOW)
-        self.assertIn('data/update-reports/curated-feed-report.json', WORKFLOW)
+        local_runner = (ROOT / 'scripts/run_local_weekly_update.py').read_text(encoding='utf-8')
+        self.assertIn('run_local_weekly_update.py', WORKFLOW)
+        self.assertIn('建立官網公開展覽資料', local_runner)
+        self.assertIn('data/update-reports/curated-feed-report.json', local_runner)
 
 
 if __name__ == '__main__':

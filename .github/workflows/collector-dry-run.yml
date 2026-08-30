@@ -2,8 +2,6 @@ name: Collector stage 7 dry run
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "35 19 * * *" # 台灣時間每日 03:35
 
 permissions:
   contents: read

@@ -210,11 +210,34 @@ JSON_DESCRIPTION_PATTERN = re.compile(r'["\'](?:description|eventDescription|int
 IMAGE_VALIDATION_CACHE: dict[str, bool] = {}
 
 
+def bounded_environment_integer(
+    name: str,
+    default: int,
+    *,
+    minimum: int,
+    maximum: int,
+) -> int:
+    try:
+        value = int(os.environ.get(name, str(default)))
+    except (TypeError, ValueError):
+        value = default
+    return max(minimum, min(maximum, value))
+
+
 @dataclass(frozen=True)
 class SourceConfig:
-    timeout: int = 45
-    retries: int = 3
-    workers: int = 6
+    # These limits can be reduced by the weekly workflow without changing the
+    # local crawler's public interface.  They also prevent an accidental value
+    # from creating an unbounded number of concurrent requests.
+    timeout: int = bounded_environment_integer(
+        "CULTURE_API_TIMEOUT", 30, minimum=5, maximum=60
+    )
+    retries: int = bounded_environment_integer(
+        "CULTURE_API_RETRIES", 2, minimum=1, maximum=3
+    )
+    workers: int = bounded_environment_integer(
+        "CULTURE_API_WORKERS", 3, minimum=1, maximum=4
+    )
 
 
 def clean_text(value: Any) -> str:
@@ -1779,8 +1802,14 @@ def fetch_category(category: str, config: SourceConfig) -> list[dict[str, Any]]:
                     record.setdefault("_feedCategory", category)
                 print(f"Fetched {len(records)} records for category={category} via {method}")
                 return records
-            except (requests.RequestException, ValueError, json.JSONDecodeError) as exc:
+            except requests.RequestException as exc:
                 errors.append(f"{url} attempt {attempt}/{config.retries}: {exc}")
+            except (ValueError, json.JSONDecodeError) as exc:
+                # Repeating the same successfully returned but empty/malformed
+                # payload does not make it more useful.  Try the alternate API
+                # method instead of spending all retry slots on identical data.
+                errors.append(f"{url} attempt {attempt}/{config.retries}: {exc}")
+                break
     print(f"[warning] category={category} failed: {' | '.join(errors[-3:])}", file=sys.stderr)
     return []
 
@@ -1790,8 +1819,15 @@ def fetch_all_json(config: SourceConfig) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
     with ThreadPoolExecutor(max_workers=config.workers) as executor:
         futures = {executor.submit(fetch_category, category, config): category for category in categories}
+        completed = 0
         for future in as_completed(futures):
             records.extend(future.result())
+            completed += 1
+            print(
+                f"Culture feed progress {completed}/{len(categories)} "
+                f"(category={futures[future]})",
+                flush=True,
+            )
     if not records:
         raise RuntimeError("Unable to fetch any exhibition records from the Culture Ministry feeds")
     return records
@@ -1886,6 +1922,20 @@ def main() -> int:
     parser.add_argument("--max-detail-fetches", type=int, default=int(os.environ.get("MAX_DETAIL_FETCHES", "250")))
     parser.add_argument("--max-image-fetches", type=int, default=int(os.environ.get("MAX_IMAGE_FETCHES", "450")))
     parser.add_argument("--max-geocodes", type=int, default=int(os.environ.get("MAX_GEOCODES", "25")))
+    parser.add_argument(
+        "--detail-workers",
+        type=int,
+        default=bounded_environment_integer(
+            "SCRAPER_DETAIL_WORKERS", 4, minimum=1, maximum=8
+        ),
+    )
+    parser.add_argument(
+        "--image-workers",
+        type=int,
+        default=bounded_environment_integer(
+            "SCRAPER_IMAGE_WORKERS", 4, minimum=1, maximum=8
+        ),
+    )
     parser.add_argument("--geocode-cache", type=Path, default=DEFAULT_GEOCODE_CACHE)
     parser.add_argument("--curated-overrides", type=Path, default=DEFAULT_CURATED_OVERRIDES)
     args = parser.parse_args()
@@ -1899,11 +1949,19 @@ def main() -> int:
 
     detail_enriched = 0
     if not args.input_file and args.max_detail_fetches > 0:
-        detail_enriched = enrich_from_official_details(events, max_fetches=args.max_detail_fetches)
+        detail_enriched = enrich_from_official_details(
+            events,
+            max_fetches=args.max_detail_fetches,
+            workers=max(1, min(8, args.detail_workers)),
+        )
 
     enriched_images = 0
     if not args.no_image_enrichment and not args.input_file and args.max_image_fetches > 0:
-        enriched_images = enrich_source_pages(events, max_fetches=args.max_image_fetches)
+        enriched_images = enrich_source_pages(
+            events,
+            max_fetches=args.max_image_fetches,
+            workers=max(1, min(8, args.image_workers)),
+        )
     # Curated corrections win if an upstream page later changes or redirects.
     apply_curated_overrides(events, args.curated_overrides)
 
