@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R16 P5-B → C3 — multi-category discovery, branded image fallback and tidy admission labels. */
+/* Exhibition Hub V6.5.0-R17 P5-B → C3 — semantic taxonomy, multi-category discovery, branded fallback and tidy admission labels. */
 (() => {
   'use strict';
 
@@ -12,7 +12,7 @@
     art_exhibition:'美術', pop_culture:'動漫', concert:'音樂', music_festival:'音樂',
     performance:'表演', popup:'快閃店', market:'市集', film_screening:'電影'
   };
-  const MUSIC_PROGRAM_PATTERN = /演出曲目|program|musicians?|指揮|小提琴|大提琴|鋼琴|長笛|單簧管|雙簧管|symphony|concerto|sonata|orchestra|樂章|作品(?:第|[0-9])|op\.?\s*[0-9]/i;
+  const MUSIC_PROGRAM_PATTERN = /演出曲目|program|musicians?|指揮|小提琴|大提琴|鋼琴|長笛|單簧管|雙簧管|symphony|concerto|sonata|orchestra|樂章|歌手|歌曲|唱片|音樂旅程|樂聲|歌聲|作品(?:第|[0-9])|op\.?\s*[0-9]/i;
   const VERIFIED_NATORI_PATTERN = /natori[\s\S]*(?:koshin|march|行進)|(?:koshin|march|行進)[\s\S]*natori/i;
   const VERIFIED_NATORI_PRICE = '1F站席 NT$4,200／2F前座席 NT$3,600／2F後座席 NT$3,200／3F座席 NT$2,800／1F身障席 NT$2,100／2F身障席 NT$1,600';
 
@@ -395,17 +395,23 @@
   }
 
   const SINGER_CONCERT_PATTERN = /演唱會|巡迴演唱|巡演(?:台北|高雄|台中|臺北|臺中)?站|fan\s*concert|live\s+in\s+(?:taipei|kaohsiung|taichung)|live\s+tour|world\s+tour|asia\s+tour|tour\s*20\d{2}|concert\s*(?:20\d{2})?/i;
-  const MUSIC_THEATRE_PATTERN = /音樂劇|歌劇|舞台劇|劇場|戲劇|讀劇|偶戲|馬戲|歌舞劇/i;
-  const DANCE_CATEGORY_PATTERN = /舞蹈|舞作|芭蕾|現代舞|街舞|國標舞/i;
-  const FILM_CATEGORY_PATTERN = /電影|影展|放映|映後|影像節|紀錄片|短片節|動畫影展/i;
-  const GENERAL_MUSIC_PATTERN = /音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|音樂祭|音樂節|專場|不插電|現場演出|live\s*house/i;
+  const MUSIC_THEATRE_PATTERN = /音樂劇|歌劇|舞台劇|劇場(?!版)|劇團|京劇|掌中劇|歌仔戲|布袋戲|戲劇|讀劇|偶戲|馬戲|歌舞劇/i;
+  const DANCE_CATEGORY_PATTERN = /舞蹈|舞作|舞團|芭蕾|現代舞|街舞|國標舞/i;
+  const FILM_CATEGORY_PATTERN = /電影|影展|放映|映後|影像節|紀錄片|短片節|動畫影展|劇場版|台語片預告/i;
+  const GENERAL_MUSIC_PATTERN = /音樂會|交響|管弦|管樂|擊樂|弦樂|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|合唱|重唱|阿卡貝拉|演奏會|音樂祭|音樂節|專場|不插電|現場演出|live\s*house|流行音樂(?:故事|文化|主題|常設|特)?展|音樂故事展/i;
   const CLASSICAL_MUSIC_PATTERN = /音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|鋼琴|小提琴|大提琴|國樂|演奏會/i;
-  const ANIME_CATEGORY_PATTERN = /動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦A夢|三麗鷗|迪士尼|皮克斯|史努比|姆明|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime/i;
-  const NATURAL_CATEGORY_PATTERN = /自然史|生態|植物|動物|天文|地質|海洋|環境教育|科學館/i;
-  const HISTORY_CATEGORY_PATTERN = /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗|紀念/i;
-  const TECHNOLOGY_CATEGORY_PATTERN = /科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人/i;
-  const DESIGN_CATEGORY_PATTERN = /設計|建築|工藝|時尚|家居|文具|design/i;
-  const ART_CATEGORY_PATTERN = /美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|版畫|水墨/i;
+  const ANIME_CATEGORY_PATTERN = /動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|史努比|PEANUTS|SNOOPY|姆明|伊藤潤二|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime/i;
+  const NATURAL_CATEGORY_PATTERN = /自然史|自然|生態|植物|動物|天文|地質|海洋|環境教育|科學館/i;
+  const HISTORY_CATEGORY_PATTERN = /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗|紀念|法老|埃及|古文明|文藝復興|史前|日治|戰後|二戰/i;
+  // Letter boundaries keep "AI" from accidentally matching the "ai" in Taiwan.
+  const TECHNOLOGY_CATEGORY_PATTERN = /科技|人工智慧|(?<![A-Za-z])AI(?![A-Za-z])|數位科技|半導體|資訊展|電腦展|機器人|虛擬實境|擴增實境|(?<![A-Za-z])VR(?![A-Za-z])|(?<![A-Za-z])AR(?![A-Za-z])/i;
+  const DESIGN_CATEGORY_PATTERN = /設計|建築|工藝|時尚|家居|文具|文博會|design/i;
+  const ART_CATEGORY_PATTERN = /美術|藝術(?:展|家|創作|作品)|繪畫|雕塑|裝置|當代藝術|典藏|書畫|陶藝|版畫|水墨|個展|聯展|畫展/i;
+  const POPUP_CATEGORY_PATTERN = /快閃店|快閃|期間限定|限定店|popup|pop-up/i;
+  const MARKET_CATEGORY_PATTERN = /市集|蚤之市|展售會|餐車/i;
+  const PHOTO_CATEGORY_PATTERN = /攝影|影像展|photo(graphy)?/i;
+  const CHILD_CATEGORY_PATTERN = /親子|兒童|家庭|幼兒/i;
+  const COMPETITION_CATEGORY_PATTERN = /競賽|比賽|大賽|徵件比賽/i;
 
   function isSingerConcert(title = '', description = '', contentTypes = []) {
     const text = `${title} ${description}`;
@@ -421,6 +427,9 @@
     // Strong format categories are title-led. Long descriptions and noisy
     // secondary source categories must not turn a museum exhibition into
     // anime, film, theatre, or a concert.
+    if (types.has('popup') || POPUP_CATEGORY_PATTERN.test(titleText)
+      || candidates[0] === '快閃店'
+      || (candidates.includes('快閃店') && POPUP_CATEGORY_PATTERN.test(description))) return '快閃店';
     if (types.has('film_screening') || FILM_CATEGORY_PATTERN.test(titleText)) return '電影';
     if (DANCE_CATEGORY_PATTERN.test(titleText)) return '舞蹈';
     if (MUSIC_THEATRE_PATTERN.test(titleText)) return '表演';
@@ -429,21 +438,38 @@
     if ((types.has('performance') || candidates.includes('音樂'))
       && MUSIC_PROGRAM_PATTERN.test(supportingText)) return '音樂';
     if (ANIME_CATEGORY_PATTERN.test(titleText)) return '動漫';
-    if (NATURAL_CATEGORY_PATTERN.test(supportingText)) return '自然';
-    if (HISTORY_CATEGORY_PATTERN.test(supportingText)) return '歷史';
-    if (TECHNOLOGY_CATEGORY_PATTERN.test(supportingText)) return '科技';
-    if (DESIGN_CATEGORY_PATTERN.test(supportingText)) return '設計';
-    if (ART_CATEGORY_PATTERN.test(supportingText)) return '美術';
+    if (types.has('market') || MARKET_CATEGORY_PATTERN.test(titleText)) return '市集';
     if (types.has('performance')) return '表演';
     if (types.has('concert')) return '音樂';
-    return candidates.find(category => CATEGORY_ORDER.includes(category) && category !== '動漫') || '其他';
+    if (types.has('festival')) return '表演';
+    if (PHOTO_CATEGORY_PATTERN.test(titleText)) return '攝影';
+    if (NATURAL_CATEGORY_PATTERN.test(titleText)) return '自然';
+    if (HISTORY_CATEGORY_PATTERN.test(titleText)) return '歷史';
+    if (TECHNOLOGY_CATEGORY_PATTERN.test(titleText)) return '科技';
+    if (DESIGN_CATEGORY_PATTERN.test(titleText)) return '設計';
+    if (ART_CATEGORY_PATTERN.test(titleText)) return '美術';
+    if (CHILD_CATEGORY_PATTERN.test(titleText)) return '親子';
+    if (COMPETITION_CATEGORY_PATTERN.test(titleText)) return '競賽';
+    if (types.has('art_exhibition')) return '美術';
+    return '其他';
+  }
+
+  function titleSecondaryCategories(title = '') {
+    const titleText = String(title || '');
+    const rules = [
+      ['動漫', ANIME_CATEGORY_PATTERN], ['攝影', PHOTO_CATEGORY_PATTERN],
+      ['自然', NATURAL_CATEGORY_PATTERN], ['歷史', HISTORY_CATEGORY_PATTERN],
+      ['科技', TECHNOLOGY_CATEGORY_PATTERN], ['設計', DESIGN_CATEGORY_PATTERN],
+      ['美術', ART_CATEGORY_PATTERN], ['親子', CHILD_CATEGORY_PATTERN],
+      ['競賽', COMPETITION_CATEGORY_PATTERN]
+    ];
+    return rules.filter(([, pattern]) => pattern.test(titleText)).map(([category]) => category);
   }
 
   function finalizeCategories(candidates = [], title = '', description = '', contentTypes = []) {
     const deduped = candidates.filter(Boolean).filter((category, index, array) => array.indexOf(category) === index);
     const primary = primaryCategoryFor(title, description, contentTypes, deduped);
-    const mutuallyExclusive = new Set(['演唱會','音樂','表演','舞蹈','電影']);
-    const remaining = deduped.filter(category => category !== primary && !(mutuallyExclusive.has(primary) && mutuallyExclusive.has(category)));
+    const remaining = titleSecondaryCategories(title).filter(category => category !== primary);
     return [primary, ...remaining].filter((category, index, array) => array.indexOf(category) === index).slice(0, 3);
   }
 
@@ -460,17 +486,15 @@
     });
 
     const titleText = String(title || '');
-    const supportingText = `${titleText} ${description}`;
     const keywordRules = [
       ['演唱會', SINGER_CONCERT_PATTERN, titleText], ['表演', MUSIC_THEATRE_PATTERN, titleText],
-      ['動漫', ANIME_CATEGORY_PATTERN, titleText], ['快閃店', /快閃店|快閃|期間限定|popup|pop-up/i, titleText],
+      ['動漫', ANIME_CATEGORY_PATTERN, titleText], ['快閃店', POPUP_CATEGORY_PATTERN, titleText],
       ['舞蹈', DANCE_CATEGORY_PATTERN, titleText], ['音樂', GENERAL_MUSIC_PATTERN, titleText],
-      ['電影', FILM_CATEGORY_PATTERN, titleText], ['攝影', /攝影|影像展|photo(graphy)?/i, supportingText],
-      ['歷史', HISTORY_CATEGORY_PATTERN, supportingText], ['自然', NATURAL_CATEGORY_PATTERN, supportingText],
-      ['科技', TECHNOLOGY_CATEGORY_PATTERN, supportingText], ['設計', DESIGN_CATEGORY_PATTERN, supportingText],
-      ['市集', /市集|嘉年華|展售|商品展|食品展|旅展|文創攤位/i, titleText],
-      ['親子', /親子|兒童|家庭|幼兒/i, titleText], ['競賽', /競賽|比賽|大賽|徵件比賽/i, titleText],
-      ['美術', ART_CATEGORY_PATTERN, supportingText]
+      ['電影', FILM_CATEGORY_PATTERN, titleText], ['攝影', PHOTO_CATEGORY_PATTERN, titleText],
+      ['歷史', HISTORY_CATEGORY_PATTERN, titleText], ['自然', NATURAL_CATEGORY_PATTERN, titleText],
+      ['科技', TECHNOLOGY_CATEGORY_PATTERN, titleText], ['設計', DESIGN_CATEGORY_PATTERN, titleText],
+      ['市集', MARKET_CATEGORY_PATTERN, titleText], ['親子', CHILD_CATEGORY_PATTERN, titleText],
+      ['競賽', COMPETITION_CATEGORY_PATTERN, titleText], ['美術', ART_CATEGORY_PATTERN, titleText]
     ];
     keywordRules.forEach(([category, regex, haystack]) => {
       if (regex.test(haystack) && !categories.includes(category)) categories.push(category);

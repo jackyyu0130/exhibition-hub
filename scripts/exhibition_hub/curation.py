@@ -50,25 +50,33 @@ SINGER_CONCERT_RE = re.compile(
     r"live\s+tour|world\s+tour|asia\s+tour|tour\s*20\d{2}|concert\s*(?:20\d{2})?",
     re.I,
 )
-FILM_RE = re.compile(r"電影|影展|放映|映後|紀錄片|短片節|動畫影展", re.I)
-PERFORMANCE_RE = re.compile(r"音樂劇|歌劇|舞台劇|劇場|戲劇|讀劇|偶戲|馬戲|歌舞劇|脫口秀|相聲", re.I)
-DANCE_RE = re.compile(r"舞蹈|舞作|芭蕾|現代舞|街舞|國標舞", re.I)
-MUSIC_RE = re.compile(r"音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|音樂祭|音樂節|專場|不插電|live\s*house", re.I)
+FILM_RE = re.compile(r"電影|影展|放映|映後|紀錄片|短片節|動畫影展|劇場版|台語片預告", re.I)
+# ``劇場版`` means a theatrical film release, not a live theatre performance.
+PERFORMANCE_RE = re.compile(r"音樂劇|歌劇|舞台劇|劇場(?!版)|劇團|京劇|掌中劇|歌仔戲|布袋戲|戲劇|讀劇|偶戲|馬戲|歌舞劇|脫口秀|相聲", re.I)
+DANCE_RE = re.compile(r"舞蹈|舞作|舞團|芭蕾|現代舞|街舞|國標舞", re.I)
+MUSIC_RE = re.compile(
+    r"音樂會|交響|管弦|管樂|擊樂|弦樂|協奏|獨奏|重奏|室內樂|古典音樂|"
+    r"爵士|國樂|樂團|合唱|重唱|阿卡貝拉|演奏會|音樂祭|音樂節|專場|不插電|live\s*house|"
+    r"流行音樂(?:故事|文化|主題|常設|特)?展|音樂故事展",
+    re.I,
+)
 CLASSICAL_MUSIC_RE = re.compile(r"音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|鋼琴|小提琴|大提琴|國樂|演奏會", re.I)
-ANIME_RE = re.compile(r"動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦A夢|三麗鷗|迪士尼|皮克斯|史努比|姆明|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime", re.I)
+ANIME_RE = re.compile(r"動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|史努比|PEANUTS|SNOOPY|姆明|伊藤潤二|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime", re.I)
 PHOTO_RE = re.compile(r"攝影|影像展|photography|photo\s+exhibition", re.I)
 NATURE_RE = re.compile(r"自然史|自然|生態|植物|動物|天文|地質|海洋|環境教育|科學館", re.I)
-HISTORY_RE = re.compile(r"歷史|文化資產|文物|考古|古蹟|史料|民俗|紀念", re.I)
-TECH_RE = re.compile(r"科技|人工智慧|AI|數位科技|半導體|資訊展|電腦展|機器人", re.I)
-DESIGN_RE = re.compile(r"設計|建築|工藝|時尚|家居|文具|design", re.I)
-ART_RE = re.compile(r"美術|藝術|繪畫|雕塑|裝置|當代|典藏|書畫|陶藝|版畫|水墨", re.I)
-POPUP_RE = re.compile(r"快閃|期間限定|pop-?up", re.I)
-MARKET_RE = re.compile(r"市集|蚤之市|展售會", re.I)
+HISTORY_RE = re.compile(r"歷史|文化資產|文物|考古|古蹟|史料|民俗|紀念|法老|埃及|古文明|文藝復興|史前|日治|戰後|二戰", re.I)
+# The old plain ``AI`` alternative also matched the letters "ai" in Taiwan.
+TECH_RE = re.compile(r"科技|人工智慧|(?<![A-Za-z])AI(?![A-Za-z])|數位科技|半導體|資訊展|電腦展|機器人|虛擬實境|擴增實境|(?<![A-Za-z])VR(?![A-Za-z])|(?<![A-Za-z])AR(?![A-Za-z])", re.I)
+DESIGN_RE = re.compile(r"設計|建築|工藝|時尚|家居|文具|文博會|design", re.I)
+ART_RE = re.compile(r"美術|藝術(?:展|家|創作|作品)|繪畫|雕塑|裝置|當代藝術|典藏|書畫|陶藝|版畫|水墨|個展|聯展|畫展", re.I)
+POPUP_RE = re.compile(r"快閃|期間限定|限定店|pop-?up", re.I)
+MARKET_RE = re.compile(r"市集|蚤之市|展售會|餐車", re.I)
 CHILD_RE = re.compile(r"親子|兒童|家庭|幼兒", re.I)
 COMPETITION_RE = re.compile(r"競賽|比賽|大賽|徵件比賽", re.I)
 MUSIC_PROGRAM_RE = re.compile(
     r"演出曲目|program|musicians?|指揮|小提琴|大提琴|鋼琴|長笛|單簧管|雙簧管|"
-    r"symphony|concerto|sonata|orchestra|樂章|作品(?:第|[0-9])|op\.?\s*[0-9]",
+    r"symphony|concerto|sonata|orchestra|樂章|歌手|歌曲|唱片|音樂旅程|樂聲|歌聲|"
+    r"作品(?:第|[0-9])|op\.?\s*[0-9]",
     re.I,
 )
 PRICE_UNKNOWN_RE = re.compile(r"票價請見|依官網|待確認|另行公告|索票|未提供", re.I)
@@ -321,17 +329,28 @@ def apply_verified_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
 def public_categories(event: Mapping[str, Any]) -> list[str]:
     title = _clean(event.get("title"))
     description = _clean(event.get("description"))
-    content_types = set(event.get("contentTypes") or [])
+    content_types = {
+        _clean(value)
+        for value in [event.get("contentType"), *(event.get("contentTypes") or [])]
+        if _clean(value)
+    }
     existing = [
         _clean(value)
         for value in [event.get("category"), *(event.get("categories") or [])]
         if _clean(value)
     ]
 
-    # Strong format categories inspect the title first. This prevents a stray
-    # source category or a word in a long description from turning a museum
-    # exhibition into anime, film, or a concert.
-    if "film_screening" in content_types or FILM_RE.search(title):
+    # Format and subject categories are title-led. A long description often
+    # contains credits such as "舞台設計", "舞台美術", or a technology-company
+    # sponsor; those words must never create public categories by themselves.
+    if (
+        "popup" in content_types
+        or POPUP_RE.search(title)
+        or (existing and existing[0] == "快閃店")
+        or ("快閃店" in existing and POPUP_RE.search(description))
+    ):
+        primary = "快閃店"
+    elif "film_screening" in content_types or FILM_RE.search(title):
         primary = "電影"
     elif DANCE_RE.search(title):
         primary = "舞蹈"
@@ -347,49 +366,48 @@ def public_categories(event: Mapping[str, Any]) -> list[str]:
         primary = "音樂"
     elif ANIME_RE.search(title):
         primary = "動漫"
-    elif POPUP_RE.search(title):
-        primary = "快閃店"
-    elif MARKET_RE.search(title):
+    elif "market" in content_types or MARKET_RE.search(title):
         primary = "市集"
+    elif "performance" in content_types:
+        primary = "表演"
+    elif "concert" in content_types:
+        primary = "音樂"
+    elif "festival" in content_types:
+        primary = "表演"
     elif PHOTO_RE.search(title):
         primary = "攝影"
-    elif NATURE_RE.search(f"{title} {description}"):
+    elif NATURE_RE.search(title):
         primary = "自然"
-    elif HISTORY_RE.search(f"{title} {description}"):
+    elif HISTORY_RE.search(title):
         primary = "歷史"
-    elif TECH_RE.search(f"{title} {description}"):
+    elif TECH_RE.search(title):
         primary = "科技"
-    elif DESIGN_RE.search(f"{title} {description}"):
+    elif DESIGN_RE.search(title):
         primary = "設計"
-    elif ART_RE.search(f"{title} {description}"):
+    elif ART_RE.search(title):
         primary = "美術"
     elif CHILD_RE.search(title):
         primary = "親子"
     elif COMPETITION_RE.search(title):
         primary = "競賽"
+    elif "art_exhibition" in content_types:
+        primary = "美術"
     else:
-        primary = next((value for value in existing if value not in {"講座", "研習", "動漫"}), "其他")
+        # When there is no defensible title or structured-type signal, a
+        # conservative generic label is safer than a confident wrong one.
+        primary = "其他"
 
     secondary: list[str] = []
-    text = f"{title} {description}"
+    # Secondary categories also require an explicit title signal. This still
+    # supports useful hybrids such as 音樂／動漫, 電影／動漫 and 快閃店／動漫.
     optional_rules = (
-        ("攝影", PHOTO_RE), ("自然", NATURE_RE), ("歷史", HISTORY_RE),
+        ("動漫", ANIME_RE), ("攝影", PHOTO_RE), ("自然", NATURE_RE), ("歷史", HISTORY_RE),
         ("科技", TECH_RE), ("設計", DESIGN_RE), ("美術", ART_RE),
         ("親子", CHILD_RE), ("競賽", COMPETITION_RE),
     )
     for label, pattern in optional_rules:
-        if label != primary and pattern.search(text) and label not in secondary:
+        if label != primary and pattern.search(title) and label not in secondary:
             secondary.append(label)
-    for label in existing:
-        if label == primary or label in secondary or label in {"講座", "研習"}:
-            continue
-        if primary in MUTUALLY_EXCLUSIVE and label in MUTUALLY_EXCLUSIVE:
-            continue
-        # Never inherit anime from a noisy source field unless the title itself
-        # contains an anime/IP signal.
-        if label == "動漫" and not ANIME_RE.search(title):
-            continue
-        secondary.append(label)
     return [primary, *secondary][:3]
 
 
@@ -541,12 +559,17 @@ def build_curated_payload(
         "matrixVenueCount": len(matrix_payload.get("venues") or []),
     }
     original_stats = dict(source_payload.get("stats") or {})
+    public_category_counts: dict[str, int] = {}
+    for event in kept:
+        for category in event.get("categories") or []:
+            public_category_counts[category] = public_category_counts.get(category, 0) + 1
     original_stats.update({
         "sourceEventCount": len(source_payload.get("events") or []),
         "eventCount": len(kept),
         "curatedEventCount": len(kept),
         "imageCoverage": 100.0 if kept else 0.0,
         "outboundLinkCoverage": 100.0 if kept else 0.0,
+        "categoryCounts": public_category_counts,
     })
     payload["stats"] = original_stats
 
