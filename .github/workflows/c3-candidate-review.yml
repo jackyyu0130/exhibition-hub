@@ -12,8 +12,6 @@ on:
         description: Rotation offset
         required: false
         default: '0'
-  schedule:
-    - cron: '55 20 * * *'
 permissions:
   contents: read
 jobs:

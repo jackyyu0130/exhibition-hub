@@ -1,18 +1,15 @@
-name: Update data and deploy site
+name: Weekly exhibition update (low resource)
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type RUN_WEEKLY_UPDATE to start one controlled update
+        required: true
+        type: string
   schedule:
-    - cron: "25 21 * * *" # 台灣時間 05:25
-    - cron: "25 9 * * *"  # 台灣時間 17:25
-  push:
-    branches: [main]
-    paths-ignore:
-      - data/exhibitions.json
-      - data/exhibitions.enriched.json
-      - data/exhibitions.curated.json
-      - data/geocode-cache.json
-      - data/update-reports/**
+    # Sunday 03:17 in Taiwan. A non-round minute avoids the busiest cron window.
+    - cron: "17 19 * * 6"
 
 permissions:
   contents: write
@@ -20,65 +17,41 @@ permissions:
   id-token: write
 
 concurrency:
-  group: exhibition-hub-update-and-deploy
-  cancel-in-progress: false
+  group: exhibition-hub-weekly-update
+  cancel-in-progress: true
 
 jobs:
   update-and-deploy:
+    if: >-
+      (github.event_name == 'schedule' && vars.WEEKLY_UPDATE_ENABLED == 'true') ||
+      (github.event_name == 'workflow_dispatch' && inputs.confirm == 'RUN_WEEKLY_UPDATE')
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 55
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      # Culture Ministry feed: two request workers and one attempt only.
+      CULTURE_API_TIMEOUT: "20"
+      CULTURE_API_RETRIES: "1"
+      CULTURE_API_WORKERS: "2"
+      # Incremental detail/image work is capped instead of re-fetching 2,200 rows.
+      MAX_DETAIL_FETCHES: "80"
+      MAX_IMAGE_FETCHES: "80"
+      MAX_GEOCODES: "15"
+      SCRAPER_DETAIL_WORKERS: "2"
+      SCRAPER_IMAGE_WORKERS: "2"
+      # Official venue sources run sequentially and inspect at most 20 details each.
+      # Huashan stays complete because its production quality gate requires it.
+      EXHIBITION_HUB_DETAIL_LIMIT: "20"
+      EXHIBITION_HUB_DETAIL_RETRY_ROUNDS: "0"
 
     steps:
-      - name: Checkout repository
+      - name: Checkout main once
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           ref: main
-
-      - name: Determine update mode
-        id: mode
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          RUN_UPDATE=false
-          REASON="deploy-only"
-
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            RUN_UPDATE=true
-            REASON="scheduled-update"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            RUN_UPDATE=true
-            REASON="manual-update"
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            BEFORE="${{ github.event.before }}"
-            AFTER="${{ github.sha }}"
-            if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-              CHANGED_FILES="$(git diff --name-only "$BEFORE" "$AFTER")"
-              if printf '%s\n' "$CHANGED_FILES" | grep -qx "data/source_registry.json"; then
-                REGISTRY_CHECK="$(python scripts/check_source_registry_activation.py \
-                  --before-ref "$BEFORE" \
-                  --after-ref "$AFTER")"
-                printf '%s\n' "$REGISTRY_CHECK"
-                if printf '%s\n' "$REGISTRY_CHECK" | grep -qx "activation_changed=true"; then
-                  RUN_UPDATE=true
-                  REASON="source-registry-activation"
-                else
-                  REASON="source-registry-planned-only"
-                fi
-              elif printf '%s\n' "$CHANGED_FILES" | grep -Eq '^(scripts/validate_published_data\.py|scripts/finalize_source_publish\.py|scripts/run_official_source_batch\.py|scripts/exhibition_hub/collectors/official_sites\.py|scripts/exhibition_hub/collectors/__init__\.py)$'; then
-                RUN_UPDATE=true
-                REASON="production-pipeline-recovery"
-              fi
-            fi
-          fi
-
-          echo "run_update=$RUN_UPDATE" >> "$GITHUB_OUTPUT"
-          echo "reason=$REASON" >> "$GITHUB_OUTPUT"
-          echo "Mode: $REASON"
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -86,310 +59,74 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install dependencies
+      - name: Install the single runtime dependency set
         run: pip install -r requirements.txt
 
-      - name: Sanitize checked-in images before tests
-        run: |
-          python scripts/audit_event_images.py \
-            --fix \
-            data/exhibitions.json \
-            data/exhibitions.enriched.json \
-            data/exhibitions.curated.json \
-            --report /tmp/pretest-image-quality-audit.json
+      - name: Run bounded weekly crawler and safety gates
+        run: python scripts/run_local_weekly_update.py
 
-      - name: Check JavaScript syntax
-        run: node --check assets/app.js
-
-      - name: Run project tests before production data update
-        run: python -m unittest discover -s tests -v
-
-      - name: Snapshot current production data
-        if: steps.mode.outputs.run_update == 'true'
+      - name: Add Chinese run summary
+        if: always()
         shell: bash
         run: |
-          set -euo pipefail
-          mkdir -p production-update-audit
-          cp data/exhibitions.enriched.json production-update-audit/exhibitions.enriched.before.json
-          cp data/exhibitions.json production-update-audit/exhibitions.raw.before.json
-          cp data/source_registry.json production-update-audit/source_registry.json
-
-      - name: Fetch and normalize Culture Ministry data
-        if: steps.mode.outputs.run_update == 'true'
-        env:
-          MAX_DETAIL_FETCHES: "2200"
-          MAX_IMAGE_FETCHES: "2200"
-          MAX_GEOCODES: "150"
-        run: python scripts/scraper.py
-
-      - name: Build fresh enriched base
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -o pipefail
-          python scripts/build_enriched_candidate.py \
-            --input "data/exhibitions.json" \
-            --venues "data/venues.json" \
-            --legacy-aliases "data/venue-aliases.json" \
-            --output "production-update-audit/fresh-base.json" \
-            --report-output "production-update-audit/fresh-base-report.json" \
-            --excluded-output "production-update-audit/fresh-base-excluded.json" \
-            | tee production-update-audit/fresh-base-summary.json
-
-      - name: Fetch current Huashan details
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -o pipefail
-          python scripts/run_collectors.py \
-            --source "huashan-1914" \
-            --fetch-details \
-            --source-registry "data/source_registry.json" \
-            --report-output "production-update-audit/huashan-source-run.json" \
-            | tee production-update-audit/huashan-source-summary.json
-
-      - name: Build Huashan merge candidate
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -o pipefail
-          python scripts/build_source_merge_candidate.py \
-            --base "production-update-audit/fresh-base.json" \
-            --source-run "production-update-audit/huashan-source-run.json" \
-            --source-registry "data/source_registry.json" \
-            --source-id "huashan-1914" \
-            --candidate-output "production-update-audit/merge-candidate.json" \
-            --report-output "production-update-audit/merge-report.json" \
-            --review-output "production-update-audit/merge-review.json" \
-            | tee production-update-audit/merge-summary.json
-
-      - name: Validate full Huashan candidate
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -o pipefail
-          python scripts/validate_source_merge_candidate.py \
-            --base "production-update-audit/fresh-base.json" \
-            --source-run "production-update-audit/huashan-source-run.json" \
-            --candidate "production-update-audit/merge-candidate.json" \
-            --merge-report "production-update-audit/merge-report.json" \
-            --review "production-update-audit/merge-review.json" \
-            --source-id "huashan-1914" \
-            --require-full-details \
-            --max-review "0" \
-            --output "production-update-audit/quality-report.json" \
-            | tee production-update-audit/quality-summary.json
-
-      - name: Prepare production preview
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -o pipefail
-          python scripts/prepare_source_publish_preview.py \
-            --base "production-update-audit/fresh-base.json" \
-            --source-run "production-update-audit/huashan-source-run.json" \
-            --candidate "production-update-audit/merge-candidate.json" \
-            --merge-report "production-update-audit/merge-report.json" \
-            --review "production-update-audit/merge-review.json" \
-            --quality-report "production-update-audit/quality-report.json" \
-            --source-id "huashan-1914" \
-            --preview-output "production-update-audit/publish-preview.json" \
-            --diff-output "production-update-audit/publish-diff.json" \
-            --excluded-output "production-update-audit/publish-excluded.json" \
-            | tee production-update-audit/publish-preview-summary.json
-
-      - name: Collect and merge active official venue sources
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          python scripts/run_official_source_batch.py \
-            --base "production-update-audit/publish-preview.json" \
-            --source-registry "data/source_registry.json" \
-            --output "production-update-audit/official-sources-preview.json" \
-            --report "data/update-reports/official-source-batch.json" \
-            --diff-output "production-update-audit/official-sources-diff.json" \
-            --audit-dir "production-update-audit/official-sources"
-
-      - name: Finalize safe production data
-        if: steps.mode.outputs.run_update == 'true'
-        shell: bash
-        run: |
-          set -o pipefail
-          python scripts/finalize_source_publish.py \
-            --current "data/exhibitions.enriched.json" \
-            --preview "production-update-audit/official-sources-preview.json" \
-            --diff "production-update-audit/official-sources-diff.json" \
-            --source-run "production-update-audit/huashan-source-run.json" \
-            --quality-report "production-update-audit/quality-report.json" \
-            --source-id "huashan-1914" \
-            --minimum-events "500" \
-            --max-drop-count "25" \
-            --max-drop-ratio "0.15" \
-            --output "production-update-audit/exhibitions.enriched.final.json" \
-            --report-output "production-update-audit/production-publish-report.json" \
-            | tee production-update-audit/production-publish-summary.json
-
-          cp production-update-audit/exhibitions.enriched.final.json data/exhibitions.enriched.json
-          mkdir -p data/update-reports
-          cp production-update-audit/production-publish-report.json data/update-reports/latest-huashan-update.json
-
-      - name: Sanitize published image and social references
-        shell: bash
-        run: |
-          set -euo pipefail
-          python scripts/audit_event_images.py \
-            --fix \
-            data/exhibitions.json \
-            data/exhibitions.enriched.json \
-            --report data/update-reports/image-quality-audit.json
-
-      - name: Build curated public feed
-        shell: bash
-        run: |
-          set -euo pipefail
-          python scripts/build_curated_feed.py \
-            --input data/exhibitions.enriched.json \
-            --matrix data/taiwan_venue_matrix.json \
-            --output data/exhibitions.curated.json \
-            --report data/update-reports/curated-feed-report.json
-
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          payload = json.loads(Path("data/exhibitions.curated.json").read_text(encoding="utf-8"))
-          events = payload.get("events") or []
-          if len(events) < 100:
-              raise SystemExit(f"Curated feed unexpectedly small: {len(events)}")
-          if any(not event.get("sourceUrl") for event in events):
-              raise SystemExit("Curated feed contains event without outbound link")
-          if any(not (event.get("image") or event.get("images")) for event in events):
-              raise SystemExit("Curated feed contains event without image")
-          print(f"Curated public feed ready: {len(events)} events")
-          PY
-
-      - name: Build approved social discussion feed
-        shell: bash
-        run: |
-          set -euo pipefail
-          python scripts/build_social_feed.py --queue data/social_review_queue.json --events data/exhibitions.curated.json --output data/social_discussions.json
-
-      - name: Validate dynamic published production data
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          REPORT_OUTPUT="/tmp/published-data-validation.json"
-          VALIDATION_ARGS=(
-            --input "data/exhibitions.enriched.json"
-            --minimum-events "500"
-          )
-
-          if [ "${{ steps.mode.outputs.run_update }}" = "true" ]; then
-            mkdir -p production-update-audit
-            REPORT_OUTPUT="production-update-audit/published-data-validation.json"
-            VALIDATION_ARGS+=(
-              --require-published
-              --source-id "huashan-1914"
-            )
+          if [ -f local-update-output/latest-summary.md ]; then
+            cat local-update-output/latest-summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## 每週展覽更新未完成" >> "$GITHUB_STEP_SUMMARY"
+            echo "請查看失敗步驟；正式資料已由更新程式自動還原。" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-          python scripts/validate_published_data.py             "${VALIDATION_ARGS[@]}"             --report-output "$REPORT_OUTPUT"
-
-      - name: Commit updated production data safely
-        if: steps.mode.outputs.run_update == 'true'
+      - name: Commit only prepared production data
+        id: commit
         shell: bash
         run: |
           set -euo pipefail
-
           TRACKED_PATHS=(
             data/exhibitions.json
             data/exhibitions.enriched.json
             data/exhibitions.curated.json
             data/social_discussions.json
             data/geocode-cache.json
-            data/update-reports/latest-huashan-update.json
+            data/update-reports/latest-local-weekly-update.json
+            data/update-reports/official-source-batch.json
             data/update-reports/image-quality-audit.json
             data/update-reports/curated-feed-report.json
-            data/update-reports/official-source-batch.json
           )
 
-          if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
-            echo "No production data changes"
+          git add -- "${TRACKED_PATHS[@]}"
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No production data changed."
             exit 0
-          fi
-
-          mkdir -p /tmp/exhibition-hub-production
-          cp data/exhibitions.json /tmp/exhibition-hub-production/exhibitions.json
-          cp data/exhibitions.enriched.json /tmp/exhibition-hub-production/exhibitions.enriched.json
-          cp data/exhibitions.curated.json /tmp/exhibition-hub-production/exhibitions.curated.json
-          cp data/update-reports/latest-huashan-update.json /tmp/exhibition-hub-production/latest-huashan-update.json
-          cp data/update-reports/image-quality-audit.json /tmp/exhibition-hub-production/image-quality-audit.json
-          cp data/update-reports/curated-feed-report.json /tmp/exhibition-hub-production/curated-feed-report.json
-          cp data/update-reports/official-source-batch.json /tmp/exhibition-hub-production/official-source-batch.json
-          if [ -f data/geocode-cache.json ]; then
-            cp data/geocode-cache.json /tmp/exhibition-hub-production/geocode-cache.json
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: weekly exhibition update"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
-          for attempt in 1 2 3; do
-            echo "Push attempt ${attempt}/3"
-            git fetch origin main
-            git reset --hard origin/main
-            mkdir -p data/update-reports
-            cp /tmp/exhibition-hub-production/exhibitions.json data/exhibitions.json
-            cp /tmp/exhibition-hub-production/exhibitions.enriched.json data/exhibitions.enriched.json
-            cp /tmp/exhibition-hub-production/exhibitions.curated.json data/exhibitions.curated.json
-            cp /tmp/exhibition-hub-production/latest-huashan-update.json data/update-reports/latest-huashan-update.json
-            cp /tmp/exhibition-hub-production/image-quality-audit.json data/update-reports/image-quality-audit.json
-            cp /tmp/exhibition-hub-production/curated-feed-report.json data/update-reports/curated-feed-report.json
-            cp /tmp/exhibition-hub-production/official-source-batch.json data/update-reports/official-source-batch.json
-            if [ -f /tmp/exhibition-hub-production/geocode-cache.json ]; then
-              cp /tmp/exhibition-hub-production/geocode-cache.json data/geocode-cache.json
-            fi
-
-            if [ -z "$(git status --porcelain -- "${TRACKED_PATHS[@]}")" ]; then
-              echo "Remote already contains the latest production data"
-              exit 0
-            fi
-
-            git add "${TRACKED_PATHS[@]}"
-            git commit -m "chore: update exhibition data and official sources"
-
-            if git push origin HEAD:main; then
-              echo "Production data pushed successfully"
-              exit 0
-            fi
-
-            echo "Remote changed during push; retrying from newest main..."
-            sleep 5
-          done
-
-          echo "Unable to push production data after 3 attempts"
-          exit 1
-
-      - name: Upload production update audit
-        if: always() && steps.mode.outputs.run_update == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: production-update-audit-${{ github.run_number }}
-          path: production-update-audit
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Build minimal Pages directory
+      - name: Build validated static website
         run: python scripts/build_pages_site.py --root . --output site
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload website files
+      - name: Upload prepared website
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
+          retention-days: 1
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Keep failure diagnostics briefly
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-update-failure-${{ github.run_number }}
+          path: local-update-output
+          if-no-files-found: warn
+          retention-days: 3

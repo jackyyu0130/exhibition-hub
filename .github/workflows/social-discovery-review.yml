@@ -8,9 +8,6 @@ on:
         required: true
         default: false
         type: boolean
-  schedule:
-    - cron: '20 20,8 * * *' # 台灣時間每天 04:20、16:20
-
 permissions:
   contents: read
 

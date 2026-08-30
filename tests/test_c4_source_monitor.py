@@ -184,9 +184,10 @@ class C4SourceMonitorTests(unittest.TestCase):
         self.assertTrue(social)
         self.assertTrue(all(endpoint["accessMode"] == "meta_api_required" and endpoint["enabled"] is False for endpoint in social))
 
-    def test_c4_workflow_runs_at_taiwan_0400_and_validates_before_push(self):
+    def test_c4_workflow_is_manual_only_and_validates_before_push(self):
         text = (ROOT / ".github/workflows/c4-source-monitor.yml").read_text(encoding="utf-8")
-        self.assertIn('cron: "0 20 * * *"', text)
+        self.assertIn("workflow_dispatch:", text)
+        self.assertNotIn("schedule:", text)
         self.assertIn('matrix:\n        shard: [0, 1, 2, 3]', text)
         self.assertIn("Run complete regression tests", text)
         self.assertIn("Finalize public status and quality gates", text)

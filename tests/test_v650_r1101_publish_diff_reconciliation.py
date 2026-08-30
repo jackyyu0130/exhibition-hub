@@ -87,25 +87,27 @@ class R1101PublishDiffReconciliationTests(unittest.TestCase):
             )
 
     def test_workflow_finalizes_against_post_batch_diff(self):
+        runner = (
+            ROOT / "scripts/run_local_weekly_update.py"
+        ).read_text(encoding="utf-8")
+        self.assertIn("run_local_weekly_update.py", WORKFLOW)
         self.assertIn(
             'official-sources-diff.json',
-            WORKFLOW,
+            runner,
         )
-        finalize_block = WORKFLOW.split(
-            "- name: Finalize safe production data",
+        finalize_block = runner.split(
+            '"8/11 套用安全發布門檻"',
             1,
         )[1].split(
-            "- name: Sanitize published image",
+            '"9/11 清理不合格圖片與社群連結"',
             1,
         )[0]
         self.assertIn(
-            '--diff "production-update-audit/'
-            'official-sources-diff.json"',
+            'str(AUDIT / "official-sources-diff.json")',
             finalize_block,
         )
         self.assertNotIn(
-            '--diff "production-update-audit/'
-            'publish-diff.json"',
+            'str(AUDIT / "publish-diff.json")',
             finalize_block,
         )
 

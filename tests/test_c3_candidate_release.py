@@ -38,11 +38,12 @@ class C3CandidateReleaseTests(unittest.TestCase):
         self.assertFalse(self.policy["socialRules"]["communityPostsCanPublishEvents"])
         self.assertTrue(self.policy["socialRules"]["requiresSecondaryEvidenceForCoreFields"])
 
-    def test_candidate_workflow_is_daily_read_only_and_artifact_only(self):
+    def test_candidate_workflow_is_manual_read_only_and_artifact_only(self):
         path = ROOT / ".github/workflows/c3-candidate-review.yml"
         text = path.read_text(encoding="utf-8")
         self.assertRegex(text, r"(?m)^permissions:\s*\n\s+contents:\s*read\s*$")
-        self.assertIn("55 20 * * *", text)
+        self.assertIn("workflow_dispatch:", text)
+        self.assertNotIn("schedule:", text)
         self.assertIn("Resolve rotating discovery window", text)
         self.assertIn("group=\"all\"", text)
         self.assertIn("offset=$(( ((day - 1) % windows) * chunk ))", text)

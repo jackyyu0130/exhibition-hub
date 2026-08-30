@@ -68,8 +68,9 @@ class C1CollectorRegistryTests(unittest.TestCase):
         self.assertFalse(stage['publishEnabled'])
         self.assertEqual(stage['batchId'],'c1-planned-venue-registry-audit')
 
-    def test_planned_only_registry_change_is_deploy_only(self):
-        self.assertIn('check_source_registry_activation.py',PRODUCTION)
-        self.assertIn('source-registry-planned-only',PRODUCTION)
+    def test_registry_changes_do_not_trigger_the_weekly_workflow(self):
+        self.assertNotIn('push:', PRODUCTION)
+        self.assertNotIn('check_source_registry_activation.py', PRODUCTION)
+        self.assertIn('WEEKLY_UPDATE_ENABLED', PRODUCTION)
 
 if __name__=='__main__': unittest.main()

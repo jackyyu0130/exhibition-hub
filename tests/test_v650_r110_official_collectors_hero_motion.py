@@ -32,11 +32,13 @@ class R110OfficialCollectorsHeroMotionTests(unittest.TestCase):
         }.issubset(active))
 
     def test_collector_batch_is_failure_isolated(self):
+        runner = (ROOT / "scripts/run_local_weekly_update.py").read_text(encoding="utf-8")
         self.assertTrue((ROOT / "scripts" / "run_official_source_batch.py").is_file())
         self.assertIn("failureIsolation", (ROOT / "scripts" / "run_official_source_batch.py").read_text(encoding="utf-8"))
-        self.assertIn("Collect and merge active official venue sources", WORKFLOW)
-        self.assertIn("official-sources-preview.json", WORKFLOW)
-        self.assertIn("official-source-batch.json", WORKFLOW)
+        self.assertIn("run_local_weekly_update.py", WORKFLOW)
+        self.assertIn("抓取並整合已啟用官方來源", runner)
+        self.assertIn("official-sources-preview.json", runner)
+        self.assertIn("official-source-batch.json", runner)
 
     def test_official_collector_classes_exist(self):
         for name in (
