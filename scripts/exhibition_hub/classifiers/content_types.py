@@ -126,7 +126,21 @@ FILM_TITLE_KEYWORDS = (
     "特映會",
     "放映會",
     "紀錄片放映",
+    "劇場版",
 )
+
+SUPPORTED_CONTENT_TYPES = {
+    "exhibition",
+    "art_exhibition",
+    "expo",
+    "concert",
+    "music_festival",
+    "performance",
+    "popup",
+    "market",
+    "festival",
+    "film_screening",
+}
 
 POP_CULTURE_KEYWORDS = (
     "動漫",
@@ -272,6 +286,7 @@ def classify_content_types(
     title = _lower(event.get("title"))
     categories = _categories(event)
     combined = _combined_text(event)
+    declared_primary = _clean(event.get("contentType"))
 
     has_exhibition_title = _contains_any(
         title,
@@ -348,6 +363,10 @@ def classify_content_types(
         primary = "festival"
     elif has_film:
         primary = "film_screening"
+    elif declared_primary in SUPPORTED_CONTENT_TYPES:
+        # Preserve a structured type from an upstream official collector. It
+        # is more reliable than category words found in credits/descriptions.
+        primary = declared_primary
     elif primary_category in {"美術", "攝影"}:
         primary = "art_exhibition"
     elif primary_category == "設計":

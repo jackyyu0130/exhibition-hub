@@ -9,14 +9,15 @@ from pathlib import Path
 import re
 from typing import Any, Mapping
 
-from exhibition_hub.curation import build_curated_payload
+from exhibition_hub.curation import build_curated_payload, public_categories
 
 
 STRICT_ANIME_TITLE_RE = re.compile(
     r"動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|"
     r"公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|"
     r"虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|"
-    r"櫻桃小丸子|蠟筆小新|哆啦A夢|三麗鷗|迪士尼|皮克斯|史努比|姆明|"
+    r"櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|史努比|"
+    r"PEANUTS|SNOOPY|姆明|伊藤潤二|"
     r"航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|"
     r"名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|"
     r"hololive|anime",
@@ -30,7 +31,7 @@ MUSIC_TITLE_RE = re.compile(
     re.I,
 )
 PERFORMANCE_TITLE_RE = re.compile(
-    r"舞台劇|音樂劇|歌劇|劇場|戲劇|舞蹈|芭蕾|馬戲|偶戲",
+    r"舞台劇|音樂劇|歌劇|劇場(?!版)|戲劇|舞蹈|芭蕾|馬戲|偶戲",
     re.I,
 )
 ART_TITLE_RE = re.compile(
@@ -95,6 +96,7 @@ def reconcile_public_categories(
     result = deepcopy(dict(payload))
     events = result.get("events") or []
     corrected_anime = 0
+    corrected_semantic = 0
 
     for event in events:
         if not isinstance(event, dict):
@@ -109,23 +111,22 @@ def reconcile_public_categories(
         is_public_anime = category == "動漫" or (
             categories and categories[0] == "動漫"
         )
-        if not is_public_anime or STRICT_ANIME_TITLE_RE.search(title):
-            continue
+        if is_public_anime and not STRICT_ANIME_TITLE_RE.search(title):
+            corrected_anime += 1
 
-        replacement = fallback_public_category(title, categories)
-        remaining = [
-            value
-            for value in categories
-            if value not in {"動漫", replacement, "講座", "研習"}
-        ]
-        event["category"] = replacement
-        event["categories"] = [replacement, *remaining][:3]
-        corrected_anime += 1
+        normalized = public_categories(event)
+        if category != normalized[0] or categories != normalized:
+            event["category"] = normalized[0]
+            event["categories"] = normalized
+            corrected_semantic += 1
 
     stats = dict(result.get("stats") or {})
-    stats["taxonomyCorrectionCount"] = corrected_anime
+    stats["taxonomyCorrectionCount"] = corrected_semantic
     result["stats"] = stats
-    return result, {"animeWithoutTitleSignal": corrected_anime}
+    return result, {
+        "animeWithoutTitleSignal": corrected_anime,
+        "semanticCategoryCorrections": corrected_semantic,
+    }
 
 
 def main() -> int:

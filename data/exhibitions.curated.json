@@ -9,27 +9,29 @@
     "imageCoverage": 100.0,
     "coordinateCoverage": 0.8385,
     "categoryCounts": {
-      "設計": 235,
-      "科技": 50,
-      "自然": 102,
-      "美術": 1232,
-      "攝影": 46,
-      "親子": 296,
-      "音樂": 798,
-      "電影": 263,
-      "歷史": 196,
-      "表演": 744,
-      "市集": 27,
-      "動漫": 67,
-      "舞蹈": 138,
-      "其他": 67,
-      "演唱會": 159,
-      "快閃店": 20
+      "自然": 8,
+      "演唱會": 16,
+      "音樂": 348,
+      "動漫": 13,
+      "美術": 40,
+      "其他": 19,
+      "設計": 8,
+      "表演": 138,
+      "親子": 18,
+      "歷史": 12,
+      "電影": 65,
+      "市集": 8,
+      "科技": 5,
+      "舞蹈": 22,
+      "攝影": 1,
+      "快閃店": 15,
+      "競賽": 3
     },
     "sourceEventCount": 1982,
     "curatedEventCount": 693,
     "outboundLinkCoverage": 100.0,
-    "taxonomyCorrectionCount": 0
+    "taxonomyCorrectionCount": 583,
+    "taxonomyVersion": "6.5.0-r17"
   },
   "events": [
     {
@@ -52,9 +54,7 @@
         "https://www.nmns.edu.tw/export/sites/nmns/ch/exhibitions/galleries/.galleries/images/20240119-2.jpg"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "設計"
+        "自然"
       ],
       "category": "自然",
       "contentType": "exhibition",
@@ -184,8 +184,7 @@
       ],
       "categories": [
         "音樂",
-        "攝影",
-        "歷史"
+        "動漫"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -250,9 +249,7 @@
         "https://s3.resource.opentix.life/upload/program/1748838400846HtDRGdYW8l.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -316,9 +313,7 @@
         "https://s3.resource.opentix.life/upload/program/1778657254214vGInRKvS5g.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -383,11 +378,9 @@
         "https://file.moc.gov.tw/001/Upload/528/relpic/13791/246435/bafa84b1-589b-447c-8a8d-69d2b738830a@710x470.jpg"
       ],
       "categories": [
-        "自然",
-        "科技",
         "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -491,11 +484,9 @@
         "https://tcsac.taichung.gov.tw/images/mygov.png"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "設計"
+        "其他"
       ],
-      "category": "自然",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -556,9 +547,7 @@
         "https://s3.resource.opentix.life/upload/program/1780163748457ED40Y1a7iQ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -624,11 +613,9 @@
         "https://www.chimeimuseum.org/cache/48SiDj1gfZ7s1z0VVmVLU0owfa8yrA.webp"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "其他"
       ],
-      "category": "歷史",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -689,11 +676,9 @@
         "https://event.culture.tw/userFiles/NTCRI/JpgFile/01/60305/AD/60305_0_0_728526_276_175.jpg?20260727"
       ],
       "categories": [
-        "自然",
-        "科技",
         "設計"
       ],
-      "category": "自然",
+      "category": "設計",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -752,10 +737,10 @@
         "https://s3.resource.opentix.life/upload/program/1776102604292WViagkdmgo.jpeg"
       ],
       "categories": [
-        "親子",
-        "表演"
+        "表演",
+        "親子"
       ],
-      "category": "親子",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -819,8 +804,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679633432829uaIyYXbk2y.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -927,9 +911,7 @@
         "https://s3.resource.opentix.life/upload/program/1764150453835XuCpclQxQA.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -984,9 +966,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1767325851151YcqBnnlX66.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1040,9 +1020,7 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Upload/%E6%96%87%E5%8C%96%E5%B9%A3.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1160,8 +1138,7 @@
         "https://www.chimeimuseum.org/uploads/photos/shares/68cba3d0a27df.png"
       ],
       "categories": [
-        "歷史",
-        "美術"
+        "歷史"
       ],
       "category": "歷史",
       "contentType": "art_exhibition",
@@ -1216,9 +1193,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1767325851151YcqBnnlX66.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1271,9 +1246,7 @@
         "https://s3.resource.opentix.life/upload/program/1783580949386PZxXlnKX0p.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1333,8 +1306,7 @@
         "https://voom-obs.line-scdn.net/r/myhome/hex/cj0xOHE4MGJ2YmhrcXZ1JnM9anA3JnQ9ZCZ1PTFscWNkaXVhazRiZzAmaT0w/w480?0"
       ],
       "categories": [
-        "演唱會",
-        "科技"
+        "演唱會"
       ],
       "category": "演唱會",
       "contentType": "performance",
@@ -1388,9 +1360,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1767325851151YcqBnnlX66.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1564,8 +1534,7 @@
         "https://www.chimeimuseum.org/uploads/photos/shares/68cba3d0a27df.png"
       ],
       "categories": [
-        "歷史",
-        "美術"
+        "歷史"
       ],
       "category": "歷史",
       "contentType": "art_exhibition",
@@ -1620,8 +1589,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1767325851151YcqBnnlX66.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1676,7 +1644,7 @@
       ],
       "categories": [
         "電影",
-        "親子"
+        "動漫"
       ],
       "category": "電影",
       "contentType": "performance",
@@ -1730,9 +1698,7 @@
         "https://s3.resource.opentix.life/upload/program/1774918346525U78FBtOaf4.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1791,9 +1757,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1767325851151YcqBnnlX66.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "親子"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -1969,11 +1933,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Upload/%E6%96%87%E5%8C%96%E5%B9%A3.png"
       ],
       "categories": [
-        "美術",
-        "音樂",
         "表演"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -2025,10 +1987,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Upload/%E6%96%87%E5%8C%96%E5%B9%A3.png"
       ],
       "categories": [
-        "科技",
         "音樂"
       ],
-      "category": "科技",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -2086,11 +2047,10 @@
         "https://www.ctwm.org.tw/upload-files/activities/FUNC004_Img_20240709152701.jpg"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "美術"
+        "市集",
+        "歷史"
       ],
-      "category": "歷史",
+      "category": "市集",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -2149,11 +2109,10 @@
         "https://www.chimeimuseum.org/uploads/photos/shares/691aefd84e857.jpg"
       ],
       "categories": [
-        "設計",
-        "美術",
-        "自然"
+        "歷史",
+        "科技"
       ],
-      "category": "設計",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -2325,11 +2284,9 @@
         "https://tcsac.taichung.gov.tw/images/mygov.png"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "其他"
       ],
-      "category": "歷史",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -2436,9 +2393,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Images/UTK2401/P1BCQHJX_Other.JPG?v=202607081457"
       ],
       "categories": [
-        "音樂"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -2547,9 +2504,7 @@
         "https://s3.resource.opentix.life/upload/program/1769143112449M6Xo6BAiQ9.png"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -2668,8 +2623,7 @@
       ],
       "categories": [
         "表演",
-        "科技",
-        "設計"
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -2777,8 +2731,7 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Images/UTK2401/P1E6TW5K_Other.JPG?v=202608101445"
       ],
       "categories": [
-        "電影",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -2840,11 +2793,9 @@
         "https://tcdbdata.ntcri.gov.tw/upload/banner/2026-04-21/42704675-3724-43fe-8d2a-90a3b61fefe2/工藝低碳美展_Banner-1920X660_wp.webp"
       ],
       "categories": [
-        "自然",
-        "科技",
         "設計"
       ],
-      "category": "自然",
+      "category": "設計",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -3246,9 +3197,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1767325851151YcqBnnlX66.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -3420,10 +3369,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Upload/%E6%96%87%E5%8C%96%E5%B9%A3.png"
       ],
       "categories": [
-        "美術",
         "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -3473,9 +3421,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Images/UTK2401/P1D3FOI9_Other.JPG?v=202607301613"
       ],
       "categories": [
-        "音樂"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -3536,8 +3484,7 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Upload/%E6%96%87%E5%8C%96%E5%B9%A3.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -3650,11 +3597,9 @@
         "https://ntcart.museum/{{:AwImg}}"
       ],
       "categories": [
-        "美術",
-        "攝影",
         "表演"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -3773,11 +3718,9 @@
         "https://www.chimeimuseum.org/cache/GTItIZZUKw4WxTY5HFPUJIVA2wLeWHT8mHNRzeKd1XWxgev8J7QcGZc.webp"
       ],
       "categories": [
-        "歷史",
-        "競賽",
         "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -3838,9 +3781,7 @@
         "https://www.chimeimuseum.org/cache/48SiDj1gfZ7s1z0VVmVLU0owfa8yrA.webp"
       ],
       "categories": [
-        "美術",
-        "競賽",
-        "攝影"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -4071,11 +4012,9 @@
         "https://www.chimeimuseum.org/cache/48SiDj1gfZ7s1z0VVmVLU0owfa8yrA.webp"
       ],
       "categories": [
-        "自然",
-        "美術",
-        "競賽"
+        "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -4136,11 +4075,9 @@
         "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png"
       ],
       "categories": [
-        "歷史",
-        "攝影",
         "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -4192,9 +4129,7 @@
         "https://s3.resource.opentix.life/upload/program/1774229500245oScHwq2qq2.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "科技",
-        "設計"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -4248,9 +4183,7 @@
         "https://s3.resource.opentix.life/upload/program/1785471791212NArElzcMHQ.png"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -4543,8 +4476,7 @@
       ],
       "categories": [
         "音樂",
-        "設計",
-        "美術"
+        "親子"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -4621,9 +4553,7 @@
         "https://s3.resource.opentix.life/upload/program/17742388762012r4gBxwEQk.png"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -4686,8 +4616,7 @@
       ],
       "categories": [
         "音樂",
-        "攝影",
-        "設計"
+        "動漫"
       ],
       "category": "音樂",
       "contentType": "music_festival",
@@ -4749,9 +4678,7 @@
         "https://s3.resource.opentix.life/upload/program/1771903146598fiuUNcHEBF.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -4842,11 +4769,9 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/3wSlUGLi7tgmi9KT37xAJcCOPfbwQsjeZ7GG4Pf7.jpg"
       ],
       "categories": [
-        "自然",
-        "歷史",
         "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -4900,11 +4825,9 @@
         "https://ntcart.museum/{{:AwImg}}"
       ],
       "categories": [
-        "歷史",
-        "美術",
-        "音樂"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -4962,9 +4885,7 @@
         "https://s3.resource.opentix.life/upload/program/17800416546959wExaHDJF1.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "自然",
-        "美術"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -5026,11 +4947,9 @@
         "https://hakkaevent.com.tw/assets/front/images/pages/actor/actor-01-2.jpg"
       ],
       "categories": [
-        "歷史",
-        "美術",
         "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -5085,9 +5004,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16786866707119nzasdZEPE.png"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -5260,7 +5177,6 @@
       ],
       "categories": [
         "表演",
-        "美術",
         "親子"
       ],
       "category": "表演",
@@ -5322,11 +5238,9 @@
         "https://tcdbdata.ntcri.gov.tw/upload/banner/2026-03-30/8d8b2174-8c8f-4992-899b-ce3a371397ae/01_網站橫幅-1920x660_0.jpg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "設計"
       ],
-      "category": "科技",
+      "category": "設計",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -5387,8 +5301,7 @@
         "https://www.xzcac.ntpc.gov.tw/files/file_pool/1/0q062600094209225653/%e6%9c%aa%e5%91%bd%e5%90%8d.jpg"
       ],
       "categories": [
-        "美術",
-        "表演"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -5439,9 +5352,7 @@
         "https://s3.resource.opentix.life/upload/program/1781336956505q4QUKwN8eH.jpeg"
       ],
       "categories": [
-        "電影",
-        "設計",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -5495,7 +5406,6 @@
       ],
       "categories": [
         "電影",
-        "攝影",
         "歷史"
       ],
       "category": "電影",
@@ -5550,9 +5460,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1783992841017JJCReV28oF.jpeg"
       ],
       "categories": [
-        "電影",
-        "歷史",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -5714,8 +5622,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1783992841017JJCReV28oF.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -5777,8 +5684,7 @@
         "https://www.kmfa.gov.tw/FileDownload/Exhibition/20260422280523379730.jpg"
       ],
       "categories": [
-        "攝影",
-        "美術"
+        "攝影"
       ],
       "category": "攝影",
       "contentType": "art_exhibition",
@@ -5833,9 +5739,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1783992841017JJCReV28oF.jpeg"
       ],
       "categories": [
-        "電影",
-        "攝影",
-        "歷史"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -5888,9 +5792,7 @@
         "https://s3.resource.opentix.life/upload/program/1783407577623jv611M7kVg.jpeg"
       ],
       "categories": [
-        "電影",
-        "攝影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -6050,11 +5952,9 @@
         "https://s3.resource.opentix.life/upload/program/1783408246214rETGkLntaF.png"
       ],
       "categories": [
-        "歷史",
-        "美術",
         "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -6163,11 +6063,10 @@
         "https://s3.resource.opentix.life/upload/program/1785845783753wxSXZcCkDU.jpeg"
       ],
       "categories": [
-        "歷史",
-        "美術",
-        "音樂"
+        "表演",
+        "歷史"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -6218,8 +6117,7 @@
         "https://s3.resource.opentix.life/upload/program/1781774534214V4azxbe2Pb.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -6273,11 +6171,9 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1699346932339zNBEK6WGOv.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -6332,11 +6228,9 @@
         "https://s3.resource.opentix.life/upload/program/178698244308678iF4QJRuF.jpeg"
       ],
       "categories": [
-        "歷史",
-        "美術",
-        "音樂"
+        "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -6388,11 +6282,9 @@
         "https://s3.resource.opentix.life/upload/program/1787123054993NEj3sH71JY.jpeg"
       ],
       "categories": [
-        "設計",
-        "攝影",
         "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -6679,9 +6571,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -6735,9 +6625,7 @@
         "https://s3.resource.opentix.life/upload/program/17691432106841RgsJo251I.png"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -6792,7 +6680,8 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Images/UTK2401/P1EBP9UD_Other.JPG?v=202608251025"
       ],
       "categories": [
-        "電影"
+        "電影",
+        "動漫"
       ],
       "category": "電影",
       "contentType": "performance",
@@ -6905,9 +6794,7 @@
         "https://s3.resource.opentix.life/upload/program/178282338015003Gl2gfGko.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -6961,11 +6848,9 @@
         "https://s3.resource.opentix.life/upload/program/1782918625947HaVvjdI2Gv.png"
       ],
       "categories": [
-        "設計",
-        "攝影",
-        "美術"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7015,11 +6900,9 @@
         "https://fonts.gstatic.com/s/e/notoemoji/17.0/1f43b/72.png"
       ],
       "categories": [
-        "設計",
-        "攝影",
-        "美術"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7072,11 +6955,9 @@
         "https://s3.resource.opentix.life/upload/program/1779423411321g4s9SA8P5A.jpeg"
       ],
       "categories": [
-        "自然",
-        "攝影",
-        "科技"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7124,11 +7005,9 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678702670094AKL4Rxk2AT.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "美術"
+        "電影"
       ],
-      "category": "表演",
+      "category": "電影",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7243,8 +7122,7 @@
         "https://s3.resource.opentix.life/upload/program/1776851459180DyIu1nQCPT.png"
       ],
       "categories": [
-        "演唱會",
-        "科技"
+        "演唱會"
       ],
       "category": "演唱會",
       "contentType": "concert",
@@ -7346,9 +7224,7 @@
         "https://s3.resource.opentix.life/upload/program/1785811528821JbnoIqXnWw.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -7401,9 +7277,7 @@
         "https://s3.resource.opentix.life/upload/program/1785248605533rHXP7X2YGR.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -7457,9 +7331,9 @@
         "https://s3.resource.opentix.life/upload/program/1787125278484xOzOHGQKBZ.jpeg"
       ],
       "categories": [
-        "音樂"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7514,9 +7388,7 @@
         "https://s3.resource.opentix.life/upload/program/1785739411830tAHXpIr3Zu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "concert",
@@ -7573,10 +7445,9 @@
         "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60084/AD/60084_0_0_381650_276_175.jpg?20260727"
       ],
       "categories": [
-        "美術",
         "親子"
       ],
-      "category": "美術",
+      "category": "親子",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -7700,11 +7571,9 @@
         "https://s3.resource.opentix.life/upload/program/16328210946619KMS5al9Gx.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "音樂"
       ],
-      "category": "科技",
+      "category": "音樂",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -7757,11 +7626,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1778553166810rJsRDgK4Vh.png"
       ],
       "categories": [
-        "設計",
-        "攝影",
-        "美術"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7813,8 +7680,7 @@
         "https://s3.resource.opentix.life/upload/program/1784009346741I7m0oejWkX.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -7876,11 +7742,9 @@
         "https://www.kmfa.gov.tw/ckfinder/userfiles/files/%e5%8f%83%e8%a7%80%e5%b1%95%e8%a6%bd%e5%85%a5%e5%8f%a3%e6%8c%87%e5%bc%95-01.jpg"
       ],
       "categories": [
-        "自然",
-        "歷史",
         "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -7941,8 +7805,7 @@
         "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -8005,9 +7868,7 @@
         "https://s3.resource.opentix.life/upload/program/1781574684982u9HPlKjCaB.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -8079,8 +7940,7 @@
         "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -8198,7 +8058,6 @@
       ],
       "categories": [
         "表演",
-        "美術",
         "親子"
       ],
       "category": "表演",
@@ -8252,9 +8111,7 @@
         "https://s3.resource.opentix.life/upload/program/1781764275942Nobn3Vf8Ch.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "設計",
-        "美術"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -8376,9 +8233,7 @@
         "https://uevent.udnfunlife.com/upload/site_settings_9bef01bede.jpg"
       ],
       "categories": [
-        "動漫",
-        "美術",
-        "表演"
+        "動漫"
       ],
       "category": "動漫",
       "contentType": "art_exhibition",
@@ -8435,9 +8290,7 @@
         "https://s3.resource.opentix.life/upload/program/1776743152393QbfV3eTk6B.png"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -8501,9 +8354,7 @@
         "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -8566,11 +8417,9 @@
         "https://www.kmfa.gov.tw/FileDownload/Exhibition/20260430436609397380.jpg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
         "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -8744,8 +8593,7 @@
         "https://s3.resource.opentix.life/upload/program/1784789121416DAU5Z9xFv7.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -8868,8 +8716,7 @@
         "https://tcdbdata.ntcri.gov.tw/upload/act/357c84d13290200065762fdd58b98005a7341474/60310_0_0_45997_wp.webp"
       ],
       "categories": [
-        "設計",
-        "美術"
+        "設計"
       ],
       "category": "設計",
       "contentType": "art_exhibition",
@@ -8931,8 +8778,7 @@
         "https://tcdbdata.ntcri.gov.tw/upload/banner/2026-03-30/8d8b2174-8c8f-4992-899b-ce3a371397ae/01_網站橫幅-1920x660_0.jpg"
       ],
       "categories": [
-        "設計",
-        "美術"
+        "設計"
       ],
       "category": "設計",
       "contentType": "exhibition",
@@ -8995,11 +8841,9 @@
         "https://scontent.cdninstagram.com/v/t51.82787-15/786854258_18115538659993867_1455470943986268147_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=102&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiQ0xJUFMuYmVzdF9pbWFnZV91cmxnZW4uQzMifQ%3D%3D&_nc_ohc=RCvLCTMZH0gQ7kNvwGIV1wR&_nc_oc=AdqlnWPLoL-PSI6eD0OX6Pc0HkgDSuBV8s82AczkHe6PF44jJJIxG1HSBl00SkWXwaKgPykQZRdPt9oN4zmxXoq7&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=6ltOKvMaXX3O2cm2mwfEaA&_nc_ss=7b60f&oh=00_AQHBbE9FHrDWW7lGXWqAWiILh-11ycq3NT0HUT0zu7buUw&oe=6A963802"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "設計"
+        "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -9051,9 +8895,7 @@
         "https://s3.resource.opentix.life/upload/program/1779865202497IIOXnPGuFq.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9111,8 +8953,7 @@
       ],
       "categories": [
         "表演",
-        "歷史",
-        "設計"
+        "歷史"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -9171,8 +9012,7 @@
         "https://www.kmfa.gov.tw//ckfinder/userfiles/Images/%e9%ab%98%e9%9b%84%e7%8d%8e30%e5%b9%b4_%e5%b0%88%e5%ae%b6%e5%b0%8e%e8%a6%bd_6%e6%9c%88(%e5%ae%9a%e7%a8%bf)(1).jpg"
       ],
       "categories": [
-        "美術",
-        "競賽"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -9226,8 +9066,7 @@
         "https://s3.resource.opentix.life/upload/program/1781509486790IKxaWnPDxu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9283,9 +9122,7 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Upload/%E6%96%87%E5%8C%96%E5%B9%A3.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9339,9 +9176,7 @@
         "https://s3.resource.opentix.life/upload/program/1781252088419aF3bZ2szvf.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "市集"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "market",
@@ -9396,8 +9231,7 @@
         "https://s3.resource.opentix.life/upload/program/1780325195017lo9TmbRsig.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9455,10 +9289,9 @@
         "https://static.accupass.com/visitant/2605120737521679867063.jpg"
       ],
       "categories": [
-        "自然",
         "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -9503,8 +9336,7 @@
         "https://s3.resource.opentix.life/upload/program/1783500165835pB4GrByDCo.jpeg"
       ],
       "categories": [
-        "音樂",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9612,11 +9444,9 @@
         "https://s3.resource.opentix.life/upload/program/17811614519832syhgKIBu2.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "科技"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -9668,9 +9498,7 @@
         "https://s3.resource.opentix.life/upload/program/1783394340943EEerSo9ops.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9725,9 +9553,7 @@
         "https://s3.resource.opentix.life/upload/program/1784810048954uKSHUol9fK.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -9781,11 +9607,9 @@
         "https://s3.resource.opentix.life/upload/program/1783496375898m0XgCTxaJM.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -9846,9 +9670,7 @@
         "https://s3.resource.opentix.life/upload/program/1786613623338FAGzy6nAv5.png"
       ],
       "categories": [
-        "表演",
-        "自然",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -9902,11 +9724,9 @@
         "https://s3.resource.opentix.life/upload/program/17827840863780FyO6OuTwY.png"
       ],
       "categories": [
-        "歷史",
-        "美術",
         "音樂"
       ],
-      "category": "歷史",
+      "category": "音樂",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -9957,11 +9777,9 @@
         "https://s3.resource.opentix.life/upload/program/17840837393750rdMgGJbXX.jpeg"
       ],
       "categories": [
-        "科技",
-        "攝影",
-        "設計"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -10022,9 +9840,7 @@
         "https://scontent.cdninstagram.com/v/t51.82787-15/529945728_17963277887956720_8217612259122399172_n.jpg?stp=c0.5x0.5f_dst-jpg_e35_p150x150_tt6_u&_nc_cat=100&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiU1RPUlkuYmVzdF9pbWFnZV91cmxnZW4uQzMifQ%3D%3D&_nc_ohc=qJAr7VUnHTwQ7kNvwHKSI9A&_nc_oc=AdqI5RwMBnXUDUU1v0S78iNeCYKnwfUSmOO1LH4vDaexnd46dZQbhJSIQv5j9jj6ffCTIiWy5GclkZldxsdaB4GM&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=kfuV5t90PJtmjMtXEN5Ikg&_nc_ss=7b60f&oh=00_AQHcqppIQGZMOcp6PG72JHjrw9zlqJDCULDV6kcdtjG_qw&oe=6A963D4E"
       ],
       "categories": [
-        "美術",
-        "親子",
-        "設計"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -10090,9 +9906,7 @@
         "https://s3.resource.opentix.life/upload/program/1786946583818HINW14PGwO.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10145,9 +9959,7 @@
         "https://s3.resource.opentix.life/upload/program/1784013577644yXZ0c2w42N.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10201,9 +10013,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855107853N7dIIDZ6DY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10259,9 +10069,7 @@
         "https://s3.resource.opentix.life/upload/program/17823675307849xVMDPaGnY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10315,9 +10123,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855107853N7dIIDZ6DY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10371,11 +10177,9 @@
         "https://s3.resource.opentix.life/upload/program/1776329957064PJns5AY9mf.png"
       ],
       "categories": [
-        "美術",
-        "表演",
-        "音樂"
+        "表演"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -10431,11 +10235,9 @@
         "https://s3.resource.opentix.life/upload/program/1781163558967QVrdBfWDF3.jpeg"
       ],
       "categories": [
-        "自然",
-        "攝影",
-        "歷史"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -10496,8 +10298,7 @@
         "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10554,9 +10355,7 @@
         "https://s3.resource.opentix.life/upload/program/1785739384094kpiLdn3P9w.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10609,9 +10408,7 @@
         "https://s3.resource.opentix.life/upload/program/1778205690409kuyOM3xLfa.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10667,8 +10464,7 @@
         "https://s3.resource.opentix.life/upload/program/1786697289663hAvXRkMMBf.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10727,9 +10523,7 @@
         "https://s3.resource.opentix.life/upload/program/1780653224630EjYvt6dmN7.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -10790,9 +10584,7 @@
         "https://s3.resource.opentix.life/upload/program/1778123543287UCVuHj7xf1.png"
       ],
       "categories": [
-        "美術",
-        "親子",
-        "設計"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -10858,9 +10650,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1782111070458M9eHL0Qdee.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -10922,9 +10712,7 @@
         "https://s3.resource.opentix.life/upload/program/1780380271192GiqL7hZIFh.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -10979,9 +10767,7 @@
         "https://s3.resource.opentix.life/upload/program/17809922285324f6lyaDsKS.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11035,9 +10821,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1681192338930gOrz9GBuGi.png"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -11090,11 +10874,9 @@
         "https://s3.resource.opentix.life/upload/program/1780674981582ugKi2dZ6EF.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -11145,8 +10927,7 @@
         "https://s3.resource.opentix.life/upload/program/17833919022221jy3qvJElP.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11204,9 +10985,7 @@
         "https://s3.resource.opentix.life/upload/program/1780475549277DK1sW8XjaO.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -11264,8 +11043,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16921566842289DVPUeBAY5.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11323,9 +11101,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1782111070458M9eHL0Qdee.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -11386,9 +11162,7 @@
         "https://s3.resource.opentix.life/upload/program/1780383765661xZAbdfDxtS.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11510,11 +11284,9 @@
         "https://s3.resource.opentix.life/upload/program/1704772183543OeCHvvPiX1.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -11567,9 +11339,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11632,9 +11402,7 @@
         "https://s3.resource.opentix.life/upload/program/17875541910077DFbuuwJwD.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11688,11 +11456,9 @@
         "https://s3.resource.opentix.life/upload/program/17804648406362851NwBimi.jpeg"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -11744,9 +11510,7 @@
         "https://s3.resource.opentix.life/upload/program/1784214796387vjXzSuAcje.png"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11804,8 +11568,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16921566842289DVPUeBAY5.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11859,8 +11622,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1688033142669LRlCiKNC5L.jpeg"
       ],
       "categories": [
-        "音樂",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -11918,9 +11680,7 @@
         "http://www.jpg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -11983,9 +11743,7 @@
         "https://profile.line-scdn.net/0hl9Afij8RMxZ8HywvqCVMQUBaPXsLMTVeBHordllLbScDLHRGRn51cQpLOHIGe3AUSXopJwsbPnFS/preview"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12048,8 +11806,7 @@
         "https://s3.resource.opentix.life/upload/program/1784789039803sRaJ0fjJMh.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12107,9 +11864,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678263906462aTZyyjrbTq.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12176,9 +11931,7 @@
         "https://s3.resource.opentix.life/upload/program/1778046179128PtaePFiJss.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12232,9 +11985,7 @@
         "https://s3.resource.opentix.life/upload/program/17816828850043aSm22NPrw.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -12297,8 +12048,7 @@
         "https://www.kmfa.gov.tw/ckfinder/userfiles/Images/%e9%ab%98%e9%9b%84%e7%8d%8e30%e5%b9%b4_%e5%b0%88%e5%ae%b6%e5%b0%8e%e8%a6%bd_6%e6%9c%88(%e5%ae%9a%e7%a8%bf)(1).jpg"
       ],
       "categories": [
-        "美術",
-        "競賽"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -12353,8 +12103,7 @@
         "https://s3.resource.opentix.life/upload/program/1784189687619hUOijdLvaG.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -12409,8 +12158,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史",
-        "科技"
+        "歷史"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12525,8 +12273,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411696770Wi8IVZXJ3r.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12584,10 +12331,9 @@
         "https://ntcart.museum/{{:AwImg}}"
       ],
       "categories": [
-        "自然",
         "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -12645,10 +12391,9 @@
         "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png"
       ],
       "categories": [
-        "歷史",
         "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -12763,8 +12508,7 @@
         "https://s3.resource.opentix.life/upload/program/1783582443821i9hoLk60y2.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12820,8 +12564,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1685380308972CIJZ9WTPrF.png"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12888,8 +12631,7 @@
       ],
       "categories": [
         "自然",
-        "親子",
-        "美術"
+        "親子"
       ],
       "category": "自然",
       "contentType": "art_exhibition",
@@ -12948,11 +12690,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1778553166810rJsRDgK4Vh.png"
       ],
       "categories": [
-        "設計",
-        "攝影",
-        "美術"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -13003,9 +12743,7 @@
         "https://s3.resource.opentix.life/upload/program/1778663809154pO1l6OYrtt.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -13063,11 +12801,9 @@
         "https://s3.resource.opentix.life/upload/program/1782455921336NX7ll7IKQB.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -13119,9 +12855,7 @@
         "https://s3.resource.opentix.life/upload/program/1783064860347c3Vbpi7PHw.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -13337,8 +13071,7 @@
         "https://s3.resource.opentix.life/upload/program/1779761598284q8fjAzqL5p.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -13392,11 +13125,9 @@
         "https://s3.resource.opentix.life/upload/program/1784098900724iSKrAMZslk.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術",
-        "演唱會"
+        "音樂"
       ],
-      "category": "科技",
+      "category": "音樂",
       "contentType": "concert",
       "contentTypes": [
         "concert"
@@ -13451,9 +13182,7 @@
         "https://s3.resource.opentix.life/upload/program/1784628317146RUXHcsx4NO.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -13516,11 +13245,9 @@
         "https://scontent.cdninstagram.com/v/t51.2885-19/233692168_129244176069391_3620430849169026746_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=I5ys1cgsGLMQ7kNvwE4vBqY&_nc_oc=Adon6y-JRnd0fb8E0VvceSBl9U9xtyAW2fuFXpdHRltONfrm0-l6r7RmB93X902ax5N3GsGH_Lafpj8Q1EVcLcGh&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_ss=7b60f&oh=00_AQHfcls0zf-I4GuR2z1LnfwFAm9Ktefu6Vw5CUIVC3Ktbw&oe=6A961D55"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "美術"
+        "舞蹈"
       ],
-      "category": "歷史",
+      "category": "舞蹈",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -13572,8 +13299,7 @@
         "https://s3.resource.opentix.life/upload/program/1782281473879L7bbZgVlUh.jpeg"
       ],
       "categories": [
-        "演唱會",
-        "美術"
+        "演唱會"
       ],
       "category": "演唱會",
       "contentType": "concert",
@@ -13627,11 +13353,9 @@
         "https://s3.resource.opentix.life/upload/program/1783934467742EDG3lXf0lK.jpeg"
       ],
       "categories": [
-        "美術",
-        "音樂",
-        "表演"
+        "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -13683,9 +13407,7 @@
         "https://s3.resource.opentix.life/upload/program/1776067677545wwCzZUoBXr.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -13739,9 +13461,7 @@
         "https://s3.resource.opentix.life/upload/program/1786950050292eMWChH5Fd0.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -13796,9 +13516,7 @@
         "https://s3.resource.opentix.life/upload/program/1780570162605Izoa8sQHZI.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -13857,7 +13575,6 @@
       ],
       "categories": [
         "音樂",
-        "美術",
         "親子"
       ],
       "category": "音樂",
@@ -13915,11 +13632,9 @@
         "https://s3.resource.opentix.life/upload/program/1787819023383HD12bxXqep.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "科技"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -13971,9 +13686,7 @@
         "https://s3.resource.opentix.life/upload/program/1751463100953T2QBErkuAS.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14026,11 +13739,9 @@
         "https://s3.resource.opentix.life/upload/program/17846232765263WkJCjLDtq.jpeg"
       ],
       "categories": [
-        "美術",
-        "音樂",
         "表演"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -14138,8 +13849,7 @@
         "https://s3.resource.opentix.life/upload/program/1786017904248W5LysEEp0H.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14193,9 +13903,7 @@
         "https://s3.resource.opentix.life/upload/program/1783580973393Vc2nJ7Ah6t.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14257,9 +13965,7 @@
         "https://s3.resource.opentix.life/upload/program/1781861666643eXLK93E4Mn.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14315,8 +14021,7 @@
         "https://s3.resource.opentix.life/upload/program/1786009814774vb95QxNxS6.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14370,9 +14075,7 @@
         "https://s3.resource.opentix.life/upload/program/1783581022361dIoHvlrDPk.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14482,8 +14185,7 @@
         "https://s3.resource.opentix.life/upload/program/1786505118999IXsUG8yblV.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14536,9 +14238,7 @@
         "https://s3.resource.opentix.life/upload/program/1780372683785AEQXRROh5N.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14596,9 +14296,7 @@
         "https://s3.resource.opentix.life/upload/program/1783581001419eZo2aSX6Eb.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14706,8 +14404,7 @@
         "https://s3.resource.opentix.life/upload/program/1776851459180DyIu1nQCPT.png"
       ],
       "categories": [
-        "演唱會",
-        "科技"
+        "演唱會"
       ],
       "category": "演唱會",
       "contentType": "concert",
@@ -14763,9 +14460,7 @@
         "https://s3.resource.opentix.life/upload/program/17803066988521FuT1J1Mcp.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14873,8 +14568,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/17826163104757KPWZmuP2M.png"
       ],
       "categories": [
-        "音樂",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -14928,9 +14622,7 @@
         "https://s3.resource.opentix.life/upload/program/17791718213266jl9pc6AFP.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -14993,11 +14685,9 @@
         "https://s3.resource.opentix.life/upload/program/1780627487961BVI2v3k34t.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "科技"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -15049,8 +14739,7 @@
         "https://s3.resource.opentix.life/upload/program/1784710318543B2CzDCv5Ui.jpeg"
       ],
       "categories": [
-        "演唱會",
-        "美術"
+        "演唱會"
       ],
       "category": "演唱會",
       "contentType": "concert",
@@ -15105,9 +14794,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1777970519601I9Rm4nGEU1.jpeg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -15218,8 +14905,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史",
-        "美術"
+        "親子"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15276,9 +14962,7 @@
         "https://fonts.gstatic.com/s/e/notoemoji/17.0/1f483/32.png"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -15332,9 +15016,7 @@
         "https://s3.resource.opentix.life/upload/program/1782870572988WQAMBL8rMl.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15390,9 +15072,7 @@
         "https://s3.resource.opentix.life/upload/program/1782873246814fFk4Nw6qmW.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15450,9 +15130,7 @@
         "https://s3.resource.opentix.life/upload/program/1783581001419eZo2aSX6Eb.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15506,9 +15184,7 @@
         "https://s3.resource.opentix.life/upload/program/1782893941413hIpFCYVBTH.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15565,9 +15241,7 @@
         "https://s3.resource.opentix.life/upload/program/1780903686632kIJvW9mWQ1.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15621,9 +15295,7 @@
         "https://s3.resource.opentix.life/upload/program/1781146414750J6fHOWQTkS.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15677,9 +15349,7 @@
         "https://s3.resource.opentix.life/upload/program/17746034088781NY1jnd7zL.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "親子"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15733,9 +15403,7 @@
         "https://s3.resource.opentix.life/upload/program/1781230145866yE6F3P1flD.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15789,9 +15457,7 @@
         "https://s3.resource.opentix.life/upload/program/1782111832233Bo1FwSalMs.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15845,9 +15511,7 @@
         "https://s3.resource.opentix.life/upload/program/1781766062458KTZFajZ5zd.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15910,9 +15574,7 @@
         "https://s3.resource.opentix.life/upload/program/17866352448539F9AUeQEjt.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -15972,9 +15634,7 @@
         "https://s3.resource.opentix.life/upload/program/1782983002098GzxzaYFlqB.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16028,9 +15688,7 @@
         "https://s3.resource.opentix.life/upload/program/1786692553572rGp6RH8fAU.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16088,9 +15746,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1711075036789oXMw0iWNPZ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16144,9 +15800,7 @@
         "https://s3.resource.opentix.life/upload/program/1781603326113PPpeUNfZuC.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16200,9 +15854,7 @@
         "https://s3.resource.opentix.life/upload/program/17774570031217ByqbAyCwm.jpeg"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16262,9 +15914,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1777970519601I9Rm4nGEU1.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -16321,11 +15971,9 @@
         "https://s3.resource.opentix.life/upload/program/17871365543132P9Fq5NcbW.jpeg"
       ],
       "categories": [
-        "科技",
-        "攝影",
-        "設計"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -16380,9 +16028,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16437,9 +16083,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855107853N7dIIDZ6DY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16502,9 +16146,7 @@
         "https://s3.resource.opentix.life/upload/program/1786443476468093VupSX3K.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -16611,9 +16253,7 @@
         "https://s3.resource.opentix.life/upload/program/1786092092138NFqCir5MFH.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16666,9 +16306,7 @@
         "https://s3.resource.opentix.life/upload/program/1780899064258uReH0OynZ5.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16722,8 +16360,7 @@
         "https://s3.resource.opentix.life/upload/program/1777278889577dUg1sZf4Fy.png"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16777,8 +16414,7 @@
         "https://s3.resource.opentix.life/upload/program/1778658464974buAQymC8Zv.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16835,9 +16471,7 @@
         "https://s3.resource.opentix.life/upload/program/17872836326091wTsc1KIvu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16946,8 +16580,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史",
-        "科技"
+        "歷史"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17003,9 +16636,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1705388431775MfJJPweUbu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17068,11 +16699,9 @@
         "https://s3.resource.opentix.life/upload/program/17822052285060ntBLXz3qk.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
         "美術"
       ],
-      "category": "科技",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -17177,8 +16806,7 @@
         "https://s3.resource.opentix.life/upload/program/1779420115084NH6yDR1N20.png"
       ],
       "categories": [
-        "舞蹈",
-        "美術"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -17235,9 +16863,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678789874612EAbH4MCrkW.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17296,11 +16922,9 @@
         "https://s3.resource.opentix.life/upload/program/1780593856903xpLdDDumXK.jpeg"
       ],
       "categories": [
-        "設計",
-        "美術",
         "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -17356,9 +16980,7 @@
         "https://s3.resource.opentix.life/upload/program/1782298084478M9FH73yxxF.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17415,8 +17037,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678353538978I0pas4GNu6.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17527,11 +17148,9 @@
         "https://s3.resource.opentix.life/upload/program/1784183233725NN8tT1ZPxS.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -17583,9 +17202,7 @@
         "https://s3.resource.opentix.life/upload/program/1783405018691Z421JjflrO.png"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -17641,11 +17258,9 @@
         "https://s3.resource.opentix.life/upload/program/1772080791430uLcgnbOBG2.png"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "表演"
+        "市集"
       ],
-      "category": "科技",
+      "category": "市集",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -17701,8 +17316,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1705388431775MfJJPweUbu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17756,9 +17370,7 @@
         "https://s3.resource.opentix.life/upload/program/1784887078404wPoNeo6vo8.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17812,8 +17424,7 @@
         "https://s3.resource.opentix.life/upload/program/1783557959175jDfSDZasbw.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17868,9 +17479,7 @@
         "https://s3.resource.opentix.life/upload/program/1785391012898JvzB9ys2Of.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17925,8 +17534,7 @@
         "https://s3.resource.opentix.life/upload/program/1786354596154MhVAy4VHmE.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -17981,9 +17589,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/17720835252899AEpaWQHOg.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18042,11 +17648,9 @@
         "https://s3.resource.opentix.life/upload/program/1781491212224corFuvl6nQ.png"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "科技"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -18098,9 +17702,7 @@
         "https://s3.resource.opentix.life/upload/program/1784533960176z5RUXOuCfF.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18155,9 +17757,7 @@
         "https://s3.resource.opentix.life/upload/program/1777892323460xWji56lsAI.png"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18213,11 +17813,9 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "設計"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -18277,11 +17875,9 @@
         "https://s3.resource.opentix.life/upload/program/1787247103831HEfsRvkFvm.png"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -18333,9 +17929,7 @@
         "https://s3.resource.opentix.life/upload/program/1782894574051ltIcqWLuXv.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18394,9 +17988,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1685938273149AlGzwXV1j2.png"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -18451,9 +18043,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679906192870NkrkvAQqmH.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "親子"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18509,8 +18099,7 @@
         "https://s3.resource.opentix.life/upload/program/1781144754796CTd6bOZKMZ.png"
       ],
       "categories": [
-        "表演",
-        "親子"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -18622,9 +18211,7 @@
         "https://s3.resource.opentix.life/upload/program/1784535530735MgRV2ClXV2.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18680,9 +18267,7 @@
         "https://s3.resource.opentix.life/upload/program/1787147593447zeDGmH33E0.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18738,9 +18323,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678265147936RqYjckAFjH.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18797,9 +18380,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678263906462aTZyyjrbTq.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -18855,9 +18436,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/178295948911276dOemx8mb.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -18967,9 +18546,7 @@
         "https://s3.resource.opentix.life/upload/program/1782784322701CFoABbEENP.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19033,11 +18610,9 @@
         "https://s3.resource.opentix.life/upload/program/1777020072506BCE53CeUim.jpeg"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "科技"
+        "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -19153,9 +18728,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16783410271836CXqzkna1P.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19213,9 +18786,7 @@
         "https://s3.resource.opentix.life/upload/program/1782809781597KNMkpBdB7Y.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19269,11 +18840,9 @@
         "https://s3.resource.opentix.life/upload/program/1778477986317LXDVA8mh2A.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "親子"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -19333,9 +18902,7 @@
         "https://fonts.gstatic.com/s/e/notoemoji/17.0/2714/32.png"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -19396,9 +18963,7 @@
         "https://s3.resource.opentix.life/upload/program/1784102352044dCe3KYycwY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19507,9 +19072,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1705388431775MfJJPweUbu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19564,9 +19127,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1746032342343e6LqbGdHtU.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19627,9 +19188,7 @@
         "https://s3.resource.opentix.life/upload/program/1784102352044dCe3KYycwY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19684,9 +19243,7 @@
         "https://s3.resource.opentix.life/upload/organizer/1666356421355YB6U9jYbbu.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19746,9 +19303,7 @@
         "https://s3.resource.opentix.life/upload/program/17820639899879KQQHbeEcQ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -19809,11 +19364,9 @@
         "https://s3.resource.opentix.life/upload/program/1786957108148ArZq2hXVsF.jpeg"
       ],
       "categories": [
-        "科技",
-        "攝影",
-        "設計"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -19865,11 +19418,9 @@
         "https://s3.resource.opentix.life/upload/program/1785828260129rsmQHUHpwz.jpeg"
       ],
       "categories": [
-        "設計",
-        "美術",
-        "親子"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -19932,11 +19483,9 @@
         "https://s3.resource.opentix.life/upload/program/1780383015180y1cdQD21er.png"
       ],
       "categories": [
-        "自然",
-        "攝影",
-        "科技"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -19994,11 +19543,9 @@
         "https://s3.resource.opentix.life/upload/program/17803817177663Oq9dGNPxs.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "科技"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -20057,9 +19604,7 @@
         "https://s3.resource.opentix.life/upload/program/1784102352044dCe3KYycwY.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20115,11 +19660,9 @@
         "https://s3.resource.opentix.life/upload/program/1772080791430uLcgnbOBG2.png"
       ],
       "categories": [
-        "科技",
-        "設計",
         "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -20185,9 +19728,7 @@
         "https://s3.resource.opentix.life/upload/program/1780455303048EuHsaJrUOt.png"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20241,8 +19782,7 @@
         "https://s3.resource.opentix.life/upload/program/1782904035411y0SBClYUJM.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20297,9 +19837,7 @@
         "https://s3.resource.opentix.life/upload/program/1785732060656ASJVacUS5W.png"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20361,9 +19899,7 @@
         "https://www.selmer.fr/cdn/shop/articles/ClioTheodoridis_TamPhotography_site_794e2443-4466-4b03-b51e-e068c5bfef02.jpg?v=1781701158&width=440"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20426,11 +19962,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1784687138600WRGF0LHe9t.jpeg"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -20482,9 +20016,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786525394686KmVsYv3cjN.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -20546,11 +20078,9 @@
         "https://s3.resource.opentix.life/upload/program/1785220742626iSr4fqC1CS.jpeg"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "設計"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -20606,9 +20136,7 @@
         "https://profile.line-scdn.net/0hl9Afij8RMxZ8HywvqCVMQUBaPXsLMTVeBHordllLbScDLHRGRn51cQpLOHIGe3AUSXopJwsbPnFS/preview"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20667,9 +20195,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1705388431775MfJJPweUbu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20723,8 +20249,7 @@
         "https://s3.resource.opentix.life/upload/program/1773382122287WOFC7GxeIH.png"
       ],
       "categories": [
-        "音樂",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20779,9 +20304,7 @@
         "https://s3.resource.opentix.life/upload/program/1785646009223lC7iESHgs9.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20896,8 +20419,7 @@
         "https://s3.resource.opentix.life/upload/program/1787735854592iJiZdoRhrc.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -20951,9 +20473,7 @@
         "https://s3.resource.opentix.life/upload/program/17778610585893Bma0lbkYd.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21016,11 +20536,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1784687138600WRGF0LHe9t.jpeg"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -21073,9 +20591,7 @@
         "https://s3.resource.opentix.life/upload/program/1787846830557i985tU9nYf.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21133,9 +20649,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1787556603405cRuqJFUtWQ.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -21194,11 +20708,9 @@
         "https://s3.resource.opentix.life/upload/program/1784736927696UbXumOysXL.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -21249,9 +20761,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411371646uvsDaYkesX.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21306,11 +20816,9 @@
         "https://s3.resource.opentix.life/upload/program/1784016850890WU7hNAzEUx.png"
       ],
       "categories": [
-        "設計",
-        "其他",
         "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -21361,8 +20869,7 @@
         "https://s3.resource.opentix.life/upload/program/1783325192463DYaPdLoCZG.jpeg"
       ],
       "categories": [
-        "音樂",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21420,11 +20927,9 @@
         "https://s3.resource.opentix.life/upload/program/1780845454148i63qJM0jZg.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術",
         "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -21476,9 +20981,7 @@
         "https://s3.resource.opentix.life/upload/program/1785732220445bKLDciqhxg.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21533,9 +21036,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1746032342343e6LqbGdHtU.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21591,9 +21092,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21647,9 +21146,7 @@
         "https://s3.resource.opentix.life/upload/program/1778216649473b2m2H9FHFZ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21705,9 +21202,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -21765,11 +21260,9 @@
         "https://s3.resource.opentix.life/upload/program/1780547240560IbACjrlpDY.jpeg"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -21820,8 +21313,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411328441r98StO3TEP.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21884,9 +21376,7 @@
         "https://s3.resource.opentix.life/upload/program/1780452282908DaXgQ3GqKU.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -21941,8 +21431,7 @@
       ],
       "categories": [
         "音樂",
-        "自然",
-        "美術"
+        "親子"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22004,8 +21493,7 @@
         "https://neo-classical2003.com.tw/image/cache/data/20250110170913-1920x720.png"
       ],
       "categories": [
-        "表演",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -22068,9 +21556,7 @@
         "https://s3.resource.opentix.life/upload/program/1784777065544LCLFtfww7D.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22125,8 +21611,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1775656164390uCfoDc9qF8.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22183,9 +21668,7 @@
         "https://s3.resource.opentix.life/upload/program/17767508716258k7RKdW2FP.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22246,9 +21729,7 @@
         "https://s3.resource.opentix.life/upload/program/1784512320775fIYEYSx6BO.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22307,9 +21788,7 @@
         "https://s3.resource.opentix.life/upload/program/1785988753147AWsyyvuyYn.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22365,9 +21844,7 @@
         "https://s3.resource.opentix.life/upload/program/17864359254707h5vGp3tPA.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22423,8 +21900,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22480,9 +21956,7 @@
         "https://s3.resource.opentix.life/upload/program/1780916907605tydqaoEdBa.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22536,8 +22010,7 @@
         "https://s3.resource.opentix.life/upload/program/1781166520701Oy7mDfYt1k.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22592,9 +22065,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855033400h7EZpPHByM.png"
       ],
       "categories": [
-        "舞蹈",
-        "自然",
-        "科技"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -22649,9 +22120,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855033400h7EZpPHByM.png"
       ],
       "categories": [
-        "舞蹈",
-        "自然",
-        "科技"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -22706,9 +22175,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855033400h7EZpPHByM.png"
       ],
       "categories": [
-        "舞蹈",
-        "自然",
-        "科技"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -22762,9 +22229,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411306098RONcEeGhx7.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -22818,9 +22283,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855033400h7EZpPHByM.png"
       ],
       "categories": [
-        "舞蹈",
-        "歷史",
-        "科技"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -22875,9 +22338,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855033400h7EZpPHByM.png"
       ],
       "categories": [
-        "舞蹈",
-        "自然",
-        "歷史"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -22932,9 +22393,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1779855033400h7EZpPHByM.png"
       ],
       "categories": [
-        "舞蹈",
-        "科技",
-        "設計"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -22990,9 +22449,7 @@
         "https://s3.resource.opentix.life/upload/program/1779785475988zRmTeGRsZy.png"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -23056,9 +22513,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1787556603405cRuqJFUtWQ.jpeg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "自然"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -23119,9 +22574,7 @@
         "https://s3.resource.opentix.life/upload/program/1785739433616HTQ1fvLSPr.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -23176,11 +22629,9 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "設計",
-        "美術",
         "舞蹈"
       ],
-      "category": "設計",
+      "category": "舞蹈",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -23232,11 +22683,9 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678702670094AKL4Rxk2AT.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術",
-        "親子"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -23290,9 +22739,7 @@
         "https://s3.resource.opentix.life/upload/program/17785692318922wCA3xj2Gm.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -23346,9 +22793,7 @@
         "https://s3.resource.opentix.life/upload/program/1777278950073VNWJUsWZBd.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -23402,9 +22847,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411280572hztcYMntuc.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -23458,9 +22901,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -23569,9 +23010,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -23626,9 +23065,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -23682,9 +23119,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16783410271836CXqzkna1P.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -23744,9 +23179,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16921566842289DVPUeBAY5.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -23807,11 +23240,9 @@
         "https://s3.resource.opentix.life/upload/program/1781681254185izt2ELgTIm.jpeg"
       ],
       "categories": [
-        "歷史",
-        "美術",
-        "其他"
+        "美術"
       ],
-      "category": "歷史",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -23862,9 +23293,7 @@
         "https://s3.resource.opentix.life/upload/program/1782183366744q0GNNQbcgA.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -23931,9 +23360,7 @@
         "https://s3.resource.opentix.life/upload/program/1742344959750x6dMhpQnGw.jpeg"
       ],
       "categories": [
-        "市集",
-        "親子",
-        "電影"
+        "市集"
       ],
       "category": "市集",
       "contentType": "market",
@@ -23990,9 +23417,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411621184Rk2CXinzkm.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "親子"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24048,9 +23473,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1679035567547ihDcN2gVov.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -24106,9 +23529,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16921566842289DVPUeBAY5.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24163,8 +23584,7 @@
         "https://s3.resource.opentix.life/upload/program/1780918633872ndVwrPBPTB.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24274,9 +23694,7 @@
         "https://s3.resource.opentix.life/upload/program/1783406380967YNn1haJn8D.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24330,8 +23748,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411558470aEEhiQWnmE.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24391,9 +23808,7 @@
         "https://s3.resource.opentix.life/upload/program/1778657341920GISE3hHNQm.jpeg"
       ],
       "categories": [
-        "電影",
-        "攝影",
-        "歷史"
+        "電影"
       ],
       "category": "電影",
       "contentType": "performance",
@@ -24446,8 +23861,7 @@
         "https://s3.resource.opentix.life/upload/program/1783582505981x4AncCeJoG.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24500,8 +23914,7 @@
         "https://s3.resource.opentix.life/upload/program/1783582555141IlvXiXzOjy.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24554,9 +23967,7 @@
         "https://s3.resource.opentix.life/upload/program/1768813727780HF8HpS1bec.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "親子"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24609,9 +24020,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411671324yTha2g97qa.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24665,7 +24074,6 @@
       ],
       "categories": [
         "音樂",
-        "自然",
         "親子"
       ],
       "category": "音樂",
@@ -24729,8 +24137,7 @@
       ],
       "categories": [
         "音樂",
-        "攝影",
-        "歷史"
+        "動漫"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -24786,11 +24193,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/370237ffcb61d150f6a29de52c494fb3.jpg"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "設計"
+        "其他"
       ],
-      "category": "自然",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24890,8 +24295,7 @@
         "https://www.songshanculturalpark.org/gallery/1784871423_bd12a5cad1aa24f10055.jpg"
       ],
       "categories": [
-        "快閃店",
-        "科技"
+        "快閃店"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -24947,9 +24351,7 @@
         "https://www.songshanculturalpark.org/gallery/1784873882_87cbbc0407ad0efaaa63.jpg"
       ],
       "categories": [
-        "快閃店",
-        "科技",
-        "親子"
+        "快閃店"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -25004,11 +24406,10 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/華山_官網首圖_1920x1080px_26080516135823586.jpg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "美術"
+        "快閃店",
+        "動漫"
       ],
-      "category": "表演",
+      "category": "快閃店",
       "contentType": "popup",
       "contentTypes": [
         "popup",
@@ -25058,10 +24459,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/55aa76fb59b5c41dcfe648a12c9a5b13.png"
       ],
       "categories": [
-        "設計",
-        "親子"
+        "其他"
       ],
-      "category": "設計",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -25111,10 +24511,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/95a7ac8cd9273d0c84306762ef58d48f.png"
       ],
       "categories": [
-        "美術",
-        "設計"
+        "其他"
       ],
-      "category": "美術",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -25277,9 +24676,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/8d9a3dc873af12aa10c4985830c93709.png"
       ],
       "categories": [
-        "科技"
+        "其他"
       ],
-      "category": "科技",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -25386,9 +24785,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/761419604154b91df2ab5f317db445b8.jpg"
       ],
       "categories": [
-        "科技"
+        "其他"
       ],
-      "category": "科技",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -25490,8 +24889,7 @@
         "https://s3.resource.opentix.life/upload/program/17866263131219dpNJ9UH0H.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -25546,9 +24944,7 @@
         "https://s3.resource.opentix.life/upload/program/178488173607330hWDBoyvH.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -25602,10 +24998,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/06_上刊處形象2_(W1920_x_H1080).jpeg"
       ],
       "categories": [
-        "科技",
-        "其他"
+        "設計"
       ],
-      "category": "科技",
+      "category": "設計",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -25659,8 +25054,7 @@
         "https://s3.resource.opentix.life/upload/program/1785989596074sxKDv6pgpC.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -25717,11 +25111,9 @@
         "https://s3.resource.opentix.life/upload/program/1770779321917V8I7jKa8aw.jpeg"
       ],
       "categories": [
-        "設計",
-        "美術",
-        "親子"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -25773,11 +25165,9 @@
         "https://s3.resource.opentix.life/upload/program/17857345092780xE1jWPXOX.png"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -25828,9 +25218,7 @@
         "https://s3.resource.opentix.life/upload/program/1786517729566fxGF9t3UyB.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -25887,7 +25275,6 @@
       ],
       "categories": [
         "音樂",
-        "美術",
         "競賽"
       ],
       "category": "音樂",
@@ -25942,11 +25329,9 @@
         "https://s3.resource.opentix.life/upload/program/1786301024479RB1lS0SXtB.png"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "其他"
+        "電影"
       ],
-      "category": "歷史",
+      "category": "電影",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -25998,8 +25383,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1713321748767jlSncsE1Z0.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26054,8 +25438,7 @@
         "https://s3.resource.opentix.life/upload/program/1787040314019D0aGpYo27e.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26108,8 +25491,7 @@
         "https://s3.resource.opentix.life/upload/program/1785725345863X4xkYWcwej.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "親子"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -26167,9 +25549,7 @@
         "https://s3.resource.opentix.life/upload/program/1787792278700ufR7Yk3dsW.jpeg"
       ],
       "categories": [
-        "表演",
-        "美術",
-        "親子"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -26226,9 +25606,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786330785000JgBL8jXfp7.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26284,11 +25662,9 @@
         "https://s3.resource.opentix.life/upload/program/17858113199829Wp8KVqEkV.jpeg"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -26342,9 +25718,7 @@
         "https://s3.resource.opentix.life/upload/program/1783500106848YiJDsU7I0k.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26398,8 +25772,7 @@
         "https://s3.resource.opentix.life/upload/program/1786693159663OxBExApk40.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26509,8 +25882,7 @@
       ],
       "categories": [
         "音樂",
-        "攝影",
-        "自然"
+        "美術"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26563,9 +25935,7 @@
         "https://s3.resource.opentix.life/upload/program/1784533663233E0cSpSNU34.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26619,11 +25989,9 @@
         "https://s3.resource.opentix.life/upload/program/1784687049143zVPmOJrogl.jpeg"
       ],
       "categories": [
-        "設計",
-        "美術",
         "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -26678,11 +26046,9 @@
         "https://www.songshanculturalpark.org/gallery/1779070731_7706b57d43502bcaa090.png"
       ],
       "categories": [
-        "科技",
-        "美術",
-        "表演"
+        "美術"
       ],
-      "category": "科技",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -26735,8 +26101,7 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/KV_華山官網活動｜1920x1080.jpg"
       ],
       "categories": [
-        "動漫",
-        "快閃店"
+        "動漫"
       ],
       "category": "動漫",
       "contentType": "exhibition",
@@ -26794,8 +26159,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -26848,10 +26212,10 @@
         "https://www.songshanculturalpark.org/gallery/1785225346_9f28d83c92177c4f7a1a.jpg"
       ],
       "categories": [
-        "自然",
-        "市集"
+        "市集",
+        "自然"
       ],
-      "category": "自然",
+      "category": "市集",
       "contentType": "market",
       "contentTypes": [
         "market",
@@ -26963,7 +26327,8 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/代代木-活動主視覺_1920x1080.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "exhibition",
@@ -27022,11 +26387,9 @@
         "https://s3.resource.opentix.life/upload/program/1785727778055qaisOVZGXu.jpeg"
       ],
       "categories": [
-        "科技",
-        "攝影",
         "美術"
       ],
-      "category": "科技",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -27078,9 +26441,7 @@
         "https://s3.resource.opentix.life/upload/program/1784771984463mN3X6YMRlF.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -27135,9 +26496,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/17859868922304fYbV99C68.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -27247,9 +26606,7 @@
         "https://s3.resource.opentix.life/upload/program/1783580949386PZxXlnKX0p.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -27303,9 +26660,7 @@
         "https://s3.resource.opentix.life/upload/program/1785395087462mWM8QQBRcz.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -27359,9 +26714,7 @@
         "https://s3.resource.opentix.life/upload/program/1785465240615wBXCoyIgkz.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -27417,9 +26770,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -27474,8 +26825,7 @@
         "https://s3.resource.opentix.life/upload/program/17863005354477djDpANQu9.png"
       ],
       "categories": [
-        "電影",
-        "歷史"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -27530,8 +26880,7 @@
       ],
       "categories": [
         "表演",
-        "歷史",
-        "美術"
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -27584,8 +26933,7 @@
         "https://s3.resource.opentix.life/upload/program/1786293551783tdBBnEsCaf.jpeg"
       ],
       "categories": [
-        "電影",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -27639,8 +26987,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -27693,10 +27040,9 @@
         "https://s3.resource.opentix.life/upload/program/1786298171878Q56Ur0wIIo.jpeg"
       ],
       "categories": [
-        "歷史",
         "其他"
       ],
-      "category": "歷史",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -27752,9 +27098,9 @@
         "https://www.tmc.taipei/files/20260819121744624.jpg"
       ],
       "categories": [
-        "音樂"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -27803,9 +27149,7 @@
         "https://s3.resource.opentix.life/upload/program/1781764275942Nobn3Vf8Ch.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "設計",
-        "美術"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -27858,11 +27202,9 @@
         "https://www.songshanculturalpark.org/gallery/1782873829_125f384b904c733589f9.jpg"
       ],
       "categories": [
-        "美術",
-        "親子",
-        "設計"
+        "親子"
       ],
-      "category": "美術",
+      "category": "親子",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition",
@@ -27922,10 +27264,9 @@
         "https://www.tmc.taipei/files/1784946262tgKC13sDKS.jpg"
       ],
       "categories": [
-        "歷史",
         "音樂"
       ],
-      "category": "歷史",
+      "category": "音樂",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -27976,9 +27317,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16786866707119nzasdZEPE.png"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -28031,9 +27370,7 @@
         "https://s3.resource.opentix.life/upload/program/1787460999461bVgCzP5Ajf.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -28087,9 +27424,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "歷史",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28143,8 +27478,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28198,9 +27532,7 @@
         "https://s3.resource.opentix.life/upload/program/1786295365927mNAT5w81OM.png"
       ],
       "categories": [
-        "電影",
-        "歷史",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28254,9 +27586,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "自然",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28368,8 +27698,7 @@
         "https://www.tmc.taipei/files/1784946262tgKC13sDKS.jpg"
       ],
       "categories": [
-        "動漫",
-        "音樂"
+        "動漫"
       ],
       "category": "動漫",
       "contentType": "performance",
@@ -28426,8 +27755,7 @@
         "https://www.tmc.taipei/files/1760514184Nc35nRa3wB.jpg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -28479,9 +27807,7 @@
         "https://s3.resource.opentix.life/upload/program/1786516321893ZuYTq0HOmc.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -28535,9 +27861,7 @@
         "https://s3.resource.opentix.life/upload/program/1778665526175OxLwnRBFrp.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -28593,9 +27917,7 @@
         "https://s3.resource.opentix.life/upload/program/1785304261873ZgtLDWtEgj.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -28650,9 +27972,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "美術"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28705,9 +28025,7 @@
         "https://s3.resource.opentix.life/upload/program/1786235501616lNEQRJ0uVE.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28761,8 +28079,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28816,9 +28133,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "歷史",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28872,9 +28187,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28928,9 +28241,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "美術"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -28985,8 +28296,7 @@
       ],
       "categories": [
         "音樂",
-        "自然",
-        "美術"
+        "親子"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -29094,9 +28404,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -29150,9 +28458,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "歷史",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -29377,8 +28683,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史",
-        "設計"
+        "親子"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -29486,9 +28791,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "美術"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -29542,8 +28845,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -29596,9 +28898,7 @@
         "https://s3.resource.opentix.life/upload/program/1786067552825vuRpbinNAM.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -29709,8 +29009,7 @@
         "https://s3.resource.opentix.life/upload/program/17863422250124zUHPimy2t.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -29764,9 +29063,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1786608948610KVGYyDkCOi.jpeg"
       ],
       "categories": [
-        "電影",
-        "科技",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -29820,8 +29117,7 @@
       ],
       "categories": [
         "表演",
-        "設計",
-        "美術"
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -29930,11 +29226,9 @@
         "https://www.songshanculturalpark.org/gallery/1784775168_9677ab76fbc6e86caba9.jpg"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "設計"
+        "其他"
       ],
-      "category": "自然",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -29987,10 +29281,10 @@
         "https://www.songshanculturalpark.org/gallery/1766975575_1b1c07f3f7522f26a6ac.jpg"
       ],
       "categories": [
-        "設計",
-        "其他"
+        "歷史",
+        "科技"
       ],
-      "category": "設計",
+      "category": "歷史",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -30043,9 +29337,7 @@
         "https://s3.resource.opentix.life/upload/program/17864433479366PLmhiDr5e.jpeg"
       ],
       "categories": [
-        "電影",
-        "攝影",
-        "美術"
+        "電影"
       ],
       "category": "電影",
       "contentType": "performance",
@@ -30098,9 +29390,9 @@
         "https://www.songshanculturalpark.org/gallery/1781588422_8bc0401a0618c8a79d79.jpg"
       ],
       "categories": [
-        "其他"
+        "動漫"
       ],
-      "category": "其他",
+      "category": "動漫",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -30153,8 +29445,7 @@
         "https://s3.resource.opentix.life/upload/program/1787046415401Zd641EMT3w.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -30314,11 +29605,9 @@
         "https://s3.resource.opentix.life/upload/program/1784880332404Zthx1myDpy.jpeg"
       ],
       "categories": [
-        "自然",
-        "攝影",
-        "歷史"
+        "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -30375,10 +29664,9 @@
         "https://www.tmc.taipei/files/1784946262tgKC13sDKS.jpg"
       ],
       "categories": [
-        "科技",
-        "音樂"
+        "美術"
       ],
-      "category": "科技",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -30485,10 +29773,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/2026-06-華山芳釀所-素材10.jpg"
       ],
       "categories": [
-        "設計",
-        "快閃店"
+        "其他"
       ],
-      "category": "設計",
+      "category": "其他",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -30542,9 +29829,7 @@
         "https://s3.resource.opentix.life/upload/program/17871202613717zjMyUBAFe.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "攝影",
-        "設計"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -30599,11 +29884,10 @@
         "https://s3.resource.opentix.life/upload/program/1759221916089XzyIzwKSFr.jpeg"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "美術"
+        "表演",
+        "自然"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -30658,9 +29942,7 @@
         "https://s3.resource.opentix.life/upload/program/1784773342762Iy2F7LU8uQ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -30724,8 +30006,7 @@
       ],
       "categories": [
         "舞蹈",
-        "科技",
-        "美術"
+        "親子"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -30779,11 +30060,9 @@
         "https://s3.resource.opentix.life/upload/program/1785809752249FkOwEyjVYx.png"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -30837,9 +30116,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297405793rBFJTmtD6s.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -30904,9 +30181,7 @@
         "https://scontent.cdninstagram.com/v/t51.82787-15/714949077_18119821402776449_83440575705737814_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=104&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiQ0FST1VTRUxfSVRFTS5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=zhsp-_7tgPIQ7kNvwEWm8e5&_nc_oc=AdpQhy8pU2Opt4njNlDK_YIecAlQgJu6dxxfZ_LDrRWyi8PBS3uZ5TcOOuOkdOBYrsAbPTbrwWEt-ZiDX39xFz2k&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=X_hlGRnymRviIkG8QcooEg&_nc_ss=7b60f&oh=00_AQEB6TieeUcqf5s1qMWvxP3oNlMUs2L-Ofs0cUbt_l1p7Q&oe=6A962A63"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -30960,8 +30235,7 @@
         "https://www.songshanculturalpark.org/gallery/1785999388_011d057931abe7bde7ed.jpg"
       ],
       "categories": [
-        "設計",
-        "競賽"
+        "設計"
       ],
       "category": "設計",
       "contentType": "exhibition",
@@ -31021,11 +30295,9 @@
         "https://s3.resource.opentix.life/upload/program/1787534250082JfiAQtJdEc.jpeg"
       ],
       "categories": [
-        "自然",
-        "設計",
         "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -31135,9 +30407,7 @@
         "https://s3.resource.opentix.life/upload/program/1785125996352MCUrFgHyXM.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -31190,9 +30460,7 @@
         "https://s3.resource.opentix.life/upload/program/1787715033429D7yYemZLk5.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31248,9 +30516,7 @@
         "https://s3.resource.opentix.life/upload/program/1786421760209PAHwMkP6Zi.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31312,9 +30578,7 @@
         "https://s3.resource.opentix.life/upload/program/17858069758360HlOhf2mlx.png"
       ],
       "categories": [
-        "電影",
-        "歷史",
-        "美術"
+        "電影"
       ],
       "category": "電影",
       "contentType": "performance",
@@ -31367,11 +30631,9 @@
         "https://s3.resource.opentix.life/upload/program/1785898975440Slt77QwuvP.jpeg"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "音樂"
       ],
-      "category": "歷史",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -31427,9 +30689,7 @@
         "https://s3.resource.opentix.life/upload/program/17847730412179iAnqg0ZWv.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31483,7 +30743,8 @@
         "https://www.songshanculturalpark.org/gallery/1782961525_3d8965812664d2b151f7.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "exhibition",
@@ -31539,9 +30800,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678419947409Vv6wgDIU57.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31595,8 +30854,7 @@
         "https://s3.resource.opentix.life/upload/program/1785255888818lZVSTQDbai.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31649,9 +30907,7 @@
         "https://s3.resource.opentix.life/upload/program/1785468880574eg0l9p6GLW.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31708,11 +30964,9 @@
         "https://s3.resource.opentix.life/upload/program/1785394216466Qz67UvixFf.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "電影"
       ],
-      "category": "表演",
+      "category": "電影",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -31819,9 +31073,7 @@
         "https://s3.resource.opentix.life/upload/program/1787100329640QpF1hZCJE3.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -31931,8 +31183,7 @@
       ],
       "categories": [
         "快閃店",
-        "歷史",
-        "科技"
+        "歷史"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -32044,9 +31295,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/16921566842289DVPUeBAY5.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32100,11 +31349,9 @@
         "https://s3.resource.opentix.life/upload/program/1784801485138Jdm5En69c4.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術",
-        "其他"
+        "美術"
       ],
-      "category": "科技",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -32155,9 +31402,7 @@
         "https://s3.resource.opentix.life/upload/program/1787471725384eUWrdepx1U.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32210,9 +31455,7 @@
         "https://s3.resource.opentix.life/upload/program/1785844752039CqaFE5c18V.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32265,9 +31508,7 @@
         "https://s3.resource.opentix.life/upload/program/1787646046242LL2xM47x1J.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32322,8 +31563,7 @@
         "https://s3.resource.opentix.life/upload/program/1787040780794qblcJFZj2z.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32378,9 +31618,7 @@
         "https://s3.resource.opentix.life/upload/program/1787635356566jAvIt6i2Gc.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32436,8 +31674,7 @@
         "https://s3.resource.opentix.life/upload/program/17852180853823jJNFZCcKe.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "歷史"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -32490,8 +31727,7 @@
         "https://s3.resource.opentix.life/upload/program/1784530350528lBX5Ya4oLB.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32549,9 +31785,7 @@
         "https://s3.resource.opentix.life/upload/program/1786892725826LSYf1n7EcH.png"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32605,9 +31839,7 @@
         "https://s3.resource.opentix.life/upload/program/17876460928989Sawd05GUP.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32661,8 +31893,7 @@
         "https://s3.resource.opentix.life/upload/program/1783567051060gQMFX7aw34.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32718,9 +31949,7 @@
         "https://s3.resource.opentix.life/upload/program/1784791323926FQXSl5ukO4.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32774,9 +32003,7 @@
         "https://s3.resource.opentix.life/upload/program/1777278908809cjsPW2GH9Z.png"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32832,9 +32059,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/17369958057356ultUBkCpq.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -32889,11 +32114,10 @@
         "https://s3.resource.opentix.life/upload/program/1785466303369caCKkLE8XA.jpeg"
       ],
       "categories": [
-        "美術",
-        "競賽",
-        "音樂"
+        "音樂",
+        "競賽"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -32953,9 +32177,7 @@
         "https://neo-classical2003.com.tw/image/cache/data/20250110170932-1920x720.png"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -33008,9 +32230,7 @@
         "https://s3.resource.opentix.life/upload/program/1786450342032qDrXRifdtq.jpeg"
       ],
       "categories": [
-        "電影",
-        "美術",
-        "親子"
+        "電影"
       ],
       "category": "電影",
       "contentType": "concert",
@@ -33123,9 +32343,7 @@
         "https://s3.resource.opentix.life/upload/program/1785392017158xqzi9lpC06.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33180,9 +32398,7 @@
         "https://s3.resource.opentix.life/upload/program/1787817068173A1ooZeXh1j.jpeg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -33242,11 +32458,9 @@
         "https://www.ctbcculture.org/WebUPD/CTBC/Event_Artsfestival/官網_當年度分頁節目照_A4_26062417454687155.jpg?t=946"
       ],
       "categories": [
-        "自然",
-        "設計",
-        "美術"
+        "舞蹈"
       ],
-      "category": "自然",
+      "category": "舞蹈",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -33298,9 +32512,7 @@
         "https://s3.resource.opentix.life/upload/program/1787540337537QrZczK3DQW.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33356,11 +32568,9 @@
         "https://s3.resource.opentix.life/upload/program/1787908525164CzUxjJBDOj.jpeg"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -33412,9 +32622,7 @@
         "https://s3.resource.opentix.life/upload/program/1787214904525S4EF72JrUV.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33468,9 +32676,7 @@
         "https://s3.resource.opentix.life/upload/program/1786892719525fKKQ6sATA9.png"
       ],
       "categories": [
-        "舞蹈",
-        "攝影",
-        "科技"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -33525,9 +32731,7 @@
         "https://s3.resource.opentix.life/upload/program/1778224524153DxnNDdGxj3.png"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -33638,9 +32842,7 @@
         "https://s3.resource.opentix.life/upload/program/1783566720673Um5n8VlTfZ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33693,9 +32895,7 @@
         "https://s3.resource.opentix.life/upload/program/1782436495580ChaGAylCw4.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33749,9 +32949,7 @@
         "https://s3.resource.opentix.life/upload/program/1785489613142wHO3qHBSAK.jpeg"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33859,9 +33057,7 @@
         "https://s3.resource.opentix.life/upload/program/1785468675690AtUzb9w1w5.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -33914,9 +33110,7 @@
         "https://s3.resource.opentix.life/upload/program/1786432633195J2asEObbwd.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33972,11 +33166,9 @@
         "https://s3.resource.opentix.life/upload/program/1785469831603PfyUNq6CFn.jpeg"
       ],
       "categories": [
-        "美術",
-        "競賽",
         "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -34029,9 +33221,7 @@
         "https://s3.resource.opentix.life/upload/program/17864296763946Ijm24623r.jpeg"
       ],
       "categories": [
-        "表演",
-        "自然",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -34089,11 +33279,9 @@
         "https://s3.resource.opentix.life/upload/program/1785140608749benGnXrBzl.jpeg"
       ],
       "categories": [
-        "設計",
-        "攝影",
-        "美術"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -34152,9 +33340,7 @@
         "https://s3.resource.opentix.life/upload/program/1784796606361pHAxBj6psk.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -34209,8 +33395,7 @@
       ],
       "categories": [
         "音樂",
-        "自然",
-        "科技"
+        "自然"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -34266,9 +33451,7 @@
         "https://s3.resource.opentix.life/upload/program/17859973295763eF5y25F1G.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -34331,11 +33514,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1784536482305SnIGwHR6ua.jpeg"
       ],
       "categories": [
-        "歷史",
-        "科技",
-        "美術"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -34387,8 +33568,7 @@
         "https://www.songshanculturalpark.org/gallery/1785218226_33ed26ddecfd23b0414c.jpg"
       ],
       "categories": [
-        "美術",
-        "攝影"
+        "美術"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -34444,9 +33624,7 @@
         "https://s3.resource.opentix.life/upload/program/1785297947056yFBttEjmug.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -34502,11 +33680,9 @@
         "https://s3.resource.opentix.life/upload/program/178461687363971BnGoLxQE.jpeg"
       ],
       "categories": [
-        "自然",
-        "設計",
         "美術"
       ],
-      "category": "自然",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -34558,8 +33734,7 @@
         "https://s3.resource.opentix.life/upload/program/1787199860294AFVq9I5GO9.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -34621,11 +33796,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1784687138600WRGF0LHe9t.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -34677,9 +33850,7 @@
         "https://s3.resource.opentix.life/upload/program/1786948896133bKrnczrhxs.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -34739,11 +33910,10 @@
         "https://s3.resource.opentix.life/upload/program/1759221916089XzyIzwKSFr.jpeg"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "美術"
+        "表演",
+        "自然"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -34806,8 +33976,7 @@
       ],
       "categories": [
         "表演",
-        "攝影",
-        "科技"
+        "美術"
       ],
       "category": "表演",
       "contentType": "art_exhibition",
@@ -34861,11 +34030,9 @@
         "https://s3.resource.opentix.life/upload/program/1785450115517sLIGcjSGpv.jpeg"
       ],
       "categories": [
-        "設計",
-        "攝影",
-        "美術"
+        "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -34929,11 +34096,9 @@
         "https://s3.resource.opentix.life/upload/program/1784196249522YC4k7j0oym.jpeg"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "科技"
+        "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -34984,8 +34149,7 @@
         "https://s3.resource.opentix.life/upload/program/1783950463812yN6W1zJhdy.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35038,8 +34202,7 @@
         "https://s3.resource.opentix.life/upload/program/1787215529185J6caD09f5K.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35092,9 +34255,7 @@
         "https://s3.resource.opentix.life/upload/program/178589619165822KwLwgvHj.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35152,9 +34313,7 @@
         "https://s3.resource.opentix.life/upload/program/1784520288502zir7k063vh.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -35207,9 +34366,7 @@
         "https://s3.resource.opentix.life/upload/program/17870337603679mNp0SMcx5.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35265,8 +34422,7 @@
         "https://s3.resource.opentix.life/upload/program/1786496181385usnLy70ENB.jpeg"
       ],
       "categories": [
-        "音樂",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35326,9 +34482,7 @@
         "https://s3.resource.opentix.life/upload/program/1787557050342KMfI4kLSHn.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35393,11 +34547,10 @@
         "https://s3.resource.opentix.life/upload/program/1784195791749HvOYxvQDCe.png"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "設計"
+        "舞蹈",
+        "自然"
       ],
-      "category": "自然",
+      "category": "舞蹈",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -35453,9 +34606,7 @@
         "https://s3.resource.opentix.life/upload/program/17869287276457KiMXbWZAd.jpeg"
       ],
       "categories": [
-        "舞蹈",
-        "科技",
-        "設計"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "performance",
@@ -35508,11 +34659,9 @@
         "https://s3.resource.opentix.life/upload/program/1786171632045joxSB4uUCE.png"
       ],
       "categories": [
-        "歷史",
-        "設計",
-        "美術"
+        "市集"
       ],
-      "category": "歷史",
+      "category": "市集",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -35574,9 +34723,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/178453531523038wmXRHuG2.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "festival",
@@ -35630,9 +34777,7 @@
         "https://s3.resource.opentix.life/upload/program/1783577906018GRXRnPla9A.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35687,9 +34832,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297384792ZR7QHhezBo.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35744,9 +34887,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/17847791815695Hc9EPrIoI.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -35853,9 +34994,7 @@
         "https://s3.resource.opentix.life/upload/program/1786343586628DrZUv35ro8.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -35909,9 +35048,7 @@
         "https://s3.resource.opentix.life/upload/program/1786605064379TywbaEYfQk.jpeg"
       ],
       "categories": [
-        "表演",
-        "設計",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -36020,11 +35157,9 @@
         "https://s3.resource.opentix.life/upload/program/1787468591518ujIvSP345v.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "設計"
+        "市集"
       ],
-      "category": "歷史",
+      "category": "市集",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -36085,9 +35220,7 @@
         "https://s3.resource.opentix.life/upload/program/1782062993200WPlumD6VT4.jpeg"
       ],
       "categories": [
-        "音樂",
-        "攝影",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -36141,9 +35274,7 @@
         "https://s3.resource.opentix.life/upload/program/1786083551619DbACYYIFoD.jpeg"
       ],
       "categories": [
-        "音樂",
-        "設計",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -36196,8 +35327,7 @@
         "https://s3.resource.opentix.life/upload/program/1786420872362DqVO1C9RTC.jpeg"
       ],
       "categories": [
-        "音樂",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -36260,11 +35390,9 @@
         "https://s3.resource.opentix.life/upload/program/17877441484535rFLsZG5I3.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
         "美術"
       ],
-      "category": "科技",
+      "category": "美術",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -36315,9 +35443,7 @@
         "https://s3.resource.opentix.life/upload/program/17864520022320kprLNQ7ul.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -36379,9 +35505,7 @@
         "https://s3.resource.opentix.life/upload/program/1787197904453bMsJeuCCYQ.png"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -36442,11 +35566,9 @@
         "https://img.youtube.com/vi/XovDpqWXjTE/0.jpg"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "設計"
+        "舞蹈"
       ],
-      "category": "自然",
+      "category": "舞蹈",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -36498,11 +35620,9 @@
         "https://s3.resource.opentix.life/upload/program/17846263091249epAlXEZSf.jpeg"
       ],
       "categories": [
-        "設計",
-        "美術",
         "表演"
       ],
-      "category": "設計",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -36557,9 +35677,7 @@
         "https://s3.resource.opentix.life/upload/program/17865316702665bfQkLtbFy.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -36613,8 +35731,7 @@
         "https://s3.resource.opentix.life/upload/program/1787647360788H431ED64HL.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術"
+        "科技"
       ],
       "category": "科技",
       "contentType": "art_exhibition",
@@ -36667,11 +35784,9 @@
         "https://s3.resource.opentix.life/upload/program/1787648361027dgGEI0K5CJ.jpeg"
       ],
       "categories": [
-        "美術",
-        "攝影",
-        "競賽"
+        "科技"
       ],
-      "category": "美術",
+      "category": "科技",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -36722,9 +35837,7 @@
         "https://s3.resource.opentix.life/upload/program/17876484229676VsBUPtsux.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術",
-        "競賽"
+        "科技"
       ],
       "category": "科技",
       "contentType": "art_exhibition",
@@ -36778,11 +35891,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1783999752357yraBnYrElc.jpeg"
       ],
       "categories": [
-        "自然",
-        "美術",
         "表演"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -36833,9 +35944,7 @@
         "https://s3.resource.opentix.life/upload/program/1787215115144mzTIa5RlNM.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -36888,11 +35997,9 @@
         "https://s3.resource.opentix.life/upload/program/1786085770618ZZXAHfGUbK.jpeg"
       ],
       "categories": [
-        "科技",
-        "美術",
         "音樂"
       ],
-      "category": "科技",
+      "category": "音樂",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -36944,9 +36051,7 @@
         "https://s3.resource.opentix.life/upload/program/1787821682418EHvvZV5ImI.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37001,9 +36106,7 @@
         "https://s3.resource.opentix.life/upload/program/17870283024882Y8ykwdH7R.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37059,9 +36162,7 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/17109559030117liyWKObDg.png"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37123,11 +36224,9 @@
         "https://s3.resource.opentix.life/upload/program/1784791899895O9hApYFHHh.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37181,11 +36280,9 @@
         "https://s3.resource.opentix.life/upload/program/1785113076757h6qCA5Lpuz.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37245,11 +36342,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1784536482305SnIGwHR6ua.jpeg"
       ],
       "categories": [
-        "科技",
-        "設計",
-        "美術"
+        "表演"
       ],
-      "category": "科技",
+      "category": "表演",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -37355,9 +36450,7 @@
         "https://s3.resource.opentix.life/upload/program/17877356921353rdz4KbsLJ.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37417,9 +36510,7 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/series/images/1d29ef010464d5df79932014815d2066.jpg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -37473,10 +36564,9 @@
         "https://s3.resource.opentix.life/upload/program/1786016374691OgdpvbPr2i.jpeg"
       ],
       "categories": [
-        "美術",
         "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37528,8 +36618,7 @@
         "https://s3.resource.opentix.life/upload/program/1786677786171Bpr2dCWkyU.jpeg"
       ],
       "categories": [
-        "表演",
-        "親子"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -37638,8 +36727,7 @@
         "https://s3.resource.opentix.life/upload/program/1787033481005C8plnPnVqu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37695,11 +36783,9 @@
         "https://s3.resource.opentix.life/upload/program/1785200525092iC1LAEVq1a.jpeg"
       ],
       "categories": [
-        "美術",
-        "音樂",
         "表演"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37751,8 +36837,7 @@
         "https://s3.resource.opentix.life/upload/program/1787033481005C8plnPnVqu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37808,9 +36893,7 @@
         "https://s3.resource.opentix.life/upload/program/17858128579296SjJAziOiv.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37868,9 +36951,7 @@
         "https://s3.resource.opentix.life/upload/program/1787651858422H8vT2gaFfu.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -37923,9 +37004,7 @@
         "https://s3.resource.opentix.life/upload/program/1784880491360ymqwAAosM7.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -37988,9 +37067,7 @@
         "https://s3.resource.opentix.life/upload/program/1781324439041Q1DxWvviGc.jpeg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -38043,8 +37120,7 @@
         "https://s3.resource.opentix.life/upload/program/1787728700107NmmoMi9f26.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38155,9 +37231,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297384792ZR7QHhezBo.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38210,9 +37284,7 @@
         "https://s3.resource.opentix.life/upload/program/1787641995571YPjsaDR8MR.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "設計"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "market",
@@ -38273,9 +37345,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297440631GbBMLfVFtV.jpeg"
       ],
       "categories": [
-        "音樂",
-        "科技",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38335,9 +37405,7 @@
         "https://s3.resource.opentix.life/upload/program/1781064573340yNuhjkv4OH.jpeg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -38396,10 +37464,10 @@
         "https://www.tmc.taipei/files/20260730160458174.png"
       ],
       "categories": [
-        "競賽",
-        "音樂"
+        "表演",
+        "競賽"
       ],
-      "category": "競賽",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -38450,11 +37518,9 @@
         "https://s3.resource.opentix.life/upload/program/1785113076757h6qCA5Lpuz.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -38511,9 +37577,7 @@
         "https://www.tmc.taipei/files/17858101814d8JPEKWi2.jpg"
       ],
       "categories": [
-        "演唱會",
-        "歷史",
-        "科技"
+        "演唱會"
       ],
       "category": "演唱會",
       "contentType": "exhibition",
@@ -38564,11 +37628,9 @@
         "https://s3.resource.opentix.life/upload/program/1785229197567x4e1hnRgAI.png"
       ],
       "categories": [
-        "自然",
-        "歷史",
-        "科技"
+        "音樂"
       ],
-      "category": "自然",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -38625,9 +37687,7 @@
         "https://s3.resource.opentix.life/upload/program/1785499206178XTsaay8o3J.png"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -38681,9 +37741,7 @@
         "https://s3.resource.opentix.life/upload/program/1785393886505To4CcW7q8A.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38736,9 +37794,7 @@
         "https://s3.resource.opentix.life/upload/program/1785395868374yA4ArCdKOK.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "親子"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -38800,9 +37856,7 @@
         "https://s3.resource.opentix.life/upload/program/17858085514212AXrWfHbBF.png"
       ],
       "categories": [
-        "音樂",
-        "美術",
-        "競賽"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38855,9 +37909,7 @@
         "https://s3.resource.opentix.life/upload/program/17865918404336NDG6iHiuk.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38914,9 +37966,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1787556603405cRuqJFUtWQ.jpeg"
       ],
       "categories": [
-        "表演",
-        "科技",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "concert",
@@ -38974,8 +38024,7 @@
       ],
       "categories": [
         "音樂",
-        "歷史",
-        "科技"
+        "歷史"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39087,8 +38136,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "音樂",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39144,8 +38192,7 @@
         "https://s3.resource.opentix.life/upload/program/1787215272505xqrSO9etRP.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39200,11 +38247,9 @@
         "https://s3.resource.opentix.life/upload/program/1786030620972Dc3ZcjrMgM.jpeg"
       ],
       "categories": [
-        "歷史",
-        "攝影",
-        "設計"
+        "表演"
       ],
-      "category": "歷史",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -39362,8 +38407,7 @@
         "https://s3.resource.opentix.life/upload/program/1787189662779I53jS9Bao4.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39417,8 +38461,7 @@
         "https://s3.resource.opentix.life/upload/program/1787021859631npyVPMrmCc.png"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39471,8 +38514,7 @@
         "https://www.songshanculturalpark.org/gallery/1783060163_9706d81259d5cc1398b9.jpg"
       ],
       "categories": [
-        "電影",
-        "歷史"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -39527,9 +38569,7 @@
         "https://s3.resource.opentix.life/upload/program/1787801012615o9BBoyTnxs.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39589,9 +38629,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297405793rBFJTmtD6s.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -39656,11 +38694,10 @@
         "https://scontent-ord5-2.cdninstagram.com/v/t51.71878-15/612363760_850738054398071_4218470458484648141_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=105&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fYWRkaXRpb25hbF9jb3Zlcl9mcmFtZS5DMyJ9&_nc_ohc=xLKmgI_cByMQ7kNvwH3oMup&_nc_oc=Adqj_OzqmqQRLJjWxlv5RpaskeiewbI2c4WoOsw1CXUocedcw8C0oQuPsHejzl8mFCA&_nc_zt=23&_nc_ht=scontent-ord5-2.cdninstagram.com&_nc_gid=yIXFLNXOyWrVIP2-EFG55A&_nc_ss=7b60f&oh=00_AQFS4RYg_2q18t_e4amZc72dshS0_mIeWrRtQKnZz9EdNw&oe=6A8497E6"
       ],
       "categories": [
-        "自然",
-        "科技",
-        "設計"
+        "表演",
+        "自然"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -39727,9 +38764,7 @@
         "https://s3.resource.opentix.life/upload/program/1786529008734zWmg97pehX.jpeg"
       ],
       "categories": [
-        "表演",
-        "攝影",
-        "設計"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -39797,9 +38832,7 @@
         "https://uevent.udnfunlife.com/upload/activity_217681b95d.jpg"
       ],
       "categories": [
-        "表演",
-        "歷史",
-        "科技"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -39857,10 +38890,9 @@
         "https://s3.resource.opentix.life/upload/program/1786591344735kDoZUuOiVA.jpeg"
       ],
       "categories": [
-        "親子",
         "表演"
       ],
-      "category": "親子",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -39929,9 +38961,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297405793rBFJTmtD6s.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -40046,9 +39076,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297405793rBFJTmtD6s.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -40105,9 +39133,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297440631GbBMLfVFtV.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然",
-        "科技"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -40165,10 +39191,9 @@
         "https://www.tmc.taipei/datas/upload/old_data/2021/11/%E5%8C%97%E6%B5%81%E6%96%87%E5%8C%96%E9%A4%A8%E5%B8%B8%E8%A8%AD%E5%B1%95-003.jpg"
       ],
       "categories": [
-        "科技",
         "音樂"
       ],
-      "category": "科技",
+      "category": "音樂",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -40409,11 +39434,13 @@
     }
   },
   "curation": {
-    "schemaVersion": 1,
+    "schemaVersion": 2,
     "builtAt": "2026-08-30T09:00:38.899329+00:00",
     "sourceEventCount": 1982,
     "publicEventCount": 693,
     "policy": "major-venues-valid-link-image-no-library-no-small-local",
-    "matrixVenueCount": 236
+    "matrixVenueCount": 236,
+    "taxonomyVersion": "6.5.0-r17",
+    "taxonomyPolicy": "title-and-structured-type-led; description-credit keywords cannot create categories"
   }
 }
