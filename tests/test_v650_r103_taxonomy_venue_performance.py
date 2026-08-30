@@ -16,7 +16,8 @@ class R103TaxonomyVenuePerformanceTests(unittest.TestCase):
         self.assertIn("return '音樂';", APP)
         self.assertIn("FILM_CATEGORY_PATTERN.test(titleText)", APP)
         self.assertIn("MUSIC_THEATRE_PATTERN.test(titleText)", APP)
-        self.assertIn("state.categories.has(eventPrimaryCategory(event))", APP)
+        self.assertIn("function eventCategories(event)", APP)
+        self.assertIn("eventCategories(event).some(category => state.categories.has(category))", APP)
 
     def test_region_filter_uses_canonical_venue_regions(self):
         self.assertIn('function eventRegions(event)', APP)

@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R12 STABLE2 P5-B → C3 — reviewed candidate release and curated social discovery UI. */
+/* Exhibition Hub V6.5.0-R16 P5-B → C3 — multi-category discovery, branded image fallback and tidy admission labels. */
 (() => {
   'use strict';
 
@@ -686,6 +686,12 @@
     return event?.category || event?.categories?.[0] || '其他';
   }
 
+  function eventCategories(event) {
+    return [eventPrimaryCategory(event), ...(Array.isArray(event?.categories) ? event.categories : [])]
+      .filter(category => CATEGORY_ORDER.includes(category))
+      .filter((category, index, categories) => categories.indexOf(category) === index);
+  }
+
   function eventDisplayCategory(event) {
     return eventPrimaryCategory(event);
   }
@@ -893,29 +899,8 @@
 
   function compactPriceLabel(value = '') {
     const full = String(value || '').replace(/\s+/g, ' ').trim();
-    if (!full) return '票價請見活動頁面';
     if (/免費|自由入場|免票|free/i.test(full)) return '免費入場';
-    if (full.length <= 26) return full;
-
-    // Only treat numbers as money when the surrounding text explicitly marks
-    // them as a currency amount or a named ticket price. This prevents times,
-    // dates and age restrictions such as 10:00, 17:30 or 3 歲 from becoming
-    // fake card prices.
-    const currencyValues = [...full.matchAll(/(?:NT\$?|TWD|新[臺台]幣|[$＄])\s*([0-9][0-9,]*)/gi)]
-      .map(match => Number(match[1].replaceAll(',', '')));
-    const yuanValues = [...full.matchAll(/([0-9][0-9,]*)\s*元/gi)]
-      .map(match => Number(match[1].replaceAll(',', '')));
-    const labelledValues = [...full.matchAll(/(?:現場票價|票價|全票|優待票|優惠票|預售票|現場票|早鳥票|學生票|兒童票|愛心票)[：:]?\s*[$＄]?\s*([0-9][0-9,]*)/gi)]
-      .map(match => Number(match[1].replaceAll(',', '')));
-    const values = [...currencyValues, ...yuanValues, ...labelledValues]
-      .filter(number => Number.isFinite(number) && number > 0);
-    const unique = [...new Set(values)].sort((a, b) => a - b);
-    const money = number => number.toLocaleString('en-US');
-    if (unique.length >= 2) return `NT$${money(unique[0])}–${money(unique[unique.length - 1])}`;
-    if (unique.length === 1) return `NT$${money(unique[0])}${/起|以上|up/i.test(full) ? ' 起' : ''}`;
-
-    const firstClause = full.split(/[／/｜|；;。]/).map(part => part.trim()).find(Boolean) || full;
-    return firstClause.length > 24 ? `${firstClause.slice(0, 23).trim()}…` : firstClause;
+    return '票價請見活動頁面';
   }
 
   function dateRange(event) {
@@ -977,27 +962,25 @@
     element.classList.add('fallback-art');
     element.style.setProperty('--fallback-x', position.x);
     element.style.setProperty('--fallback-y', position.y);
-    element.innerHTML = `<span class="fallback-art-label">${escapeHtml(category || '展覽')}</span>`;
+    element.innerHTML = `<span class="fallback-art-brand" aria-hidden="true"><b>台灣展覽誌</b><small>EXHIBITION JOURNAL</small></span><span class="fallback-art-label">${escapeHtml(category || '展覽')} 展覽</span>`;
     element.setAttribute('role', 'img');
-    element.setAttribute('aria-label', `${category || '展覽'}類型展覽替代主視覺`);
+    element.setAttribute('aria-label', `${category || '展覽'}類型展覽，圖片整理中`);
     return element;
   }
 
   function fallbackMarkup(event, className = '') {
     const category = event.category || event.categories?.[0] || '其他';
     const position = fallbackPosition(category);
-    return `<div class="${escapeHtml(className || 'card-placeholder')} fallback-art" data-media-kind="generated-fallback" style="--fallback-x:${position.x};--fallback-y:${position.y}" role="img" aria-label="${escapeHtml(category)}類型展覽替代主視覺"><span class="fallback-art-label">${escapeHtml(category)}</span></div>`;
+    return `<div class="${escapeHtml(className || 'card-placeholder')} fallback-art" data-media-kind="official-fallback" style="--fallback-x:${position.x};--fallback-y:${position.y}" role="img" aria-label="${escapeHtml(category)}類型展覽，圖片整理中"><span class="fallback-art-brand" aria-hidden="true"><b>台灣展覽誌</b><small>EXHIBITION JOURNAL</small></span><span class="fallback-art-label">${escapeHtml(category)} 展覽</span></div>`;
   }
 
   function imageMarkup(event, className = '') {
     const eventCandidates = (event.images?.length ? event.images : event.image ? [event.image] : []).filter(isUsableImageUrl);
-    const allowVenueFallback = !String(className).startsWith('detail-poster');
-    const venueImage = allowVenueFallback ? eventVenueImage(event) : '';
-    const candidates = eventCandidates.length ? eventCandidates : venueImage ? [venueImage] : [];
-    const mediaKind = eventCandidates.length ? 'event' : venueImage ? 'venue' : 'placeholder';
+    const candidates = eventCandidates;
+    const mediaKind = eventCandidates.length ? 'event' : 'placeholder';
     if (!candidates.length) return fallbackMarkup(event, className);
     const serialized = escapeHtml(JSON.stringify(candidates));
-    const alt = mediaKind === 'venue' ? `${eventVenueLabel(event)}場館示意` : event.title;
+    const alt = event.title;
     const needsBackdrop = String(className).startsWith('detail-poster');
     return `<span class="smart-image-frame ${escapeHtml(className)}" data-media-kind="${mediaKind}">
       ${needsBackdrop ? `<img class="smart-image-blur" src="${escapeHtml(candidates[0])}" alt="" aria-hidden="true" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true">` : ''}
@@ -1121,7 +1104,6 @@
       <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}" data-content-type="${escapeHtml(event.contentType || '')}" data-editorial-status="${escapeHtml(event.editorialStatus || '')}" data-venue-coverage="${escapeHtml(event.venueCoverageStatus || '')}"${inlineStyle}${wholeCardAttrs}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
-          ${!(event.images?.length || event.image) && eventVenueImage(event) ? '<span class="venue-image-label">場館示意</span>' : ''}
           ${badges.length ? `<span class="card-badges">${badges.map(badge => `<span class="card-badge badge-${badge.type}">${badge.label}</span>`).join('')}</span>` : ''}
         </a>
         <button class="favorite-button ${isFavorite(event) ? 'active' : ''}" type="button" data-favorite="${escapeHtml(eventKey(event))}" aria-label="${isFavorite(event) ? '取消收藏' : '加入收藏'}">${isFavorite(event) ? '♥' : '♡'}</button>
@@ -1129,7 +1111,7 @@
           <div class="card-kicker"><span>${escapeHtml(eventDisplayCategory(event))}</span><span>${escapeHtml(event.region)}</span></div>
           <a href="${eventHref(event)}"><h3 class="card-title">${escapeHtml(event.title)}</h3></a>
           <div class="card-meta"><span>${escapeHtml(dateRange(event))}</span><span>${escapeHtml(eventVenueCompactLabel(event))}</span></div>
-          <div class="card-price ${isFree(event) ? 'free' : ''}" title="${escapeHtml(event.price)}" aria-label="完整票價：${escapeHtml(event.price)}">${escapeHtml(compactPriceLabel(event.price))}</div>
+          <div class="card-price ${isFree(event) ? 'free' : ''}" aria-label="${isFree(event) ? '免費入場' : '票價請見活動頁面'}">${escapeHtml(compactPriceLabel(event.price))}</div>
         </div>
       </article>`;
   }
@@ -1244,7 +1226,7 @@
           if(!haystack.includes(query)) return false;
         }
       }
-      if (state.categories.size && !state.categories.has(eventPrimaryCategory(event))) return false;
+      if (state.categories.size && !eventCategories(event).some(category => state.categories.has(category))) return false;
       if (state.region && !eventRegions(event).includes(state.region)) return false;
       if (state.selectedVenues.size) {
         const names = eventCanonicalVenueNames(event);
@@ -1784,7 +1766,7 @@
   }
 
   function renderCategoryStrip() {
-    const counts = countBy(state.events, event => [eventPrimaryCategory(event)]);
+    const counts = countBy(state.events, event => eventCategories(event));
     const categories = CATEGORY_ORDER;
     $('#categoryStrip').innerHTML = categories.map(category => `
       <a class="category-chip reveal-item ${state.categories.has(category) ? 'active' : ''}" style="--reveal-index:${categories.indexOf(category)}" href="${categoryHref(category)}">
@@ -1996,7 +1978,7 @@
     ];
     $('#listingAdmissionOptions').innerHTML = admissionOptions.map(([value,label]) => `<button class="admission-filter-button ${state.admission === value ? 'active' : ''}" data-set-filter="admission" data-value="${value}" type="button" aria-pressed="${state.admission === value}">${label}</button>`).join('');
 
-    const categoryCounts = countBy(state.events, event => [eventPrimaryCategory(event)]);
+    const categoryCounts = countBy(state.events, event => eventCategories(event));
     const categories = CATEGORY_ORDER;
     $('#listingCategoryOptions').innerHTML = categories.map(category => {
       const count = (categoryCounts[category] || 0).toLocaleString('zh-TW');
@@ -2493,7 +2475,7 @@
   function renderMobileFilters() {
     const categoryOptions = $('#mobileCategoryOptions');
     if (!categoryOptions) return;
-    const categoryCounts = countBy(state.events, event => [eventPrimaryCategory(event)]);
+    const categoryCounts = countBy(state.events, event => eventCategories(event));
     const categories = state.mobileCategoriesExpanded ? CATEGORY_ORDER : CATEGORY_ORDER.slice(0, 4);
     categoryOptions.innerHTML = categories.map(category => `
       <div class="mobile-category-item">
