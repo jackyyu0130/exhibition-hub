@@ -1,4 +1,8 @@
 Taiwan Exhibition Journal V6.5.0-R14.2
+Current cumulative patch: Taiwan Exhibition Journal V6.5.0-R17.1
+R17.1 display consistency: every paid admission surface shows「票價請見活動頁面」and every category chip uses the same multi-category membership as its listing
+R17 semantic taxonomy: title/structured-type classification, safe hybrid categories, full 693-event public-feed rebuild, and R16 display/image/admission consistency
+R17 public data updated: 2026-08-30 17:00 Asia/Taipei
 R14.2 restores R13 SEO metadata and deploys the confirmed 512px logo while retaining local weekly updates and stable root favicons
 R14.1 validation compatibility hotfix (stable root favicon assertions and cumulative release metadata)
 Mac local weekly crawler + manual lightweight Pages publish + favicon deployment repair

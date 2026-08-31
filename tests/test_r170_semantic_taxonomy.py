@@ -137,7 +137,7 @@ class R170SemanticTaxonomyTests(unittest.TestCase):
         self.assertIn("types.has('festival')", APP)
         self.assertNotIn("NATURAL_CATEGORY_PATTERN.test(supportingText)", APP)
         self.assertNotIn("TECHNOLOGY_CATEGORY_PATTERN.test(supportingText)", APP)
-        self.assertIn('assets/app.js?v=6.5.0-r17', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r17.1', HTML)
 
     def test_current_public_feed_is_idempotently_reclassified(self) -> None:
         events = CURATED["events"]

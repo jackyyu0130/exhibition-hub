@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R17 P5-B → C3 — semantic taxonomy, multi-category discovery, branded fallback and tidy admission labels. */
+/* Exhibition Hub V6.5.0-R17.1 P5-B → C3 — semantic taxonomy, multi-category discovery, branded fallback and universal admission labels. */
 (() => {
   'use strict';
 
@@ -2680,22 +2680,23 @@
     }
     updatePageMetadata(event);
     const eventDiscussions = discussionsForEvent(event);
-    const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || item.categories.some(category => event.categories.includes(category)))), 10);
+    const detailCategories = eventCategories(event);
+    const related = selectFeatured(state.events.filter(item => eventKey(item) !== eventKey(event) && (item.region === event.region || eventCategories(item).some(category => detailCategories.includes(category)))), 10);
     const mapUrl = googleMapsUrl(event);
     const externalUrl = event.sourceUrl || '';
     $('#detailContent').innerHTML = `
-      <div class="detail-breadcrumb"><a href="./">首頁</a> / <a href="${categoryHref(event.category)}">${escapeHtml(event.category)}</a> / ${escapeHtml(event.title)}</div>
+      <div class="detail-breadcrumb"><a href="./">首頁</a> / <a href="${categoryHref(detailCategories[0])}">${escapeHtml(detailCategories[0])}</a> / ${escapeHtml(event.title)}</div>
       <div class="detail-grid">
         <div class="detail-poster">${imageMarkup(event, 'detail-poster-placeholder')}</div>
         <article class="detail-info" data-content-type="${escapeHtml(event.contentType || '')}" data-editorial-status="${escapeHtml(event.editorialStatus || '')}" data-venue-coverage="${escapeHtml(event.venueCoverageStatus || '')}">
           <div class="detail-category detail-taxonomy">
-            ${event.categories.map(category => `<a href="${categoryHref(category)}">${escapeHtml(category)}</a>`).join('<span aria-hidden="true">·</span>')}
+            ${detailCategories.map(category => `<a href="${categoryHref(category)}">${escapeHtml(category)}</a>`).join('<span aria-hidden="true">·</span>')}
             <span aria-hidden="true">/</span>
             <a href="${regionHref(event.region)}">${escapeHtml(event.region)}</a>
           </div>
           <h1>${escapeHtml(event.title)}</h1>
           <div class="detail-meta">
-            ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail && eventVenueNames(event).length <= 1 ? `${eventVenueLabel(event)}｜${event.venueDetail}` : eventVenueLabel(event, '／'))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', event.price)}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
+            ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail && eventVenueNames(event).length <= 1 ? `${eventVenueLabel(event)}｜${event.venueDetail}` : eventVenueLabel(event, '／'))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', compactPriceLabel(event.price))}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
           </div>
           <div class="detail-actions">
             ${externalUrl ? `<a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener"><span>查看官方資訊</span><span aria-hidden="true">↗</span></a>` : '<span class="detail-action-disabled" aria-disabled="true">官方頁面待確認</span>'}
