@@ -22,6 +22,8 @@ class R160CatalogConsistencyTests(unittest.TestCase):
             "state.categories.has(eventPrimaryCategory(event))",
             APP,
         )
+        self.assertIn("const detailCategories = eventCategories(event)", APP)
+        self.assertIn("detailCategories.map(category =>", APP)
 
     def test_category_counts_use_the_same_multi_category_membership(self) -> None:
         self.assertGreaterEqual(
@@ -52,8 +54,8 @@ class R160CatalogConsistencyTests(unittest.TestCase):
         self.assertIn("fallback-art-brand", APP)
 
     def test_browser_cache_keys_are_bumped_for_the_new_runtime(self) -> None:
-        self.assertIn('href="assets/styles.css?v=6.5.0-r17"', HTML)
-        self.assertIn('src="assets/app.js?v=6.5.0-r17"', HTML)
+        self.assertIn('href="assets/styles.css?v=6.5.0-r17.1"', HTML)
+        self.assertIn('src="assets/app.js?v=6.5.0-r17.1"', HTML)
 
     def test_card_prices_are_free_or_link_to_the_activity_page(self) -> None:
         compact_price = re.search(
@@ -66,6 +68,10 @@ class R160CatalogConsistencyTests(unittest.TestCase):
         self.assertIn("return '票價請見活動頁面'", source)
         self.assertNotIn("NT$", source)
         self.assertNotIn('title="${escapeHtml(event.price)}"', APP)
+
+    def test_detail_prices_use_the_same_public_label_as_cards(self) -> None:
+        self.assertIn("detailMeta('票價', compactPriceLabel(event.price))", APP)
+        self.assertNotIn("detailMeta('票價', event.price)", APP)
 
 
 if __name__ == "__main__":

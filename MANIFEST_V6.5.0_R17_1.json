@@ -1,0 +1,31 @@
+{
+  "version": "6.5.0-R17.1",
+  "title": "Universal admission labels and category display consistency",
+  "supersedes": "6.5.0-R17",
+  "installationMode": "overlay R17 on the develop branch",
+  "runtimeFiles": [
+    "VERSION.txt",
+    "index.html",
+    "assets/app.js"
+  ],
+  "auditFiles": [
+    "data/update-reports/category-display-consistency-r17-1.json"
+  ],
+  "testFiles": [
+    "tests/test_r160_catalog_consistency.py",
+    "tests/test_r170_semantic_taxonomy.py",
+    "tests/test_r171_display_consistency.py"
+  ],
+  "verification": {
+    "eventCount": 693,
+    "categoryMembershipCount": 739,
+    "semanticReclassificationMismatches": 0,
+    "labelsMissingFromTheirCategoryListing": 0,
+    "animeLabelCount": 13,
+    "animeListingCount": 13,
+    "rawPriceVisualSurfaces": 0,
+    "javascriptSyntax": "passed",
+    "testCount": 293,
+    "testResult": "passed"
+  }
+}
