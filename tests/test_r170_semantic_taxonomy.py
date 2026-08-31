@@ -19,7 +19,7 @@ APP = (ROOT / "assets" / "app.js").read_text(encoding="utf-8")
 HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 CURATED = json.loads((ROOT / "data" / "exhibitions.curated.json").read_text(encoding="utf-8"))
 AUDIT = json.loads(
-    (ROOT / "data" / "update-reports" / "category-semantic-audit-r17.json")
+    (ROOT / "data" / "update-reports" / "category-semantic-audit-r18.json")
     .read_text(encoding="utf-8")
 )
 
@@ -137,24 +137,24 @@ class R170SemanticTaxonomyTests(unittest.TestCase):
         self.assertIn("types.has('festival')", APP)
         self.assertNotIn("NATURAL_CATEGORY_PATTERN.test(supportingText)", APP)
         self.assertNotIn("TECHNOLOGY_CATEGORY_PATTERN.test(supportingText)", APP)
-        self.assertIn('assets/app.js?v=6.5.0-r17.1', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r18', HTML)
 
     def test_current_public_feed_is_idempotently_reclassified(self) -> None:
         events = CURATED["events"]
-        self.assertEqual(len(events), 693)
+        self.assertEqual(len(events), 675)
         for event in events:
             self.assertEqual(event["categories"], public_categories(event), event["title"])
             self.assertEqual(event["category"], event["categories"][0])
             self.assertLessEqual(len(event["categories"]), 3)
 
     def test_audit_and_public_stats_use_corrected_category_membership(self) -> None:
-        self.assertEqual(AUDIT["eventCount"], 693)
-        self.assertGreater(AUDIT["correctedCategoryArrays"], 500)
+        self.assertEqual(AUDIT["eventCount"], 675)
+        self.assertGreaterEqual(AUDIT["semanticCategoryCorrections"], 80)
         membership = AUDIT["afterMembershipCounts"]
-        self.assertGreaterEqual(membership["動漫"], 10)
-        self.assertLess(membership["科技"], 10)
+        self.assertGreaterEqual(membership["動漫"], 20)
+        self.assertGreaterEqual(membership["科技"], 10)
         self.assertEqual(CURATED["stats"]["categoryCounts"], membership)
-        self.assertEqual(CURATED["stats"]["taxonomyVersion"], "6.5.0-r17")
+        self.assertEqual(CURATED["stats"]["taxonomyVersion"], "6.5.0-r18")
 
 
 if __name__ == "__main__":

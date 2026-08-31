@@ -1,37 +1,38 @@
 {
-  "updatedAt": "2026-08-30T09:00:36.622184+00:00",
+  "updatedAt": "2026-08-31T03:22:47.281278+00:00",
   "source": "curated-public-feed",
   "stats": {
-    "eventCount": 693,
+    "eventCount": 675,
     "imageCount": 1582,
     "multiImageCount": 1029,
     "coordinateCount": 1662,
     "imageCoverage": 100.0,
     "coordinateCoverage": 0.8385,
     "categoryCounts": {
-      "自然": 8,
-      "演唱會": 16,
-      "音樂": 348,
-      "動漫": 13,
-      "美術": 40,
-      "其他": 19,
-      "設計": 8,
-      "表演": 138,
-      "親子": 18,
-      "歷史": 12,
-      "電影": 65,
-      "市集": 8,
-      "科技": 5,
-      "舞蹈": 22,
+      "演唱會": 18,
+      "快閃店": 16,
+      "動漫": 23,
+      "美術": 22,
+      "設計": 11,
       "攝影": 1,
-      "快閃店": 15,
-      "競賽": 3
+      "市集": 3,
+      "音樂": 357,
+      "自然": 1,
+      "歷史": 13,
+      "表演": 135,
+      "舞蹈": 28,
+      "電影": 59,
+      "親子": 27,
+      "競賽": 3,
+      "科技": 12,
+      "其他": 0
     },
     "sourceEventCount": 1982,
-    "curatedEventCount": 693,
+    "curatedEventCount": 675,
     "outboundLinkCoverage": 100.0,
-    "taxonomyCorrectionCount": 583,
-    "taxonomyVersion": "6.5.0-r17"
+    "taxonomyCorrectionCount": 91,
+    "taxonomyVersion": "6.5.0-r18",
+    "nonCatalogActivityRemovalCount": 18
   },
   "events": [
     {
@@ -313,7 +314,8 @@
         "https://s3.resource.opentix.life/upload/program/1778657254214vGInRKvS5g.jpeg"
       ],
       "categories": [
-        "音樂"
+        "音樂",
+        "動漫"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -378,9 +380,9 @@
         "https://file.moc.gov.tw/001/Upload/528/relpic/13791/246435/bafa84b1-589b-447c-8a8d-69d2b738830a@710x470.jpg"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -484,9 +486,9 @@
         "https://tcsac.taichung.gov.tw/images/mygov.png"
       ],
       "categories": [
-        "其他"
+        "美術"
       ],
-      "category": "其他",
+      "category": "美術",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -613,9 +615,10 @@
         "https://www.chimeimuseum.org/cache/48SiDj1gfZ7s1z0VVmVLU0owfa8yrA.webp"
       ],
       "categories": [
-        "其他"
+        "科技",
+        "歷史"
       ],
-      "category": "其他",
+      "category": "科技",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -2047,10 +2050,9 @@
         "https://www.ctwm.org.tw/upload-files/activities/FUNC004_Img_20240709152701.jpg"
       ],
       "categories": [
-        "市集",
         "歷史"
       ],
-      "category": "市集",
+      "category": "歷史",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -2284,9 +2286,9 @@
         "https://tcsac.taichung.gov.tw/images/mygov.png"
       ],
       "categories": [
-        "其他"
+        "美術"
       ],
-      "category": "其他",
+      "category": "美術",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -2393,9 +2395,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Images/UTK2401/P1BCQHJX_Other.JPG?v=202607081457"
       ],
       "categories": [
-        "表演"
+        "演唱會"
       ],
-      "category": "表演",
+      "category": "演唱會",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -2623,6 +2625,7 @@
       ],
       "categories": [
         "表演",
+        "動漫",
         "親子"
       ],
       "category": "表演",
@@ -3421,9 +3424,9 @@
         "https://imgs2.utiki.com.tw/Data/ERA/Images/UTK2401/P1D3FOI9_Other.JPG?v=202607301613"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -3718,9 +3721,9 @@
         "https://www.chimeimuseum.org/cache/GTItIZZUKw4WxTY5HFPUJIVA2wLeWHT8mHNRzeKd1XWxgev8J7QcGZc.webp"
       ],
       "categories": [
-        "美術"
+        "科技"
       ],
-      "category": "美術",
+      "category": "科技",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -3781,9 +3784,9 @@
         "https://www.chimeimuseum.org/cache/48SiDj1gfZ7s1z0VVmVLU0owfa8yrA.webp"
       ],
       "categories": [
-        "美術"
+        "科技"
       ],
-      "category": "美術",
+      "category": "科技",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -4012,9 +4015,9 @@
         "https://www.chimeimuseum.org/cache/48SiDj1gfZ7s1z0VVmVLU0owfa8yrA.webp"
       ],
       "categories": [
-        "美術"
+        "科技"
       ],
-      "category": "美術",
+      "category": "科技",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -4075,9 +4078,9 @@
         "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -4183,9 +4186,9 @@
         "https://s3.resource.opentix.life/upload/program/1785471791212NArElzcMHQ.png"
       ],
       "categories": [
-        "音樂"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -4553,7 +4556,8 @@
         "https://s3.resource.opentix.life/upload/program/17742388762012r4gBxwEQk.png"
       ],
       "categories": [
-        "音樂"
+        "音樂",
+        "動漫"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -4678,7 +4682,8 @@
         "https://s3.resource.opentix.life/upload/program/1771903146598fiuUNcHEBF.jpeg"
       ],
       "categories": [
-        "音樂"
+        "音樂",
+        "動漫"
       ],
       "category": "音樂",
       "contentType": "exhibition",
@@ -4769,9 +4774,9 @@
         "https://stsp.nmp.gov.tw/storage/images/20241007/3wSlUGLi7tgmi9KT37xAJcCOPfbwQsjeZ7GG4Pf7.jpg"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -5301,9 +5306,9 @@
         "https://www.xzcac.ntpc.gov.tw/files/file_pool/1/0q062600094209225653/%e6%9c%aa%e5%91%bd%e5%90%8d.jpg"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -5405,8 +5410,7 @@
         "https://s3.resource.opentix.life/upload/program/1781595171545Iv9L3QqJz0.jpeg"
       ],
       "categories": [
-        "電影",
-        "歷史"
+        "電影"
       ],
       "category": "電影",
       "contentType": "film_screening",
@@ -6063,10 +6067,9 @@
         "https://s3.resource.opentix.life/upload/program/1785845783753wxSXZcCkDU.jpeg"
       ],
       "categories": [
-        "表演",
-        "歷史"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -6228,9 +6231,9 @@
         "https://s3.resource.opentix.life/upload/program/178698244308678iF4QJRuF.jpeg"
       ],
       "categories": [
-        "美術"
+        "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -6323,65 +6326,6 @@
       "publicVenuePriority": "P1",
       "publicVenueType": "performing_arts",
       "publicCurationReason": "confirmed_P1_visible_interest"
-    },
-    {
-      "id": "6a0a11d026b3243414ccc99e",
-      "title": "2026臺灣手語導覽",
-      "description": "為打造更友善的語言環境和文化生活，國立臺灣文學館本年度特別推出6場「臺灣手語導覽」，邀請聾人導覽員以臺灣手語帶領觀眾走進文學展覽現場，並搭配聽人手語翻譯員進行口語轉譯，讓每一位參與者都能自在理解與感受文學藝術之美。透過手語的視覺語言，讓聽障朋友擁有專屬且豐富的觀展體驗，也歡迎對手語與無障礙文化有興趣的朋友一同參與，看見不一樣的文學風景，開啟多元的文化交流時刻。",
-      "sourceUrl": "https://event.culture.tw/mocweb/reg/NMTL/Detail.init.ctr?actId=60067",
-      "sourceUrlVerified": true,
-      "image": "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60067/AD/60067_0_0_174914_276_175.jpeg?20260722",
-      "images": [
-        "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60067/AD/60067_0_0_174914_276_175.jpeg?20260722",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa05.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\630124\\流程_page-0002.jpg",
-        "https://event.culture.tw/mocweb/template/NMTL/images/top.png",
-        "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png",
-        "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60067/AD/60067_0_0_174914_276_175.jpeg?20260724"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-02-14",
-      "endDate": "2026-09-19",
-      "locationName": "國立臺灣文學館",
-      "location": "國立臺灣文學館",
-      "venueGroup": "國立臺灣文學館",
-      "venueNames": [
-        "國立臺灣文學館"
-      ],
-      "venueName": "國立臺灣文學館",
-      "parentVenueName": "國立臺灣文學館",
-      "parentVenueId": "national-museum-taiwan-literature",
-      "venueIds": [
-        "guo-li-tai-wan-wen-xue-guan",
-        "national-museum-taiwan-literature"
-      ],
-      "venueId": "guo-li-tai-wan-wen-xue-guan",
-      "venueCoverageStatus": "complete",
-      "address": "臺南市中西區中正路1號",
-      "region": "台南市",
-      "regionCanonical": "臺南市",
-      "latitude": 22.992064,
-      "longitude": 120.203953,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "unit": "(中華民國)蔡世鴻、林瑋萱;(中華民國)陳毓儀、林瑋萱;(中華民國)陳毓儀、牛暄文、黃于玲;(中華民國)陳毓儀、牛暄文、林瑋萱;(中華民國)陳毓儀、黃于玲;(中華民國)蔡世鴻、黃于玲",
-      "hitRate": 5,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-22T23:38:03+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-li-tai-wan-wen-xue-guan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "museum_gallery",
-      "publicCurationReason": "confirmed_P0"
     },
     {
       "id": "6a83722826b32427d0604408",
@@ -6848,9 +6792,9 @@
         "https://s3.resource.opentix.life/upload/program/1782918625947HaVvjdI2Gv.png"
       ],
       "categories": [
-        "表演"
+        "舞蹈"
       ],
-      "category": "表演",
+      "category": "舞蹈",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7005,9 +6949,9 @@
         "https://s3.resource.opentix.life/upload/opentixpage/img/1678702670094AKL4Rxk2AT.jpeg"
       ],
       "categories": [
-        "電影"
+        "表演"
       ],
-      "category": "電影",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7331,9 +7275,9 @@
         "https://s3.resource.opentix.life/upload/program/1787125278484xOzOHGQKBZ.jpeg"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -7786,69 +7730,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a4397f326b32427d0603fe1",
-      "title": "苗北藝術學苑-2026苗北講堂III：弦樂家族-管弦樂團的音色骨幹《從小提琴到低音提琴，聽見線條、層次與和聲基礎》",
-      "description": "主講人：林仁斌老師，台灣蹦藝術協會理事長。\n弦樂家族：管弦樂團的音色骨幹\n弦樂器是管弦樂團中人數最多、音域最完整的樂器群。小提琴、中提琴、大提琴與低音提琴共同形成樂團的基礎聲響，既能演奏主旋律，也能支撐和聲、節奏與低音進行。\n本講座將介紹弦樂器的音域、分部功能與常見演奏法，包括撥奏、顫音、分弓、連弓、弱音器與泛音等效果，並透過經典作品說明作曲家如何運用弦樂特性，建構出華麗的交響世界。",
-      "sourceUrl": "https://www.miaobeiac.org/",
-      "sourceUrlVerified": true,
-      "image": "https://www.miaobeiac.org/images/pic-02.png",
-      "images": [
-        "https://www.miaobeiac.org/images/pic-02.png",
-        "https://www.miaobeiac.org/public/files/modimg/I0297d676a7bf8df03bN.jpg",
-        "https://www.miaobeiac.org/public/files/course/D37d4269d6130c4f6a6V.jpg",
-        "https://www.miaobeiac.org/public/files/course/D1ac366a17d9a7b33a6M.jpg",
-        "https://www.miaobeiac.org/public/files/course/D457a869f016b583d3fF.jpg",
-        "https://www.miaobeiac.org/public/files/course/D6080a6a3ba40ca855dK.jpg",
-        "https://www.miaobeiac.org/public/files/course/De60176a4c73d3a2282U.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dd569f6a4f5f68f07c7T.jpg",
-        "https://www.miaobeiac.org/public/files/course/D4a0996a31ef9a37973M.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
-      ],
-      "categories": [
-        "音樂"
-      ],
-      "category": "音樂",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-06",
-      "endDate": "2026-09-06",
-      "locationName": "苗栗縣苗北藝文中心",
-      "location": "苗栗縣苗北藝文中心",
-      "venueGroup": "苗栗縣苗北藝文中心",
-      "venueNames": [
-        "苗北藝文中心"
-      ],
-      "venueName": "苗北藝文中心",
-      "parentVenueName": "苗北藝文中心",
-      "parentVenueId": "miaobei-art-center",
-      "venueIds": [
-        "miao-bei-yi-wen-zhong-xin",
-        "miaobei-art-center"
-      ],
-      "venueId": "miao-bei-yi-wen-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "苗栗縣竹南鎮公園路206號（公園路及永貞路口處）",
-      "region": "苗栗縣",
-      "regionCanonical": "苗栗縣",
-      "latitude": 24.6905875,
-      "longitude": 120.8886966,
-      "coordinateSource": "official_feed",
-      "price": "費用（單場）+150;早鳥套票5堂+525",
-      "unit": "(中華民國)林仁斌",
-      "hitRate": 3,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-24T01:10:37+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "miao-bei-yi-wen-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a2301c426b3243414cccf22",
       "title": "六藝樂集《昭和酒場》少年仔來放送-台日歌謠故事音樂會",
       "description": "※請留意，本演出09/13 (日)嘉義場次 變更至9/5 (六) 19:00 國立新港藝術高級中學 演藝廳演出，請詳見下方異動公告\n【緊急公告｜嘉義場暫停售票】󠀠因嘉義縣表演藝術中心演藝廳及實驗劇場因消防設備檢測異常，即日起兩廳相關活動全面暫停，以進行必要檢修作業。󠀠《昭和酒場》少年仔來放送-台日歌謠故事音樂會『嘉義場』即日起暫停售票，目前已同步協調替代場地與演出時間，待確認後將第一時間公告最新資訊，造成不便敬請見諒。\n《昭和酒場》以日本演歌與台語歌謠為主軸，透過演奏與說書交織，帶領觀眾走入昭和年代的台日時代。昭和情感，是老一輩台灣人共同的記憶，在歷史的轉換之中，透過旋律被保存與延續以故事為引導，串連不同年代的歌謠片段，呈現台日音樂如何在時代中交錯，並承載人們無法言說的情感。透過熟悉又陌生的旋律，引領觀眾回到那段屬於台灣的昭和記憶。 演出曲目 |\n•〈墓仔埔也敢去〉（恋をするなら）\n•〈苦海女神龍〉（港町ブルース）\n•〈落大雨彼一日〉（あン時ゃどしゃ降り）•〈後街人生〉（裏町人生）\n•〈可愛的馬〉（達者でナ）\n•〈愛的小路〉（北酒場）\n•〈爸爸在哪裡〉（岸壁の母）\n•〈心心相愛〉（アキラのツーレロ節）\n•〈彼個小姑娘〉（潮来笠）\n•〈出外人〉（雪列車）\n•〈今生愛過的人〉（風姿花伝）\n•〈港町十三番地〉\n* 主辦單位保有曲目異動之權利* 曲目排序並非當日演出順序* 建議7歲以上孩童觀賞* 本場演出以器樂演奏為主，部分曲目與歌手共同演出\n演出時間、地點 |8月31日 ( 一 ) 19:00 臺中國家歌劇院中劇院9月5日 ( 六 ) 19:00 國立新港藝術高級中學演藝廳9月6日 ( 日 ) 19:00 衛武營國家藝術文化中心音樂廳9月11日 ( 五 ) 19:00 誠品表演廳 票價 |高雄嘉義台中票價｜600/900/1200/1600/2000\n台北票價｜1200/1600/2000\n製作團隊｜團長：林桐毅執行長：沈銘彥製作人：趙文俊執行製作：楊甄佩執行秘書：鄭尹琳藝術總監：周宣宏音樂總監：黃楚涵編曲：吳柏翰文本設計：趙文俊行銷宣傳：空白創造音響工程：一信工程文化協力：三線路 演出人員 |說書人：趙文俊指揮：周宣宏編曲：吳柏翰歌手：林桐毅樂團：六藝樂集\n『過往觀眾回饋』• 對於這塊土地的熱愛感同身受，不管是說書、編曲及樂手都感受到每一位演出者的用心\n• 音樂當然好聽是肯定要的，演出方式還加入了說書人，富饒生趣\n• 只有幾個音樂家，卻能演奏出這麼美的樂音，比以前的歌更好聽許多，氣氛實在太好了！\n• 好佩服製作這麼有意義的音樂會，而且雅俗共賞，也可以感受到現場許多長輩的開心。\n• 很感動的演出，道出了我們那個年代的努力與辛酸，伴隨著音樂，回到了那個屬於自己的打拼年代，好懷念。\n• 每首歌的編曲在創新和傳統之間重新詮釋了時代，從悲開始到開心快樂，很讓人感動。",
@@ -7918,132 +7799,6 @@
       "publicVenueId": "tai-zhong-guo-jia-ge-ju-yuan",
       "publicVenuePriority": "P0",
       "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a4397f326b32427d0603fe2",
-      "title": "苗北藝術學苑-2026苗北講堂III：木管家族-精靈、鳥鳴與仙子之聲《長笛、雙簧管、單簧管與低音管的聲音辨識》",
-      "description": "主講人：林仁斌老師，台灣蹦藝術協會理事長。\n木管家族：精靈、鳥鳴與仙子之聲\n木管樂器在管弦樂團中具有非常清楚的音色個性。長笛明亮而靈活，雙簧管音色集中，單簧管音域寬廣，低音管則能在低音與詼諧效果之間轉換。木管常用於旋律、對答、短句銜接與角色塑造。\n本講座林仁斌老師將從四大木管樂器出發，介紹其發聲原理、音域與樂團功能，並透過交響曲、芭蕾音樂與標題音樂，帶領聽眾聽見木管在管弦樂中如何擔任敘事、色彩與音型變化的角色。",
-      "sourceUrl": "https://www.miaobeiac.org/",
-      "sourceUrlVerified": true,
-      "image": "https://www.miaobeiac.org/images/pic-02.png",
-      "images": [
-        "https://www.miaobeiac.org/images/pic-02.png",
-        "https://www.miaobeiac.org/public/files/modimg/I0297d676a7bf8df03bN.jpg",
-        "https://www.miaobeiac.org/public/files/course/D37d4269d6130c4f6a6V.jpg",
-        "https://www.miaobeiac.org/public/files/course/D1ac366a17d9a7b33a6M.jpg",
-        "https://www.miaobeiac.org/public/files/course/D457a869f016b583d3fF.jpg",
-        "https://www.miaobeiac.org/public/files/course/D6080a6a3ba40ca855dK.jpg",
-        "https://www.miaobeiac.org/public/files/course/De60176a4c73d3a2282U.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dd569f6a4f5f68f07c7T.jpg",
-        "https://www.miaobeiac.org/public/files/course/D4a0996a31ef9a37973M.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
-      ],
-      "categories": [
-        "音樂"
-      ],
-      "category": "音樂",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-13",
-      "endDate": "2026-09-13",
-      "locationName": "苗栗縣苗北藝文中心",
-      "location": "苗栗縣苗北藝文中心",
-      "venueGroup": "苗栗縣苗北藝文中心",
-      "venueNames": [
-        "苗北藝文中心"
-      ],
-      "venueName": "苗北藝文中心",
-      "parentVenueName": "苗北藝文中心",
-      "parentVenueId": "miaobei-art-center",
-      "venueIds": [
-        "miao-bei-yi-wen-zhong-xin",
-        "miaobei-art-center"
-      ],
-      "venueId": "miao-bei-yi-wen-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "苗栗縣竹南鎮公園路206號（公園路及永貞路口處）",
-      "region": "苗栗縣",
-      "regionCanonical": "苗栗縣",
-      "latitude": 24.6905875,
-      "longitude": 120.8886966,
-      "coordinateSource": "official_feed",
-      "price": "費用（單場）+150;早鳥套票5堂+525",
-      "unit": "(中華民國)林仁斌",
-      "hitRate": 3,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-22T23:38:03+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "miao-bei-yi-wen-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a13698126b3243414cccb3b",
-      "title": "2026故事聯合國：每個國家都來講故事-9月",
-      "description": "為推廣孩童閱讀世界各國故事繪本並拓展國際視野，2026年「故事聯合國」以「反著來，顛倒所有事物—故事裡的顛倒世界！」主題，精選臺灣、美國、日本、澳洲、比利時、西班牙、以色列等國特色繪本，內容涵蓋「圖像顛倒」、 「翻轉角色設定」、「雙向翻閱」與「挑戰既有觀點」的繪本，透過圖文交織的閱讀體驗，打破既有框架的思考邏輯，認識各國的文化與生活樣貌。 本活動邀請來自不同國家的講師，帶來生動有趣的故事時光及文化體驗。準備好把世界「顛倒」來看了嗎？一起加入這場充滿創意與驚奇的閱讀冒險吧！ ★活動內容及相關規定，請參加者務必詳閱下方活動網頁資訊。\n9/05(六) 顛覆經典故事 以色列 華+希 Dan Orlovsky\nHare and Tortoise Race Across Israel\n《當龜兔賽跑遇見以色列》\n9/12(六) 跳脫既定框架 澳洲 華+英 Nigel Brown\nPossum Magic\n《袋貂魔法》\n9/19(六) 圖像顛倒 以色列 華+希 Dina Eybishitz\nThe Grimm Brothers According to Frischmann",
-      "sourceUrl": "https://event.culture.tw/mocweb/reg/NMTL/Detail.init.ctr;jsessionid=94BDCD61C7BDFFB6D13CDFC2E45BD5D8?actId=60091&utm_source=NMTL&utm_medium=index&utm_campaign=60091",
-      "sourceUrlVerified": true,
-      "image": "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60091/AD/60091_0_0_972161_276_175.png?20260724",
-      "images": [
-        "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60091/AD/60091_0_0_972161_276_175.png?20260724",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa01.png",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa03.png",
-        "https://event.culture.tw/registrationBackstage/userFiles/NMTL/Ckeditor/JpgFile/01/20021/3.png?v=42109ea8-b795-4532-b690-bf8867f84f3c",
-        "https://event.culture.tw/mocweb/template/NMTL/images/top.png",
-        "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\309540\\BANNER_459-192.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\38640\\文學樂園怎麼走3.jpg",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\588727\\image.png",
-        "https://ntlgportal.moc.gov.tw/Uploads/upload/NMTL_596220.jpg"
-      ],
-      "categories": [
-        "其他"
-      ],
-      "category": "其他",
-      "contentType": "exhibition",
-      "contentTypes": [
-        "exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-05",
-      "endDate": "2026-09-19",
-      "locationName": "國立臺灣文學館",
-      "location": "國立臺灣文學館",
-      "venueGroup": "國立臺灣文學館",
-      "venueNames": [
-        "國立臺灣文學館"
-      ],
-      "venueName": "國立臺灣文學館",
-      "parentVenueName": "國立臺灣文學館",
-      "parentVenueId": "national-museum-taiwan-literature",
-      "venueIds": [
-        "guo-li-tai-wan-wen-xue-guan",
-        "national-museum-taiwan-literature"
-      ],
-      "venueId": "guo-li-tai-wan-wen-xue-guan",
-      "venueCoverageStatus": "complete",
-      "address": "臺南市中西區中正路1號",
-      "region": "台南市",
-      "regionCanonical": "臺南市",
-      "latitude": 22.992064,
-      "longitude": 120.203953,
-      "coordinateSource": "official_feed",
-      "price": "免費入場",
-      "unit": "(以色列)Dan Orlovsky;(澳大利亞)Nigel Brown;(以色列)Dina Eybishitz",
-      "hitRate": 3,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-24T01:10:37+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-li-tai-wan-wen-xue-guan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "museum_gallery",
       "publicCurationReason": "confirmed_P0"
     },
     {
@@ -8335,69 +8090,6 @@
       "publicCurationReason": "confirmed_P1_visible_interest"
     },
     {
-      "id": "6a4397f326b32427d0603fe3",
-      "title": "苗北藝術學苑-2026苗北講堂III：打擊樂、豎琴與鍵盤樂器-節奏、色彩與特殊音響《從定音鼓到鋼片琴與鋼琴，聽見管弦樂中的各種敲擊之聲》",
-      "description": "主講人：林仁斌老師，台灣蹦藝術協會理事長。\n打擊樂、豎琴與鍵盤樂器：節奏、色彩與特殊音響\n打擊樂在管弦樂團中不只負責節奏，也能塑造音色、強化段落轉換，甚至成為作品的核心聲響。定音鼓常與低音、和聲與終止效果相關，小鼓、大鼓、鈸與鑼能建立節奏與戲劇張力，木琴、鐘琴、鋼片琴與豎琴則帶來更精細的音色層次。\n本講座林仁斌老師將介紹打擊樂器的分類與功能，並延伸到豎琴、鋼片琴與鋼琴等管弦樂中的鍵盤樂器，說明作曲家如何使用這些打擊樂器改變音樂氛圍，創造驚喜，使聽眾理解管弦樂聲響不只來自旋律，也來自節奏、重音與音色設計。",
-      "sourceUrl": "https://www.miaobeiac.org/",
-      "sourceUrlVerified": true,
-      "image": "https://www.miaobeiac.org/images/pic-02.png",
-      "images": [
-        "https://www.miaobeiac.org/images/pic-02.png",
-        "https://www.miaobeiac.org/public/files/modimg/I0297d676a7bf8df03bN.jpg",
-        "https://www.miaobeiac.org/public/files/course/D37d4269d6130c4f6a6V.jpg",
-        "https://www.miaobeiac.org/public/files/course/D1ac366a17d9a7b33a6M.jpg",
-        "https://www.miaobeiac.org/public/files/course/D457a869f016b583d3fF.jpg",
-        "https://www.miaobeiac.org/public/files/course/D6080a6a3ba40ca855dK.jpg",
-        "https://www.miaobeiac.org/public/files/course/De60176a4c73d3a2282U.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dd569f6a4f5f68f07c7T.jpg",
-        "https://www.miaobeiac.org/public/files/course/D4a0996a31ef9a37973M.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
-      ],
-      "categories": [
-        "音樂"
-      ],
-      "category": "音樂",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-10-04",
-      "endDate": "2026-10-04",
-      "locationName": "苗栗縣苗北藝文中心",
-      "location": "苗栗縣苗北藝文中心",
-      "venueGroup": "苗栗縣苗北藝文中心",
-      "venueNames": [
-        "苗北藝文中心"
-      ],
-      "venueName": "苗北藝文中心",
-      "parentVenueName": "苗北藝文中心",
-      "parentVenueId": "miaobei-art-center",
-      "venueIds": [
-        "miao-bei-yi-wen-zhong-xin",
-        "miaobei-art-center"
-      ],
-      "venueId": "miao-bei-yi-wen-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "苗栗縣竹南鎮公園路206號（公園路及永貞路口處）",
-      "region": "苗栗縣",
-      "regionCanonical": "苗栗縣",
-      "latitude": 24.6905875,
-      "longitude": 120.8886966,
-      "coordinateSource": "official_feed",
-      "price": "費用（單場）+150;早鳥套票5堂+525",
-      "unit": "(中華民國)林仁斌",
-      "hitRate": 3,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-22T23:38:03+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "miao-bei-yi-wen-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a28644c26b3243414ccd096",
       "title": "漂流宴",
       "description": "「漂流宴」（Drifting Feast）之所以命名始於疫情之後長久隔離的人們對相聚的渴望。受到台灣人的好客精神以及傳統「辦桌」文化的啟發，這個計畫將此精神轉換為一種跨越不同土地、遊牧式的策展實踐。移動與變化的感知構成了《漂流宴》的核心，它反思歷史與傳統、信仰與孤獨、消費欲望與繁榮神話之間的摩擦與張力，同時探索傳統、食材、語言、信仰與故事如何在持續的流動與交流中彼此交會與融合。「漂流宴」結合了「移動」與「盛宴」兩種意象，「漂流」暗示受到洋流、風向、時間與地緣政治推動的移動狀態，「盛宴」則喚起豐盛、相聚與儀式性的感受。\n然而，「盛宴」不僅象徵慶祝，也指向邊緣(marginality)與脆弱(precarity)的處境，它映照那些為文化與社會結構帶來深刻貢獻的移民、離散社群、勞動者以及社會中的邊緣個體，而他們卻往往處於漂泊、被排除或被忽視的狀態。這個隱喻讓我們重新思考其中所蘊含的力量、適應與陪伴。「漂流宴」同時暗示流動性、不可預測性，以及短暫連結之中的美感。透過這個概念探索個人與集體的旅程、共同慶典的經驗，並且反思消費主義的幻想以及當前的社會現實，暨全球化當代生活中那些複雜且彼此糾纏的關係。\n在過去兩年間(2024-2025)，這個計畫分別於印尼日惹、法國巴黎、奧地利維也納等不同城市逐步與當地的藝術機構合作，在每一次的展覽中回應在地的歷史與文化脈絡並透過對話與合作產生全新的觀點。如今我們將此豐富的交流成果帶回了台灣，這次的展覽邀請了國內外26位藝術家的作品，以及本計畫相關之攝影書著作向國內及來訪的觀眾呈現多重立場、對話與交流的軌跡。",
@@ -8515,69 +8207,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a13698126b3243414cccb3c",
-      "title": "2026故事聯合國：每個國家都來講故事-10月",
-      "description": "為推廣孩童閱讀世界各國故事繪本並拓展國際視野，2026年「故事聯合國」以「反著來，顛倒所有事物—故事裡的顛倒世界！」主題，精選臺灣、美國、日本、澳洲、比利時、西班牙、以色列等國特色繪本，內容涵蓋「圖像顛倒」、 「翻轉角色設定」、「雙向翻閱」與「挑戰既有觀點」的繪本，透過圖文交織的閱讀體驗，打破既有框架的思考邏輯，認識各國的文化與生活樣貌。 本活動邀請來自不同國家的講師，帶來生動有趣的故事時光及文化體驗。準備好把世界「顛倒」來看了嗎？一起加入這場充滿創意與驚奇的閱讀冒險吧！ ★活動內容及相關規定，請參加者務必詳閱下方活動網頁資訊。\n10/24(六) 跳脫既定框架 比利時 華+法\n丁徳芬 Delphine De Temmerman\nLis-moi une histoire\n《講故事給我聽嘛！》\n10/31(六) 翻轉角色設定 澳洲 華 Scott Writer\nEdward the Emu\n《愛德華鴯鶓》",
-      "sourceUrl": "https://event.culture.tw/mocweb/reg/NMTL/Detail.init.ctr;jsessionid=94BDCD61C7BDFFB6D13CDFC2E45BD5D8?actId=60091&utm_source=NMTL&utm_medium=index&utm_campaign=60091",
-      "sourceUrlVerified": true,
-      "image": "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60091/AD/60091_0_0_972161_276_175.png?20260724",
-      "images": [
-        "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60091/AD/60091_0_0_972161_276_175.png?20260724",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa01.png",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa03.png",
-        "https://event.culture.tw/registrationBackstage/userFiles/NMTL/Ckeditor/JpgFile/01/20021/3.png?v=42109ea8-b795-4532-b690-bf8867f84f3c",
-        "https://event.culture.tw/mocweb/template/NMTL/images/top.png",
-        "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\309540\\BANNER_459-192.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\38640\\文學樂園怎麼走3.jpg",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\588727\\image.png",
-        "https://ntlgportal.moc.gov.tw/Uploads/upload/NMTL_596220.jpg"
-      ],
-      "categories": [
-        "其他"
-      ],
-      "category": "其他",
-      "contentType": "exhibition",
-      "contentTypes": [
-        "exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-10-24",
-      "endDate": "2026-10-31",
-      "locationName": "國立臺灣文學館",
-      "location": "國立臺灣文學館",
-      "venueGroup": "國立臺灣文學館",
-      "venueNames": [
-        "國立臺灣文學館"
-      ],
-      "venueName": "國立臺灣文學館",
-      "parentVenueName": "國立臺灣文學館",
-      "parentVenueId": "national-museum-taiwan-literature",
-      "venueIds": [
-        "guo-li-tai-wan-wen-xue-guan",
-        "national-museum-taiwan-literature"
-      ],
-      "venueId": "guo-li-tai-wan-wen-xue-guan",
-      "venueCoverageStatus": "complete",
-      "address": "臺南市中西區中正路1號",
-      "region": "台南市",
-      "regionCanonical": "臺南市",
-      "latitude": 22.992064,
-      "longitude": 120.203953,
-      "coordinateSource": "official_feed",
-      "price": "免費入場",
-      "unit": "(不分國籍)丁徳芬 Delphine De Temmerman;(澳大利亞)Scott Writer",
-      "hitRate": 3,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-24T01:10:37+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-li-tai-wan-wen-xue-guan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "museum_gallery",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a639b4726b32427d0604252",
       "title": "力晶2026藝文饗宴-阿格麗希音樂節在台灣-台北場",
       "description": "《Martha Argerich & Friends｜阿格麗希音樂節在台灣》 將在高雄正式揭開序幕。作為音樂節首場協奏曲演出，高雄場匯聚世界鋼琴巨擘\n瑪莎．阿格麗希 (Martha\nArgerich) 與國際音樂家、指揮及\n長榮交響樂團，以三部橫跨古典至二十世紀的重要協奏曲，展開這場國際音樂盛會的第一章。從美國爵士精神、法國現代音樂，到德奧古典經典，三首作品不僅展現不同時代的創作風格，也象徵音樂節多元交流與世代傳承的核心精神。\n音樂會首先由希臘鋼琴家 狄奧多西亞．杜庫 (Theodosia Ntokou) 與指揮 廖國敏、長榮交響樂團 共同演出蓋希文《藍色狂想曲》。作品誕生於二十世紀初的紐約，以爵士、藍調與古典交織而成，充滿自由奔放的節奏與都會活力，不僅成為美國音樂的重要象徵，也開啟整場音樂會充滿能量的序幕。\n第二首作品為浦朗克《雙鋼琴協奏曲》，由 瑪莎．阿格麗希 與青年鋼琴家\n大衛．陳．斯維爾德洛夫 (David Chen Sverdlov) 同臺演出，並由 麗達．陳．阿格麗希 (Lyda Chen Argerich) 擔任指揮。作品融合法國音樂的優雅與機智，在兩架鋼琴之間展開細膩而精彩的對話。身為阿格麗希的外孫，大衛與外祖母、母親祖孫三代攜手同臺，為本屆音樂節寫下跨越世代的音樂對話，也讓家族傳承成為舞臺上的另一道動人風景。\n壓軸登場的是貝多芬《C大調三重協奏曲》，由 瑪莎．阿格麗希 (Martha Argerich)、比利時小提琴家 優席夫．伊凡諾夫 (Yossif Ivanov)與旅歐華裔大提琴家 趙靜 (Jing Zhao)三位國際音樂家攜手演出，在 麗達．陳．阿格麗希 (Lyda Chen Argerich) 指揮與 長榮交響樂團 協奏下，共同呈現這部協奏曲文獻中的經典鉅作。鋼琴、小提琴與大提琴三位獨奏家彼此呼應、相互交織，不僅展現精湛技巧，更體現室內樂般的默契與合作，是貝多芬作品中最具獨特性的協奏曲之一。\n高雄場透過三部風格迥異的經典作品，呈現爵士、法式現代與德奧古典三種截然不同的音樂語言，也讓觀眾一次欣賞阿格麗希與多位國際音樂家、兩位指揮及長榮交響樂團共同打造的音樂盛宴，揭開\n《Martha Argerich & Friends｜阿格麗希音樂節在台灣》 最具代表性的協奏曲篇章。 藝術家 Artist鋼琴｜瑪莎．阿格麗希 Martha Argerich音樂總監｜麗達．陳．阿格麗希 Lyda Chen Argerich鋼琴｜ 狄奧多西亞．杜庫 Theodosia Ntokou 、 大衛．陳．斯維爾德洛夫 David Chen Sverdlov小提琴｜優席夫．伊凡諾夫 Yossif Ivanov大提琴｜趙靜 Jing Zhao指揮｜廖國敏 Lio Kuokman、麗達．陳．阿格麗希 Lyda Chen Argerich 樂團｜長榮交響樂團 Evergreen Symphony Orchestra\n演出曲目 Programme蓋希文：藍色狂想曲 George Gershwin: Rhapsody in\nBlue\n鋼琴｜Theodosia Ntokou指揮｜廖國敏 Lio Kuokman\n浦朗克：D小調雙鋼琴協奏曲，FP 61 Francis Poulenc: Concerto for\nTwo Pianos in D minor, FP 61\n鋼琴｜Martha Argerich、David Chen Sverdlov指揮｜Lyda Chen Argerich\n貝多芬：C大調三重協奏曲，作品56 Ludwig\nvan Beethoven: Triple Concerto in C major, Op. 56鋼琴｜Martha Argerich 　小提琴｜Yossif Ivanov　大提琴｜Jing Zhao指揮｜Lyda Chen Argerich\n樂團｜長榮交響樂團 Evergreen Symphony Orchestra\n巡演場次高雄｜11/12  力晶2026藝文饗宴-阿格麗希音樂節在台灣-台北場屏東｜11/15   午後音樂會-阿格麗希與他的朋友們\n新象官網 Official\nWebsite  https://www.newaspect.org.tw/argerichmartha2026\n新象之友入會 NA Club https://www.newaspect.org.tw/member\n新象line好友@ats9463p\n※因配合《阿格麗希音樂節在台灣》會員優先購票作業，新象之友入會／續會申請將暫停受理，並於 8 月 1 日恢復正常受理。\n主辦單位保有節目內容異動權 The program is subject\nto change",
@@ -8633,69 +8262,6 @@
       "publicVenueId": "guo-jia-liang-ting-yuan",
       "publicVenuePriority": "P0",
       "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a13698126b3243414cccb3d",
-      "title": "2026故事聯合國：每個國家都來講故事-11月",
-      "description": "為推廣孩童閱讀世界各國故事繪本並拓展國際視野，2026年「故事聯合國」以「反著來，顛倒所有事物—故事裡的顛倒世界！」主題，精選臺灣、美國、日本、澳洲、比利時、西班牙、以色列等國特色繪本，內容涵蓋「圖像顛倒」、 「翻轉角色設定」、「雙向翻閱」與「挑戰既有觀點」的繪本，透過圖文交織的閱讀體驗，打破既有框架的思考邏輯，認識各國的文化與生活樣貌。 本活動邀請來自不同國家的講師，帶來生動有趣的故事時光及文化體驗。準備好把世界「顛倒」來看了嗎？一起加入這場充滿創意與驚奇的閱讀冒險吧！ ★活動內容及相關規定，請參加者務必詳閱下方活動網頁資訊。\n11/14(六) 顛覆經典故事 西班牙 華+西\nManuel Sanchez\nLa leyenda de don fermín\n《洞》\n11/21(六) 雙向翻閱 西班牙 華+西\nLaura Vela\nEl espejo en la casa de mamá /\nEl espejo en la casa de papá\n《媽媽家的鏡子／爸爸家的鏡子》",
-      "sourceUrl": "https://event.culture.tw/mocweb/reg/NMTL/Detail.init.ctr;jsessionid=94BDCD61C7BDFFB6D13CDFC2E45BD5D8?actId=60091&utm_source=NMTL&utm_medium=index&utm_campaign=60091",
-      "sourceUrlVerified": true,
-      "image": "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60091/AD/60091_0_0_972161_276_175.png?20260724",
-      "images": [
-        "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60091/AD/60091_0_0_972161_276_175.png?20260724",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa01.png",
-        "https://event.culture.tw/mocweb/template/NMTL/images/aa03.png",
-        "https://event.culture.tw/registrationBackstage/userFiles/NMTL/Ckeditor/JpgFile/01/20021/3.png?v=42109ea8-b795-4532-b690-bf8867f84f3c",
-        "https://event.culture.tw/mocweb/template/NMTL/images/top.png",
-        "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\309540\\BANNER_459-192.png",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\38640\\文學樂園怎麼走3.jpg",
-        "https://eventmanager.culture.tw:8080/registrationBackstage\\userFiles\\NMTL\\Ckeditor\\JpgFile\\01\\588727\\image.png",
-        "https://ntlgportal.moc.gov.tw/Uploads/upload/NMTL_596220.jpg"
-      ],
-      "categories": [
-        "其他"
-      ],
-      "category": "其他",
-      "contentType": "exhibition",
-      "contentTypes": [
-        "exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-11-14",
-      "endDate": "2026-11-21",
-      "locationName": "國立臺灣文學館",
-      "location": "國立臺灣文學館",
-      "venueGroup": "國立臺灣文學館",
-      "venueNames": [
-        "國立臺灣文學館"
-      ],
-      "venueName": "國立臺灣文學館",
-      "parentVenueName": "國立臺灣文學館",
-      "parentVenueId": "national-museum-taiwan-literature",
-      "venueIds": [
-        "guo-li-tai-wan-wen-xue-guan",
-        "national-museum-taiwan-literature"
-      ],
-      "venueId": "guo-li-tai-wan-wen-xue-guan",
-      "venueCoverageStatus": "complete",
-      "address": "臺南市中西區中正路1號",
-      "region": "台南市",
-      "regionCanonical": "臺南市",
-      "latitude": 22.992064,
-      "longitude": 120.203953,
-      "coordinateSource": "official_feed",
-      "price": "免費入場",
-      "unit": "(西班牙)Manuel Sanchez;(西班牙)Laura Vela",
-      "hitRate": 3,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-24T01:10:37+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-li-tai-wan-wen-xue-guan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "museum_gallery",
       "publicCurationReason": "confirmed_P0"
     },
     {
@@ -8841,9 +8407,9 @@
         "https://scontent.cdninstagram.com/v/t51.82787-15/786854258_18115538659993867_1455470943986268147_n.jpg?stp=dst-jpg_e35_s640x640_tt6&_nc_cat=102&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiQ0xJUFMuYmVzdF9pbWFnZV91cmxnZW4uQzMifQ%3D%3D&_nc_ohc=RCvLCTMZH0gQ7kNvwGIV1wR&_nc_oc=AdqlnWPLoL-PSI6eD0OX6Pc0HkgDSuBV8s82AczkHe6PF44jJJIxG1HSBl00SkWXwaKgPykQZRdPt9oN4zmxXoq7&_nc_zt=23&_nc_ht=scontent.cdninstagram.com&_nc_gid=6ltOKvMaXX3O2cm2mwfEaA&_nc_ss=7b60f&oh=00_AQHBbE9FHrDWW7lGXWqAWiILh-11ycq3NT0HUT0zu7buUw&oe=6A963802"
       ],
       "categories": [
-        "美術"
+        "表演"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -8952,8 +8518,7 @@
         "https://opentixmember-xxx.com/backstage/storage/organizer/card/images/20240302-0je6xfe2wh272cjdzlihx6c8luis4bvfq9jzmpfs.jpg"
       ],
       "categories": [
-        "表演",
-        "歷史"
+        "表演"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -9271,58 +8836,6 @@
       "publicVenueId": "guo-jia-liang-ting-yuan",
       "publicVenuePriority": "P0",
       "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a0a11cf26b3243414ccc997",
-      "title": "學原住民運動 kicaquan ta kinacalisiyan 【做一個月桃提包吧！】",
-      "description": "邀請到《部落的百寶盒》參展藝術家——潘雅莉老師，帶領大家進入排灣族的月桃世界，用新的美學視角重新定義傳統編織。\n學員人數： 限額 12 人（額滿為止）。\n在部落文化中，月桃編織不只是器物，更與生命禮俗及社會組織息息相關。她記錄了部落的生活節奏，是藝術與實用的完美結合。\n在時代變遷中，我們透過物質文化重新審視部落與大自然的生存法則。讓傳統美學在現代生活中幻化出無限可能，將這份依存於土地的藝術，轉化為持續脈動的產業力量。\n這次課程不只傳承技藝，更希望激發多元創意，將部落傳統轉化為具備「台灣文化色彩」的產值潛力。透過學習與對話，我們將一起建立屬於排灣的美學體系，讓藝術帶動部落的經濟效益。",
-      "sourceUrl": "https://www.accupass.com/event/2605120734514029599130",
-      "sourceUrlVerified": true,
-      "image": "https://static.accupass.com/eventbanner/2605120732111050601634.jpg",
-      "images": [
-        "https://static.accupass.com/eventbanner/2605120732111050601634.jpg",
-        "https://static.accupass.com/eventintro/2605120818167997226550.jpg",
-        "https://static.accupass.com/eventintro/2605120818561187284822.jpg",
-        "https://assets.accupass.com/frontend/main-site-c/_next/static/media/eventBanner.238078a5.png",
-        "https://static.accupass.com/org/2306291127496348611100.jpg",
-        "https://static.accupass.com/visitant/2605120737521679867063.jpg"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-06-05",
-      "endDate": "2026-09-04",
-      "locationName": "屏菸1936文化基地",
-      "location": "屏菸1936文化基地",
-      "venueGroup": "屏菸1936文化基地",
-      "venueIds": [
-        "ping-yan-1936wen-hua-ji-di"
-      ],
-      "venueId": "ping-yan-1936wen-hua-ji-di",
-      "venueCoverageStatus": "none",
-      "unmatchedVenueValues": [
-        "屏菸1936文化基地"
-      ],
-      "address": "屏東縣屏東市菸廠路1號",
-      "region": "屏東縣",
-      "regionCanonical": "屏東縣",
-      "price": "-+860",
-      "unit": "(中華民國)潘雅莉",
-      "hitRate": 2,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-24T01:10:37+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "ping-yan-1936wen-hua-ji-di",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "cultural_park",
       "publicCurationReason": "confirmed_P0"
     },
     {
@@ -10057,61 +9570,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a4e82ee26b32427d0604167",
-      "title": "2026管風琴音樂會《心之迴響》管風琴深度導覽",
-      "description": "🔸踏入《心之迴響》 💓 解鎖音樂廳最神祕的角落🔸\n2026管風琴音樂會《心之迴響》管風琴深度導覽，是一場為音樂愛好者量身設計的專場導覽，邀請您走進平時不會對外開放的場域，親身探索這座「樂器之王」的奧祕。這次特別邀請本場音樂會的管風琴家劉信宏老師親自帶領，透過專業的演奏家視角，將從管風琴的歷史背景啟程，藉由認識不同時期與風格的管風琴，展開你對管風琴的不同想像。\n接續，管風琴家更會親自示範彈奏不同年代、不同曲風的樂曲，你除了在觀眾席聆聽外，更能直接踏上音樂廳舞台、透過不同的空間近距離感受管風琴多樣聲響所帶來的奇幻色彩，在音栓與音管在空間的共振中，呈現樂器與音樂廳之間的完美呼應。最後，將由管風琴家帶你進入管風琴內部核心，直接窺視這座巨大樂器的發聲構造，你將會發現，原來這座琴背後是如此精彩。這將會是一趟讓你難忘的導覽旅程，快來探索這座全世界獨一無二的樂器之王吧！\n✨ 三大亮點、一次掌握 ✨\n➊ 近距離解密管風琴\n你將可直接走上舞台，近距離觀賞兩廳院管風琴的每一處細節以及構造\n➋ 探索神祕空間\n你更能深入管風琴後方內部空間，一窺藏有4,172支音管的管風琴室\n➌ VIP包場體驗26個專屬席次，透過管風琴家劉信宏老師的精彩演繹，你將擁有身歷其境的獨特體驗",
-      "sourceUrl": "https://www.opentix.life/event/2065377372715634689",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/1783304495139Zp08sDbgT5.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/1783304495139Zp08sDbgT5.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1782367453069DVPSMT8zXF.jpeg",
-        "https://s3.resource.opentix.life/upload/program/17823675307849xVMDPaGnY.jpeg"
-      ],
-      "categories": [
-        "音樂"
-      ],
-      "category": "音樂",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-19",
-      "endDate": "2026-09-19",
-      "locationName": "國家兩廳院",
-      "location": "國家兩廳院",
-      "venueGroup": "國家兩廳院",
-      "venueNames": [
-        "國家兩廳院"
-      ],
-      "venueName": "國家兩廳院",
-      "parentVenueName": "國家兩廳院",
-      "parentVenueId": "national-theater-and-concert-hall",
-      "venueIds": [
-        "guo-jia-liang-ting-yuan",
-        "national-theater-and-concert-hall"
-      ],
-      "venueId": "guo-jia-liang-ting-yuan",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市中正區中山南路21-1號，信義路側",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0367564,
-      "longitude": 121.519047,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 2,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-07-24T14:40:55+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-jia-liang-ting-yuan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a04aef826b3243414ccc806",
       "title": "【2026衛武營爵士週】阿圖羅．山多瓦《自由之聲》九重奏音樂會",
       "description": "1949年出生於古巴，阿圖羅．山多瓦為當代最具代表性的爵士小號演奏家之一，他以極具爆發力的高音域、精準的語法掌控而聞名，能在高速與高難度的炫技演奏中、展現極佳的音準、音色駕馭能力。\n1977年，爵士小號大師迪吉．葛拉斯彼訪問古巴，與阿圖羅．山多瓦相識， 並對他的音樂才華高度讚賞，兩人展開了長達十餘年的師徒情誼。迪吉．葛拉斯彼不僅是阿圖羅．山多瓦在音樂上的導師，更是他生命中的貴人。1990 年，在迪吉．葛拉斯彼的暗中協助下，阿圖羅．山多瓦於歐洲巡演期間向美國大使館尋求庇護，最終成功移居，開啟跨越國界的藝術新篇章，並獲得更自由的創作與演出環境。他不僅活躍於爵士領域，更與各大交響樂團合作，演奏古典小號協奏曲，展現全方位音樂實力！\n阿圖羅．山多瓦成功將非洲古巴音樂的節奏，與爵士咆勃、古典及搖滾樂進行跨界融合，對古巴現代音樂發展具有重要意義。他既能以驚人的速度與技巧展現炫目的樂句，也能在抒情作品中保有優雅與深情。除了小號之外，他也精通鋼琴、打擊樂、人聲與編曲創作，並長期投入音樂教育，持續啟發一代又一代的年輕音樂家。\n職業生涯累積多項重要榮譽，共計獲得19度葛萊美獎提名，並最終奪得10座獎項。此外，他也獲頒在文化藝術上、有特殊貢獻的「美國總統自由勳章」、以及「甘迺迪中心終身成就獎」，這些殊榮不僅是對阿圖羅．山多瓦個人音樂能力的肯定，更顯示他在演奏藝術與文化影響力上的卓越成就。\n阿圖羅．山多瓦從古巴出發，走向全世界，透過他幽默且充滿活力的現場魅力，帶領觀眾親歷爵士樂最純粹、最自由的迷人篇章。\nKnown for his explosive high-register playing and precise\nphrasing, ArturoSANDOVAL can demonstrate excellent pitch and tone control even\nin high-speed and technically demanding virtuoso performances.\nIn 1977, jazz trumpet\nmaestro Dizzy GILLESPIE visited Cuba and met Arturo SANDOVAL. GILLESPIE was\ndeeply impressed by SANDOVAL's musical brilliance. They developed a peer-mentor\ndynamic that spanned over a decade. GILLESPIE was not only a musical mentor but\na pivotal figure in SANDOVAL's life. In 1990, with Dizzy GILLESPIE's discreet\nassistance, SANDOVAL sought asylum at the US embassy during a European tour.\nThis successful relocation began a new chapter in his cross-border artistic\ncareer, granting him the freedom to create and perform. Today, he is not only\nactive in the jazz world but also collaborates with major symphony orchestras\nto perform classical trumpet concertos, showcasing his multifaceted musical\nprowess!\nArturo SANDOVAL has\nsuccessfully synthesized Afro-Cuban rhythms with jazz bebop, classical\nelegance, and rock energy — a fusion that makes significant contributions to\nthe development of modern Cuban music. He can deliver dazzling phrases with\nastonishing speed and technique, while also maintaining elegance and emotion in\nhis lyrical works. In addition to the trumpet, he is also proficient in piano,\npercussion, vocals, and music arrangement. SANDOVAL has long been dedicated to\nmusic education, continuously inspiring generations of young musicians.\nThroughout his career\ndefined by excellence, Arturo SANDOVAL has accumulated numerous prestigious\nhonors. He has garnered 19 Grammy nominations and ultimately brought home 10\nGrammy Awards. In addition, he has been awarded the Presidential Medal of Freedom\nfor his extraordinary contributions to culture and the arts, as well as the\nKennedy Center Honors for lifetime achievement. These accolades not only affirm\nArturo SANDOVAL's technical mastery in music but also underscore his profound\nimpact on the performing arts and global culture.\nFrom his roots in Cuba to\nthe global stage, Arturo SANDOVAL invites audiences worldwide to experience the\npurest and most liberating chapters of jazz through his humorous and energetic\nlive performances.延伸閱讀\n爵士小號手：阿圖羅．山多瓦  若為音樂故，兩者皆可拋！(PAR表演藝術)\n大師自由之聲？探戈拉丁琴韻？衛武營沒問題！(樂評人/蘇重 )\n從古巴到世界舞台，阿圖羅・山多瓦如何以爵士樂重寫「自由」的聲音 (GQ Taiwan )演出人員名單 小號｜阿圖羅．山多瓦、凱斯．菲亞拉吉他｜威廉．布拉姆貝斯｜馬克斯．傑爾 鼓   ｜丹尼爾．費爾德曼打擊｜奧托．山塔那塞利斯鋼琴｜奧馬爾．瓦倫蘇埃拉次中音薩克斯風｜泰德 · 貝克上低音薩克斯風｜瑞．布斯塔曼特\nTrumpet｜Arturo SANDOVAL, Keith FIALA Guitar｜William BRAHM Bass｜Maximilian GERL Drums｜Daniel FELDMAN Percussion｜Otto SANTANA SELIS Piano｜Omar VALENZUELA Tenor Saxophone｜Tedd BAKER Baritone Saxophone｜Larry BUSTAMANTE ※音樂家利桑德羅．皮德爾、麥可．塔克因故無法參與本節目， 改由奧馬爾．瓦倫蘇埃拉、泰德 · 貝克演出。藝術家介紹\n小號│阿圖羅．山多瓦•2024年甘迺迪中心榮譽獎•由歐巴馬總統頒贈總統自由勳章•十座葛萊美獎•葛萊美終身成就獎•艾美獎最佳作曲家•六座告示牌音樂獎•聖母大學名譽藝術博士\n身為傳奇人物迪吉．葛拉斯彼的得意門生，阿圖羅．山多瓦於1949年11月6日出生在古巴的阿特米薩——剛好就在葛拉斯比首度將拉丁元素注入美國爵士樂的兩年之後。山多瓦出身並不顯赫，十二歲開始學習古典小號，沒過多久就徹底迷上了爵士樂的狂熱魅力。如今，他已成為當代最傑出且多才多藝的音樂家之一：他不但是小號與柔音號的頂尖大師，也是技藝精湛的鋼琴家、打擊樂手兼作曲家，更是一位勇於創新的音樂家，以自身藝術造詣征服了全球數百萬聽眾。\n山多瓦被譽為當今世上最有活力的表演者之一，現場演奏極能帶動氣氛。他曾多次在奧斯卡金像獎、葛萊美獎及告示牌音樂獎的舞台上大放異彩，用那令人屏息的高超技巧與純粹的演奏熱情震撼全場觀眾。他獲得的榮譽也與其傳奇地位完全相稱：共獲得10座葛萊美獎（高達19次提名）、六座告示牌音樂獎，更憑藉為由安迪．賈西亞主演的HBO電影《深情號角手》創作的精彩配樂，一舉奪下艾美獎。\n山多瓦被公認為歷史上最偉大的小號演奏家之一，他驚人的音域、敏捷的轉換技巧和精準的控制力使他能夠以充滿力量與情感的方式，精準詮釋最複雜細膩的樂段。他以其獨特的天賦將爵士樂、古典樂和拉丁音樂傳統完美融合，創造出極具個人辨識度的音樂語彙。除了演奏之外，他同時也是一位多產的作曲家、編曲家和教育家，以其熱情和奉獻精神激勵一代又一代的音樂人。 Trumpet│Arturo\nSANDOVAL•2024 Kennedy Center\nHonoree•Presidential Medal of\nFreedom recipient (President OBAMA)•10 time Grammy Award\nWinner•Grammy's Lifetime\nAchievement Award•Emmy Award recipient\n(Best Composer)•Six-time Billboard\nAward winner•Honorary Doctorate\nrecipient in Fine Arts University of Notre-Dame\nA protégé of the\nlegendary Dizzy GILLESPIE, Arturo SANDOVAL was born in Artemisa, Cuba on\nNovember 6, 1949—just two years after GILLESPIE first introduced Latin\ninfluences into American jazz. From humble beginnings, SANDOVAL began studying\nclassical trumpet at twelve, but it wasn't long before the fire of jazz took\nhold. Today, he stands as one of the most brilliant and multifaceted musicians\nof our time: a virtuoso of trumpet and flugelhorn, a masterful pianist,\ntimbalero, composer, and a fearless innovator whose artistry has captivated\nmillions around the globe.\nSANDOVAL is renowned as\none of the most dynamic performers alive. He has lit up the stage at th",
@@ -10274,69 +9732,6 @@
       "firstSeenAt": "2026-07-22T23:38:03+08:00",
       "lastSeenAt": "2026-08-30T16:52:09+08:00",
       "publicVenueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a4397f326b32427d0603fe5",
-      "title": "苗北藝術學苑-2026苗北講堂III：銅管家族-號角、力量與管弦樂的空間感《法國號、小號、長號與低音號的音響功能》",
-      "description": "主講人：林仁斌老師，台灣蹦藝術協會理事長。\n銅管家族：號角、力量與管弦樂的空間感\n銅管樂器常被聽眾直接聯想到宏大的音量，但它們在樂團中的作用並不只限於強奏。法國號能連接木管與銅管音色，小號具有清楚的節奏與信號功能，長號能強化和聲厚度，低音號則支撐樂團低音寬度。\n本講座林仁斌老師將介紹銅管樂器的發聲方式、音域與在樂團中的編制，並透過交響曲與交響詩，說明銅管如何建立主題、強化終止和聲、改變音樂空間感，並在不同時代形成不同的管弦樂效果。",
-      "sourceUrl": "https://www.miaobeiac.org/",
-      "sourceUrlVerified": true,
-      "image": "https://www.miaobeiac.org/images/pic-02.png",
-      "images": [
-        "https://www.miaobeiac.org/images/pic-02.png",
-        "https://www.miaobeiac.org/public/files/modimg/I0297d676a7bf8df03bN.jpg",
-        "https://www.miaobeiac.org/public/files/course/D37d4269d6130c4f6a6V.jpg",
-        "https://www.miaobeiac.org/public/files/course/D1ac366a17d9a7b33a6M.jpg",
-        "https://www.miaobeiac.org/public/files/course/D457a869f016b583d3fF.jpg",
-        "https://www.miaobeiac.org/public/files/course/D6080a6a3ba40ca855dK.jpg",
-        "https://www.miaobeiac.org/public/files/course/De60176a4c73d3a2282U.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dd569f6a4f5f68f07c7T.jpg",
-        "https://www.miaobeiac.org/public/files/course/D4a0996a31ef9a37973M.jpg",
-        "https://www.miaobeiac.org/public/files/course/Dba8c56a4db2e26d2beS.jpg"
-      ],
-      "categories": [
-        "音樂"
-      ],
-      "category": "音樂",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-20",
-      "endDate": "2026-09-20",
-      "locationName": "苗栗縣苗北藝文中心",
-      "location": "苗栗縣苗北藝文中心",
-      "venueGroup": "苗栗縣苗北藝文中心",
-      "venueNames": [
-        "苗北藝文中心"
-      ],
-      "venueName": "苗北藝文中心",
-      "parentVenueName": "苗北藝文中心",
-      "parentVenueId": "miaobei-art-center",
-      "venueIds": [
-        "miao-bei-yi-wen-zhong-xin",
-        "miaobei-art-center"
-      ],
-      "venueId": "miao-bei-yi-wen-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "苗栗縣竹南鎮公園路206號（公園路及永貞路口處）",
-      "region": "苗栗縣",
-      "regionCanonical": "苗栗縣",
-      "latitude": 24.6905875,
-      "longitude": 120.8886966,
-      "coordinateSource": "official_feed",
-      "price": "費用（單場）+150;早鳥套票5堂+525",
-      "unit": "(中華民國)林仁斌",
-      "hitRate": 2,
-      "source": "全國藝文活動資訊系統",
-      "firstSeenAt": "2026-07-24T01:10:37+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "miao-bei-yi-wen-zhong-xin",
       "publicVenuePriority": "P0",
       "publicVenueType": "performing_arts",
       "publicCurationReason": "confirmed_P0"
@@ -11224,9 +10619,9 @@
         "https://file.moc.gov.tw/001/Upload/528/relpic/13790/143111/7f0fa994-575d-47f1-a15f-336835d69532.png"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -11931,9 +11326,9 @@
         "https://s3.resource.opentix.life/upload/program/1778046179128PtaePFiJss.jpeg"
       ],
       "categories": [
-        "音樂"
+        "表演"
       ],
-      "category": "音樂",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -12157,8 +11552,7 @@
         "https://s3.resource.opentix.life/upload/program/1783411228070Ft9AkQfOH4.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -12331,7 +11725,8 @@
         "https://ntcart.museum/{{:AwImg}}"
       ],
       "categories": [
-        "美術"
+        "美術",
+        "科技"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -12391,9 +11786,9 @@
         "https://event.culture.tw/mocweb/template/ACOMMON/images/aa.png"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -12454,9 +11849,9 @@
         "https://event.culture.tw/userFiles/NMTL/JpgFile/01/60130/AD/60130_0_0_827453_276_175.jpg?20260728"
       ],
       "categories": [
-        "美術"
+        "歷史"
       ],
-      "category": "美術",
+      "category": "歷史",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -12630,10 +12025,10 @@
         "https://s3.resource.opentix.life/upload/program/1777445462739bGfHcULXU1.png"
       ],
       "categories": [
-        "自然",
+        "表演",
         "親子"
       ],
-      "category": "自然",
+      "category": "表演",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -13125,9 +12520,9 @@
         "https://s3.resource.opentix.life/upload/program/1784098900724iSKrAMZslk.jpeg"
       ],
       "categories": [
-        "音樂"
+        "舞蹈"
       ],
-      "category": "音樂",
+      "category": "舞蹈",
       "contentType": "concert",
       "contentTypes": [
         "concert"
@@ -13739,9 +13134,9 @@
         "https://s3.resource.opentix.life/upload/program/17846232765263WkJCjLDtq.jpeg"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -14685,9 +14080,9 @@
         "https://s3.resource.opentix.life/upload/program/1780627487961BVI2v3k34t.jpeg"
       ],
       "categories": [
-        "表演"
+        "舞蹈"
       ],
-      "category": "表演",
+      "category": "舞蹈",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -16579,8 +15974,7 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1785297384792ZR7QHhezBo.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -16699,9 +16093,10 @@
         "https://s3.resource.opentix.life/upload/program/17822052285060ntBLXz3qk.jpeg"
       ],
       "categories": [
-        "美術"
+        "表演",
+        "親子"
       ],
-      "category": "美術",
+      "category": "表演",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -17258,9 +16653,9 @@
         "https://s3.resource.opentix.life/upload/program/1772080791430uLcgnbOBG2.png"
       ],
       "categories": [
-        "市集"
+        "表演"
       ],
-      "category": "市集",
+      "category": "表演",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -19962,9 +19357,9 @@
         "https://s3.resource.opentix.life/upload/ticketPackage/1784687138600WRGF0LHe9t.jpeg"
       ],
       "categories": [
-        "表演"
+        "舞蹈"
       ],
-      "category": "表演",
+      "category": "舞蹈",
       "contentType": "festival",
       "contentTypes": [
         "festival"
@@ -20804,61 +20199,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a7761fb26b32427d0604391",
-      "title": "【幕名而來】菲利普.肯恩《人間樂園》節目導覽",
-      "description": "本場導覽特別邀請《人間樂園》導演 菲利普·肯恩  親.自.開.箱！導演 菲利普·肯恩將透過本場導覽，詳細介紹《人間樂園》於法國亞維儂的創作歷程\n以及分享排練過程與團隊們合作的點滴。\n接著，深度解析演出舞台的設計理念，讓大家能窺探荒誕、幽默的物品背後的意義。甚至更能親自走進最具代表性的巴士內，感受嬉皮旅者在演出中的每個瞬間！\n期待你與我們一同踏入專屬於你我的烏托邦世界。\n★【幕名而來】系列是為節目量身打造的專屬導覽！將一齣戲的「工作內容解密」，呈現給觀眾獨一無二的導覽內容，歡迎對此劇有興趣或想多認識一點劇場知識的大眾參與，以最近的距離揭秘幕後大小事！",
-      "sourceUrl": "https://www.opentix.life/event/2076948367096213504",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/1784016205971rwPigoyew3.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/1784016205971rwPigoyew3.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1784016513357SN7EN8PBkZ.png",
-        "https://s3.resource.opentix.life/upload/program/1784016850890WU7hNAzEUx.png"
-      ],
-      "categories": [
-        "表演"
-      ],
-      "category": "表演",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-11-07",
-      "endDate": "2026-11-07",
-      "locationName": "國家兩廳院",
-      "location": "國家兩廳院",
-      "venueGroup": "國家兩廳院",
-      "venueNames": [
-        "國家兩廳院"
-      ],
-      "venueName": "國家兩廳院",
-      "parentVenueName": "國家兩廳院",
-      "parentVenueId": "national-theater-and-concert-hall",
-      "venueIds": [
-        "guo-jia-liang-ting-yuan",
-        "national-theater-and-concert-hall"
-      ],
-      "venueId": "guo-jia-liang-ting-yuan",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市中正區中山南路21之1號，愛國東路側",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0353571,
-      "longitude": 121.518174,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 1,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-14T15:18:39+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-jia-liang-ting-yuan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a4fd45e26b32427d060416a",
       "title": "我只在乎你 - 鄧麗君名曲交響之夜",
       "description": "聲影流轉，世代溫柔：當鄧麗君的永恆旋律，遇上夢響管弦樂團的磅礡交響 每個人心中，都有一首鄧麗君 有些聲音，能穿越時空的藩籬，成為一個時代的集體心跳。當微風吹過思念的街角，當月光灑在寧靜的夜空，許多人的腦海中，總會不由自主地浮現那段溫柔、甜美，又帶著一絲絲愁緒的旋律。那是鄧麗君。她的歌聲，是收音機裡最長情的陪伴，是黑膠唱片上緩緩流淌的歲月，更是華語流行音樂史上最耀眼、最不可磨滅的絕代風華。她的歌曲撫慰了無數孤單與疲憊的靈魂，陪伴我們走過青春、走過戀情，走過那段最動人的黃金年代。不論外面的世界如何喧囂變幻，只要她的歌聲一響起，心靈彷彿就能找到安放的港灣。然而，這些深刻在我們腦海裡的經典旋律，如果離開了耳機與唱盤，在頂級的音樂廳空間中，由近70人編制的大型管弦樂團現場齊奏，將會是怎樣一種震撼與感動？這不僅是一場音樂會，更是一場跨越流行與古典、連結過去與未來的甜蜜蜜。今年，夢響管弦樂團將帶著最誠摯的敬意，以最頂級的古典交響規格，優雅重現這份跨越世代的永恆感動。 打破疆界，駐團作曲家楊陳德的匠心改編流行音樂的細膩情感，如何與古典交響樂的宏大結構完美融合？ 「古典樂不該高高在上，流行經典也能登大雅之堂。」抱持著這樣的信念，楊陳德老師耗時漫長的歲月，親自操刀，將鄧麗君演唱過的一首首名曲，重新解構、精雕細琢，改編結構成為編制宏大的管弦樂作品。 這項改編工程極具挑戰性。流行音樂著重於人聲的渲染力與旋律的洗腦性，而交響樂則講求樂器間的織體、對位、和聲與層次感。楊陳德老師在改編過程中，既小心翼翼地保留了每首原曲初聽時的悸動與靈魂，又大膽地注入了古典管弦樂的精緻、磅礡與戲劇張力。\n透過細膩而富有層次的配器法，熟悉的旋律將由小提琴的柔情、大提琴的深沉、木管的空靈與銅管的輝煌交織而成。在楊陳德老師的親自指揮下，夢響管弦樂團將化為一個巨大的情感共鳴箱，讓那些原本存在於錄音帶裡的平面音符，在宏大的音樂廳空間中徹底立體化，綻放出前所未見的全新生命。 這是一次古典與流行的世紀對話，也是作曲家對時代傳奇的最高致敬。 16首時代金曲，三大國家級場館巡演最終場本場預計演出\n16 套管弦改編作品，絕無冷場，要讓所有樂迷聽得過癮、感動落淚。從輕快甜美的俏皮小調，到愁腸百轉的古風詩詞；從濃烈深情的異國探戈，到大氣磅礡的家國情懷。這份精心設計的曲目單，是一張帶您重返過往黃金年代的音樂通行證。 除了精選 15 首傳唱大江南北、膾炙人口的經典名曲外，本場音樂會更準備了《月亮代表我的心幻想曲》。這首《月亮代表我的心幻想曲》是楊陳德老師傾盡心力的壓軸大作。他以眾人皆知的《月亮代表我的心》核心主題為動機，運用古典樂中「幻想曲（Fantasia）」自由、奔放且充滿想像力的形式進行重新編寫。樂曲時而如月光般溫柔灑落，時而如狂風暴雨般激昂澎湃，將流行歌曲的格局直接昇華為交響詩般的宏偉敘事。！ 精彩演出曲目清單：l     《我只在乎你》：弦樂層層堆疊的深情，將那份「任時光匆匆流去」的執著演繹得淋漓盡致。l     《何日君再來》：帶有老上海風華的旋律，在管弦樂的烘托下更顯時代的惆悵與繾綣。l     《小城故事》：木管樂器的清新躍動，勾勒出小鎮充滿人情味的溫暖畫面。l     《在水一方》：如詩如畫的意境，透過樂團細膩的音色處理，彷彿能看見那宛在水中央的縹緲身影。l     璀璨金曲：《再見我的愛人》、《甜蜜蜜》、《路邊的野花不要採》、《雲河》、《夜來香》、《但願人長久》、《獨上西樓》、《酒醉的探戈》、《海韻》、《你怎麼說》、《原鄉人》。l     《月亮代表我的心幻想曲》：顛覆想像的雙重主打，古典交響與流行情感的極致交融。",
@@ -21493,7 +20833,8 @@
         "https://neo-classical2003.com.tw/image/cache/data/20250110170913-1920x720.png"
       ],
       "categories": [
-        "表演"
+        "表演",
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -23223,66 +22564,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a4bdfe326b32427d0604133",
-      "title": "2026北藝散步：士林街區導覽",
-      "description": "🌿 士林街區微散步：尋味舊時光，輕讀老城故事\n士林，不只是夜市美食的代名詞，更是一座蘊藏豐富人文歷史的老城。這裡的街道承載著從清代街屋聚落、日治時期市街風貌，到現代生活型態的層層變遷；每一條巷弄、每一個轉角，都藏著等待被聽見的故事。\n邀請您一同以輕鬆的步伐走進士林街區，展開一段貼近生活的文化散步。這不只是一趟行走，更是一場「聽故事」的旅程——在街區中聽歷史、在市場裡聽人情、在巷弄間聽時間留下的聲音。\n本次導覽將從北藝中心出發，沿著捷運高架綠廊下的街道前行，串連基隆河岸的歷史軌跡，帶領大家走入士林舊城的日常風景。導覽過程中，您將循著導覽員的引導，細細品味五種屬於士林的在地氣味：「巷味」、「水味」、「市場味」、「廟味」與「青春味」，感受歷史、信仰、美食與交通演進交織而成的城市層次。\n臺北表演藝術中心矗立於劍潭捷運站旁，正位於士林舊城的歷史邊界。這一帶早年鄰近淡水河支流、碼頭與聚落入口，是清代至日治初期重要的水陸交通要衝，也是臺北市關鍵的物資與農產集散地。昔日街市的繁華，使士林成為人潮匯聚的生活重鎮，至今仍可在傳統菜市場與街區巷弄中，看見歷史留下的生活印記。\n透過這趟街區微散步，我們將走訪舊時記憶與新興風貌交融的街道，在導覽員的帶領下，重新認識士林的多重樣貌。誠摯邀請您在週六午後，放慢腳步，走進士林街區，用耳朵聽故事、用腳步讀城市，在每一個藏著歷史的轉角，感受專屬於士林的浪漫時光。\n🚩【導覽路徑】\n臺北表演藝術中心→捷運高架綠廊→九重花有魚橋→文林路101巷→士林堆集場→少年街→安平街→小東街隘門口→士林市場→潘家局館→慈諴宮",
-      "sourceUrl": "https://www.opentix.life/event/2067154178015539201",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/1767950366350q3UZrkjfzD.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/1767950366350q3UZrkjfzD.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1781681138534qqLu59FNCU.jpeg",
-        "https://s3.resource.opentix.life/upload/program/178168115693529EOhcSOI0.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1781681167786m2AYXbf1iV.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1781681215826R5KItEg0VK.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1781681225065CAeTR9NiMm.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1781681238152SayXEdGNkt.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1781681254185izt2ELgTIm.jpeg"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-05",
-      "endDate": "2026-12-19",
-      "locationName": "臺北表演藝術中心",
-      "location": "臺北表演藝術中心",
-      "venueGroup": "臺北表演藝術中心",
-      "venueNames": [
-        "臺北表演藝術中心"
-      ],
-      "venueName": "臺北表演藝術中心",
-      "parentVenueName": "臺北表演藝術中心",
-      "parentVenueId": "taipei-performing-arts-center",
-      "venueIds": [
-        "tai-bei-biao-yan-yi-shu-zhong-xin",
-        "taipei-performing-arts-center"
-      ],
-      "venueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市士林區劍潭路1號",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0847069,
-      "longitude": 121.5243993,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 1,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-07-24T14:40:55+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "69eba22526b3242a48a9e63c",
       "title": "聽聽 彈談XX～至尊巴赫「舞韻」",
       "description": "【節目介紹】2026年嶄新系列《至尊巴赫》，鋼琴家廖皎含以「音樂之父」約翰．塞巴斯蒂安．巴赫為核心主軸，回溯其奠定之音樂語彙與結構基礎，並梳理其對古典、浪漫乃至現代樂派作曲家的深遠影響。此系列不僅是對巴赫的致敬，更是一場穿越風格與時代的音樂思維探索。\n2026年上半年首場《至尊巴赫～雙響》獲得熱烈迴響，廖皎含以鋼琴與大鍵琴雙重視角，呈現同一曲目在不同樂器上的聲響差異，使聽眾得以細緻感受觸鍵、音色與語法之間的微妙關係，進而深化對巴洛克詮釋美學的理解。\n2026年下半年推出系列第二場《至尊巴赫：舞韻》，將以清晰的音樂史脈絡為經緯，引領聽眾走入西方舞曲形式的生成與轉化。節目自巴赫組曲出發，呈現四大核心舞曲：阿勒曼德（Allemande）的從容流動、庫朗特（Courante）的節奏推進、薩拉邦德（Sarabande）的深沉內省，以及吉格（Gigue）的奔放活力，完整勾勒巴洛克舞曲的典型性格與結構語言。\n隨後進入古典樂派，小步舞曲（Minuet）與蘭德勒（Ländler）展現舞曲由宮廷禮儀轉向音樂形式的過渡歷程，從規範步伐走向風格化的音樂書寫。至浪漫時期，弗雷德里克．蕭邦將舞曲昇華為高度個人化的藝術語彙：圓舞曲（Waltz）的優雅旋轉、馬厝卡（Mazurka）的節奏錯置與民族語感、波蘭舞曲（Polonaise）的宏闊氣度與歷史意識，展現舞曲與文化身份之間的深層連結。\n進入20世紀，舞曲語彙產生關鍵轉向。克勞德．德布西與莫里斯・拉威爾以細膩音色與模糊節拍重塑舞曲，使其由具體步伐轉化為聲響與質地的流動意象；貝拉・巴爾托克則回歸民族素材與原生節奏，強化舞曲的身體性與文化根源。而戴夫．布魯貝克的《Take Five》更以5/4拍與即興語彙，開展出嶄新的律動維度，將舞曲推向自由與多層次的時間感。\n透過這場跨越三百年的音樂巡禮，《舞韻》將呈現舞曲從具體步伐到抽象聲響的演變軌跡——從宮廷秩序、民族記憶，到印象色彩與即興精神，層層遞進，交織成音樂風格發展的核心線索。「舞韻」，不僅是一種節奏形態，更是一段關於身體、文化與聲音轉化的深刻敘事。\n自2018年啟動的「聽聽 彈談」系列，歷經九年累積，已完成逾二十六場音樂會，從鋼琴作品的學習脈絡與風格詮釋出發，延伸至國人作品的推廣與再認識。2024年《絕美莫札特》更以全台巡演形式，深入呈現沃夫岡．阿瑪迪斯．莫札特鋼琴獨奏與室內樂之精髓。廖皎含始終秉持結合演奏與教學的理念，透過生動解說與現場完整演出，引領聽眾進入古典音樂的深層結構與美感經驗。\n聽聽 彈談系列絕對是愛樂者最佳首選！\n【演出曲目】J. S. Bach: French Suite No. 6 in E major, BWV 817巴赫：Ｅ大調第六號法國組曲，作品 817\nW. A. Mozart: Minuet, K. 1莫札特：小步舞曲，作品 1\nL. v. Beethoven: Minuet in G major, WoO 10 No. 2貝多芬：Ｇ大調小步舞曲，作品 10 之 2\nF. Schubert: 12 Ländler, D. 366舒伯特：十二首蘭德勒舞曲，作品 366\nF. Chopin: Waltz in a minor, Op. posth.蕭邦：Ａ小調圓舞曲\nF. Chopin: Waltz in e minor, Op. posth.蕭邦：Ｅ小調圓舞曲\nF. Chopin: Marzukas, Op. 17蕭邦：馬厝卡，作品 17\nF. Chopin: Polonaise, Op. 53蕭邦：波蘭舞曲，作品 53\nC. Debussy: Menuet & Passepied, from Suite bergamasque德布西：小步舞曲與步態舞，選自《貝加馬斯克》組曲\nM. Ravel: Pavane pour une infante défunte拉威爾：悼念公主的帕望舞曲\nB. Bartok: Romanian Folk Dances, Sz. 56巴爾托克：羅馬尼亞民間舞曲\nD. Brubeck: Take Five布魯貝克：Take Five",
@@ -23360,9 +22641,10 @@
         "https://s3.resource.opentix.life/upload/program/1742344959750x6dMhpQnGw.jpeg"
       ],
       "categories": [
-        "市集"
+        "音樂",
+        "親子"
       ],
-      "category": "市集",
+      "category": "音樂",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -23808,9 +23090,9 @@
         "https://s3.resource.opentix.life/upload/program/1778657341920GISE3hHNQm.jpeg"
       ],
       "categories": [
-        "電影"
+        "音樂"
       ],
-      "category": "電影",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -24193,9 +23475,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/370237ffcb61d150f6a29de52c494fb3.jpg"
       ],
       "categories": [
-        "其他"
+        "舞蹈"
       ],
-      "category": "其他",
+      "category": "舞蹈",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24244,9 +23526,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/主視覺KV.jpg"
       ],
       "categories": [
-        "其他"
+        "快閃店"
       ],
-      "category": "其他",
+      "category": "快閃店",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24351,7 +23633,8 @@
         "https://www.songshanculturalpark.org/gallery/1784873882_87cbbc0407ad0efaaa63.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -24459,9 +23742,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/55aa76fb59b5c41dcfe648a12c9a5b13.png"
       ],
       "categories": [
-        "其他"
+        "表演"
       ],
-      "category": "其他",
+      "category": "表演",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24511,9 +23794,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/95a7ac8cd9273d0c84306762ef58d48f.png"
       ],
       "categories": [
-        "其他"
+        "表演"
       ],
-      "category": "其他",
+      "category": "表演",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24563,9 +23846,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/DeerMay_華山官網1920_2026_26010817380998987.jpg"
       ],
       "categories": [
-        "其他"
+        "動漫"
       ],
-      "category": "其他",
+      "category": "動漫",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24620,9 +23903,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/1920x1080_25070413552160477.jpg"
       ],
       "categories": [
-        "其他"
+        "科技"
       ],
-      "category": "其他",
+      "category": "科技",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24676,9 +23959,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/8d9a3dc873af12aa10c4985830c93709.png"
       ],
       "categories": [
-        "其他"
+        "表演"
       ],
-      "category": "其他",
+      "category": "表演",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24728,9 +24011,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/1200x1200 (2).png"
       ],
       "categories": [
-        "其他"
+        "美術"
       ],
-      "category": "其他",
+      "category": "美術",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24785,9 +24068,9 @@
         "https://backstage.tpac-taipei.org/storage/uploads/program/images/761419604154b91df2ab5f317db445b8.jpg"
       ],
       "categories": [
-        "其他"
+        "表演"
       ],
-      "category": "其他",
+      "category": "表演",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -24927,62 +24210,6 @@
       "firstSeenAt": "2026-07-31T00:01:45+08:00",
       "lastSeenAt": "2026-08-30T16:52:09+08:00",
       "publicVenueId": "guo-jia-liang-ting-yuan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a70ca7126b32427d0604342",
-      "title": "2026北藝學院｜人物筆記：從《海之邊》到《孤身》：一場尋找家的劇場旅程",
-      "description": "歷經童年的黎巴嫩戰火，其後移居加拿大並定居法國的劇作家暨導演穆阿瓦（Wajdi Mouawad），常以遷徙經驗與戰爭記憶為創作核心，引領觀眾不斷思考疆界與族群的議題。從群像式敘事的《海之邊》，到一人獨演並直面內心深處的《孤身》，穆阿瓦的劇場旅程既回望歷史和戰爭廢墟，也近距離迫視移民與流亡的身份困境。本講座以上述兩部作品為軸線，探討穆阿瓦如何將父親的遺體、破碎的故土與失落的語言轉化為舞臺行動，透過史詩敘事到孤獨的自白等形式展現劇場多樣性。當戰爭不只是背景音而是現實的呼喊，當遺體不只是死亡而成為身體與記憶的一部分，劇場是否能成為修補與重建的場所？在記憶的廢墟之上，我們又可以如何重新理解「家」與「自我」的時代意義？\n講者 羅仕龍法國巴黎新索邦大學戲劇博士，現任教於清華大學，著有《十六歲的戲劇課》。2021年起與國光劇團藝術總監王安祈教授共同主持IC之音電台「打開戲箱說故事」節目。近年參與規劃台積電文教基金會贊助「白先勇清華文學講座」、「京劇新美學」課程，並於北藝學院、青田藝集講授戲劇課程，同時也在《中學生報》撰寫青少年戲劇專欄。\n▌前往更多演出資訊\n➥ 2026.10.02-10.03 臺北藝術節：瓦吉．穆阿瓦《海之邊》\n➥ 2026.10.03-10.04 臺北藝術節：瓦吉．穆阿瓦《孤身》\nHaving survived the war in Lebanon during his childhood, and later emigrating to Canada before settling in France, playwright and director Wajdi Mouawad has consistently drawn on his experience of migration and memories of war as the driving force of his work. Through his theatre, he invites audiences to reflect on questions of borders, identity, and belonging. From the multi-voiced, ensemble narrative of Littoral to the intimate solo performance of Seuls, in which he confronts his innermost self, Mouawad’s theatrical journey looks back at the ruins of history and war while closely examining the fragile condition of migrants and exiles.This lecture will focus on these two works to explore how Mouawad transforms a father’s body, a shattered homeland, and a lost language into powerful stage action. Moving from epic storytelling to solitary confession, he reveals the many expressive possibilities of theatre. When war is no longer distant background noise but an urgent, living reality; when a body is no longer only a sign of death but becomes part of memory and identity—can theatre become a place of repair and renewal? Standing amid the ruins of memory, how might we rethink the meaning of “home” and “self” in our own time?\nPanelist｜Shih-Lung LoShih-Lung Lo holds a Ph.D. in Theatre Studies from Sorbonne-Nouvelle University, Paris, France. He currently teaches at National Tsing Hua University in Taiwan and is the author of Drama Class at Sixteen. Since 2021, he has co-hosted the IC Radio programme Open the Theatre together with Professor Wang An-chi, Artistic Director of the GuoGuang Opera Company. In recent years, he has been actively involved in curating and designing major cultural initiatives sponsored by the TSMC Education and Culture Foundation, including the “Kenneth Hsien-Yung Pai Tsing Hua Literature Lectures” and the course series “The New Aesthetics of Peking Opera.” He has also given lectures on theatre to public, while contributing a regular theatre column for young readers to the local press.",
-      "sourceUrl": "https://www.opentix.life/event/2079053526343491585",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/17828129253239Q2a50UXfS.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/17828129253239Q2a50UXfS.jpeg",
-        "https://s3.resource.opentix.life/upload/program/17848817190216XcNu1jgPM.png",
-        "https://s3.resource.opentix.life/upload/program/178488173607330hWDBoyvH.jpeg"
-      ],
-      "categories": [
-        "表演"
-      ],
-      "category": "表演",
-      "contentType": "performance",
-      "contentTypes": [
-        "performance"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-02",
-      "endDate": "2026-09-02",
-      "locationName": "臺北表演藝術中心",
-      "location": "臺北表演藝術中心",
-      "venueGroup": "臺北表演藝術中心",
-      "venueDetail": "2樓太陽廳東南角",
-      "venueNames": [
-        "臺北表演藝術中心"
-      ],
-      "venueName": "臺北表演藝術中心",
-      "parentVenueName": "臺北表演藝術中心",
-      "parentVenueId": "taipei-performing-arts-center",
-      "venueIds": [
-        "tai-bei-biao-yan-yi-shu-zhong-xin",
-        "taipei-performing-arts-center"
-      ],
-      "venueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市士林區劍潭路1號",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0851489,
-      "longitude": 121.524367,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 0,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-14T15:18:39+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
       "publicVenuePriority": "P0",
       "publicVenueType": "performing_arts",
       "publicCurationReason": "confirmed_P0"
@@ -25549,9 +24776,9 @@
         "https://s3.resource.opentix.life/upload/program/1787792278700ufR7Yk3dsW.jpeg"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -25825,7 +25052,8 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/2026 06 咖波小浪漫- 活動主視覺_1920x1080.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -25881,8 +25109,7 @@
         "https://s3.resource.opentix.life/upload/program/1784710958209Uj6vIZ1WnS.jpeg"
       ],
       "categories": [
-        "音樂",
-        "美術"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -26046,7 +25273,8 @@
         "https://www.songshanculturalpark.org/gallery/1779070731_7706b57d43502bcaa090.png"
       ],
       "categories": [
-        "美術"
+        "美術",
+        "科技"
       ],
       "category": "美術",
       "contentType": "art_exhibition",
@@ -26212,8 +25440,7 @@
         "https://www.songshanculturalpark.org/gallery/1785225346_9f28d83c92177c4f7a1a.jpg"
       ],
       "categories": [
-        "市集",
-        "自然"
+        "市集"
       ],
       "category": "市集",
       "contentType": "market",
@@ -26374,63 +25601,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a7df97c26b32427d06043cc",
-      "title": "好哲凳Live Podcast｜台語創作多重宇宙 feat. 鄭宜農&温若喬",
-      "description": "在臺灣出生長大討生活，無論我們來自哪裡、出身為何，也無論是否能夠說得一口流利台語，台語都已融入我們生命當中。而兩廳院舞台上的現代劇作、傳統戲曲，以及近年夏日爵士持續推出的台語爵士，都讓台語跳出日常，開出藝文的繁花；台語既是日常的語言，也是藝術的語言。 可是，既然台語早已是我們生活中理所當然的一部分，為什麼藝術家們運用台語創作出令人耳目一新的作品時，仍感覺多少有點「沒那麼理所當然」？是我們對於台語的表現力帶有先入為主的觀念嗎？還是說，台語本身擁有許多讓創意萌發的資源還沒被看見、甚至遭到遺忘？當今的藝文創作者們，又是如何並肩台語，與創作同行？ 2026好哲凳第二場Live Podcast，邀請以台語專輯《水逆》、《圓缺》打動廣大聽眾與金曲評審的創作歌手鄭宜農，聯手以台語推廣帳號「學台語 ohtaigi」風靡社群的台語詩人温若喬，透過音樂與詩歌、創作與推廣的視野交錯，以及各自與台語共渡的生命經驗，聽見並看見台語的自由與多元。\n※本場活動為《好哲凳》Podcast節目錄音，講座主要以華語進行\n來賓：鄭宜農\n創作歌手、演員、寫字的人。發行個人專輯《海王星》《Pluto》《給天王星》《水逆》以及多首影視主題曲。著有童書《風中的小米田》、短篇集《幹上俱樂部：3D妖獸變形實錄》、散文《孤獨培養皿》。2023年以《水逆》 專輯獲得第34屆金曲獎「最佳台語專輯獎」及「最佳台語女歌手獎」並以2023年新單曲〈金黃色的〉榮獲第14屆金音創作獎「最佳另類流行歌曲獎」。第二張全台語《圓缺》於2025正式推出。\n來賓：温若喬\n（攝影：安比）1999年生，淡水人。國立臺灣大學社會學系與心理學研究所畢。現為作家與臨床心理師，網路社群「\n學台語 ohtaigi  」創辦人。譯有《浪鳥集：泰戈爾漂鳥集台文版》，著有詩集《日花閃爍：台語的美麗詞彙 & 一百首詩》。\n主持：劉文\n社會心理學者、作家，現任中央研究院民族學研究所副研究員。研究專長為酷兒理論、批判種族理論，與中美競逐下的地緣政治。著有學術專書《依戀傷痕：亞裔美國人的情感動員與認同》。長期關注性別與種族正義的運動，也撰寫文學和電影的評論。",
-      "sourceUrl": "https://www.opentix.life/event/2080194950108758017",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/17864391199325gRqKlxtjM.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/17864391199325gRqKlxtjM.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1785727524591r3Y229XVkF.jpeg",
-        "https://s3.resource.opentix.life/upload/program/17857275447488g3ylIcgB6.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1785727778055qaisOVZGXu.jpeg"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-14",
-      "endDate": "2026-09-14",
-      "locationName": "國家兩廳院",
-      "location": "國家兩廳院",
-      "venueGroup": "國家兩廳院",
-      "venueDetail": "一樓大廳",
-      "venueNames": [
-        "國家兩廳院"
-      ],
-      "venueName": "國家兩廳院",
-      "parentVenueName": "國家兩廳院",
-      "parentVenueId": "national-theater-and-concert-hall",
-      "venueIds": [
-        "guo-jia-liang-ting-yuan",
-        "national-theater-and-concert-hall"
-      ],
-      "venueId": "guo-jia-liang-ting-yuan",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市中正區中山南路21-1號",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0353129,
-      "longitude": 121.5181619,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 0,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-14T15:18:39+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-jia-liang-ting-yuan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a6cd5a026b32427d0604305",
       "title": "2026 TINMF《縱橫之聲》木笛場",
       "description": "2026臺北國際現代音樂節 —《Echoes of Axis 縱橫之聲》在聲音的經緯之間，島嶼化為軸心。當代音樂的迴響縱橫交錯，從山巒到海岸，從人聲的呢喃到管風琴的回盪，構築出一條屬於此時此地的聲音軸線。「Echoes of Axis」標誌著臺灣音樂創作在軸線上的延展——既往與未來、地方與世界、個體與整體，在此交會而共振。\n三場主題音樂會以「聲」為核心意象，展現從大地到靈魂的多層軌跡：《聲之島：從山到海的脈動》 以自然與人文的律動揭示土地的呼吸；《聲之澗：在界與流之間》 以室內樂的細語探索界限與共響；《聲之殿：從起初到永恆的迴響》 則以管風琴為軸，回望靈性與起源的光。橫，是聲音的擴展與互聽；縱，是時間與信念的深掘。這些回聲共同編織出當代臺灣與世界對話的聲響地景——一條從島嶼出發，縱橫於天地之間的聲之軸。\n被多國評論盛讚為「世界最頂尖」的新竹直笛合奏團，在指揮陳孟亨帶領下，用近四十支木笛向深海與群山取材：林岑陵《巴格浪》、馬定一《彩虹橋之歌》、廖憲一《島鳴》、周久渝《山線交響》，委託創作陳欣蕾《鯨落．星礁》與陳以德《脈動》，並引入德國作曲家 Sören Sieg《Jabal Ram》與 Markus Zahnhausen《Birds & Chimes》。\n指揮︱陳孟亨演出︱新竹直笛合奏團 演出曲目林岑陵：《巴格浪》馬定一：《彩虹橋之歌》陳欣蕾：《鯨落．星礁》（委託創作，世界首演）陳以德：《脈動》（委託創作，世界首演）廖憲一：《島鳴》周久渝：《山線交響》(2024) 為直笛重奏團Sören Sieg: Jabal RamMarkus Zahnhausen: Birds & Chimes (arranged by Simon Borutzki)",
@@ -26549,7 +25719,8 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/華山官網活動 1920x1080px.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "exhibition",
@@ -27030,59 +26201,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a833f7f26b32427d06043f1",
-      "title": "黑白講・鬥嘴鼓： 我們為何還要看台語片？",
-      "description": "國影電影編號：2026_09_29放映規格：數位檔案級別：普遍級片長：70分鐘發音：台語/中文字幕：無字幕\n特別活動 SPECIAL EVENT黑白講・鬥嘴鼓：我們為何還要看台語片？\n20張投影片，每張20秒，講者只有6分 40秒能回答這個靈魂拷問：「我們為何還要看台語片？」本場特別邀請六位來自電影研究、策展、漫畫與表演等不同領域的講者，從各自的工作與經驗出發，拋出不同的解答。 在極速倒數的規則下，有人可能講到舌頭打結，也有人能「講甲喙角全泡」；可以嚴謹考證，也可以「黑白講、鬥嘴鼓」。歡迎「人客做伙來聽」，看六位講者如何從不同視角，重新翻轉我們對台語片的想像！\n講者｜ 蘇致亨／台語片研究者 王君琦／學者、策展人 簡嘉誠／漫畫家 倪娃法（Wafa Ghermani）／學者、策展人 張雅淳／唸歌創作者 林奎章／本中心研究員\n主持｜陳怡君、鍾佩樺／《打開影展的正確方式》主持人\n* 會員優先：會員憑證優先入場，可於活動前 15 分鐘排隊；非會員於活動前五分鐘開放入席，坐滿為止。 ( 會員申辦資訊詳見官網說明。)* 會員限定好禮：參加會員優先指定活動，可獲「台語片 70 週年紀念台味啤酒杯」乙只。數量有限，送完為止。",
-      "sourceUrl": "https://www.opentix.life/event/2085287665547493377",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/1786298171878Q56Ur0wIIo.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/1786298171878Q56Ur0wIIo.jpeg"
-      ],
-      "categories": [
-        "其他"
-      ],
-      "category": "其他",
-      "contentType": "exhibition",
-      "contentTypes": [
-        "exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-19",
-      "endDate": "2026-09-19",
-      "locationName": "國家電影及視聽文化中心-小影格",
-      "location": "國家電影及視聽文化中心-小影格",
-      "venueGroup": "國家電影及視聽文化中心-小影格",
-      "venueNames": [
-        "國家電影及視聽文化中心"
-      ],
-      "venueName": "國家電影及視聽文化中心",
-      "parentVenueName": "國家電影及視聽文化中心",
-      "parentVenueId": "taiwan-film-audiovisual-institute",
-      "venueIds": [
-        "guo-jia-dian-ying-ji-shi-ting-wen-hua-zhong-xin",
-        "taiwan-film-audiovisual-institute"
-      ],
-      "venueId": "guo-jia-dian-ying-ji-shi-ting-wen-hua-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "新北市新莊區文藝路2號",
-      "region": "新北市",
-      "regionCanonical": "新北市",
-      "latitude": 25.0570576,
-      "longitude": 121.446101,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 0,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-30T16:52:09+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-jia-dian-ying-ji-shi-ting-wen-hua-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "film_media",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "cc055c723e527e1db4f91868",
       "title": "2026文化館五週年生日慶：感官練習進行曲",
       "description": "臺北流行音樂中心文化館５歲了！ 五年來，文化館以流行音樂為起點，陪伴觀眾穿梭於不同世代的旋律與故事之間。透過常設展、主題特展與多元活動，持續探索音樂與生活交會的各種可能。 今年藉著文化館的生日，邀請大家與我們一起重新練習感受，發現新生。聽見一段旋律、聞見一縷氣味、看見一抹色彩、感受身體細微的回應，讓音樂不只是耳朵聽見的聲音，更成為串起記憶與日常的感官之旅。 這個九月，邀請你回到文化館，和我們一起回望五年的精彩足跡，也在每一次當下的體驗中，展開可以帶往未來的感官練習。",
@@ -27202,9 +26320,10 @@
         "https://www.songshanculturalpark.org/gallery/1782873829_125f384b904c733589f9.jpg"
       ],
       "categories": [
+        "美術",
         "親子"
       ],
-      "category": "親子",
+      "category": "美術",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition",
@@ -27370,9 +26489,9 @@
         "https://s3.resource.opentix.life/upload/program/1787460999461bVgCzP5Ajf.jpeg"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -27698,9 +26817,10 @@
         "https://www.tmc.taipei/files/1784946262tgKC13sDKS.jpg"
       ],
       "categories": [
+        "音樂",
         "動漫"
       ],
-      "category": "動漫",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance",
@@ -29171,7 +28291,8 @@
         "https://www.songshanculturalpark.org/gallery/1786329306_2c4d5c94343280d74e03.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -29226,9 +28347,9 @@
         "https://www.songshanculturalpark.org/gallery/1784775168_9677ab76fbc6e86caba9.jpg"
       ],
       "categories": [
-        "其他"
+        "設計"
       ],
-      "category": "其他",
+      "category": "設計",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -29594,61 +28715,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a70ca7126b32427d0604344",
-      "title": "2026北藝學院｜人物筆記：當海上獵場成為藝術現場──從捕鯨文化到陳天灼的視覺祭典",
-      "description": "本場講座將從藝術家陳天灼的創作脈絡出發，介紹其以影像、舞蹈、聲音與裝置交織而成的跨媒材實踐，並延伸其長期對身體、儀式與感知邊界的探索。同時，講座亦將介紹印尼拉馬萊拉村（Lamalera）傳統捕鯨文化的歷史、信仰與生活方式，說明該社群如何在特定的自然環境與歷史條件中，形塑其獨特的生存與文化系統。透過對談，講者亦帶領觀眾梳理透過藝術創作與文化脈絡的並置，《海籠》所涉及的田野經驗與敘事來源，進一步呈現作品如何在當代藝術語境中，回應不同知識系統之間的交會與張力。\n講者 劉依盈獨立策展、撰稿及翻譯，寫作計畫「muainn」共同創辦人。曾任北師美術館展覽暨國際事務專員，畢業於倫敦大學金匠學院（Goldsmiths）策展研究所。研究興趣探觸另類機構實踐，以及個體與機制的互動關係。近期策劃「Re：戰鬥之城」（2026）、「他們告訴我，這不是你的錯。而我告訴他們，一切都會沒事」（2024、2025）等展覽。\n講者 王文彥台灣獨立攝影師、自由潛水員。長期以影像記錄海洋文化與島嶼生活，曾深入蘭嶼達悟族的捕魚儀式與拼板舟文化，出版攝影集《轉風：和蘭嶼交換時間》。熱衷走訪世界各地的海洋文化現場，足跡包括印尼 Lamalera 傳統捕鯨村落。現為「女子的海」網站創辦人。\nThis lecture begins with an overview of artist Chen Tianzhuo’s creative context and his cross-\ndisciplinary practices that combine video, dance, sound, and installation, then continues with his long-\nterm exploration of physical, ceremonial, and sensory boundaries. In addition, the traditional whaling\nheritage of the Indonesian village of Lamalera is presented, with its associated history, beliefs, and\nlifestyles, to illustrate how this community’s unique survival and cultural systems have been shaped\nunder specific environmental and historical conditions.\nThrough dialogue, the speakers guide audience members through the juxtaposition of artistic creation\nand cultural context. By sharing their field study experience for and the narrative sources of Ocean\nCage, they demonstrate how this work responds to the intersection of and tension between different\nknowledge systems within a contemporary art context.\nPanelist｜I-Ying LiuI-Ying Liu is an independent curator, writer, and translator, and a co-founder of the writing project “muainn.” She previously worked as Exhibition and Global Engagement Coordinator at the MoNTUE, and holds an MFA in Curating from Goldsmiths, University of London. Her research explores alternative institutional practices and the ways individuals navigate institutional and social systems. Recent curatorial projects include Re: Battle City (2026) and They Told Me It Wasn't Your Fault. And I Told Them Everything Would Be Fine. (2024, 2025).\nPanelist｜WANG WEN YENWang Wenyen is a Taiwanese independent photographer and freediver. He has long documented ocean cultures and island life through photography, including an in-depth exploration of the Tao people of Orchid Island — their fishing rituals and tatala canoe culture — culminating in the photo book Turning Wind: Exchanging Time with Orchid Island. Passionate about seeking out distinct ocean cultures around the world, his travels have taken him to the traditional whale-hunting village of Lamalera, Indonesia. He is the founder of Ms. Ocean, an ocean lifestyle and media platform based in Taiwan.",
-      "sourceUrl": "https://www.opentix.life/event/2079055611840643072",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/17828129253239Q2a50UXfS.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/17828129253239Q2a50UXfS.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1784880332404Zthx1myDpy.jpeg"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-09-30",
-      "endDate": "2026-09-30",
-      "locationName": "臺北表演藝術中心",
-      "location": "臺北表演藝術中心",
-      "venueGroup": "臺北表演藝術中心",
-      "venueDetail": "2樓太陽廳東南角",
-      "venueNames": [
-        "臺北表演藝術中心"
-      ],
-      "venueName": "臺北表演藝術中心",
-      "parentVenueName": "臺北表演藝術中心",
-      "parentVenueId": "taipei-performing-arts-center",
-      "venueIds": [
-        "tai-bei-biao-yan-yi-shu-zhong-xin",
-        "taipei-performing-arts-center"
-      ],
-      "venueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市士林區劍潭路1號",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0851489,
-      "longitude": 121.524367,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 0,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-14T15:18:39+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "tai-bei-biao-yan-yi-shu-zhong-xin",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "ccdb1fdfa726416adf2ec0b5",
       "title": "MAX MAYDAYLAND in TAIPEI 台北站 5525+2｜北中南大串聯展",
       "description": "MAX MAYDAYLAND in TAIPEI 台北站 5525+2｜北中南大串聯展 in 北流",
@@ -29664,9 +28730,9 @@
         "https://www.tmc.taipei/files/1784946262tgKC13sDKS.jpg"
       ],
       "categories": [
-        "美術"
+        "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -29715,9 +28781,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/banner_活動主視覺1920x1080_0.jpg"
       ],
       "categories": [
-        "其他"
+        "美術"
       ],
-      "category": "其他",
+      "category": "美術",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -29773,9 +28839,9 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/2026-06-華山芳釀所-素材10.jpg"
       ],
       "categories": [
-        "其他"
+        "設計"
       ],
-      "category": "其他",
+      "category": "設計",
       "contentType": "exhibition",
       "contentTypes": [
         "exhibition"
@@ -29885,7 +28951,7 @@
       ],
       "categories": [
         "表演",
-        "自然"
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -30352,9 +29418,9 @@
         "https://www.songshanculturalpark.org/gallery/1787108139_2e64dc7e9406f10522ce.jpg"
       ],
       "categories": [
-        "市集"
+        "設計"
       ],
-      "category": "市集",
+      "category": "設計",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -30578,9 +29644,9 @@
         "https://s3.resource.opentix.life/upload/program/17858069758360HlOhf2mlx.png"
       ],
       "categories": [
-        "電影"
+        "音樂"
       ],
-      "category": "電影",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -30964,9 +30030,9 @@
         "https://s3.resource.opentix.life/upload/program/1785394216466Qz67UvixFf.jpeg"
       ],
       "categories": [
-        "電影"
+        "表演"
       ],
-      "category": "電影",
+      "category": "表演",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -31018,7 +30084,8 @@
         "https://www.songshanculturalpark.org/gallery/1782443985_151ddfe4b341763224c9.jpg"
       ],
       "categories": [
-        "快閃店"
+        "快閃店",
+        "動漫"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -31182,8 +30249,7 @@
         "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/貼布_26080712093334658.jpg"
       ],
       "categories": [
-        "快閃店",
-        "歷史"
+        "快閃店"
       ],
       "category": "快閃店",
       "contentType": "popup",
@@ -31331,60 +30397,6 @@
       "hitRate": 0,
       "source": "OPENTIX兩廳院文化生活",
       "firstSeenAt": "2026-07-22T23:38:03+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-jia-liang-ting-yuan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
-      "id": "6a6cd5aa26b32427d060431a",
-      "title": "2026國家兩廳院-目擊者：看戲大隊 第二季 保證金繳交",
-      "description": "👀觀點借給我，座位留給你！💺2026 第二季目擊者青年看戲大隊分享你的觀點，獲得免費欣賞演出的機會！\n劇場是個充滿無限可能的神秘空間，場景與故事在燈光亮暗之間輪番上演，兩廳院全面募集21歲(含)以下在學青年，加入目擊者青年看戲大隊的行列，入選者將獲得免費欣賞兩廳院主辦節目的機會，更有專業講座引你走進藝術評論的大門，快來親自感受現場演出帶來的悸動，讓精彩節目拓展你的藝文視野！\n相關連結兩廳院官方網站｜https://npac-ntch.org/zh廳院青IG｜https://www.instagram.com/ntch.taipei/",
-      "sourceUrl": "https://www.opentix.life/event/2080233375851765761",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/1784882707723qpAbXUXHWi.png",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/1784882707723qpAbXUXHWi.png",
-        "https://s3.resource.opentix.life/upload/program/1784801485138Jdm5En69c4.jpeg"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-10-15",
-      "endDate": "2026-10-15",
-      "locationName": "國家兩廳院",
-      "location": "國家兩廳院",
-      "venueGroup": "國家兩廳院",
-      "venueNames": [
-        "國家兩廳院"
-      ],
-      "venueName": "國家兩廳院",
-      "parentVenueName": "國家兩廳院",
-      "parentVenueId": "national-theater-and-concert-hall",
-      "venueIds": [
-        "guo-jia-liang-ting-yuan",
-        "national-theater-and-concert-hall"
-      ],
-      "venueId": "guo-jia-liang-ting-yuan",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市中正區中山南路21-1號",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0367564,
-      "longitude": 121.519047,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 0,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-01T14:48:20+08:00",
       "lastSeenAt": "2026-08-30T16:52:09+08:00",
       "publicVenueId": "guo-jia-liang-ting-yuan",
       "publicVenuePriority": "P0",
@@ -32177,7 +31189,8 @@
         "https://neo-classical2003.com.tw/image/cache/data/20250110170932-1920x720.png"
       ],
       "categories": [
-        "表演"
+        "表演",
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -32230,9 +31243,9 @@
         "https://s3.resource.opentix.life/upload/program/1786450342032qDrXRifdtq.jpeg"
       ],
       "categories": [
-        "電影"
+        "演唱會"
       ],
-      "category": "電影",
+      "category": "演唱會",
       "contentType": "concert",
       "contentTypes": [
         "concert"
@@ -32398,9 +31411,9 @@
         "https://s3.resource.opentix.life/upload/program/1787817068173A1ooZeXh1j.jpeg"
       ],
       "categories": [
-        "表演"
+        "舞蹈"
       ],
-      "category": "表演",
+      "category": "舞蹈",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -33394,8 +32407,7 @@
         "https://s3.resource.opentix.life/upload/program/178652509522934f3NJJlcA.jpeg"
       ],
       "categories": [
-        "音樂",
-        "自然"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -33667,63 +32679,6 @@
       "publicCurationReason": "confirmed_P0"
     },
     {
-      "id": "6a6cd5aa26b32427d0604318",
-      "title": "2026秋天藝術節【藝術家對談】共存的想像：菲利普．肯恩 × 李貞葳 × 法庫亞．佐坦",
-      "description": "劇場與舞蹈如何回應當代世界？創作者又如何透過作品重新觀看人類、環境與彼此的關係？從《人間樂園》的奇想寓言到《成為海洋》的流動景觀，本場對談邀請菲利普．肯恩、李貞葳與法庫亞．佐坦，分享創作歷程與思考，探問表演藝術如何回應當代處境，並開啟關於未來與共存的想像。\nꚰ【藝術家對談】共存的想像：菲利普．肯恩ｘ李貞葳ｘ法庫亞．佐坦時間｜2026年11月4日（三）19:30~21:30地點｜國家戲劇院四樓交誼廳與談人｜菲利普・肯恩（《人間樂園》導演）、李貞葳\n（《成為海洋》編舞家）  、法庫亞．佐坦（《成為海洋》編舞家）主持人｜耿一偉（衛武營國家藝術文化中心戲劇顧問）報名｜免費參加，8.8 (六) 起使用OPENTIX 報名，限用電子票語言｜英／法文，備有中文口譯\n與談人｜菲利普．肯恩 菲利普．肯恩（Philippe Quesne）1970年出生於巴黎，畢業於艾斯蒂安學院及巴黎國立高等裝飾藝術學院，曾長期從事劇場、歌劇與當代藝術展之導演與舞台設計工作。2003年創立生態動物園劇團（Vivarium Studio），聚集了一眾演員、藝術家和音樂家，並以作家與導演的角色創作劇作，將舞臺設計成生態系統的想像，讓表演者沉浸其中。曾任南特爾-亞蒙迪國家戲劇中心總監，並於法國及歐洲多所藝術院校任教與講授工作坊。2022年夏天，他接替瑪麗-泰瑞莎．阿利耶（Marie-Thérèse Allier），出任巴黎「玻璃動物園」（La Ménagerie de Verre）藝術總監，持續投入當代表演藝術與創作實踐。© Amélie Blanc\n與談人｜李貞葳 & 法庫亞．佐坦　LEE\\VAKULYALEE\\VAKULYA 由李貞葳與法庫亞．佐坦（Vakulya Zoltán）共同組成，自2016年合作至今。兩人致力發展獨特身體語彙，關注身體與社會環境的互動關係及當代精神狀態。作品聚焦個體與社會之間的關係，透過創作回應當代議題，探問同理心的可能與極限。曾獲2020年東元獎及2023年台新藝術獎表演藝術獎。\n© Maël G.Lagadec .\n主持人｜耿一偉衛武營國家藝術文化中心戲劇顧問，臺北藝術大學戲劇系兼任助理教授。曾任臺北藝術節藝術總監(2012-17)，桃園鐵玫瑰藝術節策展人(2018-22)，台南藝術節策展人(2023-24)，並獲頒德台友誼獎章、藝術與文學騎士勳章與歌德獎章。",
-      "sourceUrl": "https://www.opentix.life/event/2077963745139183617",
-      "sourceUrlVerified": true,
-      "image": "https://s3.resource.opentix.life/upload/program/1784259386583jIW3lUFFDj.jpeg",
-      "images": [
-        "https://s3.resource.opentix.life/upload/program/1784259386583jIW3lUFFDj.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1784259826152NXnuHi5qL1.jpeg",
-        "https://s3.resource.opentix.life/upload/program/1784259976708yFxyHc7BSg.jpeg",
-        "https://s3.resource.opentix.life/upload/program/178461687363971BnGoLxQE.jpeg"
-      ],
-      "categories": [
-        "美術"
-      ],
-      "category": "美術",
-      "contentType": "art_exhibition",
-      "contentTypes": [
-        "art_exhibition"
-      ],
-      "eventFormat": "physical",
-      "editorialStatus": "candidate",
-      "startDate": "2026-11-04",
-      "endDate": "2026-11-04",
-      "locationName": "國家兩廳院",
-      "location": "國家兩廳院",
-      "venueGroup": "國家兩廳院",
-      "venueDetail": "四樓交誼廳",
-      "venueNames": [
-        "國家兩廳院"
-      ],
-      "venueName": "國家兩廳院",
-      "parentVenueName": "國家兩廳院",
-      "parentVenueId": "national-theater-and-concert-hall",
-      "venueIds": [
-        "guo-jia-liang-ting-yuan",
-        "national-theater-and-concert-hall"
-      ],
-      "venueId": "guo-jia-liang-ting-yuan",
-      "venueCoverageStatus": "complete",
-      "address": "臺北市中正區中山南路21-1號",
-      "region": "台北市",
-      "regionCanonical": "臺北市",
-      "latitude": 25.0353129,
-      "longitude": 121.5181619,
-      "coordinateSource": "official_feed",
-      "price": "票價請見活動頁面",
-      "hitRate": 0,
-      "source": "OPENTIX兩廳院文化生活",
-      "firstSeenAt": "2026-08-01T14:48:20+08:00",
-      "lastSeenAt": "2026-08-30T16:52:09+08:00",
-      "publicVenueId": "guo-jia-liang-ting-yuan",
-      "publicVenuePriority": "P0",
-      "publicVenueType": "performing_arts",
-      "publicCurationReason": "confirmed_P0"
-    },
-    {
       "id": "6a8c790426b32434f435803e",
       "title": "弦上的微光—張明雄二胡音樂會",
       "description": "沉浸二胡藝術37載，張明雄老師以琴為伴，在弦音之間探索音樂的無限可能。2026年再次登上舞台，於中山堂中正廳攜手「365樂坊」及「台灣藝術大學國樂團」，帶來一場豐富多彩的二胡音樂饗宴。\n曲目橫跨中外經典，從《戰馬奔騰》的豪情、《查爾達斯》的熱烈，到《小河淌水》、《雨夜花》的柔美，以及《長相思》、《老鷹之歌》的深情吟唱，並以《普世歡騰》、《喜看麥田千層浪》展現歡欣與壯闊。一弦一音，承載歲月；一曲一韻，傳遞感動。邀您走進中正廳，聆聽弦上的微光，感受二胡繞樑不絕的美好。",
@@ -33911,7 +32866,7 @@
       ],
       "categories": [
         "表演",
-        "自然"
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
@@ -33975,8 +32930,7 @@
         "https://www.opentix.life/dispUploadBox/PJ-/Ckeditor/20260821162138163.jpg"
       ],
       "categories": [
-        "表演",
-        "美術"
+        "表演"
       ],
       "category": "表演",
       "contentType": "art_exhibition",
@@ -34547,8 +33501,7 @@
         "https://s3.resource.opentix.life/upload/program/1784195791749HvOYxvQDCe.png"
       ],
       "categories": [
-        "舞蹈",
-        "自然"
+        "舞蹈"
       ],
       "category": "舞蹈",
       "contentType": "festival",
@@ -34659,9 +33612,9 @@
         "https://s3.resource.opentix.life/upload/program/1786171632045joxSB4uUCE.png"
       ],
       "categories": [
-        "市集"
+        "表演"
       ],
-      "category": "市集",
+      "category": "表演",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -35048,9 +34001,10 @@
         "https://s3.resource.opentix.life/upload/program/1786605064379TywbaEYfQk.jpeg"
       ],
       "categories": [
-        "表演"
+        "音樂",
+        "親子"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -35157,9 +34111,10 @@
         "https://s3.resource.opentix.life/upload/program/1787468591518ujIvSP345v.jpeg"
       ],
       "categories": [
+        "表演",
         "市集"
       ],
-      "category": "市集",
+      "category": "表演",
       "contentType": "market",
       "contentTypes": [
         "market"
@@ -35390,9 +34345,9 @@
         "https://s3.resource.opentix.life/upload/program/17877441484535rFLsZG5I3.jpeg"
       ],
       "categories": [
-        "美術"
+        "音樂"
       ],
-      "category": "美術",
+      "category": "音樂",
       "contentType": "art_exhibition",
       "contentTypes": [
         "art_exhibition"
@@ -36783,9 +35738,9 @@
         "https://s3.resource.opentix.life/upload/program/1785200525092iC1LAEVq1a.jpeg"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37464,10 +36419,10 @@
         "https://www.tmc.taipei/files/20260730160458174.png"
       ],
       "categories": [
-        "表演",
+        "音樂",
         "競賽"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37687,9 +36642,9 @@
         "https://s3.resource.opentix.life/upload/program/1785499206178XTsaay8o3J.png"
       ],
       "categories": [
-        "表演"
+        "音樂"
       ],
-      "category": "表演",
+      "category": "音樂",
       "contentType": "performance",
       "contentTypes": [
         "performance"
@@ -37794,7 +36749,8 @@
         "https://s3.resource.opentix.life/upload/program/1785395868374yA4ArCdKOK.png"
       ],
       "categories": [
-        "音樂"
+        "音樂",
+        "親子"
       ],
       "category": "音樂",
       "contentType": "art_exhibition",
@@ -38023,8 +36979,7 @@
         "https://s3.resource.opentix.life/upload/program/178573782928531hvqSzNE1.jpeg"
       ],
       "categories": [
-        "音樂",
-        "歷史"
+        "音樂"
       ],
       "category": "音樂",
       "contentType": "performance",
@@ -38514,9 +37469,9 @@
         "https://www.songshanculturalpark.org/gallery/1783060163_9706d81259d5cc1398b9.jpg"
       ],
       "categories": [
-        "電影"
+        "美術"
       ],
-      "category": "電影",
+      "category": "美術",
       "contentType": "film_screening",
       "contentTypes": [
         "film_screening"
@@ -38695,7 +37650,7 @@
       ],
       "categories": [
         "表演",
-        "自然"
+        "親子"
       ],
       "category": "表演",
       "contentType": "performance",
