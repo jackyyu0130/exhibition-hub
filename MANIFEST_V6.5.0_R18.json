@@ -1,0 +1,42 @@
+{
+  "version": "6.5.0-R18",
+  "title": "All-category semantic audit and canonical category listings",
+  "supersedes": "6.5.0-R17.1",
+  "installationMode": "overlay the current develop branch",
+  "runtimeFiles": [
+    "VERSION.txt",
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "assets/exhibition-placeholder-v16.webp",
+    "data/exhibitions.curated.json",
+    "scripts/build_curated_feed.py",
+    "scripts/exhibition_hub/curation.py",
+    "scripts/exhibition_hub/classifiers/content_types.py"
+  ],
+  "auditFiles": [
+    "data/update-reports/category-semantic-audit-r18.json"
+  ],
+  "testFiles": [
+    "tests/test_r160_catalog_consistency.py",
+    "tests/test_r170_semantic_taxonomy.py",
+    "tests/test_r171_display_consistency.py",
+    "tests/test_r180_all_category_semantics.py"
+  ],
+  "verification": {
+    "categoriesReviewed": 17,
+    "beforeEventCount": 693,
+    "publishedEventCount": 675,
+    "semanticCategoryCorrections": 91,
+    "nonCatalogActivityRemovals": 18,
+    "animeMembershipCount": 23,
+    "semanticReclassificationMismatches": 0,
+    "primaryCategoryMismatches": 0,
+    "unsupportedCategoryLabels": 0,
+    "mutuallyExclusiveFormatConflicts": 0,
+    "rawPriceVisualSurfaces": 0,
+    "javascriptSyntax": "passed",
+    "testCount": 299,
+    "testResult": "passed"
+  }
+}

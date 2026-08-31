@@ -1,4 +1,4 @@
-/* Exhibition Hub V6.5.0-R17.1 P5-B → C3 — semantic taxonomy, multi-category discovery, branded fallback and universal admission labels. */
+/* Exhibition Hub V6.5.0-R18 P5-B → C3 — all-category semantic audit, canonical category discovery, branded fallback and universal admission labels. */
 (() => {
   'use strict';
 
@@ -400,13 +400,13 @@
   const FILM_CATEGORY_PATTERN = /電影|影展|放映|映後|影像節|紀錄片|短片節|動畫影展|劇場版|台語片預告/i;
   const GENERAL_MUSIC_PATTERN = /音樂會|交響|管弦|管樂|擊樂|弦樂|協奏|獨奏|重奏|室內樂|古典音樂|爵士|國樂|樂團|合唱|重唱|阿卡貝拉|演奏會|音樂祭|音樂節|專場|不插電|現場演出|live\s*house|流行音樂(?:故事|文化|主題|常設|特)?展|音樂故事展/i;
   const CLASSICAL_MUSIC_PATTERN = /音樂會|交響|管弦|協奏|獨奏|重奏|室內樂|古典音樂|鋼琴|小提琴|大提琴|國樂|演奏會/i;
-  const ANIME_CATEGORY_PATTERN = /動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|史努比|PEANUTS|SNOOPY|姆明|伊藤潤二|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime/i;
-  const NATURAL_CATEGORY_PATTERN = /自然史|自然|生態|植物|動物|天文|地質|海洋|環境教育|科學館/i;
-  const HISTORY_CATEGORY_PATTERN = /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗|紀念|法老|埃及|古文明|文藝復興|史前|日治|戰後|二戰/i;
+  const ANIME_CATEGORY_PATTERN = /動漫|動畫|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|宮崎駿|貓貓蟲咖波|小熊維尼|史努比|PEANUTS|SNOOPY|PPULBATU|KYBUBI|姆明|伊藤潤二|航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|hololive|anime/i;
+  const NATURAL_CATEGORY_PATTERN = /自然史|自然(?:展|特展|常設展)?|生態|植物(?:展|園)|野生動物|動物(?:展|園)|天文|地質|海洋(?:生態|科學|特展)|環境教育|科學館/i;
+  const HISTORY_CATEGORY_PATTERN = /歷史|文化資產|文物|考古|古蹟|史料|地方誌|民俗|紀念(?:特展|展)|法老|埃及|古文明|文藝復興|史前|日治|戰後|二戰/i;
   // Letter boundaries keep "AI" from accidentally matching the "ai" in Taiwan.
   const TECHNOLOGY_CATEGORY_PATTERN = /科技|人工智慧|(?<![A-Za-z])AI(?![A-Za-z])|數位科技|半導體|資訊展|電腦展|機器人|虛擬實境|擴增實境|(?<![A-Za-z])VR(?![A-Za-z])|(?<![A-Za-z])AR(?![A-Za-z])/i;
   const DESIGN_CATEGORY_PATTERN = /設計|建築|工藝|時尚|家居|文具|文博會|design/i;
-  const ART_CATEGORY_PATTERN = /美術|藝術(?:展|家|創作|作品)|繪畫|雕塑|裝置|當代藝術|典藏|書畫|陶藝|版畫|水墨|個展|聯展|畫展/i;
+  const ART_CATEGORY_PATTERN = /美術|藝術(?:展|創作|作品)|插畫|圖畫書|繪畫|雕塑|裝置|當代藝術|典藏|書畫|陶藝|版畫|水墨|個展|聯展|畫展/i;
   const POPUP_CATEGORY_PATTERN = /快閃店|快閃|期間限定|限定店|popup|pop-up/i;
   const MARKET_CATEGORY_PATTERN = /市集|蚤之市|展售會|餐車/i;
   const PHOTO_CATEGORY_PATTERN = /攝影|影像展|photo(graphy)?/i;
@@ -724,7 +724,7 @@
     return new Set(items.map(event => cleanPlaceText(firstValue(event.originalVenueGroup, event.originalLocationName, event.venueGroup, event.locationName))).filter(Boolean)).size;
   }
 
-  function normalizeEvent(raw, index) {
+  function normalizeEvent(raw, index, {trustCanonicalCategories = false} = {}) {
     const show = bestShow(raw);
     const title = firstValue(raw.title, raw.titile, raw.name, '未命名展覽');
     const verifiedCorrection = verifiedEventCorrection(title);
@@ -763,7 +763,14 @@
     const baseCategories = normalizeCategories(rawCategories, title, description);
     const mappedCategory = contentTypes.map(type => CONTENT_TYPE_CATEGORY_MAP[type]).find(Boolean) || CONTENT_TYPE_CATEGORY_MAP[contentType];
     const categoryCandidates = mappedCategory ? [mappedCategory, ...baseCategories] : [...baseCategories];
-    let categories = finalizeCategories(categoryCandidates, title, description, contentTypes);
+    const canonicalCategories = [raw.category, ...(Array.isArray(raw.categories) ? raw.categories : [])]
+      .map(value => CATEGORY_ALIASES[String(value || '').trim()] || String(value || '').trim())
+      .filter(category => CATEGORY_ORDER.includes(category))
+      .filter((category, categoryIndex, array) => array.indexOf(category) === categoryIndex)
+      .slice(0, 3);
+    let categories = trustCanonicalCategories && canonicalCategories.length
+      ? canonicalCategories
+      : finalizeCategories(categoryCandidates, title, description, contentTypes);
     if (verifiedCorrection?.category) {
       const mutuallyExclusive = new Set(['演唱會','音樂','表演','舞蹈','電影']);
       categories = [verifiedCorrection.category, ...categories.filter(category =>
@@ -3570,7 +3577,9 @@
       state.dataSource = sourceUrl;
       document.documentElement.dataset.eventData = curated ? 'curated' : enriched ? 'enriched' : 'legacy';
       state.venueImages = Object.fromEntries(Object.entries(payload.venueImages || {}).map(([venue, image]) => [venue, safeUrl(image)]).filter(([, image]) => isUsableImageUrl(image)));
-      state.events = rawEvents.map(normalizeEvent).filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
+      state.events = rawEvents
+        .map((event, index) => normalizeEvent(event, index, {trustCanonicalCategories:curated}))
+        .filter(event => event.title && eventKey(event) && !isExcludedEvent(event));
       if (!state.events.length) throw new Error('沒有可顯示的展覽資料');
       rebuildVenueCatalogCache();
       renderCurrentView();

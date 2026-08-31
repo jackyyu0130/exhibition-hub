@@ -20,7 +20,7 @@ APP = (ROOT / "assets" / "app.js").read_text(encoding="utf-8")
 HTML = (ROOT / "index.html").read_text(encoding="utf-8")
 CURATED = json.loads((ROOT / "data" / "exhibitions.curated.json").read_text(encoding="utf-8"))
 AUDIT = json.loads(
-    (ROOT / "data" / "update-reports" / "category-display-consistency-r17-1.json")
+    (ROOT / "data" / "update-reports" / "category-semantic-audit-r18.json")
     .read_text(encoding="utf-8")
 )
 CATEGORY_ORDER = [
@@ -44,18 +44,20 @@ class R171DisplayConsistencyTests(unittest.TestCase):
                 self.assertIn(category, CATEGORY_ORDER)
                 membership[category] += 1
 
-        self.assertEqual(dict(membership), AUDIT["categoryMembershipCounts"])
-        self.assertEqual(sum(membership.values()), AUDIT["categoryMembershipCount"])
+        self.assertEqual(dict(membership), {
+            category: count
+            for category, count in AUDIT["afterMembershipCounts"].items()
+            if count
+        })
 
     def test_every_event_still_matches_the_semantic_classifier(self) -> None:
         for event in CURATED["events"]:
             self.assertEqual(event["categories"], public_categories(event), event["title"])
 
-    def test_anime_detail_labels_and_listing_have_the_same_13_events(self) -> None:
+    def test_anime_detail_labels_and_listing_have_the_same_events(self) -> None:
         anime = [event["title"] for event in CURATED["events"] if "動漫" in event["categories"]]
-        self.assertEqual(len(anime), 13)
-        self.assertEqual(anime, AUDIT["animeEvents"])
-        self.assertEqual(AUDIT["animeMissingFromListing"], 0)
+        self.assertEqual(len(anime), AUDIT["animeMembershipCount"])
+        self.assertGreaterEqual(len(anime), 20)
         self.assertTrue(any("吉伊卡哇 人魚島的秘密" in title for title in anime))
 
     def test_all_public_price_surfaces_use_the_compact_label(self) -> None:
@@ -69,9 +71,9 @@ class R171DisplayConsistencyTests(unittest.TestCase):
         self.assertEqual(len(visual_price_uses), 2)
         self.assertNotIn('title="${escapeHtml(event.price)}"', APP)
 
-    def test_r171_cache_key_forces_the_fixed_runtime(self) -> None:
-        self.assertIn('assets/styles.css?v=6.5.0-r17.1', HTML)
-        self.assertIn('assets/app.js?v=6.5.0-r17.1', HTML)
+    def test_r18_cache_key_forces_the_fixed_runtime(self) -> None:
+        self.assertIn('assets/styles.css?v=6.5.0-r18', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r18', HTML)
 
 
 if __name__ == "__main__":

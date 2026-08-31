@@ -9,15 +9,21 @@ from pathlib import Path
 import re
 from typing import Any, Mapping
 
-from exhibition_hub.curation import build_curated_payload, public_categories
+from exhibition_hub.curation import (
+    build_curated_payload,
+    is_non_catalog_activity,
+    public_categories,
+)
+
+PUBLIC_TAXONOMY_VERSION = "6.5.0-r18"
 
 
 STRICT_ANIME_TITLE_RE = re.compile(
-    r"動漫|動畫展|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|"
+    r"動漫|動畫|漫畫(?:原作|展)?|原畫展|電玩|遊戲展|電競|ACG|cosplay|"
     r"公仔|角色展|角色限定|模型展|玩具展|扭蛋|盒玩|卡牌|聲優|VTuber|"
     r"虛擬偶像|特攝|輕小說|IP(?:展|祭|授權)|寶可夢|吉伊卡哇|chiikawa|"
-    r"櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|史努比|"
-    r"PEANUTS|SNOOPY|姆明|伊藤潤二|"
+    r"櫻桃小丸子|蠟筆小新|哆啦\s*A\s*夢|三麗鷗|迪士尼|皮克斯|宮崎駿|"
+    r"貓貓蟲咖波|小熊維尼|小梅的奇幻冒險|史努比|PEANUTS|SNOOPY|PPULBATU|KYBUBI|姆明|伊藤潤二|"
     r"航海王|ONE\s*PIECE|鬼滅之刃|咒術迴戰|進擊的巨人|排球少年|"
     r"名偵探柯南|七龍珠|鋼彈|GUNDAM|新世紀福音戰士|初音未來|"
     r"hololive|anime",
@@ -97,9 +103,14 @@ def reconcile_public_categories(
     events = result.get("events") or []
     corrected_anime = 0
     corrected_semantic = 0
+    removed_non_catalog = 0
+    kept_events: list[dict[str, Any]] = []
 
     for event in events:
         if not isinstance(event, dict):
+            continue
+        if is_non_catalog_activity(event):
+            removed_non_catalog += 1
             continue
         title = str(event.get("title") or "").strip()
         category = str(event.get("category") or "").strip()
@@ -119,13 +130,26 @@ def reconcile_public_categories(
             event["category"] = normalized[0]
             event["categories"] = normalized
             corrected_semantic += 1
+        kept_events.append(event)
+
+    result["events"] = kept_events
 
     stats = dict(result.get("stats") or {})
     stats["taxonomyCorrectionCount"] = corrected_semantic
+    stats["taxonomyVersion"] = PUBLIC_TAXONOMY_VERSION
+    stats["nonCatalogActivityRemovalCount"] = removed_non_catalog
+    stats["eventCount"] = len(kept_events)
+    stats["curatedEventCount"] = len(kept_events)
+    category_counts: dict[str, int] = {}
+    for event in kept_events:
+        for label in event.get("categories") or []:
+            category_counts[label] = category_counts.get(label, 0) + 1
+    stats["categoryCounts"] = category_counts
     result["stats"] = stats
     return result, {
         "animeWithoutTitleSignal": corrected_anime,
         "semanticCategoryCorrections": corrected_semantic,
+        "nonCatalogActivityRemovals": removed_non_catalog,
     }
 
 
