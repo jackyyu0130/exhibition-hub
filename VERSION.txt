@@ -1,5 +1,6 @@
 Taiwan Exhibition Journal V6.5.0-R14.2
-Current cumulative patch: Taiwan Exhibition Journal V6.5.0-R18
+Current cumulative patch: Taiwan Exhibition Journal V6.5.0-R18.1
+R18.1 deployment lock: category listings use every canonical category, paid admission uses one public label on cards and details, and the Pages artifact exposes an exact release marker
 R18 all-category semantics: all 17 public categories were audited, 91 category arrays were corrected, 18 non-catalog activities were removed, and curated category membership is canonical in every listing/detail surface
 R18 public data updated: 2026-08-31 Asia/Taipei
 R17.1 display consistency retained: every paid admission surface shows「票價請見活動頁面」and every category chip uses the same multi-category membership as its listing

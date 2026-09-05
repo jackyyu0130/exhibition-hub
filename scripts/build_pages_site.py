@@ -39,6 +39,7 @@ REQUIRED_FILES = (
 OPTIONAL_FILES = ("CNAME",)
 REQUIRED_DIRECTORIES = ("assets",)
 BUILD_MANIFEST = "pages-build-manifest.json"
+PUBLIC_RELEASE = "v6.5.0-r18.1"
 
 
 def parse_args() -> argparse.Namespace:
@@ -102,7 +103,7 @@ def _write_manifest(staging: Path, copied: list[str]) -> None:
         })
     payload = {
         "schemaVersion": 1,
-        "release": "v6.5.0-r14-local-weekly-favicon",
+        "release": PUBLIC_RELEASE,
         "builtAt": datetime.now(timezone.utc).isoformat(),
         "copiedEntries": copied,
         "fileCount": len(files),
