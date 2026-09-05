@@ -1,6 +1,9 @@
-/* Exhibition Hub V6.5.0-R18 P5-B → C3 — all-category semantic audit, canonical category discovery, branded fallback and universal admission labels. */
+/* Exhibition Hub V6.5.0-R18.1 P5-B → C3 — deployed-runtime verification, multi-category discovery and universal admission labels. */
 (() => {
   'use strict';
+
+  const APP_RELEASE = '6.5.0-r18.1';
+  document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
   const CONTENT_TYPE_LABELS = {
@@ -716,6 +719,11 @@
       .filter((category, index, categories) => categories.indexOf(category) === index);
   }
 
+  function eventMatchesCategories(event, selectedCategories = state.categories) {
+    if (!selectedCategories?.size) return true;
+    return eventCategories(event).some(category => selectedCategories.has(category));
+  }
+
   function eventDisplayCategory(event) {
     return eventPrimaryCategory(event);
   }
@@ -1132,7 +1140,7 @@
       ? ` data-card-href="${escapeHtml(eventHref(event))}" role="link" tabindex="0" aria-label="查看${escapeHtml(event.title)}詳細資訊"`
       : '';
     return `
-      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}" data-content-type="${escapeHtml(event.contentType || '')}" data-editorial-status="${escapeHtml(event.editorialStatus || '')}" data-venue-coverage="${escapeHtml(event.venueCoverageStatus || '')}"${inlineStyle}${wholeCardAttrs}>
+      <article class="exhibition-card${isDateReveal ? ' date-reveal-card' : ''}${motionClass}${favoriteClass}${wholeCardClass}" data-content-type="${escapeHtml(event.contentType || '')}" data-categories="${escapeHtml(eventCategories(event).join('|'))}" data-editorial-status="${escapeHtml(event.editorialStatus || '')}" data-venue-coverage="${escapeHtml(event.venueCoverageStatus || '')}"${inlineStyle}${wholeCardAttrs}>
         <a class="card-image" href="${eventHref(event)}">
           ${imageMarkup(event)}
           ${badges.length ? `<span class="card-badges">${badges.map(badge => `<span class="card-badge badge-${badge.type}">${badge.label}</span>`).join('')}</span>` : ''}
@@ -1257,7 +1265,7 @@
           if(!haystack.includes(query)) return false;
         }
       }
-      if (state.categories.size && !eventCategories(event).some(category => state.categories.has(category))) return false;
+      if (!eventMatchesCategories(event)) return false;
       if (state.region && !eventRegions(event).includes(state.region)) return false;
       if (state.selectedVenues.size) {
         const names = eventCanonicalVenueNames(event);

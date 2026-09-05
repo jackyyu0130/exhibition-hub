@@ -58,7 +58,19 @@ class R171DisplayConsistencyTests(unittest.TestCase):
         anime = [event["title"] for event in CURATED["events"] if "動漫" in event["categories"]]
         self.assertEqual(len(anime), AUDIT["animeMembershipCount"])
         self.assertGreaterEqual(len(anime), 20)
-        self.assertTrue(any("吉伊卡哇 人魚島的秘密" in title for title in anime))
+        chiikawa_films = [
+            title for title in anime
+            if "高雄市電影館" in title and "吉伊卡哇 人魚島的秘密" in title
+        ]
+        self.assertEqual(chiikawa_films, [
+            "8月高雄市電影館｜劇場版 吉伊卡哇 人魚島的秘密（中配版）",
+            "9月高雄市電影館｜劇場版 吉伊卡哇 人魚島的秘密",
+        ])
+        self.assertIn(
+            "eventCategories(event).some(category => selectedCategories.has(category))",
+            APP,
+        )
+        self.assertIn("if (!eventMatchesCategories(event)) return false", APP)
 
     def test_all_public_price_surfaces_use_the_compact_label(self) -> None:
         self.assertIn("compactPriceLabel(event.price)", APP)
@@ -71,9 +83,12 @@ class R171DisplayConsistencyTests(unittest.TestCase):
         self.assertEqual(len(visual_price_uses), 2)
         self.assertNotIn('title="${escapeHtml(event.price)}"', APP)
 
-    def test_r18_cache_key_forces_the_fixed_runtime(self) -> None:
-        self.assertIn('assets/styles.css?v=6.5.0-r18', HTML)
-        self.assertIn('assets/app.js?v=6.5.0-r18', HTML)
+    def test_r181_cache_key_and_runtime_marker_force_the_fixed_runtime(self) -> None:
+        self.assertIn('<meta name="exhibition-hub-release" content="6.5.0-r18.1">', HTML)
+        self.assertIn('assets/styles.css?v=6.5.0-r18.1', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r18.1', HTML)
+        self.assertIn("const APP_RELEASE = '6.5.0-r18.1'", APP)
+        self.assertIn("document.documentElement.dataset.appRelease = APP_RELEASE", APP)
 
 
 if __name__ == "__main__":

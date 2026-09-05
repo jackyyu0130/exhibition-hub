@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from build_pages_site import BUILD_MANIFEST, REQUIRED_FILES, build_pages_site  # noqa: E402
+from build_pages_site import BUILD_MANIFEST, PUBLIC_RELEASE, REQUIRED_FILES, build_pages_site  # noqa: E402
 from exhibition_hub.collectors.release import build_dry_run_report  # noqa: E402
 from exhibition_hub.venues import (  # noqa: E402
     normalize_event_venue_contract,
@@ -110,7 +110,7 @@ class R120IntegratedUxSourcesSocialTests(unittest.TestCase):
             (root / "assets/app.js").write_text("ok\n", encoding="utf-8")
             build_pages_site(root, output)
             manifest = json.loads((output / BUILD_MANIFEST).read_text(encoding="utf-8"))
-            self.assertEqual(manifest["release"], "v6.5.0-r14-local-weekly-favicon")
+            self.assertEqual(manifest["release"], PUBLIC_RELEASE)
             self.assertGreater(manifest["fileCount"], 1)
             self.assertTrue(all(len(item["sha256"]) == 64 for item in manifest["files"]))
 

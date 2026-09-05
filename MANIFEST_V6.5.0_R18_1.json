@@ -1,0 +1,40 @@
+{
+  "version": "6.5.0-R18.1",
+  "title": "Category listing and admission display deployment lock",
+  "supersedes": "6.5.0-R18",
+  "installationMode": "overlay the current develop branch",
+  "runtimeFiles": [
+    "VERSION.txt",
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "assets/exhibition-placeholder-v16.webp",
+    "data/exhibitions.curated.json",
+    "scripts/build_pages_site.py",
+    "scripts/build_curated_feed.py",
+    "scripts/exhibition_hub/curation.py",
+    "scripts/exhibition_hub/classifiers/content_types.py"
+  ],
+  "auditFiles": [
+    "data/update-reports/category-semantic-audit-r18.json"
+  ],
+  "testFiles": [
+    "tests/test_price_label_regression.py",
+    "tests/test_r160_catalog_consistency.py",
+    "tests/test_r170_semantic_taxonomy.py",
+    "tests/test_r171_display_consistency.py",
+    "tests/test_r180_all_category_semantics.py",
+    "tests/test_v650_r103_taxonomy_venue_performance.py",
+    "tests/test_v650_r120_integrated_ux_sources_social.py"
+  ],
+  "verification": {
+    "releaseMarker": "v6.5.0-r18.1",
+    "animeMembershipCount": 23,
+    "chiikawaFilmAnimeMembershipCount": 2,
+    "paidAdmissionPublicLabel": "票價請見活動頁面",
+    "rawPriceVisualSurfaces": 0,
+    "javascriptSyntax": "passed",
+    "testCount": 299,
+    "testResult": "passed"
+  }
+}
