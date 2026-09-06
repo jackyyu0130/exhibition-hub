@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 from copy import deepcopy
 import json
 import os
@@ -69,6 +70,90 @@ def event_map(payload: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
         if event_id:
             result[event_id] = event
     return result
+
+
+def _rebuild_stats(payload: dict[str, Any]) -> None:
+    events = [
+        event
+        for event in payload.get("events") or []
+        if isinstance(event, dict)
+    ]
+    image_count = sum(bool(event.get("image")) for event in events)
+    multi_image_count = sum(
+        len(event.get("images") or []) > 1
+        for event in events
+    )
+    coordinate_count = sum(
+        event.get("latitude") is not None
+        and event.get("longitude") is not None
+        for event in events
+    )
+    category_counts: Counter[str] = Counter()
+    for event in events:
+        for category in event.get("categories") or []:
+            category_counts[str(category)] += 1
+
+    stats = dict(payload.get("stats") or {})
+    stats.update({
+        "eventCount": len(events),
+        "imageCount": image_count,
+        "multiImageCount": multi_image_count,
+        "coordinateCount": coordinate_count,
+        "imageCoverage": round(image_count / len(events), 4) if events else 0.0,
+        "coordinateCoverage": round(coordinate_count / len(events), 4) if events else 0.0,
+        "categoryCounts": dict(category_counts),
+    })
+    payload["stats"] = stats
+
+
+def sanitize_excluded_events(
+    candidate: Mapping[str, Any],
+    base: Mapping[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
+    """Keep the publish candidate free of excluded-review events.
+
+    Collectors classify records after they have been adapted into the common
+    event shape.  That means a record that passed the collector's raw-field
+    checks can still become ``exclude_review`` during source merging.  Such
+    records belong in the audit trail, never in the production preview.
+
+    A newly discovered excluded event is removed from the candidate.  If an
+    already-published event is newly classified as excluded, the previous
+    base copy is retained instead of silently deleting a live event.  The
+    latter remains in the returned ``preserved_existing`` audit list for
+    manual review.
+    """
+    sanitized = deepcopy(dict(candidate))
+    base_by_id = event_map(base)
+    retained: list[dict[str, Any]] = []
+    excluded: list[dict[str, Any]] = []
+    preserved_existing: list[dict[str, Any]] = []
+
+    for raw_event in candidate.get("events") or []:
+        if not isinstance(raw_event, dict):
+            continue
+        event = deepcopy(raw_event)
+        if str(event.get("editorialStatus") or "") != "exclude_review":
+            retained.append(event)
+            continue
+
+        event_id = str(event.get("id") or "").strip()
+        if event_id and event_id in base_by_id:
+            retained.append(deepcopy(base_by_id[event_id]))
+            preserved_existing.append(event)
+        else:
+            excluded.append(event)
+
+    sanitized["events"] = retained
+    build = deepcopy(sanitized.get("sourceMergeBuild") or {})
+    build["candidateEventCount"] = len(retained)
+    build["excludedReviewEventCount"] = (
+        len(excluded) + len(preserved_existing)
+    )
+    build["published"] = False
+    sanitized["sourceMergeBuild"] = build
+    _rebuild_stats(sanitized)
+    return sanitized, excluded, preserved_existing
 
 
 def build_official_source_batch_diff(
@@ -219,6 +304,7 @@ def main() -> int:
     successful_sources = 0
     failed_sources = 0
     skipped_sources = 0
+    excluded_review_event_count = 0
 
     for source in active_official_sources(
         registry_payload,
@@ -268,12 +354,36 @@ def main() -> int:
             )
             write_json(audit_dir / f"{source.id}-merge-report.json", merge_report)
             write_json(audit_dir / f"{source.id}-review.json", review)
-            current = candidate
+            current, excluded_review_events, preserved_existing_exclusions = (
+                sanitize_excluded_events(candidate, current)
+            )
+            excluded_review_event_count += (
+                len(excluded_review_events)
+                + len(preserved_existing_exclusions)
+            )
+            write_json(
+                audit_dir / f"{source.id}-exclude-review.json",
+                {
+                    "mode": "official-source-exclude-review-audit",
+                    "published": False,
+                    "sourceId": source.id,
+                    "removedFromCandidate": excluded_review_events,
+                    "preservedExistingBase": preserved_existing_exclusions,
+                },
+            )
             source_item.update({
                 "status": "merged",
                 "candidateEventCount": len(current.get("events") or []),
+                "rawCandidateEventCount": len(candidate.get("events") or []),
                 "decisionCounts": merge_report.get("decisionCounts") or {},
                 "reviewQueueCount": len(review),
+                "excludedReviewEventCount": (
+                    len(excluded_review_events)
+                    + len(preserved_existing_exclusions)
+                ),
+                "preservedExistingExcludedCount": len(
+                    preserved_existing_exclusions
+                ),
             })
             successful_sources += 1
         except Exception as exc:
@@ -298,6 +408,7 @@ def main() -> int:
         "successfulSourceCount": successful_sources,
         "failedSourceCount": failed_sources,
         "skippedSourceCount": skipped_sources,
+        "excludedReviewEventCount": excluded_review_event_count,
         "finalEventCount": len(current.get("events") or []),
         "sources": source_reports,
     }
