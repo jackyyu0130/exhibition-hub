@@ -23,7 +23,7 @@ concurrency:
 jobs:
   update-and-deploy:
     if: >-
-      (github.event_name == 'schedule' && vars.WEEKLY_UPDATE_ENABLED == 'true') ||
+      (github.event_name == 'schedule' && vars.WEEKLY_UPDATE_ENABLED != 'false') ||
       (github.event_name == 'workflow_dispatch' && inputs.confirm == 'RUN_WEEKLY_UPDATE')
     runs-on: ubuntu-latest
     timeout-minutes: 55
