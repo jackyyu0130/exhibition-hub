@@ -84,10 +84,10 @@ class R171DisplayConsistencyTests(unittest.TestCase):
         self.assertNotIn('title="${escapeHtml(event.price)}"', APP)
 
     def test_r181_cache_key_and_runtime_marker_force_the_fixed_runtime(self) -> None:
-        self.assertIn('<meta name="exhibition-hub-release" content="6.5.0-r18.1">', HTML)
-        self.assertIn('assets/styles.css?v=6.5.0-r18.1', HTML)
-        self.assertIn('assets/app.js?v=6.5.0-r18.1', HTML)
-        self.assertIn("const APP_RELEASE = '6.5.0-r18.1'", APP)
+        self.assertIn('<meta name="exhibition-hub-release" content="6.5.0-r18.2">', HTML)
+        self.assertIn('assets/styles.css?v=6.5.0-r18.2', HTML)
+        self.assertIn('assets/app.js?v=6.5.0-r18.2', HTML)
+        self.assertIn("const APP_RELEASE = '6.5.0-r18.2'", APP)
         self.assertIn("document.documentElement.dataset.appRelease = APP_RELEASE", APP)
 
 

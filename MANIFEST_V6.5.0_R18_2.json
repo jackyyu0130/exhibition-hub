@@ -1,0 +1,33 @@
+{
+  "version": "6.5.0-R18.2",
+  "title": "Nearby venue discovery and bounded Sunday update",
+  "supersedes": "6.5.0-R18.1",
+  "installationMode": "overlay the current develop branch",
+  "runtimeFiles": [
+    "VERSION.txt",
+    "index.html",
+    "assets/app.js",
+    "assets/styles.css",
+    "assets/exhibition-placeholder-v16.webp",
+    "scripts/build_pages_site.py",
+    ".github/workflows/update-exhibitions.yml"
+  ],
+  "testFiles": [
+    "tests/test_frontend.py",
+    "tests/test_r150_low_resource_weekly_automation.py",
+    "tests/test_r160_catalog_consistency.py",
+    "tests/test_r170_semantic_taxonomy.py",
+    "tests/test_r171_display_consistency.py"
+  ],
+  "verification": {
+    "releaseMarker": "v6.5.0-r18.2",
+    "nearbyRadiusKm": 10,
+    "nearbyEntity": "venue",
+    "nearbyResultFields": ["distance", "venue name", "venue address", "map navigation"],
+    "venueClickRoute": "?view=all&venue=<venue>",
+    "scheduledUpdate": "Sunday 03:17 Asia/Taipei",
+    "scheduledUpdateDefault": "enabled unless WEEKLY_UPDATE_ENABLED=false",
+    "javascriptSyntax": "passed",
+    "testResult": "passed"
+  }
+}

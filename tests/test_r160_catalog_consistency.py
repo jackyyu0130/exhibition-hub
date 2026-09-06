@@ -55,8 +55,8 @@ class R160CatalogConsistencyTests(unittest.TestCase):
         self.assertIn("fallback-art-brand", APP)
 
     def test_browser_cache_keys_are_bumped_for_the_new_runtime(self) -> None:
-        self.assertIn('href="assets/styles.css?v=6.5.0-r18.1"', HTML)
-        self.assertIn('src="assets/app.js?v=6.5.0-r18.1"', HTML)
+        self.assertIn('href="assets/styles.css?v=6.5.0-r18.2"', HTML)
+        self.assertIn('src="assets/app.js?v=6.5.0-r18.2"', HTML)
 
     def test_card_prices_are_free_or_link_to_the_activity_page(self) -> None:
         compact_price = re.search(
