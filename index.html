@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f7f1e9">
-  <meta name="exhibition-hub-release" content="6.5.0-r18.1">
+  <meta name="exhibition-hub-release" content="6.5.0-r18.2">
   <meta id="metaDescription" name="description" content="想看展，卻不知道從哪裡開始？整理全台最新展覽、藝術快閃與大型展會，一鍵掌握展期、場館與門票資訊，陪你找到下一次城市散步的靈感目的地。">
   <meta property="og:type" content="website">
   <meta id="metaOgTitle" property="og:title" content="台灣展覽誌｜全台展覽與演出資訊">
@@ -26,7 +26,7 @@
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-p5b · assets/app.js?v=6.5.0-r12-stable2-p5b -->
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-c3 · assets/app.js?v=6.5.0-r14-single-tap1 -->
   <!-- Performance patch P1: inward Hero controls, lower paint cost, smoother section reveals. -->
-  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r18.1">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r18.2">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var loaded=false;function load(){if(loaded)return;loaded=true;
@@ -57,7 +57,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <nav class="desktop-nav" aria-label="主要導覽">
         <a href="?view=all">探索展覽</a>
-        <a href="?view=nearby">附近展覽</a>
+        <a href="?view=nearby">附近展場</a>
         <a href="?view=discussions" data-social-nav hidden>大家在聊</a>
         <a href="?view=favorites">我的收藏</a>
       </nav>
@@ -91,7 +91,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <nav class="mobile-menu-nav" aria-label="行動版主要導覽">
         <a href="?view=all">探索展覽</a>
-        <a href="?view=nearby">附近展覽</a>
+        <a href="?view=nearby">附近展場</a>
         <a href="?view=discussions" data-social-nav hidden>大家在聊</a>
         <a href="?view=favorites">我的收藏</a>
       </nav>
@@ -155,7 +155,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
           <div class="hero-actions">
             <a class="primary-link" href="?view=nearby">
-              <span>循著位置找展覽</span>
+              <span>循著位置找展場</span>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
             </a>
             <a class="text-link" href="#discover">瀏覽本週精選</a>
@@ -337,12 +337,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="nearby-copy motion-card">
           <p class="eyebrow">AROUND YOU</p>
           <h2>這些選擇，<br>離你不遠</h2>
-          <p>讓所在的位置成為起點，沿著距離慢慢拾起城市裡的展覽風景。</p>
+          <p>讓所在的位置成為起點，沿著距離慢慢拾起城市裡的展場風景。</p>
           <button class="location-button" id="homeLocationButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
             使用目前位置
           </button>
-          <a class="text-link" href="?view=nearby">開啟完整地圖 →</a>
+          <a class="text-link" href="?view=nearby">開啟完整展場地圖 →</a>
         </div>
         <div class="nearby-stack" id="nearbyHomeList"></div>
       </section>
@@ -507,16 +507,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <section class="nearby-view app-view" id="nearbyView" hidden>
       <div class="view-hero nearby-view-hero">
         <div>
-          <p class="eyebrow">NEARBY EXHIBITIONS</p>
-          <h1>附近展覽</h1>
-          <p id="nearbyStatusText">允許定位後，顯示 10 公里內展覽並依距離排序。</p>
+          <p class="eyebrow">NEARBY VENUES</p>
+          <h1>附近展場</h1>
+          <p id="nearbyStatusText">允許定位後，顯示所在位置 10 公里內展場並依距離排序。</p>
         </div>
         <button class="location-button light" id="nearbyLocationButton" type="button">重新取得位置</button>
       </div>
       <div class="nearby-layout">
         <div class="nearby-map" id="nearbyMap"></div>
         <div class="nearby-results">
-          <div class="nearby-results-head"><h2>你附近 10 公里</h2><span id="nearbyCount"></span></div>
+          <div class="nearby-results-head"><h2>你附近 10 公里內的展場</h2><span id="nearbyCount"></span></div>
           <div class="nearby-result-list" id="nearbyResultList"></div>
         </div>
       </div>
@@ -603,7 +603,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h2>讓每一次出門，<br>都有值得期待的目的地。</h2>
       </div>
       <div class="footer-links">
-        <div class="footer-navigation"><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展覽</a><a href="?view=discussions" data-social-nav hidden>大家在聊</a><a href="?view=favorites">我的收藏</a></div>
+        <div class="footer-navigation"><strong>探索</strong><a href="?view=all">全部展覽</a><a href="?view=nearby">附近展場</a><a href="?view=discussions" data-social-nav hidden>大家在聊</a><a href="?view=favorites">我的收藏</a></div>
         <div class="footer-metrics" aria-label="網站資料摘要">
           <div class="footer-metric"><strong>收錄展覽</strong><span id="footerRecordCount">— 檔</span></div>
           <div class="footer-metric"><strong>展演場地</strong><span id="footerVenueCount">— 處</span></div>
@@ -639,6 +639,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/app.js?v=6.5.0-r18.1"></script>
+  <script src="assets/app.js?v=6.5.0-r18.2"></script>
 </body>
 </html>

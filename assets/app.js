@@ -1,8 +1,8 @@
-/* Exhibition Hub V6.5.0-R18.1 P5-B → C3 — deployed-runtime verification, multi-category discovery and universal admission labels. */
+/* Exhibition Hub V6.5.0-R18.2 P5-B → C3 — venue-led nearby discovery and bounded weekly updates. */
 (() => {
   'use strict';
 
-  const APP_RELEASE = '6.5.0-r18.1';
+  const APP_RELEASE = '6.5.0-r18.2';
   document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
@@ -705,6 +705,65 @@
     return '';
   }
 
+  function venueImageCandidates(venue) {
+    const name = cleanPlaceText(venue?.name || venue || '');
+    const candidates = [];
+    const official = safeUrl(state.venueImages[name] || '');
+    if (isUsableImageUrl(official)) candidates.push(official);
+    const relatedEvents = state.homeVenueEventIndex.get(name) || [];
+    relatedEvents.forEach(event => {
+      const eventImages = (event.images?.length ? event.images : event.image ? [event.image] : [])
+        .map(safeUrl)
+        .filter(isUsableImageUrl);
+      eventImages.forEach(image => {
+        if (!candidates.includes(image)) candidates.push(image);
+      });
+    });
+    return candidates.slice(0, 4);
+  }
+
+  function venueImageMarkup(venue, className = '') {
+    const candidates = venueImageCandidates(venue);
+    const label = cleanPlaceText(venue?.name || '展場');
+    if (!candidates.length) {
+      return `<div class="${escapeHtml(className || 'nearby-result-media')} fallback-art venue-nearby-placeholder" role="img" aria-label="${escapeHtml(label)}場館圖片整理中"><span class="fallback-art-brand" aria-hidden="true"><b>台灣展覽誌</b><small>VENUE GUIDE</small></span><span class="fallback-art-label">場館影像整理中</span></div>`;
+    }
+    const serialized = escapeHtml(JSON.stringify(candidates));
+    return `<span class="smart-image-frame ${escapeHtml(className)}" data-media-kind="venue"><img class="smart-image-foreground" src="${escapeHtml(candidates[0])}" data-venue-nearby-images="${serialized}" data-image-index="0" alt="${escapeHtml(label)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onload="window.__validateVenueNearbyImage(this)" onerror="window.__venueNearbyImageFallback(this)"></span>`;
+  }
+
+  window.__venueNearbyImageFallback = image => {
+    try {
+      const candidates = JSON.parse(image.dataset.venueNearbyImages || '[]');
+      const nextIndex = Number(image.dataset.imageIndex || 0) + 1;
+      if (candidates[nextIndex]) {
+        image.dataset.imageIndex = String(nextIndex);
+        image.src = candidates[nextIndex];
+        return;
+      }
+    } catch {}
+    const venue = image.closest('.nearby-result-card, .nearby-mini-card');
+    const frame = image.closest('.smart-image-frame');
+    if (!venue || !frame) return;
+    const fallback = document.createElement('div');
+    fallback.className = image.closest('.nearby-mini-card')
+      ? 'nearby-mini-media fallback-art venue-nearby-placeholder'
+      : 'nearby-result-media fallback-art venue-nearby-placeholder';
+    fallback.setAttribute('role', 'img');
+    fallback.setAttribute('aria-label', '場館影像整理中');
+    fallback.innerHTML = '<span class="fallback-art-brand" aria-hidden="true"><b>台灣展覽誌</b><small>VENUE GUIDE</small></span><span class="fallback-art-label">場館影像整理中</span>';
+    frame.replaceWith(fallback);
+  };
+
+  window.__validateVenueNearbyImage = image => {
+    if (!image?.isConnected || !image.complete) return;
+    if (image.naturalWidth < 120 || image.naturalHeight < 80) {
+      window.__venueNearbyImageFallback(image);
+      return;
+    }
+    markDecodedMediaReady(image);
+  };
+
   function eventContentTypeLabel(event) {
     return CONTENT_TYPE_LABELS[event?.contentType] || event?.categories?.[0] || '展覽';
   }
@@ -1164,26 +1223,25 @@
     </a>`;
   }
 
-  function nearbyMiniMarkup(event, distance = null) {
-    return `<a class="nearby-mini-card motion-card" href="${eventHref(event)}">
-      ${imageMarkup(event, 'nearby-mini-media')}
-      <div class="nearby-mini-body"><small>${distance === null ? escapeHtml(event.region) : `${distance.toFixed(1)} KM`}</small><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(eventVenueCompactLabel(event))}</p></div>
+  function nearbyVenueMiniMarkup(venue, distance = null) {
+    return `<a class="nearby-mini-card motion-card" href="${venueHref(venue.name)}">
+      ${venueImageMarkup(venue, 'nearby-mini-media')}
+      <div class="nearby-mini-body"><small>${distance === null ? escapeHtml(venue.region || '') : `${distance.toFixed(1)} KM`}</small><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p></div>
     </a>`;
   }
 
-  function resultMarkup(event, distance) {
-    const directionsUrl = googleMapsDirectionsUrl(event);
-    return `<article class="nearby-result-card">
-      <a class="nearby-result-main" href="${eventHref(event)}">
-        ${imageMarkup(event, 'nearby-result-media')}
+  function venueResultMarkup(venue, distance) {
+    const directionsUrl = googleMapsDirectionsUrlForVenue(venue);
+    return `<article class="nearby-result-card nearby-venue-result-card">
+      <a class="nearby-result-main" href="${venueHref(venue.name)}" aria-label="查看${escapeHtml(venue.name)}的展覽">
+        ${venueImageMarkup(venue, 'nearby-result-media')}
         <div class="nearby-result-copy">
-          <span class="distance-badge">${Number.isFinite(distance) ? `${distance.toFixed(1)} KM` : escapeHtml(event.region)}</span>
-          <h3>${escapeHtml(event.title)}</h3>
-          <p>${escapeHtml(dateRange(event))}</p>
-          <p>${escapeHtml(eventVenueCompactLabel(event))}</p>
+          <span class="distance-badge">${Number.isFinite(distance) ? `${distance.toFixed(1)} KM` : escapeHtml(venue.region || '')}</span>
+          <h3>${escapeHtml(venue.name)}</h3>
+          <p>${escapeHtml(venueAddressLabel(venue))}</p>
         </div>
       </a>
-      ${directionsUrl ? `<a class="nearby-map-link" href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener" aria-label="使用外部地圖前往${escapeHtml(event.title)}">地圖導航 ↗</a>` : ''}
+      ${directionsUrl ? `<a class="nearby-map-link" href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener" aria-label="使用外部地圖前往${escapeHtml(venue.name)}">地圖導航 ↗</a>` : ''}
     </article>`;
   }
 
@@ -1903,10 +1961,9 @@
   };
 
   function renderHomeNearby() {
-    let items = state.events.filter(hasCoordinates).slice(0, 3);
-    if (state.userLocation) items = nearestEvents(state.events, 3);
+    const items = nearestVenues(3, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
     const list = $('#nearbyHomeList');
-    list.innerHTML = items.length ? items.map(event => nearbyMiniMarkup(event, event._distance ?? null)).join('') : emptyInline('目前沒有可定位的展覽');
+    list.innerHTML = items.length ? items.map(venue => nearbyVenueMiniMarkup(venue, venue._distance ?? null)).join('') : emptyInline('目前沒有可定位的展場');
     const section = list.closest('.nearby-home');
     section?.classList.remove('is-in-view');
     const mediaPromise = prepareSectionMedia(list, {limit:3, concurrency:1});
@@ -2266,7 +2323,12 @@
     const coordinateBuckets = new Map();
     state.events.forEach(event => {
       if (!hasCoordinates(event)) return;
-      eventVenueCandidateValues(event).forEach(value => {
+      const canonicalNames = eventCanonicalVenueRecords(event).flatMap(record => [
+        record.name,
+        ...(record.aliases || []),
+        record.venueComplexName,
+      ]);
+      [...eventVenueCandidateValues(event), ...canonicalNames].forEach(value => {
         const key = normalizedVenueLookupKey(value);
         if (!key) return;
         if (!coordinateBuckets.has(key)) coordinateBuckets.set(key, []);
@@ -2274,6 +2336,15 @@
       });
     });
     state.venueRegistry.forEach(registry => {
+      const directLatitude = Number(registry.latitude);
+      const directLongitude = Number(registry.longitude);
+      if (Number.isFinite(directLatitude) && Number.isFinite(directLongitude) && directLatitude !== 0 && directLongitude !== 0) {
+        [registry.name, ...(registry.aliases || []), registry.venueComplexName].filter(Boolean).forEach(value => {
+          const key = normalizedVenueLookupKey(value);
+          if (!key || coordinateBuckets.has(key)) return;
+          coordinateBuckets.set(key, [[directLatitude, directLongitude]]);
+        });
+      }
       const coordinate = cachedCoordinate([
         registry.address,
         `${registry.region || ''}${registry.district || ''}`,
@@ -2320,6 +2391,7 @@
           ),
           district: registry.district || '',
           venueType: inferredVenueType(name, registry),
+          address: usableVenueAddress(registry.address || ''),
           count: 0,
           confirmed: true,
         });
@@ -2354,6 +2426,10 @@
         const existing = records.get(key);
         if (!existing) return;
         existing.count += 1;
+        if (!existing.address) {
+          const eventAddress = usableVenueAddress(event.address || '');
+          if (eventAddress) existing.address = eventAddress;
+        }
         records.set(key, existing);
         if (!homeVenueEventIndex.has(name)) homeVenueEventIndex.set(name, []);
         homeVenueEventIndex.get(name).push(event);
@@ -2741,6 +2817,13 @@
     return match?.[1] || '';
   }
 
+  function usableVenueAddress(value = '') {
+    const text = cleanPlaceText(value);
+    if (!text || /場館資料整理中|地點待確認|線上活動|待確認/.test(text)) return '';
+    if (/(?:路|街|大道|巷|弄|號|村|里|園區)/.test(text) || /\d/.test(text) && text.length >= 8) return text;
+    return '';
+  }
+
   function cachedCoordinate(values = []) {
     for (const rawValue of values) {
       const key = cleanPlaceText(rawValue);
@@ -2789,6 +2872,38 @@
       .slice(0,limit);
   }
 
+  function venueAddressLabel(venue) {
+    const direct = cleanPlaceText(venue?.address || '');
+    if (direct && !/場館資料整理中|地點待確認|線上活動/.test(direct)) return direct;
+    const district = [venue?.region, venue?.district].map(cleanPlaceText).filter(Boolean).join('');
+    return district || '地址請見場館資訊';
+  }
+
+  function venueCoordinates(venue) {
+    const latitude = Number(venue?.latitude);
+    const longitude = Number(venue?.longitude);
+    if (Number.isFinite(latitude) && Number.isFinite(longitude) && latitude !== 0 && longitude !== 0) {
+      return {latitude, longitude, precision:'registry'};
+    }
+    const coordinate = state.venueCoordinateIndex.get(normalizedVenueLookupKey(venue?.name || ''));
+    return coordinate ? {...coordinate, precision:'venue'} : null;
+  }
+
+  function nearestVenues(limit = 200, maxDistance = Infinity) {
+    const located = venueCatalog().map(venue => {
+      const coordinate = venueCoordinates(venue);
+      if (!coordinate) return null;
+      const enriched = {...venue, latitude:coordinate.latitude, longitude:coordinate.longitude, _coordinatePrecision:coordinate.precision};
+      if (state.userLocation) enriched._distance = haversine(state.userLocation.lat, state.userLocation.lng, coordinate.latitude, coordinate.longitude);
+      return enriched;
+    }).filter(Boolean);
+    if (!state.userLocation) return located.slice(0, limit);
+    return located
+      .filter(venue => venue._distance <= maxDistance)
+      .sort((a,b) => a._distance-b._distance || b.count-a.count || a.name.localeCompare(b.name, 'zh-Hant'))
+      .slice(0, limit);
+  }
+
   function ensureLeafletAssets() {
     if (window.L) return Promise.resolve(window.L);
     if (state.leafletAssetsPromise) return state.leafletAssetsPromise;
@@ -2818,18 +2933,18 @@
   }
 
   function renderNearby() {
-    const items = nearestEvents(filterEvents(), 200, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
+    const items = nearestVenues(200, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
     $('#nearbyStatusText').textContent = state.userLocation
-      ? `已定位目前位置，顯示 ${NEARBY_RADIUS_KM} 公里內展覽並由近到遠排列。`
-      : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展覽。`;
-    $('#nearbyCount').textContent = state.userLocation ? `${items.length} 檔・${NEARBY_RADIUS_KM} KM 內` : `${items.length} 檔待定位`;
-    $('#nearbyResultList').innerHTML = items.map(event => resultMarkup(event, event._distance)).join('')
-      || emptyInline(state.userLocation ? `目前位置 ${NEARBY_RADIUS_KM} 公里內沒有可定位的展覽` : '目前沒有提供座標的展覽');
+      ? `已定位目前位置，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列。`
+      : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展場。`;
+    $('#nearbyCount').textContent = state.userLocation ? `${items.length} 處・${NEARBY_RADIUS_KM} KM 內` : `${items.length} 處待定位`;
+    $('#nearbyResultList').innerHTML = items.map(venue => venueResultMarkup(venue, venue._distance)).join('')
+      || emptyInline(state.userLocation ? `目前位置 ${NEARBY_RADIUS_KM} 公里內沒有可定位的展場` : '目前沒有提供座標的展場');
     const map = $('#nearbyMap');
     const token = ++state.nearbyMapRenderToken;
     if (!window.L) {
       map.classList.add('is-map-loading');
-      map.innerHTML = '<div class="map-runtime-placeholder"><span>地圖載入中</span><small>展覽清單可以先行瀏覽</small></div>';
+      map.innerHTML = '<div class="map-runtime-placeholder"><span>地圖載入中</span><small>展場清單可以先行瀏覽</small></div>';
     }
     ensureLeafletAssets().then(() => {
       if (token !== state.nearbyMapRenderToken || state.view !== 'nearby') return;
@@ -2840,7 +2955,7 @@
       console.warn('[Exhibition Hub] lazy map asset failed', error);
       if (token !== state.nearbyMapRenderToken) return;
       map.classList.remove('is-map-loading');
-      map.innerHTML = '<div class="map-runtime-placeholder is-error"><span>地圖暫時無法載入</span><small>仍可使用右側展覽清單與外部導航</small></div>';
+      map.innerHTML = '<div class="map-runtime-placeholder is-error"><span>地圖暫時無法載入</span><small>仍可使用右側展場清單與外部導航</small></div>';
     });
   }
 
@@ -2855,11 +2970,12 @@
       L.circle(center, {radius:NEARBY_RADIUS_KM * 1000, color:'#34785a', fillColor:'#34785a', fillOpacity:.035, weight:1.5, dashArray:'6 7'}).addTo(state.map);
       L.circleMarker(center, {radius:8, color:'#171713', fillColor:'#c56538', fillOpacity:1, weight:3}).addTo(state.map).bindPopup('你目前的位置');
     }
-    items.slice(0, 100).forEach(event => {
-      if (!hasCoordinates(event)) return;
-      const marker = L.marker([event.latitude,event.longitude]).addTo(state.map);
-      const directionsUrl = googleMapsDirectionsUrl(event);
-      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(event.title)}</h3><p>${escapeHtml(eventVenueCompactLabel(event))}</p><p>${escapeHtml(dateRange(event))}</p><div class="map-popup-actions"><a href="${eventHref(event)}">查看展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
+    items.slice(0, 100).forEach(venue => {
+      const coordinate = venueCoordinates(venue);
+      if (!coordinate) return;
+      const marker = L.marker([coordinate.latitude, coordinate.longitude]).addTo(state.map);
+      const directionsUrl = googleMapsDirectionsUrlForVenue(venue);
+      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
       markers.push(marker);
     });
     if (markers.length) {
@@ -2879,7 +2995,7 @@
     navigator.geolocation.getCurrentPosition(position => {
       state.userLocation = {lat:position.coords.latitude,lng:position.coords.longitude};
       state.locationRequestPending = false;
-      showToast('已依目前位置重新排序');
+      showToast('已依目前位置重新整理附近展場');
       renderHomeNearby();
       if (state.view === 'nearby') renderNearby();
     }, error => {
@@ -2922,6 +3038,15 @@
       return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${event.latitude},${event.longitude}`)}&travelmode=transit`;
     }
     const query = navigationQuery(event);
+    return query ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}` : '';
+  }
+
+  function googleMapsDirectionsUrlForVenue(venue) {
+    const coordinate = venueCoordinates(venue);
+    if (coordinate) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${coordinate.latitude},${coordinate.longitude}`)}&travelmode=transit`;
+    }
+    const query = [venueAddressLabel(venue), venue?.name].filter(Boolean).join(' ');
     return query ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}` : '';
   }
 

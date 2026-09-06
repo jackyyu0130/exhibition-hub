@@ -25,6 +25,7 @@ class LowResourceWorkflowTests(unittest.TestCase):
         self.assertIn("cancel-in-progress: true", workflow)
         self.assertIn("timeout-minutes: 55", workflow)
         self.assertIn("WEEKLY_UPDATE_ENABLED", workflow)
+        self.assertIn("vars.WEEKLY_UPDATE_ENABLED != 'false'", workflow)
         self.assertIn('MAX_DETAIL_FETCHES: "80"', workflow)
         self.assertIn('MAX_IMAGE_FETCHES: "80"', workflow)
         self.assertIn('CULTURE_API_WORKERS: "2"', workflow)
