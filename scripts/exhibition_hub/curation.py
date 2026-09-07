@@ -2,7 +2,9 @@
 
 The production enrichment file intentionally keeps broad source coverage for
 review and auditing. The public site consumes a smaller curated feed focused on
-major venues and high-interest events with a usable image and outbound link.
+current catalog events at confirmed venues with a usable image and outbound
+link. For non-permanent events, venue priority and source ``hitRate`` affect
+ranking, not eligibility.
 """
 from __future__ import annotations
 
@@ -599,7 +601,10 @@ def evaluate_event(
             return True, "confirmed_P1_visible_interest", venue
         if priority == "P2" and hit_rate >= 80:
             return True, "confirmed_P2_high_interest", venue
-        return False, "low_priority_or_low_interest_venue", venue
+        # A confirmed venue is sufficient for non-permanent catalog eligibility.
+        # Priority and hitRate remain useful ranking signals, but official-source
+        # collectors commonly have no hitRate and therefore use zero as unknown.
+        return True, "confirmed_venue_catalog", venue
 
     if hit_rate >= 300 and MAJOR_TITLE_RE.search(title):
         return True, "unmatched_high_interest", None
@@ -697,7 +702,7 @@ def build_curated_payload(
         "builtAt": now,
         "sourceEventCount": len(source_payload.get("events") or []),
         "publicEventCount": len(kept),
-        "policy": "major-venues-valid-link-image-no-library-no-small-local",
+        "policy": "confirmed-venues-valid-link-image-selective-permanent-no-library-no-small-local",
         "matrixVenueCount": len(matrix_payload.get("venues") or []),
     }
     original_stats = dict(source_payload.get("stats") or {})
