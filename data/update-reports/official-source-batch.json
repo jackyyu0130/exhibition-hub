@@ -2,19 +2,20 @@
   "mode": "official-source-batch",
   "published": false,
   "failureIsolation": true,
-  "base": "/home/runner/work/exhibition-hub/exhibition-hub/local-update-output/20260830-085148/audit/publish-preview.json",
-  "output": "/home/runner/work/exhibition-hub/exhibition-hub/local-update-output/20260830-085148/audit/official-sources-preview.json",
+  "base": "/home/runner/work/exhibition-hub/exhibition-hub/local-update-output/20260912-212723/audit/publish-preview.json",
+  "output": "/home/runner/work/exhibition-hub/exhibition-hub/local-update-output/20260912-212723/audit/official-sources-preview.json",
   "sourceCount": 8,
   "successfulSourceCount": 5,
   "failedSourceCount": 3,
   "skippedSourceCount": 0,
-  "finalEventCount": 1982,
+  "excludedReviewEventCount": 1,
+  "finalEventCount": 1518,
   "sources": [
     {
       "sourceId": "kaohsiung-music-center",
       "sourceName": "高雄流行音樂中心",
       "status": "preserved_previous_base",
-      "baseEventCount": 1946,
+      "baseEventCount": 1485,
       "collectorStatus": "success",
       "collectorSuccess": true,
       "collectedRecordCount": 1,
@@ -28,7 +29,7 @@
       "sourceId": "pier-2",
       "sourceName": "駁二藝術特區",
       "status": "preserved_previous_base",
-      "baseEventCount": 1946,
+      "baseEventCount": 1485,
       "collectorStatus": "partial",
       "collectorSuccess": true,
       "collectedRecordCount": 0,
@@ -44,63 +45,73 @@
       "sourceId": "songshan-cultural-park",
       "sourceName": "松山文創園區",
       "status": "merged",
-      "baseEventCount": 1946,
+      "baseEventCount": 1485,
       "collectorStatus": "success",
       "collectorSuccess": true,
-      "collectedRecordCount": 33,
-      "publishableRecordCount": 18,
+      "collectedRecordCount": 34,
+      "publishableRecordCount": 19,
       "minimumRecords": 5,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 1963,
+      "candidateEventCount": 1503,
+      "rawCandidateEventCount": 1503,
       "decisionCounts": {
-        "new_event": 17,
+        "new_event": 18,
         "auto_merge": 1
       },
-      "reviewQueueCount": 0
+      "reviewQueueCount": 0,
+      "excludedReviewEventCount": 0,
+      "preservedExistingExcludedCount": 0
     },
     {
       "sourceId": "taipei-music-center",
       "sourceName": "臺北流行音樂中心",
       "status": "merged",
-      "baseEventCount": 1963,
+      "baseEventCount": 1503,
       "collectorStatus": "success",
       "collectorSuccess": true,
-      "collectedRecordCount": 12,
-      "publishableRecordCount": 12,
+      "collectedRecordCount": 11,
+      "publishableRecordCount": 11,
       "minimumRecords": 4,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 1975,
+      "candidateEventCount": 1513,
+      "rawCandidateEventCount": 1514,
       "decisionCounts": {
-        "new_event": 12
+        "new_event": 11
       },
-      "reviewQueueCount": 0
+      "reviewQueueCount": 0,
+      "excludedReviewEventCount": 1,
+      "preservedExistingExcludedCount": 0
     },
     {
       "sourceId": "taipei-performing-arts-center",
       "sourceName": "臺北表演藝術中心",
       "status": "merged",
-      "baseEventCount": 1975,
+      "baseEventCount": 1513,
       "collectorStatus": "success",
       "collectorSuccess": true,
       "collectedRecordCount": 20,
-      "publishableRecordCount": 20,
+      "publishableRecordCount": 19,
       "minimumRecords": 5,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 1980,
+      "candidateEventCount": 1516,
+      "rawCandidateEventCount": 1516,
       "decisionCounts": {
-        "new_event": 5,
-        "needs_review": 15
+        "new_event": 3,
+        "auto_merge": 13,
+        "needs_review": 3
       },
-      "reviewQueueCount": 15
+      "reviewQueueCount": 3,
+      "excludedReviewEventCount": 0,
+      "preservedExistingExcludedCount": 0
     },
     {
       "sourceId": "taipei-expo-park-expo-dome",
       "sourceName": "花博公園爭艷館",
       "status": "merged",
-      "baseEventCount": 1980,
+      "baseEventCount": 1516,
       "collectorStatus": "success",
       "collectorSuccess": true,
       "collectedRecordCount": 14,
@@ -108,44 +119,48 @@
       "minimumRecords": 1,
       "warnings": [],
       "errors": [],
-      "candidateEventCount": 1981,
+      "candidateEventCount": 1517,
+      "rawCandidateEventCount": 1517,
       "decisionCounts": {
         "new_event": 1,
         "auto_merge": 13
       },
-      "reviewQueueCount": 0
+      "reviewQueueCount": 0,
+      "excludedReviewEventCount": 0,
+      "preservedExistingExcludedCount": 0
     },
     {
       "sourceId": "twtc-hall-1",
       "sourceName": "臺北世貿一館",
       "status": "merged",
-      "baseEventCount": 1981,
+      "baseEventCount": 1517,
       "collectorStatus": "partial",
       "collectorSuccess": true,
       "collectedRecordCount": 20,
-      "publishableRecordCount": 10,
+      "publishableRecordCount": 8,
       "minimumRecords": 1,
       "warnings": [
-        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
-        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
-        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/",
+        "https://www.ccpa.org.tw/comic/index.php?tpl=12: CollectorHttpError: HTTPSConnectionPool(host='www.ccpa.org.tw', port=443): Read timed out. (read timeout=25)",
+        "https://www.ccpa.org.tw/comic/index.php?tpl=12: CollectorHttpError: HTTPSConnectionPool(host='www.ccpa.org.tw', port=443): Read timed out. (read timeout=25)",
         "http://www.oaas.org.tw: CollectorHttpError: HTTPConnectionPool(host='www.oaas.org.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.oaas.org.tw', port=80): Failed to resolve 'www.oaas.org.tw' ([Errno -2] Name or service not known)\"))",
-        "http://www.ifpr.com.tw: CollectorHttpError: HTTPConnectionPool(host='www.ifpr.com.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.ifpr.com.tw', port=80): Failed to resolve 'www.ifpr.com.tw' ([Errno -2] Name or service not known)\"))",
-        "http://www.top-link.com.tw: CollectorHttpError: 403 Client Error: Forbidden for url: https://www.top-link.com.tw:443/"
+        "http://www.ifpr.com.tw: CollectorHttpError: HTTPConnectionPool(host='www.ifpr.com.tw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(\"HTTPConnection(host='www.ifpr.com.tw', port=80): Failed to resolve 'www.ifpr.com.tw' ([Errno -2] Name or service not known)\"))"
       ],
       "errors": [],
-      "candidateEventCount": 1982,
+      "candidateEventCount": 1518,
+      "rawCandidateEventCount": 1518,
       "decisionCounts": {
         "new_event": 1,
-        "auto_merge": 9
+        "auto_merge": 7
       },
-      "reviewQueueCount": 0
+      "reviewQueueCount": 0,
+      "excludedReviewEventCount": 0,
+      "preservedExistingExcludedCount": 0
     },
     {
       "sourceId": "tainan-art-museum",
       "sourceName": "臺南市美術館",
       "status": "preserved_previous_base",
-      "baseEventCount": 1982,
+      "baseEventCount": 1518,
       "collectorStatus": "failed",
       "collectorSuccess": false,
       "collectedRecordCount": 0,
