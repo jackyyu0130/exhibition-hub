@@ -47,6 +47,14 @@ def parse_args() -> argparse.Namespace:
             "Defaults to today's date in Asia/Taipei."
         ),
     )
+    parser.add_argument(
+        "--allow-expired-prune",
+        action="store_true",
+        help=(
+            "Allow a large net drop when removed records are expired. "
+            "The active/future/date-unknown removal limit still applies."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -133,6 +141,7 @@ def finalize_publish(
     max_drop_ratio: float,
     max_drop_count: int,
     as_of_date: date | None = None,
+    allow_expired_prune: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     current_events = [
         event for event in current.get("events") or []
@@ -228,10 +237,11 @@ def finalize_publish(
             f"{len(active_removed_ids)} exceed {max_drop_count}."
         ),
     )
-    require(
-        drop_ratio <= max(0.0, max_drop_ratio),
-        f"Production count drop ratio {drop_ratio} exceeds {max_drop_ratio}.",
-    )
+    if not allow_expired_prune or not expired_removed_ids:
+        require(
+            drop_ratio <= max(0.0, max_drop_ratio),
+            f"Production count drop ratio {drop_ratio} exceeds {max_drop_ratio}.",
+        )
 
     metrics = source_run.get("metrics") or {}
     source_records = [
@@ -292,7 +302,12 @@ def finalize_publish(
             "maxDropCount": max_drop_count,
             "maxDropRatio": max_drop_ratio,
             "countGateScope": "active_future_or_date_unknown_removed_events",
-            "ratioGateScope": "net_total_event_count",
+            "ratioGateScope": (
+                "active_future_or_date_unknown_removed_events"
+                if allow_expired_prune and expired_removed_ids
+                else "net_total_event_count"
+            ),
+            "expiredPruneAllowed": bool(allow_expired_prune),
         },
         "sourceRecordCount": len(source_records),
         "detailSuccessCount": int(metrics.get("detailSuccessCount") or 0),
@@ -329,6 +344,7 @@ def main() -> int:
         max_drop_ratio=max(0.0, args.max_drop_ratio),
         max_drop_count=max(0, args.max_drop_count),
         as_of_date=as_of_date,
+        allow_expired_prune=args.allow_expired_prune,
     )
     write_json(args.output, final)
     write_json(args.report_output, report)

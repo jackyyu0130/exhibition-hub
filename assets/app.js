@@ -1,8 +1,8 @@
-/* Exhibition Hub V6.5.0-R18.3 P5-B — stable incremental listings and 3 km venue discovery. */
+/* Exhibition Hub V6.5.0-R18.4 P5-B — latest-data refresh, map-pin venue discovery, and single-select categories. */
 (() => {
   'use strict';
 
-  const APP_RELEASE = '6.5.0-r18.3';
+  const APP_RELEASE = '6.5.0-r18.4';
   document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
@@ -1251,8 +1251,14 @@
     const params = new URLSearchParams(location.search);
     state.params = params;
     state.query = params.get('q') || '';
-    const categoryValues = params.getAll('category').flatMap(value => String(value).split(',')).map(value => CATEGORY_ALIASES[value.trim()] || value.trim()).filter(category => CATEGORY_ORDER.includes(category));
-    state.categories = new Set(categoryValues);
+    // Categories are intentionally single-select in the public Explore view.
+    // Accept legacy URLs containing multiple values, but keep only the first
+    // valid category so old links cannot silently re-enable multi-select.
+    const categoryValues = params.getAll('category')
+      .flatMap(value => String(value).split(','))
+      .map(value => CATEGORY_ALIASES[value.trim()] || value.trim())
+      .filter(category => CATEGORY_ORDER.includes(category));
+    state.categories = new Set(categoryValues.slice(0, 1));
     state.region = params.get('region') || null;
     const venueValues = (params.get('venue') || '').split(',').map(value => value.trim()).filter(Boolean);
     state.selectedVenues = new Set(venueValues);
@@ -3016,6 +3022,18 @@
     state.map = L.map('nearbyMap', {scrollWheelZoom:false}).setView(center, origin ? 13 : 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
     const markers = [];
+    // Clicking any open map area inserts a temporary search pin. This is
+    // deliberately separate from venue markers: users can search a place
+    // that is not yet in the venue registry, while the result list still
+    // contains only registered venues with usable coordinates.
+    state.map.on('click', event => {
+      const latitude = Number(event?.latlng?.lat);
+      const longitude = Number(event?.latlng?.lng);
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+      state.nearbyOrigin = {lat:latitude, lng:longitude, label:'地圖選取位置', source:'map'};
+      showToast(`已插入圖釘，搜尋該位置 ${NEARBY_RADIUS_KM} 公里內展場`);
+      renderNearby();
+    });
     if (origin) {
       L.circle(center, {radius:NEARBY_RADIUS_KM * 1000, color:'#34785a', fillColor:'#34785a', fillOpacity:.035, weight:1.5, dashArray:'6 7'}).addTo(state.map);
       L.circleMarker(center, {radius:8, color:'#171713', fillColor:'#c56538', fillOpacity:1, weight:3}).addTo(state.map)
@@ -3031,7 +3049,11 @@
       const marker = L.marker([coordinate.latitude, coordinate.longitude]).addTo(state.map);
       const directionsUrl = googleMapsDirectionsUrlForVenue(venue);
       marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><p>點選此標記，改以此處搜尋 ${NEARBY_RADIUS_KM} 公里內展場。</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
-      marker.on('click', () => {
+      marker.on('click', event => {
+        // Do not let a venue-marker click bubble into the map click handler;
+        // otherwise the venue pin would immediately be replaced by a second
+        // arbitrary map pin.
+        event?.originalEvent?.stopPropagation?.();
         state.nearbyOrigin = {lat:coordinate.latitude, lng:coordinate.longitude, label:venue.name};
         showToast(`已改以「${venue.name}」為搜尋中心`);
         renderNearby();
@@ -3198,8 +3220,10 @@
     Object.entries(filters).forEach(([key,value]) => {
       if (key === 'category') {
         params.delete('category');
-        const values = Array.isArray(value) ? value : value ? [value] : [];
-        values.forEach(category => params.append('category', category));
+        const values = (Array.isArray(value) ? value : value ? [value] : [])
+          .map(category => CATEGORY_ALIASES[String(category).trim()] || String(category).trim())
+          .filter(category => CATEGORY_ORDER.includes(category));
+        if (values[0]) params.set('category', values[0]);
         return;
       }
       if (value === null || value === '' || value === 'all') params.delete(key); else params.set(key,value);
@@ -3209,9 +3233,10 @@
   }
 
   function toggleCategoryFilter(category) {
-    const next = new Set(state.categories);
-    if (next.has(category)) next.delete(category); else next.add(category);
-    updateUrl({category:[...next]});
+    // Selecting another category replaces the current one. Selecting the
+    // active category again clears it, preserving the familiar toggle-off UX
+    // without allowing a second category to remain active.
+    updateUrl({category:state.categories.has(category) ? null : category});
   }
 
   function emptyInline(text) { return `<div class="empty-state"><span>✦</span><p>${escapeHtml(text)}</p></div>`; }
