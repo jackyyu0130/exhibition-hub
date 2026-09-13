@@ -444,6 +444,7 @@ img, video, svg { display: block; max-width: 100%; }
 .nearby-view-hero { padding: 58px max(24px,calc((100vw - var(--max))/2 + 24px)) 36px; display: flex; justify-content: space-between; align-items: flex-end; background: var(--bg); color: var(--ink); }
 .nearby-view-hero h1 { margin: 0; font-family: "Noto Serif TC", serif; font-size: clamp(42px,6vw,64px); }
 .nearby-view-hero p:last-child { color: var(--muted); }
+.nearby-hero-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
 .nearby-layout { max-width: var(--max); margin: 0 auto 84px; padding: 0 24px; display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; }
 .nearby-map { min-height: 650px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-soft); }
 .nearby-results { max-height: 650px; overflow: auto; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
@@ -548,6 +549,7 @@ img, video, svg { display: block; max-width: 100%; }
   .nearby-map { min-height: 430px; }
   .nearby-results { max-height: none; }
   .nearby-view-hero { align-items: flex-start; flex-direction: column; gap: 20px; padding-left: 18px; padding-right: 18px; }
+  .nearby-hero-actions { justify-content: flex-start; }
   .detail-poster { position: relative; top: auto; max-width: 520px; }
   .footer-top { grid-template-columns: 1fr; gap: 34px; }
 }

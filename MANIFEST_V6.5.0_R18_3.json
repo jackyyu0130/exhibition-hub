@@ -1,0 +1,29 @@
+{
+  "version": "6.5.0-R18.3",
+  "releaseMarker": "v6.5.0-r18.3",
+  "baseBranch": "develop",
+  "baseCommit": "5f92a5dce586160b203272cd857dcca7cd3b7fdc",
+  "summary": "Restore the canonical 675-event curated feed and synchronized taxonomy audit statistics while fixing repeated listing pagination, limiting nearby venue search to 3 km, and allowing map-marker search centers.",
+  "changedFiles": [
+    "assets/app.js",
+    "assets/styles.css",
+    "index.html",
+    "scripts/build_pages_site.py",
+    "data/geocode-cache.json",
+    "data/exhibitions.curated.json",
+    "data/update-reports/category-semantic-audit-r18.json",
+    "tests/test_frontend.py",
+    "tests/test_pages_site_builder.py",
+    "tests/test_r183_nearby_pagination.py",
+    "tests/test_r183_catalog_sync.py",
+    "tests/test_r160_catalog_consistency.py",
+    "tests/test_r170_semantic_taxonomy.py",
+    "tests/test_r171_display_consistency.py",
+    "VERSION.txt",
+    "R18_3_NEARBY_PAGINATION_GUIDE_ZH-TW.md"
+  ],
+  "verification": [
+    "node --check assets/app.js",
+    "python3 -m unittest tests.test_frontend tests.test_pages_site_builder tests.test_r183_nearby_pagination tests.test_r183_catalog_sync tests.test_r160_catalog_consistency tests.test_r170_semantic_taxonomy tests.test_r171_display_consistency"
+  ]
+}

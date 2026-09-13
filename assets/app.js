@@ -1,8 +1,8 @@
-/* Exhibition Hub V6.5.0-R18.2 P5-B → C3 — venue-led nearby discovery and bounded weekly updates. */
+/* Exhibition Hub V6.5.0-R18.3 P5-B — stable incremental listings and 3 km venue discovery. */
 (() => {
   'use strict';
 
-  const APP_RELEASE = '6.5.0-r18.2';
+  const APP_RELEASE = '6.5.0-r18.3';
   document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
@@ -55,7 +55,7 @@
     '演唱會':7, '表演':8, '舞蹈':9, '電影':10, '市集':11,
     '科技':12, '競賽':13, '快閃店':14, '其他':15,
   };
-  const NEARBY_RADIUS_KM = 10;
+  const NEARBY_RADIUS_KM = 3;
   const CATEGORY_CODE_MAP = {'1':'音樂','2':'表演','3':'舞蹈','4':'親子','5':'音樂','6':'美術','7':'其他','8':'電影','11':'表演','13':'競賽','14':'其他','15':'其他','17':'音樂','19':'其他'};
   const CATEGORY_ALIASES = {
     '展覽':'美術','展覽資訊':'美術','藝術':'美術','戲劇':'表演','戲劇表演':'表演','綜藝':'表演','綜藝活動':'表演',
@@ -135,6 +135,7 @@
     query: '',
     sort: 'recommended',
     userLocation: null,
+    nearbyOrigin: null,
     map: null,
     markers: null,
     calendarMonth: null,
@@ -163,6 +164,7 @@
     heroVisibilityObserver: null,
     listingRenderLimit: 48,
     listingResultSignature: '',
+    listingRenderedCount: 0,
     filterResultsTimer: null,
     lastHomeFilterKey: '',
     revealObserver: null,
@@ -1961,7 +1963,7 @@
   };
 
   function renderHomeNearby() {
-    const items = nearestVenues(3, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
+    const items = nearestVenues(3, state.userLocation ? NEARBY_RADIUS_KM : Infinity, state.userLocation);
     const list = $('#nearbyHomeList');
     list.innerHTML = items.length ? items.map(venue => nearbyVenueMiniMarkup(venue, venue._distance ?? null)).join('') : emptyInline('目前沒有可定位的展場');
     const section = list.closest('.nearby-home');
@@ -2007,9 +2009,11 @@
   function renderListing() {
     const items = sortEvents(filterEvents());
     const signature = listingResultSignature();
-    if (signature !== state.listingResultSignature) {
+    const signatureChanged = signature !== state.listingResultSignature;
+    if (signatureChanged) {
       state.listingResultSignature = signature;
       state.listingRenderLimit = window.matchMedia('(max-width: 760px)').matches ? 12 : 24;
+      state.listingRenderedCount = 0;
     }
     const visibleItems = items.slice(0, state.listingRenderLimit);
     const titleParts = [];
@@ -2033,10 +2037,26 @@
     $('#listingCount').textContent = visibleItems.length < items.length
       ? `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽，目前顯示 ${visibleItems.length.toLocaleString('zh-TW')} 檔`
       : `找到 ${items.length.toLocaleString('zh-TW')} 檔展覽`;
-    // Compatibility lineage: cardMarkup(event,{wholeCardLink:true})
     const listingGrid = $('#listingGrid');
-    listingGrid.classList.remove('is-in-view');
-    listingGrid.innerHTML = visibleItems.map((event, index) => cardMarkup(event,{wholeCardLink:true,motionIndex:Math.min(index, 7)})).join('');
+    const canAppend = !signatureChanged
+      && state.listingRenderedCount > 0
+      && visibleItems.length > state.listingRenderedCount
+      && listingGrid.children.length === state.listingRenderedCount;
+    // Compatibility lineage: cardMarkup(event,{wholeCardLink:true})
+    if (canAppend) {
+      listingGrid.insertAdjacentHTML('beforeend', visibleItems
+        .slice(state.listingRenderedCount)
+        .map((event, index) => cardMarkup(event,{wholeCardLink:true,motionIndex:Math.min(index + state.listingRenderedCount, 7)}))
+        .join(''));
+    } else {
+      listingGrid.innerHTML = visibleItems
+        .map((event, index) => cardMarkup(event,{wholeCardLink:true,motionIndex:Math.min(index, 7)}))
+        .join('');
+    }
+    // Keep the grid visible while appending. Re-observing a long grid after
+    // every click can leave all cards transparent when the user clicks quickly.
+    listingGrid.classList.add('is-in-view');
+    state.listingRenderedCount = visibleItems.length;
     $('#listingEmpty').hidden = items.length !== 0;
     const loadMore = ensureListingLoadMoreButton();
     if (loadMore) {
@@ -2885,19 +2905,41 @@
     if (Number.isFinite(latitude) && Number.isFinite(longitude) && latitude !== 0 && longitude !== 0) {
       return {latitude, longitude, precision:'registry'};
     }
-    const coordinate = state.venueCoordinateIndex.get(normalizedVenueLookupKey(venue?.name || ''));
-    return coordinate ? {...coordinate, precision:'venue'} : null;
+    const key = normalizedVenueLookupKey(venue?.name || '');
+    const direct = state.venueCoordinateIndex.get(key);
+    if (direct) return {...direct, precision:'venue-event'};
+    // A source may call a venue by its hall/floor name (for example
+    // 「樹林藝文中心演藝廳」) while the registry stores the parent venue.
+    // Reuse the longest safe partial match instead of dropping that venue.
+    let best = null;
+    let bestScore = 0;
+    state.venueCoordinateIndex.forEach((coordinate, candidateKey) => {
+      if (candidateKey.length < 4 || key.length < 4) return;
+      if (!candidateKey.includes(key) && !key.includes(candidateKey)) return;
+      const score = Math.min(candidateKey.length, key.length);
+      if (score > bestScore) {
+        best = coordinate;
+        bestScore = score;
+      }
+    });
+    if (best) return {...best, precision:'venue-event-partial'};
+    const cached = cachedCoordinate([
+      venue?.address,
+      `${venue?.region || ''}${venue?.district || ''}`,
+      venue?.district,
+    ]);
+    return cached ? {...cached, precision:'venue-district'} : null;
   }
 
-  function nearestVenues(limit = 200, maxDistance = Infinity) {
+  function nearestVenues(limit = 200, maxDistance = Infinity, origin = state.userLocation) {
     const located = venueCatalog().map(venue => {
       const coordinate = venueCoordinates(venue);
       if (!coordinate) return null;
       const enriched = {...venue, latitude:coordinate.latitude, longitude:coordinate.longitude, _coordinatePrecision:coordinate.precision};
-      if (state.userLocation) enriched._distance = haversine(state.userLocation.lat, state.userLocation.lng, coordinate.latitude, coordinate.longitude);
+      if (origin) enriched._distance = haversine(origin.lat, origin.lng, coordinate.latitude, coordinate.longitude);
       return enriched;
     }).filter(Boolean);
-    if (!state.userLocation) return located.slice(0, limit);
+    if (!origin) return located.slice(0, limit);
     return located
       .filter(venue => venue._distance <= maxDistance)
       .sort((a,b) => a._distance-b._distance || b.count-a.count || a.name.localeCompare(b.name, 'zh-Hant'))
@@ -2933,13 +2975,21 @@
   }
 
   function renderNearby() {
-    const items = nearestVenues(200, state.userLocation ? NEARBY_RADIUS_KM : Infinity);
-    $('#nearbyStatusText').textContent = state.userLocation
-      ? `已定位目前位置，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列。`
+    const origin = state.nearbyOrigin || state.userLocation;
+    const originLabel = state.nearbyOrigin?.label || '目前位置';
+    const items = nearestVenues(200, origin ? NEARBY_RADIUS_KM : Infinity, origin);
+    $('#nearbyStatusText').textContent = origin
+      ? `以「${originLabel}」為中心，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列；點選地圖標記可改變搜尋中心。`
       : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展場。`;
-    $('#nearbyCount').textContent = state.userLocation ? `${items.length} 處・${NEARBY_RADIUS_KM} KM 內` : `${items.length} 處待定位`;
+    const resultsHeading = $('#nearbyResultsHeading');
+    if (resultsHeading) resultsHeading.textContent = state.nearbyOrigin
+      ? `「${originLabel}」周邊 ${NEARBY_RADIUS_KM} 公里內的展場`
+      : `你附近 ${NEARBY_RADIUS_KM} 公里內的展場`;
+    $('#nearbyCount').textContent = origin ? `${items.length} 處・${NEARBY_RADIUS_KM} KM 內` : `${items.length} 處待定位`;
+    const resetButton = $('#nearbyResetOriginButton');
+    if (resetButton) resetButton.hidden = !state.nearbyOrigin;
     $('#nearbyResultList').innerHTML = items.map(venue => venueResultMarkup(venue, venue._distance)).join('')
-      || emptyInline(state.userLocation ? `目前位置 ${NEARBY_RADIUS_KM} 公里內沒有可定位的展場` : '目前沒有提供座標的展場');
+      || emptyInline(origin ? `「${originLabel}」${NEARBY_RADIUS_KM} 公里內沒有可定位的展場` : '目前沒有提供座標的展場');
     const map = $('#nearbyMap');
     const token = ++state.nearbyMapRenderToken;
     if (!window.L) {
@@ -2950,7 +3000,7 @@
       if (token !== state.nearbyMapRenderToken || state.view !== 'nearby') return;
       map.classList.remove('is-map-loading');
       map.innerHTML = '';
-      renderMap(items);
+      renderMap(items, origin);
     }).catch(error => {
       console.warn('[Exhibition Hub] lazy map asset failed', error);
       if (token !== state.nearbyMapRenderToken) return;
@@ -2959,28 +3009,39 @@
     });
   }
 
-  function renderMap(items) {
+  function renderMap(items, origin = state.nearbyOrigin || state.userLocation) {
     if (!window.L) return;
     if (state.map) { state.map.remove(); state.map = null; }
-    const center = state.userLocation ? [state.userLocation.lat, state.userLocation.lng] : [23.7, 121.0];
-    state.map = L.map('nearbyMap', {scrollWheelZoom:false}).setView(center, state.userLocation ? 12 : 7);
+    const center = origin ? [origin.lat, origin.lng] : [23.7, 121.0];
+    state.map = L.map('nearbyMap', {scrollWheelZoom:false}).setView(center, origin ? 13 : 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
     const markers = [];
-    if (state.userLocation) {
+    if (origin) {
       L.circle(center, {radius:NEARBY_RADIUS_KM * 1000, color:'#34785a', fillColor:'#34785a', fillOpacity:.035, weight:1.5, dashArray:'6 7'}).addTo(state.map);
-      L.circleMarker(center, {radius:8, color:'#171713', fillColor:'#c56538', fillOpacity:1, weight:3}).addTo(state.map).bindPopup('你目前的位置');
+      L.circleMarker(center, {radius:8, color:'#171713', fillColor:'#c56538', fillOpacity:1, weight:3}).addTo(state.map)
+        .bindPopup(state.nearbyOrigin ? `目前以「${escapeHtml(state.nearbyOrigin.label)}」為搜尋中心` : '你目前的位置');
+    }
+    if (state.userLocation && state.nearbyOrigin) {
+      L.circleMarker([state.userLocation.lat, state.userLocation.lng], {radius:6, color:'#34785a', fillColor:'#fff', fillOpacity:1, weight:3})
+        .addTo(state.map).bindPopup('你目前的位置（點「回到目前位置」可重設搜尋中心）');
     }
     items.slice(0, 100).forEach(venue => {
       const coordinate = venueCoordinates(venue);
       if (!coordinate) return;
       const marker = L.marker([coordinate.latitude, coordinate.longitude]).addTo(state.map);
       const directionsUrl = googleMapsDirectionsUrlForVenue(venue);
-      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
+      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><p>點選此標記，改以此處搜尋 ${NEARBY_RADIUS_KM} 公里內展場。</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
+      marker.on('click', () => {
+        state.nearbyOrigin = {lat:coordinate.latitude, lng:coordinate.longitude, label:venue.name};
+        showToast(`已改以「${venue.name}」為搜尋中心`);
+        renderNearby();
+      });
       markers.push(marker);
     });
+    state.markers = markers;
     if (markers.length) {
       const group = L.featureGroup(markers);
-      if (state.userLocation) group.addLayer(L.circleMarker(center, {radius:1, opacity:0, fillOpacity:0}));
+      if (origin) group.addLayer(L.circleMarker(center, {radius:1, opacity:0, fillOpacity:0}));
       state.map.fitBounds(group.getBounds().pad(.12), {maxZoom:13});
     }
     setTimeout(() => state.map?.invalidateSize(), 150);
@@ -2994,6 +3055,7 @@
     if (!automatic) showToast('正在取得目前位置…');
     navigator.geolocation.getCurrentPosition(position => {
       state.userLocation = {lat:position.coords.latitude,lng:position.coords.longitude};
+      state.nearbyOrigin = null;
       state.locationRequestPending = false;
       showToast('已依目前位置重新整理附近展場');
       renderHomeNearby();
@@ -3006,6 +3068,13 @@
         $('#nearbyStatusText').textContent = `${message}；可按右上角「重新取得位置」再次嘗試。`;
       }
     }, {enableHighAccuracy:true,timeout:12000,maximumAge:300000});
+  }
+
+  function resetNearbyOrigin() {
+    if (!state.nearbyOrigin) return;
+    state.nearbyOrigin = null;
+    showToast(state.userLocation ? '已回到目前位置搜尋' : '請先取得目前位置');
+    if (state.view === 'nearby') renderNearby();
   }
 
   function coordinateMatchesRegion(event) {
@@ -3612,9 +3681,12 @@
       });
     });
     document.addEventListener('click', event => {
-      if (!event.target.closest('#listingLoadMore')) return;
+      const loadMore = event.target.closest('#listingLoadMore');
+      if (!loadMore || loadMore.disabled) return;
+      loadMore.disabled = true;
       state.listingRenderLimit += window.matchMedia('(max-width: 760px)').matches ? 12 : 24;
       renderListing();
+      window.requestAnimationFrame(() => { loadMore.disabled = false; });
     });
     $('#filterDrawerButton').addEventListener('click', () => $('#filterSidebar').classList.add('open'));
     $('#venueSelectorLaunch').addEventListener('click', openVenueSelector);
@@ -3641,6 +3713,7 @@
     $('#filterCloseButton').addEventListener('click', () => $('#filterSidebar').classList.remove('open'));
     $('#homeLocationButton').addEventListener('click', requestLocation);
     $('#nearbyLocationButton').addEventListener('click', requestLocation);
+    $('#nearbyResetOriginButton')?.addEventListener('click', resetNearbyOrigin);
   }
 
   async function shareEvent(event) {
