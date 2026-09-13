@@ -320,6 +320,8 @@ def main() -> int:
                 "--fetch-details",
                 "--source-registry", "data/source_registry.json",
                 "--report-output", str(AUDIT / "huashan-source-run.json"),
+                "--detail-limit", os.environ.get("EXHIBITION_HUB_DETAIL_LIMIT", "20"),
+                "--detail-retry-rounds", os.environ.get("EXHIBITION_HUB_DETAIL_RETRY_ROUNDS", "0"),
             ],
         )
         run_step(
@@ -369,18 +371,30 @@ def main() -> int:
                 "--excluded-output", str(AUDIT / "publish-excluded.json"),
             ],
         )
+        official_source_command = [
+            python,
+            "scripts/run_official_source_batch.py",
+            "--base", str(AUDIT / "publish-preview.json"),
+            "--source-registry", "data/source_registry.json",
+            "--output", str(AUDIT / "official-sources-preview.json"),
+            "--report", str(AUDIT / "official-source-batch.json"),
+            "--diff-output", str(AUDIT / "official-sources-diff.json"),
+            "--audit-dir", str(AUDIT / "official-sources"),
+        ]
+        # Keep one unresponsive official source from blocking the whole low-
+        # resource update.  The default is empty; a manual recovery can set
+        # EXHIBITION_HUB_EXCLUDE_SOURCES to a comma-separated source id list.
+        for excluded_source in os.environ.get(
+            "EXHIBITION_HUB_EXCLUDE_SOURCES", ""
+        ).split(","):
+            excluded_source = excluded_source.strip()
+            if excluded_source:
+                official_source_command.extend([
+                    "--exclude-source", excluded_source,
+                ])
         run_step(
             "7/11 抓取並整合已啟用官方來源",
-            [
-                python,
-                "scripts/run_official_source_batch.py",
-                "--base", str(AUDIT / "publish-preview.json"),
-                "--source-registry", "data/source_registry.json",
-                "--output", str(AUDIT / "official-sources-preview.json"),
-                "--report", str(AUDIT / "official-source-batch.json"),
-                "--diff-output", str(AUDIT / "official-sources-diff.json"),
-                "--audit-dir", str(AUDIT / "official-sources"),
-            ],
+            official_source_command,
         )
         run_step(
             "8/11 套用安全發布門檻",
@@ -396,6 +410,7 @@ def main() -> int:
                 "--minimum-events", "500",
                 "--max-drop-count", "25",
                 "--max-drop-ratio", "0.15",
+                "--allow-expired-prune",
                 "--output", str(AUDIT / "exhibitions.enriched.final.json"),
                 "--report-output", str(AUDIT / "production-publish-report.json"),
             ],

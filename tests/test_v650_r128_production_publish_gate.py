@@ -43,6 +43,7 @@ def finalize(
     *,
     max_active_removals: int,
     max_total_drop_ratio: float = 1.0,
+    allow_expired_prune: bool = False,
 ):
     return finalize_publish(
         current={"events": current_events},
@@ -63,6 +64,7 @@ def finalize(
         max_drop_ratio=max_total_drop_ratio,
         max_drop_count=max_active_removals,
         as_of_date=AS_OF_DATE,
+        allow_expired_prune=allow_expired_prune,
     )
 
 
@@ -139,6 +141,38 @@ class ProductionPublishGateTests(unittest.TestCase):
                 max_active_removals=0,
                 max_total_drop_ratio=0.20,
             )
+
+    def test_expired_prune_mode_allows_stale_catalog_cleanup(self):
+        current_events = [
+            event("expired-a", "2026-08-01"),
+            event("expired-b", "2026-08-02"),
+            event("expired-c", "2026-08-03"),
+            event("kept", "2026-10-01"),
+        ]
+        _final, report = finalize_publish(
+            current={"events": current_events},
+            preview=preview_payload([current_events[3]]),
+            diff={
+                "published": False,
+                "previewEventCount": 1,
+                "removedBaseEventCount": 0,
+                "qualityGates": {"published": False, "baseEventsPreserved": True},
+            },
+            source_run=source_run(),
+            quality_report={"passed": True, "failedGateIds": []},
+            source_id="huashan-1914",
+            minimum_events=1,
+            max_drop_ratio=0.20,
+            max_drop_count=0,
+            as_of_date=AS_OF_DATE,
+            allow_expired_prune=True,
+        )
+        self.assertEqual(report["expiredRemovedEventCount"], 3)
+        self.assertEqual(report["activeRemovedEventCount"], 0)
+        self.assertEqual(
+            report["safetyLimits"]["ratioGateScope"],
+            "active_future_or_date_unknown_removed_events",
+        )
 
 
 if __name__ == "__main__":

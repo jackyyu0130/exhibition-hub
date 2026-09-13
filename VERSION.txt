@@ -1,3 +1,6 @@
+Taiwan Exhibition Journal V6.5.0-R18.4
+R18.4 latest-data refresh: manual/weekly Sunday updates remain enabled; map clicks insert a 3 km search pin; Explore categories are single-select.
+R18.4 public data refreshed: 2026-09-14 02:08 Asia/Taipei; curated 733 exhibitions across 108 venues; expired events are pruned with an active-event safety cap.
 Taiwan Exhibition Journal V6.5.0-R14.2
 Current cumulative patch: Taiwan Exhibition Journal V6.5.0-R18.3
 R18.3 fixes repeated 「顯示更多展覽」 rendering, changes nearby venues to a 3 km radius, supports map-marker search centers, and publishes the geocode cache.

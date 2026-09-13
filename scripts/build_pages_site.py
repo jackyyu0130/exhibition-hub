@@ -40,7 +40,7 @@ REQUIRED_FILES = (
 OPTIONAL_FILES = ("CNAME",)
 REQUIRED_DIRECTORIES = ("assets",)
 BUILD_MANIFEST = "pages-build-manifest.json"
-PUBLIC_RELEASE = "v6.5.0-r18.3"
+PUBLIC_RELEASE = "v6.5.0-r18.4"
 
 
 def parse_args() -> argparse.Namespace:
