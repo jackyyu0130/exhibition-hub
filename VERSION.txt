@@ -1,4 +1,7 @@
 Taiwan Exhibition Journal V6.5.0-R14.2
+Current cumulative patch: Taiwan Exhibition Journal V6.5.0-R18.3
+R18.3 fixes repeated 「顯示更多展覽」 rendering, changes nearby venues to a 3 km radius, supports map-marker search centers, and publishes the geocode cache.
+R18.3 catalog sync: restores the canonical 675-event curated feed and synchronized category membership/audit statistics; no category test is weakened to 576.
 Current cumulative patch: Taiwan Exhibition Journal V6.5.0-R18.2
 R18.2 nearby venue update: nearby view and location discovery now show venues within 10 km, with venue address, distance, navigation, and venue-filtered exhibition links; Sunday low-resource updates run unless explicitly paused.
 R18.1 deployment lock: category listings use every canonical category, paid admission uses one public label on cards and details, and the Pages artifact exposes an exact release marker

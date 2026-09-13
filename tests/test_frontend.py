@@ -94,21 +94,23 @@ class FrontendContractTests(unittest.TestCase):
         self.assertNotIn("再抽一組觀展靈感", self.html)
 
     def test_nearby_auto_location_radius_distance_and_external_map(self):
-        self.assertIn("const NEARBY_RADIUS_KM = 10", self.app)
+        self.assertIn("const NEARBY_RADIUS_KM = 3", self.app)
         self.assertIn("requestLocation({automatic:true})", self.app)
         self.assertIn("distance-badge", self.app)
         self.assertIn("googleMapsDirectionsUrl", self.app)
-        self.assertIn("你附近 10 公里", self.html)
+        self.assertIn("你附近 3 公里", self.html)
 
     def test_nearby_view_is_venue_led_and_routes_back_to_venue_listing(self):
         self.assertIn('href="?view=nearby">附近展場</a>', self.html)
         self.assertIn('循著位置找展場', self.html)
         self.assertIn('<h1>附近展場</h1>', self.html)
-        self.assertIn('10 公里內展場', self.html)
+        self.assertIn('3 公里內展場', self.html)
         self.assertIn("function nearestVenues", self.app)
         self.assertIn("function venueResultMarkup", self.app)
         self.assertIn("venueHref(venue.name)", self.app)
         self.assertIn("googleMapsDirectionsUrlForVenue", self.app)
+        self.assertIn("nearbyResetOriginButton", self.html)
+        self.assertIn("marker.on('click'", self.app)
         self.assertNotIn('href="?view=nearby">附近展覽</a>', self.html)
 
     def test_favorites_are_four_square_cards_with_recommendations(self):

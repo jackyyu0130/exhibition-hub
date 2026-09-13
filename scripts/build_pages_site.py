@@ -27,6 +27,7 @@ REQUIRED_FILES = (
     "data/exhibitions.enriched.json",
     "data/exhibitions.json",
     "data/social_discussions.json",
+    "data/geocode-cache.json",
     "data/venues.json",
     "data/northern_venue_matrix.json",
     "data/taiwan_venue_matrix.json",
@@ -39,7 +40,7 @@ REQUIRED_FILES = (
 OPTIONAL_FILES = ("CNAME",)
 REQUIRED_DIRECTORIES = ("assets",)
 BUILD_MANIFEST = "pages-build-manifest.json"
-PUBLIC_RELEASE = "v6.5.0-r18.2"
+PUBLIC_RELEASE = "v6.5.0-r18.3"
 
 
 def parse_args() -> argparse.Namespace:
