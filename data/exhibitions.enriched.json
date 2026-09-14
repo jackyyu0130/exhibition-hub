@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-13T18:08:54.195944+00:00",
+  "updatedAt": "2026-09-13T20:22:05+00:00",
   "source": "文化部文化資料開放服務網；活動官方頁面；既有快取資料",
   "stats": {
     "eventCount": 1469,
@@ -147414,11 +147414,12 @@
         "https://www.tmc.taipei/files/1788319549rdHPZJfIQ7.jpg"
       ],
       "categories": [
-        "音樂"
+        "音樂",
+        "動漫"
       ],
       "category": "音樂",
-      "startDate": "2025-09-30",
-      "endDate": "2026-09-22",
+      "startDate": "2026-09-26",
+      "endDate": "2026-09-27",
       "startTime": "",
       "endTime": "",
       "timeText": "",
@@ -147433,7 +147434,7 @@
       "latitude": null,
       "longitude": null,
       "coordinateSource": "",
-      "price": "",
+      "price": "票價請見活動頁面",
       "admission": "paid",
       "organizer": "",
       "organizers": [],

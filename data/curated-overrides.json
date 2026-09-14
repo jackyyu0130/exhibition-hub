@@ -71,6 +71,29 @@
           "https://media.huashan1914.com/WebUPD/huashan1914/exhibition/日本宣傳素材-3-09.png"
         ]
       }
+    },
+    {
+      "title": "《迪士尼金曲派對》Disney Hits LIVE！",
+      "startDate": "2025-09-30",
+      "endDate": "2026-09-22",
+      "set": {
+        "startDate": "2026-09-26",
+        "endDate": "2026-09-27",
+        "category": "音樂",
+        "categories": [
+          "音樂",
+          "動漫"
+        ],
+        "price": "票價請見活動頁面",
+        "sourceUrl": "https://www.tmc.taipei/tw/blog/show/disneyhits",
+        "sourceUrlVerified": true,
+        "sourceUrlMatchScore": 1.0,
+        "locationName": "臺北流行音樂中心",
+        "location": "臺北流行音樂中心",
+        "venueGroup": "臺北流行音樂中心",
+        "address": "臺北市南港區市民大道八段99號",
+        "region": "台北市"
+      }
     }
   ]
 }
