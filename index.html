@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f7f1e9">
-  <meta name="exhibition-hub-release" content="6.5.0-r18.5">
+  <meta name="exhibition-hub-release" content="6.5.0-r18.6">
   <meta id="metaDescription" name="description" content="想看展，卻不知道從哪裡開始？整理全台最新展覽、藝術快閃與大型展會，一鍵掌握展期、場館與門票資訊，陪你找到下一次城市散步的靈感目的地。">
   <meta property="og:type" content="website">
   <meta id="metaOgTitle" property="og:title" content="台灣展覽誌｜全台展覽與演出資訊">
@@ -26,7 +26,7 @@
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-p5b · assets/app.js?v=6.5.0-r12-stable2-p5b -->
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-c3 · assets/app.js?v=6.5.0-r14-single-tap1 -->
   <!-- Performance patch P1: inward Hero controls, lower paint cost, smoother section reveals. -->
-  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r18.5">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r18.6">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var loaded=false;function load(){if(loaded)return;loaded=true;
@@ -126,7 +126,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="mobile-location-actions">
           <button type="button" id="mobileRegionLaunch"><span>地區</span><small>選擇縣市</small><i>›</i></button>
-          <button type="button" id="mobileVenueLaunch"><span>場館</span><small>搜尋或多選展演場地</small><i>›</i></button>
+          <button type="button" id="mobileVenueLaunch"><span>場館</span><small>搜尋或選擇展演場地</small><i>›</i></button>
         </div>
       </section>
 
@@ -373,6 +373,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div>
               <p class="eyebrow" id="listingEyebrow">EXPLORE EXHIBITIONS</p>
               <h1 id="listingTitle">探索全台展覽</h1>
+              <form class="listing-inline-search" id="listingInlineSearchForm" role="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                <input id="listingInlineSearchInput" type="search" placeholder="搜尋展覽、場館、主辦方、歌手或演員" autocomplete="off" aria-label="搜尋展覽、場館、主辦方、歌手或演員">
+                <button type="submit">搜尋</button>
+              </form>
             </div>
           </div>
 
@@ -432,7 +437,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div><small>LOCATION</small><h2>依縣市與場館篩選</h2></div>
               <button class="filter-close-button" id="filterCloseButton" type="button" aria-label="關閉篩選">×</button>
             </div>
-            <p class="filter-sidebar-intro">先選縣市快速查看，或開啟完整場地面板搜尋與多選。</p>
+            <p class="filter-sidebar-intro">先選縣市快速查看，或開啟完整場地面板搜尋與選擇。</p>
             <button class="venue-selector-launch" id="venueSelectorLaunch" type="button">
               <span><small>VENUE SELECTOR</small><strong>搜尋或選擇展演場地</strong></span>
               <span class="venue-selector-launch-icon" aria-hidden="true">
@@ -642,6 +647,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/app.js?v=6.5.0-r18.5"></script>
+  <script src="assets/app.js?v=6.5.0-r18.6"></script>
 </body>
 </html>

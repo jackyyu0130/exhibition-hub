@@ -8420,3 +8420,92 @@ body.is-scrolling .home-view .venue-section .venue-tile:hover {
 .social-discussion-card.is-compact{min-height:238px}.social-discussion-meta{display:flex;justify-content:space-between;align-items:center;color:#b66f43;font-size:.76rem;letter-spacing:.09em}.social-discussion-meta span{font-weight:700}.social-discussion-card time{font-size:.8rem;color:#806f60}.social-discussion-card>p{font-family:"Noto Serif TC",serif;font-size:1.13rem;line-height:1.72;margin:0;color:#302923}.social-related-event{display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding-top:14px;border-top:1px solid rgba(124,86,53,.15);text-decoration:none;color:inherit}.social-related-event small{grid-column:1;color:#9c7354}.social-related-event strong{font-weight:600}.social-related-event span{grid-column:2;grid-row:1/3;align-self:center}.social-original-link{margin-top:auto;font-size:.86rem;color:#8b5a3c!important;text-decoration:none}.social-view-shell{max-width:1440px;margin:0 auto;padding:0 clamp(20px,4vw,64px) 90px}.social-view-toolbar{display:flex;justify-content:space-between;align-items:center;gap:22px;margin:0 0 24px}.social-platform-filters{display:flex;gap:10px;flex-wrap:wrap}.social-platform-filters button{border:1px solid rgba(124,86,53,.24);border-radius:999px;background:#fffaf3;padding:10px 18px;color:#67594e}.social-platform-filters button.active{background:#27231f;color:#fff;border-color:#27231f}.social-view-toolbar select{border:1px solid rgba(124,86,53,.24);border-radius:999px;background:#fffaf3;padding:10px 38px 10px 16px}.social-view-count{color:#7d6f61;margin:0 0 20px}.social-discussion-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.social-discussion-grid .social-discussion-card{min-height:300px}.detail-social-discussions{margin-top:70px;padding-top:44px;border-top:1px solid rgba(124,86,53,.18)}.detail-social-rail{grid-auto-columns:minmax(290px,38vw)}
 @media(max-width:980px){.social-discussion-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.social-discussions-rail{grid-auto-columns:minmax(290px,58vw)}}
 @media(max-width:760px){.social-discussions-home{margin-top:22px}.social-discussions-home .section-heading{align-items:flex-end}.section-heading-actions{gap:10px}.section-heading-actions .text-link{display:none}.social-discussions-rail{grid-auto-columns:84vw}.social-view-toolbar{align-items:stretch;flex-direction:column}.social-platform-filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.social-platform-filters button{white-space:nowrap}.social-view-toolbar select{width:100%}.social-discussion-grid{grid-template-columns:1fr}.detail-social-rail{grid-auto-columns:84vw}}
+
+/* Exhibition Hub V6.5.0-R18.6 — mobile discovery polish. */
+.listing-inline-search {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 16px;
+  padding: 0 8px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid #d7c6b4;
+  border-radius: 14px;
+  background: rgba(255, 252, 247, .88);
+}
+.listing-inline-search svg {
+  width: 18px;
+  flex: 0 0 18px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.8;
+}
+.listing-inline-search input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+}
+.listing-inline-search input::placeholder { color: #9a8c7f; }
+.listing-inline-search button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #826348;
+  color: #fffaf3;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Leaflet creates high-z-index panes inside the map. Keep those panes below
+   the mobile navigation drawer whenever the drawer is open. */
+.nearby-map {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+@media (max-width: 900px) {
+  .mobile-menu-backdrop { z-index: 3000 !important; }
+  .mobile-menu { z-index: 3001 !important; }
+  .site-header { z-index: 2998; }
+  body.menu-open .nearby-map,
+  body.menu-open .nearby-map .leaflet-container,
+  body.menu-open .nearby-map .leaflet-control-container {
+    z-index: 0 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .nearby-view-hero {
+    padding-inline: clamp(24px, 8vw, 40px) !important;
+  }
+  .nearby-view-hero > div:first-child {
+    width: 100%;
+    min-width: 0;
+  }
+  .nearby-view-hero .eyebrow { margin-bottom: 8px; }
+  .nearby-view-hero h1 {
+    font-size: clamp(36px, 11vw, 48px);
+    line-height: 1.22;
+    overflow-wrap: anywhere;
+  }
+  .nearby-view-hero p:last-child {
+    max-width: 34rem;
+    margin-top: 10px;
+    line-height: 1.75;
+  }
+  .nearby-hero-actions { width: 100%; }
+  .listing-inline-search {
+    min-height: 54px;
+    margin-top: 17px;
+    border-radius: 15px;
+  }
+  .listing-inline-search input { font-size: 12px; }
+  .listing-inline-search button { min-height: 38px; padding-inline: 13px; }
+}

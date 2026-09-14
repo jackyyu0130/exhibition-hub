@@ -1,8 +1,8 @@
-/* Exhibition Hub V6.5.0-R18.5 P5-B — draggable map pin, stable zoom, date correction, and venue navigation repair. */
+/* Exhibition Hub V6.5.0-R18.6 P5-B — mobile discovery polish, inline search, and single venue selection. */
 (() => {
   'use strict';
 
-  const APP_RELEASE = '6.5.0-r18.5';
+  const APP_RELEASE = '6.5.0-r18.6';
   document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
@@ -1274,8 +1274,9 @@
     state.categories = new Set(categoryValues.slice(0, 1));
     state.region = params.get('region') || null;
     const venueValues = (params.get('venue') || '').split(',').map(value => value.trim()).filter(Boolean);
-    state.selectedVenues = new Set(venueValues);
-    state.venue = venueValues[0] || null;
+    const selectedVenue = venueValues[0] || null;
+    state.selectedVenues = selectedVenue ? new Set([selectedVenue]) : new Set();
+    state.venue = selectedVenue;
 
     const requestedStatus = params.get('status') || 'all';
     const requestedAdmission = params.get('admission') || 'all';
@@ -1289,9 +1290,13 @@
         ? 'free'
         : 'all';
 
-    if (legacyFreeStatus) {
-      params.delete('status');
-      params.set('admission', 'free');
+    if (legacyFreeStatus || venueValues.length > 1) {
+      if (legacyFreeStatus) {
+        params.delete('status');
+        params.set('admission', 'free');
+      }
+      if (selectedVenue) params.set('venue', selectedVenue);
+      else params.delete('venue');
       history.replaceState({}, '', `${location.pathname}?${params.toString()}${location.hash}`);
     }
 
@@ -2039,7 +2044,7 @@
     if (state.query) titleParts.push(`「${state.query}」`);
     if (state.categories.size) titleParts.push([...state.categories].join('、'));
     if (state.region) titleParts.push(state.region);
-    if (state.selectedVenues.size) titleParts.push([...state.selectedVenues].slice(0,2).join('、') + (state.selectedVenues.size > 2 ? ` 等 ${state.selectedVenues.size} 個場地` : ''));
+    if (state.selectedVenues.size) titleParts.push([...state.selectedVenues][0]);
     const listingTitle = $('#listingTitle');
     if (titleParts.length) {
       listingTitle.innerHTML = titleParts
@@ -2051,6 +2056,10 @@
       listingTitle.removeAttribute('aria-label');
     }
     $('#listingEyebrow').textContent = state.query ? 'SEARCH RESULTS' : 'EXPLORE EXHIBITIONS';
+    const listingInlineSearchInput = $('#listingInlineSearchInput');
+    if (listingInlineSearchInput && document.activeElement !== listingInlineSearchInput) {
+      listingInlineSearchInput.value = state.query;
+    }
     const listingDescription = $('#listingDescription');
     if (listingDescription) listingDescription.textContent = state.query ? '以下是符合搜尋關鍵字與篩選條件的結果。' : '';
     $('#listingCount').textContent = visibleItems.length < items.length
@@ -2602,7 +2611,7 @@
   }
 
   function syncVenueSelectionUrl(selected) {
-    const value = [...selected].join(',');
+    const value = [...selected][0] || '';
     updateUrl({venue:value || null});
   }
 
@@ -2611,7 +2620,7 @@
     if (!preview) return;
     preview.hidden = !state.selectedVenues.size;
     preview.innerHTML = state.selectedVenues.size
-      ? `<small>已選 ${state.selectedVenues.size} 個場地</small>${[...state.selectedVenues].slice(0,3).map(name => `<span>${escapeHtml(name)}</span>`).join('')}${state.selectedVenues.size > 3 ? `<span>＋${state.selectedVenues.size-3}</span>` : ''}`
+      ? `<small>已選場地</small><span>${escapeHtml([...state.selectedVenues][0])}</span>`
       : '';
   }
 
@@ -2628,7 +2637,7 @@
       `<button type="button" data-venue-choice="${escapeHtml(name)}">${escapeHtml(name)} <span>×</span></button>`
     ).join('');
     $('#venueSelectorApply').textContent = state.venueDrawerDraft.size
-      ? `查看已選 ${state.venueDrawerDraft.size} 個場地`
+      ? '查看已選場地'
       : '查看全部展覽';
     renderVenueSelectedPreview();
   }
@@ -3589,11 +3598,17 @@
       if (query) {
         if (input === $('#mobileSearchInput')) closeMobileMenu();
         navigateTo(`?view=all&q=${encodeURIComponent(query)}`);
+      } else if (state.query) {
+        navigateTo('?view=all');
       }
     };
     $('#navSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#navSearchInput'));});
     $('#mobileSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#mobileSearchInput'));});
     $('#heroSearchForm').addEventListener('submit', event => {event.preventDefault();submitSearch($('#heroSearchInput'));});
+    $('#listingInlineSearchForm')?.addEventListener('submit', event => {
+      event.preventDefault();
+      submitSearch($('#listingInlineSearchInput'));
+    });
     $('#heroNextButton')?.addEventListener('click', event => {
       event.preventDefault();
       changeHeroPair(1);
@@ -3811,8 +3826,8 @@
       const venueChoice = event.target.closest('[data-venue-choice]');
       if (venueChoice) {
         const name = venueChoice.dataset.venueChoice;
-        if (state.venueDrawerDraft.has(name)) state.venueDrawerDraft.delete(name);
-        else state.venueDrawerDraft.add(name);
+        if (state.venueDrawerDraft.has(name)) state.venueDrawerDraft.clear();
+        else state.venueDrawerDraft = new Set([name]);
         renderVenueSelectorSelection();
         return;
       }
