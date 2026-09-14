@@ -461,6 +461,13 @@ img, video, svg { display: block; max-width: 100%; }
 .map-popup h3 { margin: 0 0 6px; font-family: "Noto Serif TC", serif; font-size: 15px; }
 .map-popup p { margin: 2px 0; color: var(--muted); font-size: 12px; }
 .map-popup a { display: inline-block; margin-top: 8px; color: var(--accent); font-size: 12px; font-weight: 700; }
+.nearby-map-pin { border: 0; background: transparent; }
+.nearby-map-pin-shell { width: 100%; height: 100%; display: grid; place-items: center; cursor: grab; filter: drop-shadow(0 3px 3px rgba(23,23,19,.25)); transition: transform .16s ease, filter .16s ease; }
+.nearby-map-pin-shell svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.nearby-map-pin-origin .nearby-map-pin-shell { filter: drop-shadow(0 4px 4px rgba(23,23,19,.32)); }
+.nearby-map-pin-origin.is-picked .nearby-map-pin-shell, .nearby-map-pin-venue:hover .nearby-map-pin-shell { transform: translateY(-2px) scale(1.08); filter: drop-shadow(0 5px 5px rgba(23,23,19,.34)); }
+.leaflet-marker-draggable .nearby-map-pin-shell { cursor: grab; }
+.leaflet-dragging .nearby-map-pin-shell, .nearby-map-pin-origin.is-picked .nearby-map-pin-shell { cursor: grabbing; }
 
 /* Detail */
 .detail-view { padding-top: 40px; }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f7f1e9">
-  <meta name="exhibition-hub-release" content="6.5.0-r18.4">
+  <meta name="exhibition-hub-release" content="6.5.0-r18.5">
   <meta id="metaDescription" name="description" content="想看展，卻不知道從哪裡開始？整理全台最新展覽、藝術快閃與大型展會，一鍵掌握展期、場館與門票資訊，陪你找到下一次城市散步的靈感目的地。">
   <meta property="og:type" content="website">
   <meta id="metaOgTitle" property="og:title" content="台灣展覽誌｜全台展覽與演出資訊">
@@ -26,7 +26,7 @@
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-p5b · assets/app.js?v=6.5.0-r12-stable2-p5b -->
   <!-- Compatibility: assets/styles.css?v=6.5.0-r12-stable2-c3 · assets/app.js?v=6.5.0-r14-single-tap1 -->
   <!-- Performance patch P1: inward Hero controls, lower paint cost, smoother section reveals. -->
-  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r18.4">
+  <link rel="stylesheet" href="assets/styles.css?v=6.5.0-r18.5">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var loaded=false;function load(){if(loaded)return;loaded=true;
@@ -509,7 +509,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div>
           <p class="eyebrow">NEARBY VENUES</p>
           <h1>附近展場</h1>
-          <p id="nearbyStatusText">允許定位後，顯示所在位置 3 公里內展場並依距離排序；也可以直接點擊地圖任意位置插入圖釘。</p>
+          <p id="nearbyStatusText">允許定位後，顯示所在位置 3 公里內展場並依距離排序；可拖曳橘色圖釘重新搜尋，空白地圖可移動。</p>
         </div>
         <div class="nearby-hero-actions">
           <button class="location-button light" id="nearbyLocationButton" type="button">重新取得位置</button>
@@ -517,7 +517,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
       <div class="nearby-layout">
-        <div class="nearby-map" id="nearbyMap" role="application" aria-label="附近展場地圖；點擊任意位置可插入圖釘"></div>
+        <div class="nearby-map" id="nearbyMap" role="application" aria-label="附近展場地圖；可拖曳橘色圖釘搜尋，空白處可移動地圖，點擊場館圖釘查看資料"></div>
         <div class="nearby-results">
           <div class="nearby-results-head"><h2 id="nearbyResultsHeading">你附近 3 公里內的展場</h2><span id="nearbyCount"></span></div>
           <div class="nearby-result-list" id="nearbyResultList"></div>
@@ -642,6 +642,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/app.js?v=6.5.0-r18.4"></script>
+  <script src="assets/app.js?v=6.5.0-r18.5"></script>
 </body>
 </html>

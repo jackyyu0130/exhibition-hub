@@ -190,6 +190,7 @@ PRICE_FREE_RE = re.compile(r"免費|自由入場|免票|free", re.I)
 PRICE_LOW_ALLOWED_RE = re.compile(r"捐款|樂捐|象徵性|銅板|學生優惠|兒童優惠", re.I)
 VERIFIED_NATORI_RE = re.compile(r"natori[\s\S]*(?:koshin|march|行進)|(?:koshin|march|行進)[\s\S]*natori", re.I)
 VERIFIED_NATORI_PRICE = "1F站席 NT$4,200／2F前座席 NT$3,600／2F後座席 NT$3,200／3F座席 NT$2,800／1F身障席 NT$2,100／2F身障席 NT$1,600"
+VERIFIED_DISNEY_RE = re.compile(r"《迪士尼金曲派對》\s*Disney\s+Hits\s+LIVE", re.I)
 
 TAIPEI_TZ = timezone(timedelta(hours=8))
 MUTUALLY_EXCLUSIVE = {"演唱會", "音樂", "表演", "舞蹈", "電影"}
@@ -429,6 +430,12 @@ def apply_verified_event_corrections(event: Mapping[str, Any]) -> dict[str, Any]
         corrected["categories"] = ["音樂", *[
             value for value in corrected.get("categories") or [] if value != "音樂"
         ]]
+    elif VERIFIED_DISNEY_RE.search(title):
+        corrected["startDate"] = "2026-09-26"
+        corrected["endDate"] = "2026-09-27"
+        corrected["category"] = "音樂"
+        corrected["categories"] = ["音樂", "動漫"]
+        corrected["price"] = "票價請見活動頁面"
     return corrected
 
 

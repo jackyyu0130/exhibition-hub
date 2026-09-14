@@ -1,8 +1,8 @@
-/* Exhibition Hub V6.5.0-R18.4 P5-B — latest-data refresh, map-pin venue discovery, and single-select categories. */
+/* Exhibition Hub V6.5.0-R18.5 P5-B — draggable map pin, stable zoom, date correction, and venue navigation repair. */
 (() => {
   'use strict';
 
-  const APP_RELEASE = '6.5.0-r18.4';
+  const APP_RELEASE = '6.5.0-r18.5';
   document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
@@ -18,10 +18,14 @@
   const MUSIC_PROGRAM_PATTERN = /演出曲目|program|musicians?|指揮|小提琴|大提琴|鋼琴|長笛|單簧管|雙簧管|symphony|concerto|sonata|orchestra|樂章|歌手|歌曲|唱片|音樂旅程|樂聲|歌聲|作品(?:第|[0-9])|op\.?\s*[0-9]/i;
   const VERIFIED_NATORI_PATTERN = /natori[\s\S]*(?:koshin|march|行進)|(?:koshin|march|行進)[\s\S]*natori/i;
   const VERIFIED_NATORI_PRICE = '1F站席 NT$4,200／2F前座席 NT$3,600／2F後座席 NT$3,200／3F座席 NT$2,800／1F身障席 NT$2,100／2F身障席 NT$1,600';
+  const VERIFIED_DISNEY_PATTERN = /《迪士尼金曲派對》\s*Disney\s+Hits\s+LIVE/i;
 
   function verifiedEventCorrection(title = '') {
     if (VERIFIED_NATORI_PATTERN.test(String(title))) {
       return {category:'演唱會', price:VERIFIED_NATORI_PRICE, startDate:'2026-08-08', endDate:'2026-08-09'};
+    }
+    if (VERIFIED_DISNEY_PATTERN.test(String(title))) {
+      return {category:'音樂', categories:['音樂','動漫'], price:'票價請見活動頁面', startDate:'2026-09-26', endDate:'2026-09-27'};
     }
     if (/夢與緋光/.test(String(title))) return {category:'音樂'};
     return null;
@@ -177,6 +181,9 @@
     homeContentHydrated: false,
     leafletAssetsPromise: null,
     nearbyMapRenderToken: 0,
+    nearbySearchPin: null,
+    nearbyViewport: null,
+    venueCanonicalProfiles: new Map(),
     routePending: false,
     scrollIdleTimer: null,
     scrollClassActive: false,
@@ -325,7 +332,7 @@
       description, image:image ? [image] : undefined, url:location.href,
       location:{
         '@type':'Place', name:eventVenueLabel(event) || undefined,
-        address:event.address ? {'@type':'PostalAddress', streetAddress:event.address, addressRegion:event.region || undefined, addressCountry:'TW'} : undefined,
+        address:eventAddressLabel(event) ? {'@type':'PostalAddress', streetAddress:eventAddressLabel(event), addressRegion:event.region || undefined, addressCountry:'TW'} : undefined,
       },
       eventAttendanceMode:'https://schema.org/OfflineEventAttendanceMode',
       eventStatus:'https://schema.org/EventScheduled',
@@ -846,6 +853,12 @@
         category !== verifiedCorrection.category
         && !(mutuallyExclusive.has(verifiedCorrection.category) && mutuallyExclusive.has(category))
       )].slice(0, 3);
+    }
+    if (Array.isArray(verifiedCorrection?.categories)) {
+      categories = [...verifiedCorrection.categories, ...categories]
+        .filter(category => CATEGORY_ORDER.includes(category))
+        .filter((category, categoryIndex, values) => values.indexOf(category) === categoryIndex)
+        .slice(0, 3);
     }
     const imageCandidates = [
       ...flattenImageCandidates(raw.images), ...flattenImageCandidates(raw.imageCandidates),
@@ -2299,6 +2312,49 @@
     return rules.find(([,pattern]) => pattern.test(text))?.[0] || 'other';
   }
 
+  function canonicalAddressKey(value = '', region = '') {
+    let text = cleanPlaceText(value).replaceAll('臺', '台');
+    if (!text) return '';
+    if (!/(?:台北市|新北市|基隆市|桃園市|新竹市|新竹縣|苗栗縣|台中市|彰化縣|南投縣|雲林縣|嘉義市|嘉義縣|台南市|高雄市|屏東縣|宜蘭縣|花蓮縣|台東縣|澎湖縣|金門縣|連江縣)/.test(text)) {
+      const normalizedRegion = cleanPlaceText(region).replaceAll('臺', '台');
+      if (normalizedRegion) text = `${normalizedRegion}${text}`;
+    }
+    // Entrance notes (信義路側／愛國東路側) identify an entrance, not a
+    // different venue address. Collapse them so the majority address wins.
+    text = text.replace(/[，,].*$/, '').replace(/之/g, '-');
+    return text.replace(/[\s　]/g, '').replace(/[－—–]/g, '-').toLowerCase();
+  }
+
+  function venueCanonicalProfile(name = '') {
+    const key = normalizedVenueLookupKey(name);
+    return key ? state.venueCanonicalProfiles.get(key) || null : null;
+  }
+
+  function eventCanonicalProfile(event) {
+    const records = eventCanonicalVenueRecords(event);
+    if (records.length !== 1) return null;
+    const record = records[0];
+    return venueCanonicalProfile(record.name)
+      || (record.aliases || []).map(alias => venueCanonicalProfile(alias)).find(Boolean)
+      || null;
+  }
+
+  function eventAddressLabel(event) {
+    const profile = eventCanonicalProfile(event);
+    if (profile?.address) return profile.address;
+    return cleanPlaceText(event?.address || event?.region || '');
+  }
+
+  function eventNavigationCoordinates(event) {
+    const profile = eventCanonicalProfile(event);
+    if (profile && Number.isFinite(profile.latitude) && Number.isFinite(profile.longitude)) {
+      return {latitude:profile.latitude, longitude:profile.longitude, precision:'venue-profile'};
+    }
+    return hasCoordinates(event)
+      ? {latitude:event.latitude, longitude:event.longitude, precision:'event'}
+      : null;
+  }
+
   function rebuildVenueCatalogCache() {
     const registryIndex = new Map();
     const registryNormalizedIndex = new Map();
@@ -2345,6 +2401,7 @@
     state.eventVenueRecordCache = new WeakMap();
     state.eventVenueNameCache = new WeakMap();
     state.eventRegionCache = new WeakMap();
+    state.venueCanonicalProfiles = new Map();
 
     const coordinateBuckets = new Map();
     state.events.forEach(event => {
@@ -2390,6 +2447,63 @@
       return [key, {latitude:sortedLat[middle], longitude:sortedLng[middle]}];
     }));
 
+    // Build one stable venue address/coordinate profile from all confirmed
+    // events. Source feeds occasionally attach a neighbouring venue's address
+    // to one event; choosing the modal address and coordinate medoid prevents
+    // that single outlier from breaking every navigation link for the venue.
+    const profileBuckets = new Map();
+    const addProfileObservation = (registry, event = null) => {
+      if (!registry?.confirmed) return;
+      const names = [registry.name, ...(registry.aliases || []), registry.venueComplexName].filter(Boolean);
+      const address = usableVenueAddress(event?.address || registry.address || '');
+      const region = event?.region || registry.region || '';
+      const coordinate = event && hasCoordinates(event)
+        ? {latitude:event.latitude, longitude:event.longitude}
+        : Number.isFinite(Number(registry.latitude)) && Number.isFinite(Number(registry.longitude))
+          ? {latitude:Number(registry.latitude), longitude:Number(registry.longitude)}
+          : null;
+      names.forEach(name => {
+        const key = normalizedVenueLookupKey(name);
+        if (!key) return;
+        if (!profileBuckets.has(key)) profileBuckets.set(key, {addresses:new Map(), coordinates:[]});
+        const bucket = profileBuckets.get(key);
+        if (address) {
+          const addressKey = canonicalAddressKey(address, region);
+          if (addressKey) {
+            const existing = bucket.addresses.get(addressKey) || {count:0, values:new Set()};
+            existing.count += 1;
+            existing.values.add(address);
+            bucket.addresses.set(addressKey, existing);
+          }
+        }
+        if (coordinate && Number.isFinite(coordinate.latitude) && Number.isFinite(coordinate.longitude)) {
+          bucket.coordinates.push(coordinate);
+        }
+      });
+    };
+    state.venueRegistry.forEach(registry => addProfileObservation(registry));
+    state.events.forEach(event => eventCanonicalVenueRecords(event).forEach(registry => addProfileObservation(registry, event)));
+    profileBuckets.forEach((bucket, key) => {
+      const addressGroup = [...bucket.addresses.values()].sort((a, b) => b.count - a.count)[0];
+      const address = addressGroup
+        ? [...addressGroup.values].sort((a, b) => a.length - b.length || a.localeCompare(b, 'zh-Hant'))[0]
+        : '';
+      let medoid = null;
+      if (bucket.coordinates.length) {
+        medoid = bucket.coordinates.reduce((best, candidate) => {
+          if (!best) return candidate;
+          const score = point => bucket.coordinates.reduce((sum, other) => sum + haversine(point.latitude, point.longitude, other.latitude, other.longitude), 0);
+          return score(candidate) < score(best) ? candidate : best;
+        }, null);
+      }
+      state.venueCanonicalProfiles.set(key, {
+        address,
+        latitude:medoid?.latitude,
+        longitude:medoid?.longitude,
+        observationCount:Math.max(addressGroup?.count || 0, bucket.coordinates.length),
+      });
+    });
+
     state.events.forEach(event => {
       const regions = eventRegions(event);
       if (
@@ -2417,7 +2531,7 @@
           ),
           district: registry.district || '',
           venueType: inferredVenueType(name, registry),
-          address: usableVenueAddress(registry.address || ''),
+          address: venueCanonicalProfile(name)?.address || usableVenueAddress(registry.address || ''),
           count: 0,
           confirmed: true,
         });
@@ -2456,6 +2570,8 @@
           const eventAddress = usableVenueAddress(event.address || '');
           if (eventAddress) existing.address = eventAddress;
         }
+        const profileAddress = venueCanonicalProfile(name)?.address;
+        if (profileAddress) existing.address = profileAddress;
         records.set(key, existing);
         if (!homeVenueEventIndex.has(name)) homeVenueEventIndex.set(name, []);
         homeVenueEventIndex.get(name).push(event);
@@ -2813,7 +2929,7 @@
           </div>
           <h1>${escapeHtml(event.title)}</h1>
           <div class="detail-meta">
-            ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail && eventVenueNames(event).length <= 1 ? `${eventVenueLabel(event)}｜${event.venueDetail}` : eventVenueLabel(event, '／'))}${detailMeta('地址', event.address || event.region)}${detailMeta('票價', compactPriceLabel(event.price))}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
+            ${detailMeta('展期', dateRange(event))}${detailMeta('地點', event.venueDetail && eventVenueNames(event).length <= 1 ? `${eventVenueLabel(event)}｜${event.venueDetail}` : eventVenueLabel(event, '／'))}${detailMeta('地址', eventAddressLabel(event) || event.region)}${detailMeta('票價', compactPriceLabel(event.price))}${event.unit ? detailMeta('主辦單位', event.unit) : ''}${event.transitInfo ? detailMeta('交通', event.transitInfo) : ''}
           </div>
           <div class="detail-actions">
             ${externalUrl ? `<a class="primary" href="${escapeHtml(externalUrl)}" target="_blank" rel="noopener"><span>查看官方資訊</span><span aria-hidden="true">↗</span></a>` : '<span class="detail-action-disabled" aria-disabled="true">官方頁面待確認</span>'}
@@ -2867,6 +2983,12 @@
   }
 
   function eventCoordinates(event) {
+    const profile = eventCanonicalProfile(event);
+    if (profile && Number.isFinite(profile.latitude) && Number.isFinite(profile.longitude)) {
+      if (!hasCoordinates(event) || haversine(event.latitude, event.longitude, profile.latitude, profile.longitude) > 1.5) {
+        return {latitude:profile.latitude, longitude:profile.longitude, precision:'venue-profile'};
+      }
+    }
     if (hasCoordinates(event)) return {latitude:event.latitude, longitude:event.longitude, precision:'event'};
     for (const value of eventVenueCandidateValues(event)) {
       const coordinate = state.venueCoordinateIndex.get(normalizedVenueLookupKey(value));
@@ -2899,13 +3021,18 @@
   }
 
   function venueAddressLabel(venue) {
-    const direct = cleanPlaceText(venue?.address || '');
+    const profile = venueCanonicalProfile(venue?.name || '');
+    const direct = cleanPlaceText(profile?.address || venue?.address || '');
     if (direct && !/場館資料整理中|地點待確認|線上活動/.test(direct)) return direct;
     const district = [venue?.region, venue?.district].map(cleanPlaceText).filter(Boolean).join('');
     return district || '地址請見場館資訊';
   }
 
   function venueCoordinates(venue) {
+    const profile = venueCanonicalProfile(venue?.name || '');
+    if (profile && Number.isFinite(profile.latitude) && Number.isFinite(profile.longitude)) {
+      return {latitude:profile.latitude, longitude:profile.longitude, precision:'venue-profile'};
+    }
     const latitude = Number(venue?.latitude);
     const longitude = Number(venue?.longitude);
     if (Number.isFinite(latitude) && Number.isFinite(longitude) && latitude !== 0 && longitude !== 0) {
@@ -2980,12 +3107,47 @@
     return state.leafletAssetsPromise;
   }
 
-  function renderNearby() {
+  function validNearbyViewport(viewport) {
+    return Boolean(
+      viewport
+      && viewport.center
+      && Number.isFinite(Number(viewport.center.lat))
+      && Number.isFinite(Number(viewport.center.lng))
+      && Number.isFinite(Number(viewport.zoom))
+    );
+  }
+
+  function captureNearbyViewport() {
+    if (!state.map) return state.nearbyViewport || null;
+    const center = state.map.getCenter();
+    const zoom = state.map.getZoom();
+    return center && Number.isFinite(zoom)
+      ? {center:{lat:center.lat, lng:center.lng}, zoom}
+      : state.nearbyViewport || null;
+  }
+
+  function nearbyPinIcon(kind = 'venue') {
+    const origin = kind === 'origin';
+    const width = origin ? 34 : 27;
+    const height = origin ? 42 : 34;
+    const fill = origin ? '#c56538' : '#34785a';
+    const stroke = origin ? '#171713' : '#fffdf8';
+    return L.divIcon({
+      className:`nearby-map-pin nearby-map-pin-${kind}`,
+      html:`<span class="nearby-map-pin-shell" aria-hidden="true"><svg viewBox="0 0 32 40" focusable="false"><path d="M16 1.5C8.3 1.5 2.5 7.3 2.5 14.5c0 9.6 10.4 20.5 13.5 23.4 3.1-2.9 13.5-13.8 13.5-23.4C29.5 7.3 23.7 1.5 16 1.5Z" fill="${fill}" stroke="${stroke}" stroke-width="2"/><circle cx="16" cy="14" r="5.5" fill="#fffdf8" opacity=".95"/></svg></span>`,
+      iconSize:[width,height],
+      iconAnchor:[width / 2, height - 1],
+      popupAnchor:[0, -(height - 4)],
+    });
+  }
+
+  function renderNearby({preserveViewport = false, viewport = null} = {}) {
+    if (preserveViewport && validNearbyViewport(viewport)) state.nearbyViewport = viewport;
     const origin = state.nearbyOrigin || state.userLocation;
     const originLabel = state.nearbyOrigin?.label || '目前位置';
     const items = nearestVenues(200, origin ? NEARBY_RADIUS_KM : Infinity, origin);
     $('#nearbyStatusText').textContent = origin
-      ? `以「${originLabel}」為中心，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列；點選地圖標記可改變搜尋中心。`
+      ? `以「${originLabel}」為中心，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列；拖曳橘色圖釘可重新搜尋，點擊其他圖釘可查看場館資料。`
       : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展場。`;
     const resultsHeading = $('#nearbyResultsHeading');
     if (resultsHeading) resultsHeading.textContent = state.nearbyOrigin
@@ -3006,7 +3168,7 @@
       if (token !== state.nearbyMapRenderToken || state.view !== 'nearby') return;
       map.classList.remove('is-map-loading');
       map.innerHTML = '';
-      renderMap(items, origin);
+      renderMap(items, origin, {viewport:state.nearbyViewport});
     }).catch(error => {
       console.warn('[Exhibition Hub] lazy map asset failed', error);
       if (token !== state.nearbyMapRenderToken) return;
@@ -3015,29 +3177,45 @@
     });
   }
 
-  function renderMap(items, origin = state.nearbyOrigin || state.userLocation) {
+  function renderMap(items, origin = state.nearbyOrigin || state.userLocation, {viewport = null} = {}) {
     if (!window.L) return;
     if (state.map) { state.map.remove(); state.map = null; }
+    state.nearbySearchPin = null;
     const center = origin ? [origin.lat, origin.lng] : [23.7, 121.0];
-    state.map = L.map('nearbyMap', {scrollWheelZoom:false}).setView(center, origin ? 13 : 7);
+    const keepViewport = validNearbyViewport(viewport);
+    const initialCenter = keepViewport ? [Number(viewport.center.lat), Number(viewport.center.lng)] : center;
+    const initialZoom = keepViewport ? Number(viewport.zoom) : (origin ? 13 : 7);
+    state.map = L.map('nearbyMap', {scrollWheelZoom:false, dragging:true}).setView(initialCenter, initialZoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
     const markers = [];
-    // Clicking any open map area inserts a temporary search pin. This is
-    // deliberately separate from venue markers: users can search a place
-    // that is not yet in the venue registry, while the result list still
-    // contains only registered venues with usable coordinates.
-    state.map.on('click', event => {
-      const latitude = Number(event?.latlng?.lat);
-      const longitude = Number(event?.latlng?.lng);
-      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
-      state.nearbyOrigin = {lat:latitude, lng:longitude, label:'地圖選取位置', source:'map'};
-      showToast(`已插入圖釘，搜尋該位置 ${NEARBY_RADIUS_KM} 公里內展場`);
-      renderNearby();
-    });
     if (origin) {
       L.circle(center, {radius:NEARBY_RADIUS_KM * 1000, color:'#34785a', fillColor:'#34785a', fillOpacity:.035, weight:1.5, dashArray:'6 7'}).addTo(state.map);
-      L.circleMarker(center, {radius:8, color:'#171713', fillColor:'#c56538', fillOpacity:1, weight:3}).addTo(state.map)
-        .bindPopup(state.nearbyOrigin ? `目前以「${escapeHtml(state.nearbyOrigin.label)}」為搜尋中心` : '你目前的位置');
+      const searchPin = L.marker(center, {
+        icon:nearbyPinIcon('origin'),
+        draggable:true,
+        autoPan:true,
+        title:`拖曳圖釘搜尋 ${NEARBY_RADIUS_KM} 公里內展場`,
+        keyboard:true,
+        zIndexOffset:1000,
+      }).addTo(state.map);
+      state.nearbySearchPin = searchPin;
+      searchPin.bindPopup(`<div class="map-popup"><h3>搜尋圖釘</h3><p>${state.nearbyOrigin ? `目前以「${escapeHtml(state.nearbyOrigin.label)}」為中心。` : '目前位置'}</p><p>拖曳這個橘色圖釘，重新搜尋該位置 ${NEARBY_RADIUS_KM} 公里內的展場；空白地圖可直接拖移。</p></div>`);
+      searchPin.on('click', event => {
+        event?.originalEvent?.stopPropagation?.();
+        searchPin.openPopup();
+      });
+      searchPin.on('dragstart', () => {
+        state.nearbyViewport = captureNearbyViewport();
+        searchPin.getElement()?.classList.add('is-picked');
+      });
+      searchPin.on('dragend', event => {
+        const point = event.target.getLatLng();
+        const nextViewport = captureNearbyViewport();
+        state.nearbyOrigin = {lat:point.lat, lng:point.lng, label:'地圖選取位置', source:'pin'};
+        state.nearbyViewport = nextViewport;
+        showToast(`已移動圖釘，搜尋該位置 ${NEARBY_RADIUS_KM} 公里內展場`);
+        renderNearby({preserveViewport:true, viewport:nextViewport});
+      });
     }
     if (state.userLocation && state.nearbyOrigin) {
       L.circleMarker([state.userLocation.lat, state.userLocation.lng], {radius:6, color:'#34785a', fillColor:'#fff', fillOpacity:1, weight:3})
@@ -3046,26 +3224,25 @@
     items.slice(0, 100).forEach(venue => {
       const coordinate = venueCoordinates(venue);
       if (!coordinate) return;
-      const marker = L.marker([coordinate.latitude, coordinate.longitude]).addTo(state.map);
+      const marker = L.marker([coordinate.latitude, coordinate.longitude], {
+        icon:nearbyPinIcon('venue'),
+        title:venue.name,
+      }).addTo(state.map);
       const directionsUrl = googleMapsDirectionsUrlForVenue(venue);
-      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><p>點選此標記，改以此處搜尋 ${NEARBY_RADIUS_KM} 公里內展場。</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">外部地圖 ↗</a>` : ''}</div></div>`);
+      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><p>點擊橘色搜尋圖釘可重新選取範圍；此圖釘用來查看場館資訊。</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">地圖導航 ↗</a>` : ''}</div></div>`);
       marker.on('click', event => {
-        // Do not let a venue-marker click bubble into the map click handler;
-        // otherwise the venue pin would immediately be replaced by a second
-        // arbitrary map pin.
         event?.originalEvent?.stopPropagation?.();
-        state.nearbyOrigin = {lat:coordinate.latitude, lng:coordinate.longitude, label:venue.name};
-        showToast(`已改以「${venue.name}」為搜尋中心`);
-        renderNearby();
+        marker.openPopup();
       });
       markers.push(marker);
     });
     state.markers = markers;
-    if (markers.length) {
+    if (!keepViewport && markers.length) {
       const group = L.featureGroup(markers);
       if (origin) group.addLayer(L.circleMarker(center, {radius:1, opacity:0, fillOpacity:0}));
       state.map.fitBounds(group.getBounds().pad(.12), {maxZoom:13});
     }
+    state.nearbyViewport = captureNearbyViewport();
     setTimeout(() => state.map?.invalidateSize(), 150);
   }
 
@@ -3078,6 +3255,7 @@
     navigator.geolocation.getCurrentPosition(position => {
       state.userLocation = {lat:position.coords.latitude,lng:position.coords.longitude};
       state.nearbyOrigin = null;
+      state.nearbyViewport = null;
       state.locationRequestPending = false;
       showToast('已依目前位置重新整理附近展場');
       renderHomeNearby();
@@ -3095,6 +3273,7 @@
   function resetNearbyOrigin() {
     if (!state.nearbyOrigin) return;
     state.nearbyOrigin = null;
+    state.nearbyViewport = null;
     showToast(state.userLocation ? '已回到目前位置搜尋' : '請先取得目前位置');
     if (state.view === 'nearby') renderNearby();
   }
@@ -3107,7 +3286,7 @@
   }
 
   function navigationQuery(event) {
-    const address = cleanPlaceText(event.address || '');
+    const address = eventAddressLabel(event);
     const venue = displayableVenueName(eventVenueNames(event)[0] || event.originalVenueGroup || event.locationName || '');
     const region = cleanPlaceText(event.region || '');
     const addressLooksUseful = address
@@ -3125,8 +3304,9 @@
   }
 
   function googleMapsDirectionsUrl(event) {
-    if (hasCoordinates(event)) {
-      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${event.latitude},${event.longitude}`)}&travelmode=transit`;
+    const coordinate = eventNavigationCoordinates(event);
+    if (coordinate) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${coordinate.latitude},${coordinate.longitude}`)}&travelmode=transit`;
     }
     const query = navigationQuery(event);
     return query ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}` : '';

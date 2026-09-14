@@ -1,0 +1,33 @@
+{
+  "version": "6.5.0-R18.5",
+  "releaseMarker": "v6.5.0-r18.5",
+  "baseVersion": "6.5.0-R18.4",
+  "summary": "Correct the published data timestamp and Disney event dates, make the 3 km nearby map use draggable icon pins with stable zoom, show venue popups without recentering, and repair venue navigation through canonical address profiles.",
+  "changedFiles": [
+    "assets/app.js",
+    "index.html",
+    "scripts/run_local_weekly_update.py",
+    "scripts/finalize_source_publish.py",
+    "scripts/build_pages_site.py",
+    "VERSION.txt",
+    "MANIFEST_V6.5.0_R18_5.json",
+    "R18_5_MAP_PIN_ADDRESS_DATE_GUIDE_ZH-TW.md",
+    "data/curated-overrides.json",
+    "scripts/exhibition_hub/curation.py",
+    "tests/test_r184_map_pin_single_category.py",
+    "tests/test_v650_r128_production_publish_gate.py",
+    "data/exhibitions.json",
+    "data/exhibitions.enriched.json",
+    "data/exhibitions.curated.json",
+    "data/geocode-cache.json",
+    "data/update-reports/category-semantic-audit-r18.json",
+    "data/update-reports/"
+  ],
+  "verification": [
+    "node --check assets/app.js",
+    "python3 -m py_compile scripts/run_local_weekly_update.py scripts/finalize_source_publish.py",
+    "python3 -m unittest discover -s tests -v",
+    "Weekly exhibition update (low resource) manual dispatch with confirm RUN_WEEKLY_UPDATE",
+    "Sunday 03:17 Asia/Taipei schedule remains enabled unless WEEKLY_UPDATE_ENABLED=false"
+  ]
+}
