@@ -462,11 +462,11 @@ img, video, svg { display: block; max-width: 100%; }
 .map-popup p { margin: 2px 0; color: var(--muted); font-size: 12px; }
 .map-popup a { display: inline-block; margin-top: 8px; color: var(--accent); font-size: 12px; font-weight: 700; }
 .nearby-map-pin { border: 0; background: transparent; }
-.nearby-map-pin-shell { width: 100%; height: 100%; display: grid; place-items: center; cursor: grab; filter: drop-shadow(0 3px 3px rgba(23,23,19,.25)); transition: transform .16s ease, filter .16s ease; }
+.nearby-map-pin-shell { width: 100%; height: 100%; display: grid; place-items: center; cursor: pointer; filter: drop-shadow(0 3px 3px rgba(23,23,19,.25)); transition: transform .16s ease, filter .16s ease; }
 .nearby-map-pin-shell svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .nearby-map-pin-origin .nearby-map-pin-shell { filter: drop-shadow(0 4px 4px rgba(23,23,19,.32)); }
 .nearby-map-pin-origin.is-picked .nearby-map-pin-shell, .nearby-map-pin-venue:hover .nearby-map-pin-shell { transform: translateY(-2px) scale(1.08); filter: drop-shadow(0 5px 5px rgba(23,23,19,.34)); }
-.leaflet-marker-draggable .nearby-map-pin-shell { cursor: grab; }
+.nearby-map-pin-origin .nearby-map-pin-shell, .leaflet-marker-draggable .nearby-map-pin-shell { cursor: grab; }
 .leaflet-dragging .nearby-map-pin-shell, .nearby-map-pin-origin.is-picked .nearby-map-pin-shell { cursor: grabbing; }
 
 /* Detail */
@@ -8508,4 +8508,85 @@ body.is-scrolling .home-view .venue-section .venue-tile:hover {
   }
   .listing-inline-search input { font-size: 12px; }
   .listing-inline-search button { min-height: 38px; padding-inline: 13px; }
+}
+
+/* Exhibition Hub V6.5.0-R18.7 — reusable nearby-map search pin. */
+.nearby-view-hero .nearby-status-text {
+  max-width: 46rem;
+  margin-bottom: 0;
+  color: var(--muted);
+}
+.nearby-view-hero .nearby-pin-instructions {
+  max-width: 46rem;
+  margin: 8px 0 0;
+  color: #765f4d;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.nearby-pin-control.leaflet-bar {
+  width: 34px;
+  height: 34px;
+  clear: both;
+  overflow: visible;
+  border: 2px solid rgba(0, 0, 0, .2);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+}
+.nearby-pin-control[hidden] { display: none; }
+.nearby-pin-control-button {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 3px 6px 4px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 2px;
+  background: #fff;
+  cursor: grab;
+  touch-action: none;
+}
+.nearby-pin-control-button:hover,
+.nearby-pin-control-button:focus-visible {
+  background: #f4eee6;
+  outline: 2px solid #c56538;
+  outline-offset: 2px;
+}
+.nearby-pin-control-button.is-picked {
+  background: #f4ddd1;
+  cursor: grabbing;
+}
+.nearby-pin-control-icon,
+.nearby-pin-control-icon svg {
+  width: 18px;
+  height: 23px;
+  display: block;
+}
+.nearby-pin-drag-ghost {
+  position: fixed;
+  z-index: 10000;
+  width: 30px;
+  height: 38px;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  filter: none;
+}
+.nearby-pin-drag-ghost svg { width: 100%; height: 100%; display: block; }
+.nearby-map.is-pin-placement-armed,
+.nearby-map.is-pin-placement-armed .leaflet-grab,
+.nearby-map.is-pin-placement-armed .leaflet-interactive { cursor: crosshair; }
+
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  .nearby-pin-control.leaflet-bar { width: 44px; height: 44px; }
+  .nearby-pin-control-button { width: 40px; height: 40px; padding: 7px 10px; }
+  .nearby-pin-control-icon,
+  .nearby-pin-control-icon svg { width: 20px; height: 26px; }
+  .nearby-view-hero .nearby-pin-instructions { font-size: 12px; }
+}
+
+/* The movable/search pin follows the supplied flat yellow-and-lavender artwork. */
+.nearby-map-pin-origin .nearby-map-pin-shell,
+.nearby-map-pin-origin.is-picked .nearby-map-pin-shell {
+  filter: none;
 }

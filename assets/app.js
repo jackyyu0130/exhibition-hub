@@ -1,8 +1,8 @@
-/* Exhibition Hub V6.5.0-R18.6 P5-B — mobile discovery polish, inline search, and single venue selection. */
+/* Exhibition Hub V6.5.0-R18.7 P5-B — persistent user location and reusable nearby-map pin placement. */
 (() => {
   'use strict';
 
-  const APP_RELEASE = '6.5.0-r18.6';
+  const APP_RELEASE = '6.5.0-r18.7';
   document.documentElement.dataset.appRelease = APP_RELEASE;
 
   const CATEGORY_ORDER = ['演唱會','快閃店','動漫','美術','設計','攝影','市集','音樂','自然','歷史','表演','舞蹈','電影','親子','競賽','科技','其他'];
@@ -182,6 +182,10 @@
     leafletAssetsPromise: null,
     nearbyMapRenderToken: 0,
     nearbySearchPin: null,
+    nearbyPinControl: null,
+    nearbyPinControlButton: null,
+    nearbyPinPlacementArmed: false,
+    nearbyPinRevision: 0,
     nearbyViewport: null,
     venueCanonicalProfiles: new Map(),
     routePending: false,
@@ -3135,19 +3139,147 @@
       : state.nearbyViewport || null;
   }
 
+  function nearbyPinSvg(kind = 'venue') {
+    const origin = kind === 'origin';
+    if (origin) {
+      return '<svg viewBox="0 0 32 40" focusable="false" aria-hidden="true"><rect x="13.5" y="26" width="5" height="12" rx="2.5" fill="#9695ad"/><circle cx="16" cy="14" r="14" fill="#ffdf43"/></svg>';
+    }
+    return '<svg viewBox="0 0 32 40" focusable="false" aria-hidden="true"><path d="M16 1.5C8.3 1.5 2.5 7.3 2.5 14.5c0 9.6 10.4 20.5 13.5 23.4 3.1-2.9 13.5-13.8 13.5-23.4C29.5 7.3 23.7 1.5 16 1.5Z" fill="#34785a" stroke="#fffdf8" stroke-width="2"/><circle cx="16" cy="14" r="5.5" fill="#fffdf8" opacity=".95"/></svg>';
+  }
+
   function nearbyPinIcon(kind = 'venue') {
     const origin = kind === 'origin';
     const width = origin ? 34 : 27;
     const height = origin ? 42 : 34;
-    const fill = origin ? '#c56538' : '#34785a';
-    const stroke = origin ? '#171713' : '#fffdf8';
     return L.divIcon({
       className:`nearby-map-pin nearby-map-pin-${kind}`,
-      html:`<span class="nearby-map-pin-shell" aria-hidden="true"><svg viewBox="0 0 32 40" focusable="false"><path d="M16 1.5C8.3 1.5 2.5 7.3 2.5 14.5c0 9.6 10.4 20.5 13.5 23.4 3.1-2.9 13.5-13.8 13.5-23.4C29.5 7.3 23.7 1.5 16 1.5Z" fill="${fill}" stroke="${stroke}" stroke-width="2"/><circle cx="16" cy="14" r="5.5" fill="#fffdf8" opacity=".95"/></svg></span>`,
+      html:`<span class="nearby-map-pin-shell" aria-hidden="true">${nearbyPinSvg(kind)}</span>`,
       iconSize:[width,height],
       iconAnchor:[width / 2, height - 1],
       popupAnchor:[0, -(height - 4)],
     });
+  }
+
+  function setNearbyPinPlacementArmed(armed) {
+    state.nearbyPinPlacementArmed = Boolean(armed);
+    $('#nearbyMap')?.classList.toggle('is-pin-placement-armed', state.nearbyPinPlacementArmed);
+    const button = state.nearbyPinControlButton;
+    if (button) {
+      button.classList.toggle('is-picked', state.nearbyPinPlacementArmed);
+      button.setAttribute('aria-pressed', String(state.nearbyPinPlacementArmed));
+      button.setAttribute('aria-label', state.nearbyPinPlacementArmed
+        ? '取消放置搜尋圖釘'
+        : '拿取搜尋圖釘並在地圖上放置');
+    }
+    state.nearbySearchPin?.getElement()?.classList.toggle('is-picked', state.nearbyPinPlacementArmed);
+  }
+
+  function placeNearbySearchPin(latlng, {viewport = captureNearbyViewport()} = {}) {
+    const point = latlng;
+    if (!point || !Number.isFinite(Number(point.lat)) || !Number.isFinite(Number(point.lng))) return;
+    const nextViewport = validNearbyViewport(viewport) ? viewport : captureNearbyViewport();
+    state.nearbyOrigin = {lat:point.lat, lng:point.lng, label:'地圖選取位置', source:'pin'};
+    state.nearbyPinRevision += 1;
+    state.nearbyViewport = nextViewport;
+    setNearbyPinPlacementArmed(false);
+    showToast(`已放置圖釘，搜尋該位置 ${NEARBY_RADIUS_KM} 公里內展場`);
+    renderNearby({preserveViewport:true, viewport:nextViewport});
+  }
+
+  function handleNearbyMapClick(event) {
+    if (!state.nearbyPinPlacementArmed) return;
+    placeNearbySearchPin(event?.latlng);
+  }
+
+  function handleNearbyMapDoubleClick(event) {
+    const desktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!desktopPointer) return;
+    state.map?.doubleClickZoom?.disable?.();
+    event?.originalEvent?.preventDefault?.();
+    placeNearbySearchPin(event?.latlng);
+  }
+
+  function addNearbyPinControl() {
+    const control = L.control({position:'topleft'});
+    control.onAdd = () => {
+      const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control nearby-pin-control');
+      const button = L.DomUtil.create('button', 'nearby-pin-control-button', container);
+      button.type = 'button';
+      container.hidden = Boolean(state.nearbyOrigin);
+      container.setAttribute('aria-hidden', String(Boolean(state.nearbyOrigin)));
+      button.innerHTML = `<span class="nearby-pin-control-icon">${nearbyPinSvg('origin')}</span>`;
+      button.setAttribute('aria-describedby', 'nearbyPinInstructions');
+      button.title = '拿取圖釘後點一下地圖放置；也可拖到地圖上';
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+      state.nearbyPinControlButton = button;
+      setNearbyPinPlacementArmed(state.nearbyPinPlacementArmed);
+
+      button.addEventListener('click', () => {
+        if (button.dataset.pinDragged === 'true') {
+          delete button.dataset.pinDragged;
+          return;
+        }
+        const armed = !state.nearbyPinPlacementArmed;
+        setNearbyPinPlacementArmed(armed);
+        showToast(armed ? '圖釘已拿取，點一下地圖即可放置' : '已取消放置圖釘');
+      });
+
+      button.addEventListener('pointerdown', pointerDownEvent => {
+        if (!pointerDownEvent.isPrimary || pointerDownEvent.button !== 0) return;
+        pointerDownEvent.stopPropagation();
+        const start = {x:pointerDownEvent.clientX, y:pointerDownEvent.clientY};
+        let draggingPin = false;
+        let ghost = null;
+        const movePin = moveEvent => {
+          if (!draggingPin && Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) < 6) return;
+          moveEvent.preventDefault();
+          if (!draggingPin) {
+            draggingPin = true;
+            setNearbyPinPlacementArmed(true);
+            ghost = document.createElement('span');
+            ghost.className = 'nearby-pin-drag-ghost';
+            ghost.innerHTML = nearbyPinSvg('origin');
+            document.body.appendChild(ghost);
+          }
+          ghost.style.left = `${moveEvent.clientX}px`;
+          ghost.style.top = `${moveEvent.clientY}px`;
+        };
+        const finishPin = upEvent => {
+          document.removeEventListener('pointermove', movePin);
+          document.removeEventListener('pointerup', finishPin);
+          document.removeEventListener('pointercancel', cancelPin);
+          ghost?.remove();
+          if (!draggingPin) return;
+          button.dataset.pinDragged = 'true';
+          window.setTimeout(() => { delete button.dataset.pinDragged; }, 0);
+          const mapElement = $('#nearbyMap');
+          const bounds = mapElement?.getBoundingClientRect();
+          const droppedOnMap = bounds
+            && upEvent.clientX >= bounds.left && upEvent.clientX <= bounds.right
+            && upEvent.clientY >= bounds.top && upEvent.clientY <= bounds.bottom;
+          if (droppedOnMap && state.map) {
+            placeNearbySearchPin(state.map.mouseEventToLatLng(upEvent));
+          } else {
+            setNearbyPinPlacementArmed(false);
+            showToast('圖釘未放入地圖');
+          }
+        };
+        const cancelPin = () => {
+          document.removeEventListener('pointermove', movePin);
+          document.removeEventListener('pointerup', finishPin);
+          document.removeEventListener('pointercancel', cancelPin);
+          ghost?.remove();
+          setNearbyPinPlacementArmed(false);
+        };
+        document.addEventListener('pointermove', movePin, {passive:false});
+        document.addEventListener('pointerup', finishPin, {once:true});
+        document.addEventListener('pointercancel', cancelPin, {once:true});
+      });
+      return container;
+    };
+    control.addTo(state.map);
+    state.nearbyPinControl = control;
   }
 
   function renderNearby({preserveViewport = false, viewport = null} = {}) {
@@ -3155,9 +3287,10 @@
     const origin = state.nearbyOrigin || state.userLocation;
     const originLabel = state.nearbyOrigin?.label || '目前位置';
     const items = nearestVenues(200, origin ? NEARBY_RADIUS_KM : Infinity, origin);
+    const retainedLocationCopy = state.userLocation ? '；你目前的位置會保留在地圖上' : '';
     $('#nearbyStatusText').textContent = origin
-      ? `以「${originLabel}」為中心，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列；拖曳橘色圖釘可重新搜尋，點擊其他圖釘可查看場館資料。`
-      : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展場。`;
+      ? `以「${originLabel}」為中心，顯示 ${NEARBY_RADIUS_KM} 公里內展場並由近到遠排列${retainedLocationCopy}。`
+      : `正在請求定位權限；允許後會顯示 ${NEARBY_RADIUS_KM} 公里內展場，並保留你的目前位置。`;
     const resultsHeading = $('#nearbyResultsHeading');
     if (resultsHeading) resultsHeading.textContent = state.nearbyOrigin
       ? `「${originLabel}」周邊 ${NEARBY_RADIUS_KM} 公里內的展場`
@@ -3190,45 +3323,64 @@
     if (!window.L) return;
     if (state.map) { state.map.remove(); state.map = null; }
     state.nearbySearchPin = null;
+    state.nearbyPinControl = null;
+    state.nearbyPinControlButton = null;
+    state.nearbyPinPlacementArmed = false;
     const center = origin ? [origin.lat, origin.lng] : [23.7, 121.0];
     const keepViewport = validNearbyViewport(viewport);
     const initialCenter = keepViewport ? [Number(viewport.center.lat), Number(viewport.center.lng)] : center;
     const initialZoom = keepViewport ? Number(viewport.zoom) : (origin ? 13 : 7);
-    state.map = L.map('nearbyMap', {scrollWheelZoom:false, dragging:true}).setView(initialCenter, initialZoom);
+    const desktopPinPlacement = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    state.map = L.map('nearbyMap', {scrollWheelZoom:false, doubleClickZoom:!desktopPinPlacement, dragging:true}).setView(initialCenter, initialZoom);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
+    addNearbyPinControl();
+    state.map.on('click', handleNearbyMapClick);
+    // Bind once and let the handler gate touch devices; this also covers browsers
+    // that settle their pointer media query just after the map is created.
+    state.map.on('dblclick', handleNearbyMapDoubleClick);
+    state.map.getContainer().onkeydown = event => {
+      if (event.key !== 'Escape' || !state.nearbyPinPlacementArmed) return;
+      setNearbyPinPlacementArmed(false);
+      showToast('已取消放置圖釘');
+    };
     const markers = [];
     if (origin) {
       L.circle(center, {radius:NEARBY_RADIUS_KM * 1000, color:'#34785a', fillColor:'#34785a', fillOpacity:.035, weight:1.5, dashArray:'6 7'}).addTo(state.map);
-      const searchPin = L.marker(center, {
+    }
+    if (state.nearbyOrigin) {
+      const searchPin = L.marker([state.nearbyOrigin.lat, state.nearbyOrigin.lng], {
         icon:nearbyPinIcon('origin'),
         draggable:true,
         autoPan:true,
-        title:`拖曳圖釘搜尋 ${NEARBY_RADIUS_KM} 公里內展場`,
+        bubblingMouseEvents:false,
+        title:`點擊拿取或拖曳圖釘，搜尋 ${NEARBY_RADIUS_KM} 公里內展場`,
         keyboard:true,
         zIndexOffset:1000,
       }).addTo(state.map);
       state.nearbySearchPin = searchPin;
-      searchPin.bindPopup(`<div class="map-popup"><h3>搜尋圖釘</h3><p>${state.nearbyOrigin ? `目前以「${escapeHtml(state.nearbyOrigin.label)}」為中心。` : '目前位置'}</p><p>拖曳這個橘色圖釘，重新搜尋該位置 ${NEARBY_RADIUS_KM} 公里內的展場；空白地圖可直接拖移。</p></div>`);
+      searchPin.bindPopup(`<div class="map-popup"><h3>搜尋圖釘</h3><p>目前以「${escapeHtml(state.nearbyOrigin.label)}」為中心。</p><p>點一下拿取後再點地圖放置，或直接拖曳；電腦版也可雙擊地圖立即移動圖釘。</p></div>`);
       searchPin.on('click', event => {
         event?.originalEvent?.stopPropagation?.();
-        searchPin.openPopup();
+        setNearbyPinPlacementArmed(true);
+        searchPin.closePopup();
+        showToast('圖釘已拿取，點一下地圖重新放置');
       });
       searchPin.on('dragstart', () => {
         state.nearbyViewport = captureNearbyViewport();
+        setNearbyPinPlacementArmed(false);
         searchPin.getElement()?.classList.add('is-picked');
       });
       searchPin.on('dragend', event => {
         const point = event.target.getLatLng();
         const nextViewport = captureNearbyViewport();
-        state.nearbyOrigin = {lat:point.lat, lng:point.lng, label:'地圖選取位置', source:'pin'};
-        state.nearbyViewport = nextViewport;
-        showToast(`已移動圖釘，搜尋該位置 ${NEARBY_RADIUS_KM} 公里內展場`);
-        renderNearby({preserveViewport:true, viewport:nextViewport});
+        placeNearbySearchPin(point, {viewport:nextViewport});
       });
     }
-    if (state.userLocation && state.nearbyOrigin) {
+    if (state.userLocation) {
       L.circleMarker([state.userLocation.lat, state.userLocation.lng], {radius:6, color:'#34785a', fillColor:'#fff', fillOpacity:1, weight:3})
-        .addTo(state.map).bindPopup('你目前的位置（點「回到目前位置」可重設搜尋中心）');
+        .addTo(state.map).bindPopup(state.nearbyOrigin
+          ? '你目前的位置（點「回到目前位置」可重設搜尋中心）'
+          : '你目前的位置');
     }
     items.slice(0, 100).forEach(venue => {
       const coordinate = venueCoordinates(venue);
@@ -3236,9 +3388,10 @@
       const marker = L.marker([coordinate.latitude, coordinate.longitude], {
         icon:nearbyPinIcon('venue'),
         title:venue.name,
+        bubblingMouseEvents:false,
       }).addTo(state.map);
       const directionsUrl = googleMapsDirectionsUrlForVenue(venue);
-      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><p>點擊橘色搜尋圖釘可重新選取範圍；此圖釘用來查看場館資訊。</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">地圖導航 ↗</a>` : ''}</div></div>`);
+      marker.bindPopup(`<div class="map-popup"><h3>${escapeHtml(venue.name)}</h3><p>${escapeHtml(venueAddressLabel(venue))}</p><p>${Number.isFinite(venue._distance) ? `${venue._distance.toFixed(1)} KM` : ''}</p><p>左上角黃色圖釘可拿取並放到新位置；此綠色圖釘只用來查看場館資訊。</p><div class="map-popup-actions"><a href="${venueHref(venue.name)}">查看場館展覽 →</a>${directionsUrl ? `<a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener">地圖導航 ↗</a>` : ''}</div></div>`);
       marker.on('click', event => {
         event?.originalEvent?.stopPropagation?.();
         marker.openPopup();
@@ -3246,7 +3399,7 @@
       markers.push(marker);
     });
     state.markers = markers;
-    if (!keepViewport && markers.length) {
+    if (!keepViewport && markers.length && !state.userLocation) {
       const group = L.featureGroup(markers);
       if (origin) group.addLayer(L.circleMarker(center, {radius:1, opacity:0, fillOpacity:0}));
       state.map.fitBounds(group.getBounds().pad(.12), {maxZoom:13});
@@ -3258,15 +3411,19 @@
   function requestLocation({automatic = false} = {}) {
     if (!navigator.geolocation) { showToast('此瀏覽器不支援定位功能'); return; }
     if (state.locationRequestPending) return;
+    const pinRevisionAtRequest = state.nearbyPinRevision;
     state.locationRequested = true;
     state.locationRequestPending = true;
     if (!automatic) showToast('正在取得目前位置…');
     navigator.geolocation.getCurrentPosition(position => {
+      const pinMovedWhileLocating = state.nearbyPinRevision !== pinRevisionAtRequest;
       state.userLocation = {lat:position.coords.latitude,lng:position.coords.longitude};
-      state.nearbyOrigin = null;
-      state.nearbyViewport = null;
+      if (!pinMovedWhileLocating) {
+        state.nearbyOrigin = null;
+        state.nearbyViewport = null;
+      }
       state.locationRequestPending = false;
-      showToast('已依目前位置重新整理附近展場');
+      showToast(pinMovedWhileLocating ? '已更新目前位置，並保留圖釘搜尋位置' : '已依目前位置重新整理附近展場');
       renderHomeNearby();
       if (state.view === 'nearby') renderNearby();
     }, error => {
@@ -3282,6 +3439,7 @@
   function resetNearbyOrigin() {
     if (!state.nearbyOrigin) return;
     state.nearbyOrigin = null;
+    state.nearbyPinRevision += 1;
     state.nearbyViewport = null;
     showToast(state.userLocation ? '已回到目前位置搜尋' : '請先取得目前位置');
     if (state.view === 'nearby') renderNearby();
