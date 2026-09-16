@@ -30,8 +30,23 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    sources = load_collector_sources(args.source_registry)
+    selected_source = next(
+        (item for item in sources if item.id == args.source),
+        None,
+    ) if args.source else None
     if args.fetch_details:
-        detail_limit = str(max(0, args.detail_limit))
+        configured_limit = (
+            selected_source.raw.get("detailLimit")
+            if selected_source is not None
+            else None
+        )
+        detail_limit_value = (
+            int(configured_limit)
+            if configured_limit is not None
+            else max(0, args.detail_limit)
+        )
+        detail_limit = str(max(0, detail_limit_value))
         detail_retry_rounds = str(max(0, args.detail_retry_rounds))
         os.environ["EXHIBITION_HUB_FETCH_DETAILS"] = "1"
         os.environ["EXHIBITION_HUB_DETAIL_LIMIT"] = detail_limit
@@ -42,13 +57,11 @@ def main() -> int:
         os.environ[
             "EXHIBITION_HUB_HUASHAN_DETAIL_RETRY_ROUNDS"
         ] = detail_retry_rounds
-    sources = load_collector_sources(args.source_registry)
-
     if args.audit_only or not args.source:
         report = audit_collector_coverage(sources, collector_registry)
         exit_code = 0 if report["frameworkReady"] else 1
     else:
-        source = next((item for item in sources if item.id == args.source), None)
+        source = selected_source
         if source is None:
             report = {
                 "mode": "collector-run",
