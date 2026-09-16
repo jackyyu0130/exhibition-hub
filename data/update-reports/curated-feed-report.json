@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
-  "builtAt": "2026-09-12T21:38:16.713389+00:00",
-  "sourceEventCount": 1518,
-  "publicEventCount": 552,
-  "removedEventCount": 966,
+  "builtAt": "2026-09-16T17:46:27.268569+00:00",
+  "sourceEventCount": 1466,
+  "publicEventCount": 734,
+  "removedEventCount": 732,
   "keptReasons": {
-    "confirmed_P0": 450,
-    "confirmed_P1_visible_interest": 102
+    "confirmed_P0": 427,
+    "confirmed_P1_visible_interest": 109,
+    "confirmed_venue_catalog": 198
   },
   "removedReasons": {
-    "expired": 127,
+    "expired": 123,
     "generic_or_district_only_place": 1,
-    "library_series": 4,
-    "low_interest_permanent_exhibition": 26,
-    "low_priority_or_low_interest_venue": 218,
-    "missing_image": 48,
-    "missing_outbound_link": 273,
-    "non_catalog_activity": 15,
+    "library_series": 3,
+    "low_interest_permanent_exhibition": 31,
+    "missing_image": 61,
+    "missing_outbound_link": 257,
+    "non_catalog_activity": 13,
     "small_local_activity": 14,
-    "unmatched_or_low_interest": 240
+    "unmatched_or_low_interest": 229
   },
   "removedSamples": {
     "low_interest_permanent_exhibition": [
@@ -157,15 +157,15 @@
         "sourceUrl": ""
       },
       {
-        "id": "695053cf26b32416dc349152",
-        "title": "「四面亮麗，八方驚奇」玻璃特展",
-        "locationName": "台灣玻璃館",
-        "sourceUrl": ""
-      },
-      {
         "id": "696aa7c526b3243b1ca0c072",
         "title": "「夢境現實─MR沉浸式劇院」-沉浸式投影及MR互動",
         "locationName": "苓雅區（高雄市）",
+        "sourceUrl": ""
+      },
+      {
+        "id": "698e24b726b32454e437c96e",
+        "title": "「大溪有緣客－客家文化現蹤」主題特展",
+        "locationName": "桃園市立大溪木藝生態博物館-國定古蹟李騰芳古宅",
         "sourceUrl": ""
       }
     ],
@@ -183,90 +183,10 @@
         "sourceUrl": "https://www.changhua.gov.tw/RowContent/19"
       },
       {
-        "id": "6a480c8f26b32427d0604116",
-        "title": "今年也很陶器-苗栗陶青年創意協會會員聯展",
-        "locationName": "苗栗工藝產業研發分館",
-        "sourceUrl": "https://www.ntcri.gov.tw/home/zh-tw/exhibition/7501757"
-      },
-      {
         "id": "6a6e294526b32427d0604324",
         "title": "〈Danzz舞臺味〉足夢午茶音樂會",
         "locationName": "中壢新明國小李輝義紀念圖書館",
         "sourceUrl": "https://www.opentix.life/event/2077580038693351425"
-      }
-    ],
-    "low_priority_or_low_interest_venue": [
-      {
-        "id": "695ecb3726b3243dd4e6ac1a",
-        "title": "LEARPRINT 內惟聲響實驗 65聲道的交響體驗",
-        "locationName": "內惟藝術中心",
-        "sourceUrl": "https://www.nwac.org.tw/tw/news-content/0378575Ae540"
-      },
-      {
-        "id": "6a456adb26b32427d060407a",
-        "title": "《鏡花蟲洞宴》洪易戶外雕塑展",
-        "locationName": "國立歷史博物館",
-        "sourceUrl": "https://event.culture.tw/mocweb/reg/NMH/ExhibitionDetail.init.ctr?actId=50070&utm_source=moc&utm_med"
-      },
-      {
-        "id": "6a4397ed26b32427d0603fa5",
-        "title": "Re：戰鬥之城 Re: Battle City",
-        "locationName": "內惟藝術中心",
-        "sourceUrl": "https://www.accupass.com/event/2607080856481874437604"
-      },
-      {
-        "id": "6a28643026b3243414ccd069",
-        "title": "Oh!海郵-海洋生物郵票特展",
-        "locationName": "郵政博物館",
-        "sourceUrl": "https://museum.post.gov.tw/post/Postal_Museum/museum/index.jsp?ID=1525402172794&control_type=page&ne"
-      },
-      {
-        "id": "6a07581026b3243414ccc933",
-        "title": "埃及木乃伊—永生傳說",
-        "locationName": "國立歷史博物館",
-        "sourceUrl": "https://www.opentix.life/event/2053669305775673345"
-      },
-      {
-        "id": "6a0f3b0226b3243414cccaa9",
-        "title": "動物王國大探險展-比薩大學自然史博物館",
-        "locationName": "國立臺灣科學教育館 七樓西側特展室",
-        "sourceUrl": "https://www.opentix.life/event/2055133323057967105"
-      },
-      {
-        "id": "6a28645126b3243414ccd0af",
-        "title": "從前從前－繪說童話郵票特展",
-        "locationName": "郵政博物館",
-        "sourceUrl": "https://museum.post.gov.tw/post/Postal_Museum/museum/index.jsp?ID=1525402172794&control_type=page&ne"
-      },
-      {
-        "id": "6a2c3c0f26b3243414ccd22f",
-        "title": "古典光影大師 林布蘭到哥雅－托雷多美術館珍藏展 I",
-        "locationName": "富邦美術館1樓",
-        "sourceUrl": "https://www.opentix.life/event/2058831955254812673"
-      },
-      {
-        "id": "6a83722826b32427d060440a",
-        "title": "9月高雄市電影館｜18顆鑽石",
-        "locationName": "高雄市電影館3樓",
-        "sourceUrl": "https://kfa.kcg.gov.tw/tw/ticket-information"
-      },
-      {
-        "id": "6a86283826b32427d0604448",
-        "title": "9月高雄市電影館｜超拖樂團之我要幹大事啦！",
-        "locationName": "高雄市電影館3樓",
-        "sourceUrl": "https://ticket.com.tw/Application/UTK02/UTK0201_.aspx?PRODUCT_ID=P1EBPDK1"
-      },
-      {
-        "id": "6a84c8f026b32427d060443f",
-        "title": "9月高雄市電影館｜驀然回首",
-        "locationName": "高雄市電影館3樓",
-        "sourceUrl": "https://kfa.kcg.gov.tw/tw/ticket-information"
-      },
-      {
-        "id": "6a83722826b32427d060440e",
-        "title": "9月高雄市電影館｜奧德賽",
-        "locationName": "內惟藝術中心 Reel one 1廳",
-        "sourceUrl": "https://kfa.kcg.gov.tw/tw/ticket-information"
       }
     ],
     "unmatched_or_low_interest": [
@@ -417,80 +337,6 @@
         "sourceUrl": "http://www.bocach.gov.tw/subject/history/index.asp?act_id=4"
       }
     ],
-    "expired": [
-      {
-        "id": "697bbd1026b32454e437c599",
-        "title": "奇蹟之島─1970-1980從開發到保育臺灣建設檔案特展",
-        "locationName": "臺灣省政資料館",
-        "sourceUrl": ""
-      },
-      {
-        "id": "69b06ecf26b3242a48a9d9da",
-        "title": "這條河很神！高屏溪流域的信仰故事特展",
-        "locationName": "高雄市立歷史博物館",
-        "sourceUrl": ""
-      },
-      {
-        "id": "6a3a4d08647a40ec65297ab4",
-        "title": "舞蹈的八個篇章：俄羅斯史詩、西班牙激情與歐洲新古典",
-        "locationName": "新月藝文",
-        "sourceUrl": "https://artfocus.com.tw/?,1273"
-      },
-      {
-        "id": "6a1f30b726b3243414ccce25",
-        "title": "【新月．舞蹈賞析】舞蹈的八個篇章：俄羅斯史詩、西班牙激情與歐洲新古典",
-        "locationName": "台北市｜場館資料整理中",
-        "sourceUrl": "https://docs.google.com/forms/d/e/1FAIpQLScE_SZLQb25KHjR8I_4cWHapYGoh4ZYgiWf6MHqqSguLk5WfQ/viewform?usp=send_form"
-      },
-      {
-        "id": "69e1334126b3242a48a9e40c",
-        "title": "115年度客語歌唱班",
-        "locationName": "中壢區（桃園市）",
-        "sourceUrl": ""
-      },
-      {
-        "id": "6a23228226b3243414cccf34",
-        "title": "托馬斯．薩拉切諾：共織宇宙",
-        "locationName": "新北市美術館",
-        "sourceUrl": "https://ntcart.museum/exhibition_content.aspx?id=H2601002"
-      },
-      {
-        "id": "6a34414826b3243414ccd45e",
-        "title": "【新月．音樂賞析】作曲家的浪漫一生：浪漫樂派六大家",
-        "locationName": "新月藝文",
-        "sourceUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe7bUcOw4Q58C9knC6ck63Q0BxpYWQ3gCwvGQ3R4QXzlM1npg/viewform?usp=send_form"
-      },
-      {
-        "id": "69b06ece26b3242a48a9d9d4",
-        "title": "仰懷宗範──開山祖師圓寂十週年紀念特展",
-        "locationName": "埔里鎮（南投縣）",
-        "sourceUrl": "https://www.ctwm.org.tw/news/%E6%B4%BB%E5%8B%95/%E4%BB%B0%E6%87%B7%E5%AE%97%E7%AF%84%E2%94%80%E2%94%80%E9%96%8B%E5%B1%B1%E7%A5%96%E5%B8%AB%E5%9C%93%E5%AF%82%E5%8D%81%E9%80%B1%E5%B9%B4%E7%B4%80%E5%BF%B5%E7%89%B9%E5%B1%95-%E5%B1%95%E8%A6%BD%E9%A0%90%E5%91%8A?utm_source=web&utm_medium=post"
-      },
-      {
-        "id": "69e7e31726b3242a48a9e5be",
-        "title": "Mar’iang! 針線對話-臺灣南部平埔原住民族十字繡文化展",
-        "locationName": "臺中市纖維工藝博物館",
-        "sourceUrl": "https://mofia.taichung.gov.tw/Exhibit/173"
-      },
-      {
-        "id": "6a04cce926b3243414ccc868",
-        "title": "幸福歌唱藝術活動",
-        "locationName": "大園區（桃園市）",
-        "sourceUrl": ""
-      },
-      {
-        "id": "6a28644c26b3243414ccd092",
-        "title": "典藏庫房的竊竊私語",
-        "locationName": "高雄市立美術館",
-        "sourceUrl": "https://www.kmfa.gov.tw/ExhibitionDetailC001100.aspx?Cond=3fa4f217-9953-4813-975b-1b6d8529dfb0"
-      },
-      {
-        "id": "6a21d76f26b3243414cccedf",
-        "title": "客語歌謠班-四縣腔",
-        "locationName": "大園區（桃園市）",
-        "sourceUrl": ""
-      }
-    ],
     "non_catalog_activity": [
       {
         "id": "6a0a11d026b3243414ccc99e",
@@ -509,18 +355,6 @@
         "title": "2026故事聯合國：每個國家都來講故事-9月",
         "locationName": "國立臺灣文學館",
         "sourceUrl": "https://event.culture.tw/mocweb/reg/NMTL/Detail.init.ctr;jsessionid=94BDCD61C7BDFFB6D13CDFC2E45BD5D8?actId=60091&utm_source=NMTL&utm_medium=index&utm_campaign=60091"
-      },
-      {
-        "id": "6a4397f326b32427d0603fe2",
-        "title": "苗北藝術學苑-2026苗北講堂III：木管家族-精靈、鳥鳴與仙子之聲《長笛、雙簧管、單簧管與低音管的聲音辨識》",
-        "locationName": "苗栗縣苗北藝文中心",
-        "sourceUrl": "https://www.miaobeiac.org/"
-      },
-      {
-        "id": "6a7df97c26b32427d06043cc",
-        "title": "好哲凳Live Podcast｜台語創作多重宇宙 feat. 鄭宜農&温若喬",
-        "locationName": "國家兩廳院",
-        "sourceUrl": "https://www.opentix.life/event/2080194950108758017"
       },
       {
         "id": "6a4e82ee26b32427d0604167",
@@ -563,6 +397,92 @@
         "title": "2026故事聯合國：每個國家都來講故事-10月",
         "locationName": "國立臺灣文學館",
         "sourceUrl": "https://event.culture.tw/mocweb/reg/NMTL/Detail.init.ctr;jsessionid=94BDCD61C7BDFFB6D13CDFC2E45BD5D8?actId=60091&utm_source=NMTL&utm_medium=index&utm_campaign=60091"
+      },
+      {
+        "id": "6a6cd5aa26b32427d0604318",
+        "title": "2026秋天藝術節【藝術家對談】共存的想像：菲利普．肯恩 × 李貞葳 × 法庫亞．佐坦",
+        "locationName": "國家兩廳院",
+        "sourceUrl": "https://www.opentix.life/event/2077963745139183617"
+      },
+      {
+        "id": "6a7761fb26b32427d0604391",
+        "title": "【幕名而來】菲利普.肯恩《人間樂園》節目導覽",
+        "locationName": "國家兩廳院",
+        "sourceUrl": "https://www.opentix.life/event/2076948367096213504"
+      }
+    ],
+    "expired": [
+      {
+        "id": "69e1334126b3242a48a9e40c",
+        "title": "115年度客語歌唱班",
+        "locationName": "中壢區（桃園市）",
+        "sourceUrl": ""
+      },
+      {
+        "id": "6a34414826b3243414ccd45e",
+        "title": "【新月．音樂賞析】作曲家的浪漫一生：浪漫樂派六大家",
+        "locationName": "新月藝文",
+        "sourceUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe7bUcOw4Q58C9knC6ck63Q0BxpYWQ3gCwvGQ3R4QXzlM1npg/viewform?usp=send_form"
+      },
+      {
+        "id": "6a28645026b3243414ccd0a2",
+        "title": "現代流行舞蹈班",
+        "locationName": "大溪區（桃園市）",
+        "sourceUrl": ""
+      },
+      {
+        "id": "6a304d1326b3243414ccd34f",
+        "title": "島嶼 ‧ 跫音　鐘俊雄藝術創作展",
+        "locationName": "臺灣創價學會安南藝文中心",
+        "sourceUrl": "https://www.sokaculture.org.tw/"
+      },
+      {
+        "id": "6a480c8f26b32427d0604116",
+        "title": "今年也很陶器-苗栗陶青年創意協會會員聯展",
+        "locationName": "苗栗工藝產業研發分館",
+        "sourceUrl": "https://www.ntcri.gov.tw/home/zh-tw/exhibition/7501757"
+      },
+      {
+        "id": "6a38195226b3243414ccd493",
+        "title": "OSAMU GOODS 50週年展：原田治的 OSAMU GOODS STYLE",
+        "locationName": "華山1914文化創意產業園區",
+        "sourceUrl": "https://www.opentix.life/event/2067464733801119745"
+      },
+      {
+        "id": "6a3ed9ec26b3247a14361ddf",
+        "title": "《人之粗》－善萊歐海個展",
+        "locationName": "原住民族委員會原住民族文化發展中心",
+        "sourceUrl": ""
+      },
+      {
+        "id": "6a48cd93647a042a0eb890bb",
+        "title": "小孤獨，行｜簡翊洪",
+        "locationName": "谷公館",
+        "sourceUrl": ""
+      },
+      {
+        "id": "6a3835b426b3243414ccd4bb",
+        "title": "縫合神話",
+        "locationName": "台南梵藝術中心",
+        "sourceUrl": ""
+      },
+      {
+        "id": "6a3c363126b3243414ccd5ba",
+        "title": "2026台灣陶藝展-會員聯展",
+        "locationName": "臺中市港區藝術中心",
+        "sourceUrl": "https://tcsac.taichung.gov.tw/Exhibition/Exhibition_More?id=2e39dc6de1f441e9a8d987d71e84f79a"
+      },
+      {
+        "id": "6a69175feb43f5f34e518855",
+        "title": "智慧型手機化身樂器 《愛的總動員》臺東聲音藝術節亞洲首演",
+        "locationName": "跨國互動式聲音藝術《愛的總動員》臺東聲音藝術節亞洲首演",
+        "sourceUrl": "https://tour.taitung.gov.tw/zh-tw/event-calendar/details/6273"
+      },
+      {
+        "id": "6a6c5c7e647ad700eb56ccda",
+        "title": "自來生長 王午個展",
+        "locationName": "新浜碼頭藝術空間1F",
+        "sourceUrl": ""
       }
     ],
     "small_local_activity": [
@@ -571,12 +491,6 @@
         "title": "古內惟傳奇船旗-重現100幅古內惟水族生態圖鑑",
         "locationName": "內惟藝術中心",
         "sourceUrl": "https://www.nwac.org.tw/tw/art-content/2FfEDC14bE01"
-      },
-      {
-        "id": "6a3c363126b3243414ccd5ba",
-        "title": "2026台灣陶藝展-會員聯展",
-        "locationName": "臺中市港區藝術中心",
-        "sourceUrl": "https://tcsac.taichung.gov.tw/Exhibition/Exhibition_More?id=2e39dc6de1f441e9a8d987d71e84f79a"
       },
       {
         "id": "6aa396b4eb4399d01039b1d8",
@@ -637,6 +551,12 @@
         "title": "國立嘉義大學音樂系交響樂團《變奏與傳承》—從主題到蛻變",
         "locationName": "臺灣戲曲中心大表演廳",
         "sourceUrl": "https://www.opentix.life/event/2088081696032780289"
+      },
+      {
+        "id": "6a76106626b32427d0604378",
+        "title": "2026藝術節-SPIDERHORSE A Cappella瘋台灣巡迴音樂會-宜蘭場",
+        "locationName": "國立宜蘭高中音樂館",
+        "sourceUrl": "https://www.opentix.life/event/2083002657423384577"
       }
     ],
     "generic_or_district_only_place": [
@@ -649,9 +569,9 @@
     ]
   },
   "priceAudit": {
-    "correctedCount": 5,
+    "correctedCount": 4,
     "correctionReasons": {
-      "date_fragment": 5
+      "date_fragment": 4
     },
     "samples": [
       {
@@ -665,13 +585,6 @@
         "id": "6a633312eb43f5f34e51884a",
         "title": "《原鄉情長：臺灣山脈與古厝之美》 祁連 個展",
         "originalPrice": "▎《原鄉情長：臺灣山脈與古厝之美》 祁連 個展\n開幕茶會｜\n2026.8.15 (六) 14:00 -16:00\n展覽期間｜\n2026.8.15 (六)-10.25 (日)\n10:00-19:00 (週一休館)\n地點｜聯邦藝術中心\n地址｜台北市大安區忠孝東路四段219號 (近捷運忠孝敦化站2號出口）",
-        "publicPrice": "票價請見活動頁面",
-        "reason": "date_fragment"
-      },
-      {
-        "id": "69ee7b8e26b3242a48a9e6e8",
-        "title": "LOVE DIMENSION 影展《海邊的曼徹斯特》",
-        "originalPrice": "報名開始：2026-03-03 00:00\n報名截止：2026-09-08 23:50\n人數：60",
         "publicPrice": "票價請見活動頁面",
         "reason": "date_fragment"
       },
