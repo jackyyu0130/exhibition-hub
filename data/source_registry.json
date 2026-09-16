@@ -118,6 +118,9 @@
       "refreshHours": 12,
       "officialUrl": "https://www.huashan1914.com/w/huashan1914/index",
       "listingUrl": "https://www.huashan1914.com/w/huashan1914/exhibition",
+      "fallbackListingUrls": [
+        "https://www.huashan1914.com/w/huashan1914/CustomEvent"
+      ],
       "coverageRegions": [
         "臺北市"
       ],
@@ -132,7 +135,7 @@
         "huashan-1914"
       ],
       "detailLimit": 40,
-      "notes": "R18.5 改用華山官方展覽列表（/exhibition），每日兩次抓取列表與詳情頁；最多抓取 40 個詳情，涵蓋目前雙頁清單並保留資源上限。經去重、品質閘門與發布安全檢查後更新正式 enriched 資料；失敗時不覆蓋上一版。"
+      "notes": "R18.5.1 優先抓取華山官方展覽列表（/exhibition）；若頁面暫時沒有可解析的活動，回退至官方 CustomEvent 列表，最多抓取 40 個詳情。任何來源零筆仍會被品質閘門阻止發布，失敗時不覆蓋上一版。"
     },
     {
       "id": "songshan-cultural-park",

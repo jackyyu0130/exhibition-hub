@@ -18,6 +18,9 @@ from .base import (
 DEFAULT_LISTING_URL = (
     "https://www.huashan1914.com/w/huashan1914/exhibition"
 )
+DEFAULT_FALLBACK_LISTING_URL = (
+    "https://www.huashan1914.com/w/huashan1914/CustomEvent"
+)
 HUASHAN_VENUE_NAME = "華山1914文化創意產業園區"
 HUASHAN_ADDRESS = "臺北市中正區八德路一段1號"
 HUASHAN_REGION = "臺北市"
@@ -691,6 +694,7 @@ class Huashan1914Collector(BaseCollector):
             else max(0, int(detail_retry_rounds))
         )
         self.last_listing_pages = 0
+        self.last_listing_url_used = DEFAULT_LISTING_URL
         self.last_detail_requested = 0
         self.last_detail_attempts = 0
         self.last_detail_success = 0
@@ -841,36 +845,52 @@ class Huashan1914Collector(BaseCollector):
         client: Any,
     ) -> Sequence[Mapping[str, Any]]:
         listing_url = source.listing_url or DEFAULT_LISTING_URL
+        fallback_urls = [
+            str(value).strip()
+            for value in (source.raw.get("fallbackListingUrls") or [])
+            if str(value).strip()
+        ]
+        listing_urls = list(dict.fromkeys([listing_url, *fallback_urls]))
         records_by_url: dict[str, dict[str, Any]] = {}
-        total_pages = 1
+        listing_url_used = listing_url
         self.last_listing_pages = 0
+        self.last_listing_url_used = listing_url
         self.last_detail_requested = 0
         self.last_detail_attempts = 0
         self.last_detail_success = 0
         self.last_detail_recovered = 0
         self.last_detail_failures = []
 
-        for page in range(1, self.max_pages + 1):
-            if page > total_pages:
-                break
-            page_url = _with_page_index(listing_url, page)
-            response = client.get(page_url)
-            self.last_listing_pages += 1
-            events, detected_total = self.parse_listing(
-                response.text,
-                base_url=response.url or page_url,
-            )
-            total_pages = min(self.max_pages, max(total_pages, detected_total))
+        for candidate_listing_url in listing_urls:
+            candidate_records: dict[str, dict[str, Any]] = {}
+            total_pages = 1
+            for page in range(1, self.max_pages + 1):
+                if page > total_pages:
+                    break
+                page_url = _with_page_index(candidate_listing_url, page)
+                response = client.get(page_url)
+                self.last_listing_pages += 1
+                events, detected_total = self.parse_listing(
+                    response.text,
+                    base_url=response.url or page_url,
+                )
+                total_pages = min(self.max_pages, max(total_pages, detected_total))
 
-            new_count = 0
-            for event in events:
-                event["listingPage"] = page
-                event["listingUrl"] = page_url
-                detail_url = str(event["detailUrl"])
-                if detail_url not in records_by_url:
-                    records_by_url[detail_url] = event
-                    new_count += 1
-            if not events or (page > 1 and new_count == 0):
+                new_count = 0
+                for event in events:
+                    event["listingPage"] = page
+                    event["listingUrl"] = page_url
+                    detail_url = str(event["detailUrl"])
+                    if detail_url not in candidate_records:
+                        candidate_records[detail_url] = event
+                        new_count += 1
+                if not events or (page > 1 and new_count == 0):
+                    break
+
+            if candidate_records:
+                records_by_url = candidate_records
+                listing_url_used = candidate_listing_url
+                self.last_listing_url_used = candidate_listing_url
                 break
 
         records = list(records_by_url.values())
@@ -941,6 +961,7 @@ class Huashan1914Collector(BaseCollector):
         detail_records = [record.raw for record in report.records if record.raw.get("detailFetched")]
         report.metrics = {
             "listingPagesFetched": self.last_listing_pages,
+            "listingUrlUsed": self.last_listing_url_used,
             "detailEnabled": self.fetch_details,
             "detailLimit": self.detail_limit,
             "detailRequestedCount": self.last_detail_requested,
