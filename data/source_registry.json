@@ -117,7 +117,7 @@
       "priority": 90,
       "refreshHours": 12,
       "officialUrl": "https://www.huashan1914.com/w/huashan1914/index",
-      "listingUrl": "https://www.huashan1914.com/w/huashan1914/CustomEvent",
+      "listingUrl": "https://www.huashan1914.com/w/huashan1914/exhibition",
       "coverageRegions": [
         "臺北市"
       ],
@@ -131,7 +131,8 @@
       "venueIds": [
         "huashan-1914"
       ],
-      "notes": "5-F.2 已正式啟用。每日兩次抓取完整列表與詳情頁，經去重、品質閘門與發布安全檢查後更新正式 enriched 資料；失敗時不覆蓋上一版。"
+      "detailLimit": 40,
+      "notes": "R18.5 改用華山官方展覽列表（/exhibition），每日兩次抓取列表與詳情頁；最多抓取 40 個詳情，涵蓋目前雙頁清單並保留資源上限。經去重、品質閘門與發布安全檢查後更新正式 enriched 資料；失敗時不覆蓋上一版。"
     },
     {
       "id": "songshan-cultural-park",
@@ -160,6 +161,7 @@
         "songshan-cultural-park"
       ],
       "notes": "R11.0 正式啟用。每日兩次抓取列表與詳情；未達最低完整筆數時保留上一版資料。",
+      "detailLimit": 40,
       "minimumRecords": 5,
       "listingUrls": [
         "https://www.songshanculturalpark.org/exhibition"
@@ -192,6 +194,7 @@
         "pier-2-art-center"
       ],
       "notes": "R11.0 第一批官方來源；來源頁結構異常時隔離該來源並保留既有資料。",
+      "detailLimit": 40,
       "listingUrls": [
         "https://pier2.org/exhibition/",
         "https://pier2.org/activity/"
@@ -357,6 +360,7 @@
         "tainan-art-museum"
       ],
       "notes": "R11.0 第一批官方來源；只發布具日期、主視覺與官方詳情頁的展覽。",
+      "detailLimit": 40,
       "listingUrls": [
         "https://www.tnam.museum/exhibition/current",
         "https://www.tnam.museum/exhibition/upcoming"

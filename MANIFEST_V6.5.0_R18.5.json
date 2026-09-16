@@ -1,0 +1,27 @@
+{
+  "version": "6.5.0-R18.5",
+  "releaseMarker": "v6.5.0-r18.5",
+  "baseRelease": "v6.5.0-r18.4",
+  "summary": "Repair official-source coverage after the Huashan/Songshan audit: use Huashan's current exhibition listing, apply bounded source-level detail limits, and preserve the Sunday low-resource workflow.",
+  "changedFiles": [
+    ".github/workflows/update-exhibitions.yml",
+    "data/source_registry.json",
+    "scripts/exhibition_hub/collectors/huashan.py",
+    "scripts/run_collectors.py",
+    "scripts/run_official_source_batch.py",
+    "tests/test_r185_official_source_audit.py",
+    "MANIFEST_V6.5.0_R18.5.json",
+    "R18.5_OFFICIAL_SOURCE_AUDIT_UPDATE_GUIDE_ZH-TW.md"
+  ],
+  "verification": [
+    "python3 -m unittest tests.test_r185_official_source_audit tests.test_official_site_collectors tests.test_huashan_detail_collector tests.test_source_batches tests.test_source_registry_activation_guard",
+    "python3 -m json.tool data/source_registry.json",
+    "python3 -m py_compile scripts/run_collectors.py scripts/run_official_source_batch.py scripts/exhibition_hub/collectors/huashan.py"
+  ],
+  "deployment": {
+    "targetBranch": "develop",
+    "mergeTarget": "main",
+    "dataRefresh": "Run Weekly exhibition update after merging; do not manually overwrite the full repository.",
+    "rollback": "Revert the R18.5 commit or restore the six changed project files from the previous release."
+  }
+}

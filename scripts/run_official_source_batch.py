@@ -297,7 +297,11 @@ def main() -> int:
     audit_dir.mkdir(parents=True, exist_ok=True)
 
     os.environ["EXHIBITION_HUB_FETCH_DETAILS"] = "1"
-    os.environ.setdefault("EXHIBITION_HUB_DETAIL_LIMIT", "0")
+    default_detail_limit = max(
+        0,
+        int(os.environ.get("EXHIBITION_HUB_DETAIL_LIMIT", "0") or 0),
+    )
+    os.environ["EXHIBITION_HUB_DETAIL_LIMIT"] = str(default_detail_limit)
 
     runner = CollectorRunner(collector_registry)
     source_reports: list[dict[str, Any]] = []
@@ -316,6 +320,14 @@ def main() -> int:
             "status": "pending",
             "baseEventCount": len(current.get("events") or []),
         }
+        configured_limit = source.raw.get("detailLimit")
+        source_detail_limit = (
+            max(0, int(configured_limit))
+            if configured_limit is not None
+            else default_detail_limit
+        )
+        previous_detail_limit = os.environ.get("EXHIBITION_HUB_DETAIL_LIMIT")
+        os.environ["EXHIBITION_HUB_DETAIL_LIMIT"] = str(source_detail_limit)
         try:
             run_report = runner.run_source(source)
             run_payload = run_report.to_dict()
@@ -393,6 +405,11 @@ def main() -> int:
                 "errors": [f"{type(exc).__name__}: {exc}"],
             })
             failed_sources += 1
+        finally:
+            if previous_detail_limit is None:
+                os.environ.pop("EXHIBITION_HUB_DETAIL_LIMIT", None)
+            else:
+                os.environ["EXHIBITION_HUB_DETAIL_LIMIT"] = previous_detail_limit
         source_reports.append(source_item)
 
     if not source_reports:

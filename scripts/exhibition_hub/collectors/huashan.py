@@ -16,7 +16,7 @@ from .base import (
 
 
 DEFAULT_LISTING_URL = (
-    "https://www.huashan1914.com/w/huashan1914/CustomEvent"
+    "https://www.huashan1914.com/w/huashan1914/exhibition"
 )
 HUASHAN_VENUE_NAME = "華山1914文化創意產業園區"
 HUASHAN_ADDRESS = "臺北市中正區八德路一段1號"
